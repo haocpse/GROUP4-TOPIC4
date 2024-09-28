@@ -8,6 +8,7 @@ import MainLayout from './Components/MainLayout';
 import Construction from './Components/Construction/Construction';
 import Design from './Components/Design/Design';
 import Consultation from './Components/Consultation/Consultation';
+import ConstructionProgress from './Components/ConstructionProgress/ConstructionProgress';
 
 function App() {
   const router = createBrowserRouter([
@@ -52,6 +53,10 @@ function App() {
     {
       path: "design",
       element: <Contact />,
+    },
+    {
+      path: "construction-progress",
+      element: <ConstructionProgress />,
     },
   ]);
 
