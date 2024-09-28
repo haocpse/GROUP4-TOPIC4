@@ -32,8 +32,8 @@ function App() {
       element: <Service />,
     },
     {
-      path: "sidebar",
-      element: < MainLayout />,
+      path: "manage",
+      element: <MainLayout />,
       children: [
         {
           path: 'consultation',
