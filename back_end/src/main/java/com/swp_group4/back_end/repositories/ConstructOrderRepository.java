@@ -11,5 +11,6 @@ import java.util.List;
 public interface ConstructOrderRepository extends JpaRepository<ConstructionOrder, String> {
 
     List<ConstructionOrder> findByStatusIn(List<ConstructionOrderStatus> statuses);
+    List<ConstructionOrder> findByConsultantAndStatusIn(String consultant, List<ConstructionOrderStatus> statuses);
 
 }
