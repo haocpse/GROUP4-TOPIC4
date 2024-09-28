@@ -16,8 +16,8 @@ import java.time.ZonedDateTime;
 public class PaymentOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    String paymentID;
-    String serviceID;
+    String paymentId;
+    String serviceId;
     ZonedDateTime date;
     @Enumerated(EnumType.STRING)
     PaymentOrderStatus status;

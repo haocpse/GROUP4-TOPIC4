@@ -16,8 +16,8 @@ import java.time.ZonedDateTime;
 public class MaintenanceOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    String maintenanceID;
-    String memberID;
+    String maintenanceId;
+    String memberId;
     String total;
     ZonedDateTime date;
     String constructionLeader;
