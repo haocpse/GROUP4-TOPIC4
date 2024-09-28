@@ -29,7 +29,7 @@ public class ConstructOrderService {
     @Autowired
     ConstructionOrderMapper constructionOrderMapper;
     @Autowired
-    CustomerRepository customerRepository;
+    ConsultationService consultationService;
     @Autowired
     private StaffRepository staffRepository;
 
@@ -57,23 +57,8 @@ public class ConstructOrderService {
         statusList.add(ConstructionOrderStatus.REQUESTED);
         statusList.add(ConstructionOrderStatus.CONSULTING);
         statusList.add(ConstructionOrderStatus.QUOTATION);
-
         List<ConstructionOrder> constructionOrders = constructOrderRepository.findByStatusIn(statusList);
-
-        return constructionOrders.stream()
-                .map(order -> {Customer customer = customerRepository.findById(order.getCustomerId())
-                        .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
-                    return ConsultConstructResponse.builder()
-                            .constructionOrderId(order.getConstructionOrderId())
-                            .customerName(customer.getFirstname() + " " + customer.getLastname())
-                            .startDate(order.getStartDate())
-                            .phone(customer.getPhone())
-                            .address(customer.getAddress())
-                            .status(order.getStatus())
-                            .build();
-                })
-                .toList();
-
+        return consultationService.listConsultConstruct(constructionOrders);
     }
 
     public StateTransitionResponse assignConsultant(StaffAssignedRequest request){
