@@ -40,7 +40,7 @@ public class ConsultationService {
     @Autowired
     QuotationRepository quotationRepository;
 
-    public List<ConstructionOrderInStepResponse> listOwnedTask() {
+    public List<ConstructionOrderInStepResponse> listOwnedConsultTask() {
         var context = SecurityContextHolder.getContext();
         String accountId = context.getAuthentication().getName();
         Staff consultant = staffRepository.findByAccountId(accountId).orElseThrow(
@@ -53,7 +53,7 @@ public class ConsultationService {
                 .toList();
     }
 
-    ConstructionOrderInStepResponse response (ConstructionOrder order) {
+    private ConstructionOrderInStepResponse response (ConstructionOrder order) {
         Customer customer = customerRepository.findById(order.getCustomerId())
                 .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
         return ConstructionOrderInStepResponse.builder()

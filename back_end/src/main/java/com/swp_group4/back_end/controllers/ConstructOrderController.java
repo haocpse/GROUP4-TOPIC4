@@ -50,7 +50,7 @@ public class ConstructOrderController {
     }
 
     @PostMapping("/assign-designer")
-    public ApiResponse<StateTransitionResponse> assignDesign(@RequestBody StaffAssignedRequest request) {
+    public ApiResponse<StateTransitionResponse> assignDesigner(@RequestBody StaffAssignedRequest request) {
         return ApiResponse.<StateTransitionResponse>builder()
                 .data(constructOrderService.assignStaff(request))
                 .build();
