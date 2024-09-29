@@ -7,7 +7,9 @@ import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.repositories.ConstructOrderRepository;
 import com.swp_group4.back_end.repositories.CustomerRepository;
 import com.swp_group4.back_end.repositories.StaffRepository;
+import com.swp_group4.back_end.requests.UrlDesignRequest;
 import com.swp_group4.back_end.responses.ConstructionOrderInStepResponse;
+import com.swp_group4.back_end.responses.QuotationResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,4 +70,6 @@ public class DesignService {
                 .build();
     }
 
+//    public QuotationResponse uploadDesign(String constructionOrderId, UrlDesignRequest request) {
+//    }
 }
