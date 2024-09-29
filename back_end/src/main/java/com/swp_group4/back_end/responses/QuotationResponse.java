@@ -17,6 +17,6 @@ public class QuotationResponse {
     double priceStage2;
     double priceStage3;
     double totalPrice;
-    List<String> taskConstruction;
+    List<String> packageConstructionId;
 
 }

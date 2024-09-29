@@ -9,6 +9,6 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface QuotationMapper {
 
-    Quotation toQuotaion(QuotationDetailRequest request, @MappingTarget Quotation quotation);
+    Quotation toQuotation(QuotationDetailRequest request, @MappingTarget Quotation quotation);
     QuotationResponse toQuotationResponse(Quotation quotation, @MappingTarget QuotationResponse quotationResponse);
 }

@@ -1,9 +1,8 @@
 package com.swp_group4.back_end.controllers;
 
-import com.swp_group4.back_end.entities.Quotation;
 import com.swp_group4.back_end.requests.QuotationDetailRequest;
 import com.swp_group4.back_end.responses.ApiResponse;
-import com.swp_group4.back_end.responses.ConsultConstructResponse;
+import com.swp_group4.back_end.responses.ConstructionOrderInStepResponse;
 import com.swp_group4.back_end.responses.QuotationResponse;
 import com.swp_group4.back_end.services.ConsultationService;
 import lombok.AccessLevel;
@@ -22,15 +21,15 @@ public class ConsultationController {
     ConsultationService consultationService;
 
     @GetMapping("/owned-tasks")
-    public ApiResponse<List<ConsultConstructResponse>> listTask() {
-        return ApiResponse.<List<ConsultConstructResponse>>builder()
+    public ApiResponse<List<ConstructionOrderInStepResponse>> listTask() {
+        return ApiResponse.<List<ConstructionOrderInStepResponse>>builder()
                 .data(consultationService.listOwnedTask())
                 .build();
     }
 
     @GetMapping("/owned-tasks/{constructionOrderId}")
-    public ApiResponse<ConsultConstructResponse> detailTask(@PathVariable String constructionOrderId) {
-        return ApiResponse.<ConsultConstructResponse>builder()
+    public ApiResponse<ConstructionOrderInStepResponse> detailTask(@PathVariable String constructionOrderId) {
+        return ApiResponse.<ConstructionOrderInStepResponse>builder()
                 .data(consultationService.detailOfOrder(constructionOrderId))
                 .build();
     }
@@ -41,6 +40,4 @@ public class ConsultationController {
                 .data(consultationService.exportQuotation(constructionOrderId, request))
                 .build();
     }
-
-
 }

@@ -35,6 +35,15 @@ public class ConstructOrderService {
     @Autowired
     CustomerRepository customerRepository;
 
+    ServiceResponse<ConstructOrderResponse> contactUsForConstruction(ServiceRequest serviceRequest, ConstructionOrder constructionOrder) {
+        ConstructOrderResponse response = new ConstructOrderResponse();
+        constructionOrderMapper.constructOrderResponse(constructionOrder, response);
+        return ServiceResponse.<ConstructOrderResponse>builder()
+                .service(serviceRequest.getService())
+                .data(response)
+                .build();
+    }
+
     public ConstructionOrder createOrder(ServiceRequest request, Customer customer) {
         ConstructionOrder constructionOrder = ConstructionOrder.builder()
                 .customerId(customer.getCustomerId())
@@ -45,26 +54,22 @@ public class ConstructOrderService {
         return constructOrderRepository.save(constructionOrder);
     }
 
-    ServiceResponse<ConstructOrderResponse> contactUsForConstruction(ServiceRequest serviceRequest, ConstructionOrder constructionOrder) {
-        ConstructOrderResponse response = new ConstructOrderResponse();
-        constructionOrderMapper.constructOrderResponse(constructionOrder, response);
-        return ServiceResponse.<ConstructOrderResponse>builder()
-                .service(serviceRequest.getService())
-                .data(response)
-                .build();
-    }
-
-    public List<ConsultConstructResponse> listAllConsult() {
+    public List<ConstructionOrderInStepResponse> listAllOrderInStep(String step) {
         List<ConstructionOrderStatus> statusList = new ArrayList<>();
-        statusList.add(ConstructionOrderStatus.REQUESTED);
-        statusList.add(ConstructionOrderStatus.CONSULTING);
-        statusList.add(ConstructionOrderStatus.QUOTATION);
-        List<ConstructionOrder> constructionOrders = constructOrderRepository.findByStatusIn(statusList);
-        return constructionOrders.stream()
+        if (step.equals("consult")){
+            statusList.add(ConstructionOrderStatus.REQUESTED);
+            statusList.add(ConstructionOrderStatus.CONSULTING);
+            statusList.add(ConstructionOrderStatus.QUOTATION);
+        } else if (step.equals("design")) {
+            statusList.add(ConstructionOrderStatus.DESIGNING);
+            statusList.add(ConstructionOrderStatus.DESIGNED);
+        }
+        List<ConstructionOrder> constructionOrdersInConsultStep = constructOrderRepository.findByStatusIn(statusList);
+        return constructionOrdersInConsultStep.stream()
                 .map(order -> {
                     Customer customer = customerRepository.findById(order.getCustomerId())
                             .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
-                    return ConsultConstructResponse.builder()
+                    return ConstructionOrderInStepResponse.builder()
                             .constructionOrderId(order.getConstructionOrderId())
                             .customerName(customer.getFirstname() + " " + customer.getLastname())
                             .startDate(order.getStartDate())
@@ -76,16 +81,19 @@ public class ConstructOrderService {
                 .toList();
     }
 
-
-
-
-    public StateTransitionResponse assignConsultant(StaffAssignedRequest request){
+    public StateTransitionResponse assignStaff(StaffAssignedRequest request){
         Staff staff = staffRepository.findById(request.getStaffId())
                 .orElseThrow(() -> new RuntimeException("Staff not found for id: " + request.getStaffId()));
         ConstructionOrder order = constructOrderRepository.findById(request.getConstructionOrderId())
                 .orElseThrow(() -> new RuntimeException("ConstructionOrder not found for id: " + request.getConstructionOrderId()));
         order.setConsultant(request.getStaffId());
-        order.setStatus(ConstructionOrderStatus.CONSULTING);
+        if (order.getStatus().equals(ConstructionOrderStatus.CONFIRMED_QUOTATION)) {
+            order.setStatus(ConstructionOrderStatus.DESIGNING);
+        } else if (order.getStatus().equals(ConstructionOrderStatus.CONFIRMED_DESIGN)) {
+            order.setStatus(ConstructionOrderStatus.CONSTRUCTING);
+        } else {
+            order.setStatus(ConstructionOrderStatus.CONSULTING);
+        }
         constructOrderRepository.save(order);
         return StateTransitionResponse.builder()
                 .constructionOrderId(order.getConstructionOrderId())

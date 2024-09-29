@@ -7,26 +7,26 @@ import com.swp_group4.back_end.entities.Staff;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.enums.PaymentStatus;
 import com.swp_group4.back_end.enums.QuotationBatch;
-import com.swp_group4.back_end.mapper.ConstructionOrderMapper;
 import com.swp_group4.back_end.mapper.QuotationMapper;
 import com.swp_group4.back_end.repositories.ConstructOrderRepository;
 import com.swp_group4.back_end.repositories.CustomerRepository;
 import com.swp_group4.back_end.repositories.QuotationRepository;
 import com.swp_group4.back_end.repositories.StaffRepository;
 import com.swp_group4.back_end.requests.QuotationDetailRequest;
-import com.swp_group4.back_end.responses.ConsultConstructResponse;
+import com.swp_group4.back_end.responses.ConstructionOrderInStepResponse;
 import com.swp_group4.back_end.responses.QuotationResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Slf4j
 public class ConsultationService {
 
     @Autowired
@@ -40,7 +40,7 @@ public class ConsultationService {
     @Autowired
     QuotationRepository quotationRepository;
 
-    public List<ConsultConstructResponse> listOwnedTask() {
+    public List<ConstructionOrderInStepResponse> listOwnedTask() {
         var context = SecurityContextHolder.getContext();
         String accountId = context.getAuthentication().getName();
         Staff consultant = staffRepository.findByAccountId(accountId).orElseThrow(
@@ -49,31 +49,35 @@ public class ConsultationService {
                                                             ConstructionOrderStatus.QUOTATION);
         List<ConstructionOrder> orders = constructOrderRepository.findByConsultantAndStatusIn(consultant.getStaffId(), statusList);
         return orders.stream()
-                .map(order -> {
-                    Customer customer = customerRepository.findById(order.getCustomerId())
-                            .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
-                    return ConsultConstructResponse.builder()
-                            .constructionOrderId(order.getConstructionOrderId())
-                            .customerName(customer.getFirstname() + " " + customer.getLastname())
-                            .startDate(order.getStartDate())
-                            .phone(customer.getPhone())
-                            .address(customer.getAddress())
-                            .status(order.getStatus())
-                            .build();
-                })
+                .map(this::response)
                 .toList();
     }
-    
-    public ConsultConstructResponse detailOfOrder(String constructionOrderId) {
+
+    ConstructionOrderInStepResponse response (ConstructionOrder order) {
+        Customer customer = customerRepository.findById(order.getCustomerId())
+                .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
+        return ConstructionOrderInStepResponse.builder()
+                .constructionOrderId(order.getConstructionOrderId())
+                .customerName(customer.getFirstname() + " " + customer.getLastname())
+                .startDate(order.getStartDate())
+                .phone(customer.getPhone())
+                .address(customer.getAddress())
+                .status(order.getStatus())
+                .build();
+    }
+
+    public ConstructionOrderInStepResponse detailOfOrder(String constructionOrderId) {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
                 () -> new RuntimeException("Order not found for id: " + constructionOrderId));
         Customer customer = customerRepository.findById(order.getCustomerId())
                 .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));;
-                return ConsultConstructResponse.builder()
+                return ConstructionOrderInStepResponse.builder()
                         .constructionOrderId(order.getConstructionOrderId())
                         .customerName(customer.getFirstname() + " " + customer.getLastname())
+                        .startDate(order.getStartDate())
                         .phone(customer.getPhone())
                         .address(customer.getAddress())
+                        .status(order.getStatus())
                         .build();
     }
 
@@ -82,18 +86,18 @@ public class ConsultationService {
                 .batch(QuotationBatch.STAGE_1)
                 .paymentStatus(PaymentStatus.PENDING)
                 .build();
-        quotationRepository.save(quotationMapper.toQuotaion(request, quotation));
-
+        quotationRepository.save(quotationMapper.toQuotation(request, quotation));
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
                 () -> new RuntimeException("Order not found for id: " + constructionOrderId));
         order.setQuotationId(quotation.getQuotationId());
+        order.setStatus(ConstructionOrderStatus.CONFIRMED_QUOTATION);
+        order.setTotal(request.getTotalPrice());
         constructOrderRepository.save(order);
-
         QuotationResponse response = QuotationResponse.builder()
-                .taskConstruction(request.getTaskConstruction())
+                .totalPrice(request.getTotalPrice())
+                .packageConstructionId(request.getPackageConstructionId())
                 .build();
-        quotationMapper.toQuotationResponse(quotation, response);
-        return response;
-
+        return quotationMapper.toQuotationResponse(quotation, response);
     }
+
 }

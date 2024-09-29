@@ -3,6 +3,15 @@
 target/
 build/
 
+/login
+
+### Backend (Spring Boot - Java) ###
+# Maven/Gradle
+target/
+build/
+
+
+
 # Logs
 *.log
 /logs
@@ -109,4 +118,3 @@ Thumbs.db
 # Git-specific files
 .gitignore
 
-/login
