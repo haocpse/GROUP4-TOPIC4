@@ -89,7 +89,7 @@ public class ConstructOrderService {
         order.setConsultant(request.getStaffId());
         if (order.getStatus().equals(ConstructionOrderStatus.CONFIRMED_QUOTATION)) {
             order.setStatus(ConstructionOrderStatus.DESIGNING);
-        } else if (order.getStatus().equals(ConstructionOrderStatus.CONFIRMED_DESIGN)) {
+        } else if (order.getStatus().equals(ConstructionOrderStatus.CONFIRM_DESIGN)) {
             order.setStatus(ConstructionOrderStatus.CONSTRUCTING);
         } else {
             order.setStatus(ConstructionOrderStatus.CONSULTING);

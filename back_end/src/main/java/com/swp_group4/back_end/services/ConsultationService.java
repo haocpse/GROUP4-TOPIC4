@@ -69,16 +69,7 @@ public class ConsultationService {
     public ConstructionOrderInStepResponse detailOfOrder(String constructionOrderId) {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
                 () -> new RuntimeException("Order not found for id: " + constructionOrderId));
-        Customer customer = customerRepository.findById(order.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));;
-                return ConstructionOrderInStepResponse.builder()
-                        .constructionOrderId(order.getConstructionOrderId())
-                        .customerName(customer.getFirstname() + " " + customer.getLastname())
-                        .startDate(order.getStartDate())
-                        .phone(customer.getPhone())
-                        .address(customer.getAddress())
-                        .status(order.getStatus())
-                        .build();
+                return this.response(order);
     }
 
     public QuotationResponse exportQuotation(String constructionOrderId, QuotationDetailRequest request) {
