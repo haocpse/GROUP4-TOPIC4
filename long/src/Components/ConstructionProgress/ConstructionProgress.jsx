@@ -7,19 +7,19 @@ import 'react-toastify/dist/ReactToastify.css'; // Import CSS cho toast de hien 
 
 const ConstructionProgress = () => {
 
-    const [tasks, setTasks] = useState([]);
+    const [orders, setOrders] = useState([]);
 
     const handleTask = async () => { // ham de long lay du lieu tu backend ne ^^;
 
         try {
             const respone = await axios.get('http://localhost:8080/construction-progress');
-            setTasks(respone.data);
+            setOrders(respone.data);
         } catch (error) {
 
             console.error('Error get task list', error);
 
             // hien thi loi cho ng dung
-            toast.error('Failed to load task list. Please try again later.');
+            toast.error('Failed to load task list. Please try again later ^^');
         };
     };
 
@@ -31,37 +31,36 @@ const ConstructionProgress = () => {
 
 
     // set status cho task
-    const handleStatusChange = async (taskId, newStatus) => {
+    const handleStatusChange = async (orderId, taskName, newStatus) => {
 
         try {
             await axios.post('http://localhost/updateTaskStatus', {
-                taskId: taskId,
+                constructionOrderId: orderId,
+                taskName: taskName,
                 status: newStatus
             });
 
-            // cap nhat status
-            setTasks(prevTasks => //truyền tham số vào arrow function, pretasks là 1 cái mảng chứa tất cả các ták chưa đc úp đết
-                prevTasks.map(task => task.taskId === taskId ? { ...task, status: newStatus } : task));
-            //. map để duyệt qa tất cả các thằng trong prev
+            // cap nhat status cho tung construction id
+            setOrders(prevOrders =>
+                prevOrders.map(order => ({
+                    ...order, // ... để sao chép tất cả, đảm bảo gằng là các thuộc tính cũ vẫn sẽ giữ nguyên và thay đổi thuộc tính mới
+                    tasks: order.tasks.map(task =>
+                        task.taskName === taskName ? { ...task, status: newStatus } : task // duyệt qa nếu task.tâskName hiện tại mà === với task naem trong ds muốn update thì sẽ update
+                    )
+                }))
+            );
 
-            // hiển thị thông báo thành công
-            toast.success(`Task status updated to ${newStatus === 'completed' ? 'Done' : 'In Progressing'}`);
-
-
+            toast.success(`Task status updated to ${newStatus === 'constructed' ? 'Done' : 'In Progressing'}`);
         } catch (error) {
-            console.error("Error updating status !!", error);
-
-            // hien thi loi cho ng dung
-            toast.error('Failed to update task status. Please try again.');
+            console.error("Error updating task status", error);
+            toast.error('Failed to update task status. Please try again. ^^');
         }
-
-
     };
 
 
     return (
         <>
-            <Navbar />,
+            <Navbar />
 
             {/* hien thi thong bao thanh cong o day */}
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
@@ -71,55 +70,55 @@ const ConstructionProgress = () => {
                     <h2>CONSTRUCTION PROGRESS</h2>
 
                 </div>
-                <hr />
-                <table className="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th scope="col">Task Name</th>
-                            <th scope="col">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {tasks.map(task => (
-                            <tr key={task.taskId}>
-                                <td>{task.taskName}</td>
-                                <td className="text-center">
-                                    <div className="dropdown">
-
-                                        <button
-                                            className="btn btn-secondary dropdown-toggle"
-                                            type="button"
-                                            id={`dropdown-${task.taskId}`} // dropdown của taskid nào ^^
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false"
-                                        >
-                                            {task.status === 'completed' ? 'Done' : 'In Progressing'} {/** duoi back end gui len status cho long, vi chi co 1 status la inprocessing th nhma lam luon cho truong hop done */}
-                                        </button>
-                                        {/*liên kết danh sách này với nút bấm có id tương ứng aria-labelledby */}
-                                        <ul className="dropdown-menu" aria-labelledby={`dropdown-${task.taskId}`}>
-
-                                            <li>
+                {/* chay qa cac construction order */}
+                {orders.map(order => (
+                    <div key={order.constructionOrderId}>
+                        <h3>Construction Order ID: {order.constructionOrderId}</h3> {/* show id của constructionOrder ne` */}
+                        <table className="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Task Name</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {/* chay qa tat ca cac phan tu trong mang */}
+                                {order.tasks.map(task => (
+                                    <tr key={task.taskName}>
+                                        <td>{task.taskName}</td>
+                                        <td className="text-center">
+                                            <div className="dropdown">
                                                 <button
-                                                    onClick={() => handleStatusChange(task.taskId, 'completed')}
+                                                    className="btn btn-secondary dropdown-toggle"
+                                                    type="button"
+                                                    id={`dropdown-${order.constructionOrderId}-${task.taskName}`}
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false"
                                                 >
-                                                    Done
+                                                    {task.status === 'constructed' ? 'Done' : 'In Progressing'}
                                                 </button>
-                                            </li>
-                                            <li>
-                                                <button
-                                                    onClick={() => handleStatusChange(task.taskId, 'inprogress')}
-                                                >
-                                                    In Progressing
-                                                </button>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div></>
+                                                <ul className="dropdown-menu" aria-labelledby={`dropdown-${order.constructionOrderId}-${task.taskName}`}>
+                                                    <li>
+                                                        <button onClick={() => handleStatusChange(order.constructionOrderId, task.taskName, 'constructed')}>
+                                                            Done
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button onClick={() => handleStatusChange(order.constructionOrderId, task.taskName, 'constructing')}>
+                                                            In Progressing
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                ))}
+            </div>
+        </>
     );
 }
 export default ConstructionProgress;
