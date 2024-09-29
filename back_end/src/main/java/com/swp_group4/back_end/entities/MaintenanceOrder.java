@@ -1,6 +1,6 @@
 package com.swp_group4.back_end.entities;
 
-import com.swp_group4.back_end.enums.MaintenanceOrderStatus;
+//import com.swp_group4.back_end.enums.MaintenanceOrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -21,6 +21,6 @@ public class MaintenanceOrder {
     String total;
     ZonedDateTime date;
     String constructionLeader;
-    @Enumerated(EnumType.STRING)
-    MaintenanceOrderStatus status;
+//    @Enumerated(EnumType.STRING)
+//    MaintenanceOrderStatus status;
 }

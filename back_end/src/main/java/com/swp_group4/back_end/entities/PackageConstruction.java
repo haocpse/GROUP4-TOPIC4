@@ -16,7 +16,7 @@ import lombok.experimental.FieldDefaults;
 public class PackageConstruction {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    String pDetailId;
+    String packageConstructionId;
     String packageId;
     String content;
     double price;

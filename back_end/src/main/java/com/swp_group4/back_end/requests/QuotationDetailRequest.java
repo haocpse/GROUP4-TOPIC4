@@ -13,9 +13,8 @@ import java.util.List;
 public class QuotationDetailRequest {
 
     String packageId;
-    String pPriceId;
-    String pDetailId;
-    List<String> taskConstruction;
+    List<String> packageConstructionId;
+    String packagePriceId;
     String promotionId;
     double totalPrice;
     double priceStage1;

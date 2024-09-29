@@ -41,6 +41,4 @@ public class ConsultationController {
                 .data(consultationService.exportQuotation(constructionOrderId, request))
                 .build();
     }
-
-
 }
