@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class ConsultConstructResponse {
+public class ConstructionOrderInStepResponse {
 
     String constructionOrderId;
     String customerName;

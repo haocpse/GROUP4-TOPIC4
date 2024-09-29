@@ -7,14 +7,13 @@ import com.swp_group4.back_end.entities.Staff;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.enums.PaymentStatus;
 import com.swp_group4.back_end.enums.QuotationBatch;
-import com.swp_group4.back_end.mapper.ConstructionOrderMapper;
 import com.swp_group4.back_end.mapper.QuotationMapper;
 import com.swp_group4.back_end.repositories.ConstructOrderRepository;
 import com.swp_group4.back_end.repositories.CustomerRepository;
 import com.swp_group4.back_end.repositories.QuotationRepository;
 import com.swp_group4.back_end.repositories.StaffRepository;
 import com.swp_group4.back_end.requests.QuotationDetailRequest;
-import com.swp_group4.back_end.responses.ConsultConstructResponse;
+import com.swp_group4.back_end.responses.ConstructionOrderInStepResponse;
 import com.swp_group4.back_end.responses.QuotationResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -23,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -42,7 +40,7 @@ public class ConsultationService {
     @Autowired
     QuotationRepository quotationRepository;
 
-    public List<ConsultConstructResponse> listOwnedTask() {
+    public List<ConstructionOrderInStepResponse> listOwnedTask() {
         var context = SecurityContextHolder.getContext();
         String accountId = context.getAuthentication().getName();
         Staff consultant = staffRepository.findByAccountId(accountId).orElseThrow(
@@ -55,10 +53,10 @@ public class ConsultationService {
                 .toList();
     }
 
-    ConsultConstructResponse response (ConstructionOrder order) {
+    ConstructionOrderInStepResponse response (ConstructionOrder order) {
         Customer customer = customerRepository.findById(order.getCustomerId())
                 .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
-        return ConsultConstructResponse.builder()
+        return ConstructionOrderInStepResponse.builder()
                 .constructionOrderId(order.getConstructionOrderId())
                 .customerName(customer.getFirstname() + " " + customer.getLastname())
                 .startDate(order.getStartDate())
@@ -68,13 +66,12 @@ public class ConsultationService {
                 .build();
     }
 
-    
-    public ConsultConstructResponse detailOfOrder(String constructionOrderId) {
+    public ConstructionOrderInStepResponse detailOfOrder(String constructionOrderId) {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
                 () -> new RuntimeException("Order not found for id: " + constructionOrderId));
         Customer customer = customerRepository.findById(order.getCustomerId())
                 .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));;
-                return ConsultConstructResponse.builder()
+                return ConstructionOrderInStepResponse.builder()
                         .constructionOrderId(order.getConstructionOrderId())
                         .customerName(customer.getFirstname() + " " + customer.getLastname())
                         .startDate(order.getStartDate())
@@ -90,13 +87,16 @@ public class ConsultationService {
                 .paymentStatus(PaymentStatus.PENDING)
                 .build();
         quotationRepository.save(quotationMapper.toQuotation(request, quotation));
-        QuotationResponse response = QuotationResponse.builder()
-                .packageConstructionId(request.getPackageConstructionId())
-                .build();
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
                 () -> new RuntimeException("Order not found for id: " + constructionOrderId));
         order.setQuotationId(quotation.getQuotationId());
+        order.setStatus(ConstructionOrderStatus.CONFIRMED_QUOTATION);
+        order.setTotal(request.getTotalPrice());
         constructOrderRepository.save(order);
+        QuotationResponse response = QuotationResponse.builder()
+                .totalPrice(request.getTotalPrice())
+                .packageConstructionId(request.getPackageConstructionId())
+                .build();
         return quotationMapper.toQuotationResponse(quotation, response);
     }
 
