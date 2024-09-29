@@ -3,7 +3,7 @@ import './ConstructionProgress.css';
 import axios from "axios";
 import Navbar from "../Navbar/Navbar";
 import { ToastContainer, toast } from 'react-toastify'; // Import toast
-import 'react-toastify/dist/ReactToastify.css'; // Import CSS cho toast
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS cho toast de hien thong bao
 
 const ConstructionProgress = () => {
 
@@ -93,7 +93,7 @@ const ConstructionProgress = () => {
                                             data-bs-toggle="dropdown"
                                             aria-expanded="false"
                                         >
-                                            {task.status === 'completed' ? 'Done' : 'In Progressing'}
+                                            {task.status === 'completed' ? 'Done' : 'In Progressing'} {/** duoi back end gui len status cho long, vi chi co 1 status la inprocessing th nhma lam luon cho truong hop done */}
                                         </button>
                                         {/*liên kết danh sách này với nút bấm có id tương ứng aria-labelledby */}
                                         <ul className="dropdown-menu" aria-labelledby={`dropdown-${task.taskId}`}>
