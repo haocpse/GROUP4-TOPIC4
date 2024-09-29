@@ -1,13 +1,12 @@
-// CustomerInformation.js
 import React from 'react';
 
-const CustomerInfo = () => {
+const CustomerInfo = ({ name, phone, address }) => {
   return (
     <div>
-      <h2>Customer Information</h2>
-      <p>Name: khoa</p>
-      <p>Phone: khoa</p>
-      <p>Address: khoa</p>
+      <h1>Customer Information</h1>
+      <p>{name}</p>
+      <p>{phone}</p>
+      <p>{address}</p>
     </div>
   );
 };

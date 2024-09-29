@@ -1,15 +1,21 @@
-
 import React from 'react';
-import CustomerInformation from './CustomerInfo';
+import './QuotationOrder.css';
+import CustomerInfo from './CustomerInfo';
 import QuotationForm from './QuotationForm';
 
-const QuotationOrder = () => {
+function App() {
+  const customer = {
+    name: "Nguyen Van A",
+    phone: "0987654321",
+    address: "123 Street, Hanoi"
+  };
+
   return (
-    <div>
-      <CustomerInformation />
+    <div className="App">
+      <CustomerInfo name={customer.name} phone={customer.phone} address={customer.address} />
       <QuotationForm />
     </div>
   );
-};
+}
 
-export default QuotationOrder;
+export default App;
