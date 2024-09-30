@@ -16,7 +16,7 @@ const ConstructionProgress = () => {
             setOrders(respone.data);
         } catch (error) {
 
-            console.error('Error get task list', error);
+            console.error('Error get task list !!', error);
 
             // hien thi loi cho ng dung
             toast.error('Failed to load task list. Please try again later ^^');
