@@ -11,4 +11,6 @@ public interface QuotationMapper {
 
     Quotation toQuotation(QuotationDetailRequest request, @MappingTarget Quotation quotation);
     ConstructQuotationResponse toQuotationResponse(Quotation quotation, @MappingTarget ConstructQuotationResponse constructQuotationResponse);
+
+
 }
