@@ -29,8 +29,6 @@ public class ConstructOrderService {
     @Autowired
     ConstructionOrderMapper constructionOrderMapper;
     @Autowired
-    ConsultationService consultationService;
-    @Autowired
     StaffRepository staffRepository;
     @Autowired
     CustomerRepository customerRepository;
@@ -86,12 +84,13 @@ public class ConstructOrderService {
                 .orElseThrow(() -> new RuntimeException("Staff not found for id: " + request.getStaffId()));
         ConstructionOrder order = constructOrderRepository.findById(request.getConstructionOrderId())
                 .orElseThrow(() -> new RuntimeException("ConstructionOrder not found for id: " + request.getConstructionOrderId()));
-        order.setConsultant(request.getStaffId());
         if (order.getStatus().equals(ConstructionOrderStatus.CONFIRMED_QUOTATION)) {
+            order.setDesignLeader(staff.getStaffId());
             order.setStatus(ConstructionOrderStatus.DESIGNING);
-        } else if (order.getStatus().equals(ConstructionOrderStatus.CONFIRMED_DESIGN)) {
-            order.setStatus(ConstructionOrderStatus.CONSTRUCTING);
+        } else if (order.getStatus().equals(ConstructionOrderStatus.CONFIRM_DESIGN)) {
+            order.setConstructionLeader(staff.getStaffId());
         } else {
+            order.setConsultant(staff.getStaffId());
             order.setStatus(ConstructionOrderStatus.CONSULTING);
         }
         constructOrderRepository.save(order);
