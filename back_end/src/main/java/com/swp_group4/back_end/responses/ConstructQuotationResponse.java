@@ -10,13 +10,15 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class QuotationResponse {
+public class ConstructQuotationResponse {
 
     String quotationId;
+    String packageType;
+    double volume;
     double priceStage1;
     double priceStage2;
     double priceStage3;
     double totalPrice;
-    List<String> packageConstructionId;
+    List<String> content;
 
 }

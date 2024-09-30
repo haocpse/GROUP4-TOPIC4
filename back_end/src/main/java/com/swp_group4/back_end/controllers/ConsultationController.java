@@ -2,8 +2,8 @@ package com.swp_group4.back_end.controllers;
 
 import com.swp_group4.back_end.requests.QuotationDetailRequest;
 import com.swp_group4.back_end.responses.ApiResponse;
+import com.swp_group4.back_end.responses.ConstructQuotationResponse;
 import com.swp_group4.back_end.responses.ConstructionOrderInStepResponse;
-import com.swp_group4.back_end.responses.QuotationResponse;
 import com.swp_group4.back_end.services.ConsultationService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -35,8 +35,8 @@ public class ConsultationController {
     }
 
     @PostMapping("/owned-tasks/{constructionOrderId}/export-quotation")
-    public ApiResponse<QuotationResponse> exportQuotation(@PathVariable String constructionOrderId, @RequestBody QuotationDetailRequest request) {
-        return ApiResponse.<QuotationResponse>builder()
+    public ApiResponse<ConstructQuotationResponse> exportQuotation(@PathVariable String constructionOrderId, @RequestBody QuotationDetailRequest request) {
+        return ApiResponse.<ConstructQuotationResponse>builder()
                 .data(consultationService.exportQuotation(constructionOrderId, request))
                 .build();
     }
