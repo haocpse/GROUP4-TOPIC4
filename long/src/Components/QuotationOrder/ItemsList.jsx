@@ -6,7 +6,7 @@ const ItemsList = ({ items, handleItemChange }) => {
       <h3>Items List</h3>
       <ul id="items-list">
         {items.map((item, index) => (
-          <li key={index} className="item">
+          <li key={index}>
             <input
               type="checkbox"
               id={`item-${index}`}
