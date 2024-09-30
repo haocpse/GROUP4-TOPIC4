@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,6 +37,12 @@ public class ConsultationService {
     QuotationRepository quotationRepository;
     @Autowired
     ConstructionTasksRepository constructionTasksRepository;
+    @Autowired
+    PackageConstructionRepository packageConstructionRepository;
+    @Autowired
+    PackageRepository packageRepository;
+    @Autowired
+    PackagePriceRepository packagePriceRepository;
 
     public List<ConstructionOrderInStepResponse> listOwnedConsultTask() {
         var context = SecurityContextHolder.getContext();
@@ -89,18 +96,29 @@ public class ConsultationService {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
                 () -> new RuntimeException("Order not found for id: " + constructionOrderId));
         order.setQuotationId(quotation.getQuotationId());
-        order.setStatus(ConstructionOrderStatus.CONFIRMED_QUOTATION);
+        order.setStatus(ConstructionOrderStatus.QUOTATION);
         order.setTotal(request.getTotalPrice());
         constructOrderRepository.save(order);
+        List<String> listPackageConstructionId = request.getPackageConstructionId();
+        List<String> contentList = new ArrayList<>();
+        for (String packageConstructionId : listPackageConstructionId){
+            PackageConstruction packageConstruction = packageConstructionRepository.findById(packageConstructionId).orElseThrow(
+                    () -> new RuntimeException("Package construction not found for id: " + packageConstructionId));
+            contentList.add(packageConstruction.getContent());
+        }
+        Packages packages = packageRepository.findById(quotation.getPackageId()).orElseThrow(
+                () -> new RuntimeException("Package not found for id: " + quotation.getPackageId()));
+        PackagePrice packagePrice = packagePriceRepository.findById(request.getPackagePriceId()).orElseThrow(
+                () -> new RuntimeException("Package price not found for id: " + request.getPackagePriceId()));
         QuotationResponse response = QuotationResponse.builder()
+                .packageType(packages.getPackageType())
+                .volume(packagePrice.getVolume())
                 .totalPrice(request.getTotalPrice())
-                .packageConstructionId(request.getPackageConstructionId())
+                .content(contentList)
                 .build();
         quotationMapper.toQuotationResponse(quotation, response);
-
-        List<String> listPackageConstructionIds = response.getPackageConstructionId();
-
-        for(String packConstructionId : listPackageConstructionIds) {
+        List<String> packageConstructionIds = request.getPackageConstructionId();
+        for(String packConstructionId : packageConstructionIds) {
             ConstructionTasks tasks = ConstructionTasks.builder()
                     .constructionOrderId(constructionOrderId)
                     .packageConstructionId(packConstructionId)
@@ -108,7 +126,6 @@ public class ConsultationService {
                     .build();
             constructionTasksRepository.save(tasks);
         }
-
         return response;
     }
 
