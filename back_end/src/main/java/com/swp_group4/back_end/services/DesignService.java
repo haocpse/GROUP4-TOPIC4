@@ -2,13 +2,17 @@ package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.ConstructionOrder;
 import com.swp_group4.back_end.entities.Customer;
+import com.swp_group4.back_end.entities.Design;
 import com.swp_group4.back_end.entities.Staff;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
+import com.swp_group4.back_end.mapper.DesignMapper;
 import com.swp_group4.back_end.repositories.ConstructOrderRepository;
 import com.swp_group4.back_end.repositories.CustomerRepository;
+import com.swp_group4.back_end.repositories.DesignRepository;
 import com.swp_group4.back_end.repositories.StaffRepository;
 import com.swp_group4.back_end.requests.UrlDesignRequest;
 import com.swp_group4.back_end.responses.ConstructionOrderInStepResponse;
+import com.swp_group4.back_end.responses.DesignResponse;
 import com.swp_group4.back_end.responses.QuotationResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -28,15 +32,19 @@ public class DesignService {
     ConstructOrderRepository constructOrderRepository;
     @Autowired
     CustomerRepository customerRepository;
+    @Autowired
+    DesignRepository designRepository;
+    @Autowired
+    DesignMapper designMapper;
 
     public List<ConstructionOrderInStepResponse> listOwnedDesignTask() {
         var context = SecurityContextHolder.getContext();
         String accountId = context.getAuthentication().getName();
-        Staff consultant = staffRepository.findByAccountId(accountId).orElseThrow(
+        Staff staff = staffRepository.findByAccountId(accountId).orElseThrow(
                 ()-> new RuntimeException("ACCOUNT DOES NOT EXIST"));
-        List<ConstructionOrderStatus> statusList = List.of(ConstructionOrderStatus.CONSULTING,
-                ConstructionOrderStatus.QUOTATION);
-        List<ConstructionOrder> orders = constructOrderRepository.findByConsultantAndStatusIn(consultant.getStaffId(), statusList);
+        List<ConstructionOrderStatus> statusList = List.of(ConstructionOrderStatus.DESIGNING,
+                                                            ConstructionOrderStatus.DESIGNED);
+        List<ConstructionOrder> orders = constructOrderRepository.findByDesignLeaderAndStatusIn(staff.getStaffId(), statusList);
         return orders.stream()
                 .map(this::response)
                 .toList();
@@ -58,18 +66,21 @@ public class DesignService {
     public ConstructionOrderInStepResponse detailOfOrder(String constructionOrderId) {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
                 () -> new RuntimeException("Order not found for id: " + constructionOrderId));
-        Customer customer = customerRepository.findById(order.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));;
-        return ConstructionOrderInStepResponse.builder()
-                .constructionOrderId(order.getConstructionOrderId())
-                .customerName(customer.getFirstname() + " " + customer.getLastname())
-                .startDate(order.getStartDate())
-                .phone(customer.getPhone())
-                .address(customer.getAddress())
-                .status(order.getStatus())
-                .build();
+        return this.response(order);
     }
 
-//    public QuotationResponse uploadDesign(String constructionOrderId, UrlDesignRequest request) {
-//    }
+    public DesignResponse uploadDesign(String constructionOrderId, UrlDesignRequest request) {
+        DesignResponse response = new DesignResponse();
+        Design design = Design.builder()
+                .constructionOrderId(constructionOrderId)
+                .build();
+        designMapper.toDesgin(request, design);
+        designRepository.save(design);
+        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
+                () -> new RuntimeException("Order not found for id: " + constructionOrderId));
+        order.setQuotationId(design.getDesignId());
+        order.setStatus(ConstructionOrderStatus.CONFIRM_DESIGN);
+        constructOrderRepository.save(order);
+        return designMapper.toDesignResponse(design, response);
+    }
 }

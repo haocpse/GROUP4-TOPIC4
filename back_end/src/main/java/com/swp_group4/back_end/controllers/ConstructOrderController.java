@@ -38,7 +38,14 @@ public class ConstructOrderController {
     @GetMapping("/consultants")
     public ApiResponse<List<StaffResponse>> listAllConsultant(){
         return ApiResponse.<List<StaffResponse>>builder()
-                .data(staffService.listAllConsultant())
+                .data(staffService.listAllStaff("consultant"))
+                .build();
+    }
+
+    @GetMapping("/designers")
+    public ApiResponse<List<StaffResponse>> listAllDesigner(){
+        return ApiResponse.<List<StaffResponse>>builder()
+                .data(staffService.listAllStaff("designer"))
                 .build();
     }
 
@@ -55,4 +62,11 @@ public class ConstructOrderController {
                 .data(constructOrderService.assignStaff(request))
                 .build();
     }
+    @PostMapping("/assign-constructor")
+    public ApiResponse<StateTransitionResponse> assignConstructor(@RequestBody StaffAssignedRequest request) {
+        return ApiResponse.<StateTransitionResponse>builder()
+                .data(constructOrderService.assignStaff(request))
+                .build();
+    }
+
 }

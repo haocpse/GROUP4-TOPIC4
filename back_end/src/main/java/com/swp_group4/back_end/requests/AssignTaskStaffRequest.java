@@ -8,11 +8,9 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class UrlDesignRequest {
+public class AssignTaskStaffRequest {
 
-    String url2dDesign;
-    String url3dDesign;
-    String urlFrontDesign;
-    String urlBackDesign;
+    String taskId;
+    String staffId;
 
 }

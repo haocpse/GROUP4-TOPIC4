@@ -1,4 +1,4 @@
-package com.swp_group4.back_end.requests;
+package com.swp_group4.back_end.responses;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,8 +8,9 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class UrlDesignRequest {
+public class DesignResponse {
 
+    String constructionOrderId;
     String url2dDesign;
     String url3dDesign;
     String urlFrontDesign;
