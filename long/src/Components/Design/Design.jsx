@@ -1,5 +1,5 @@
 import React,{ useEffect, useState } from "react";
-import './Design.css';
+import './Design.module.css';
 import logo from '../Assests/logo-navbar.png';
 import axios from "axios";
 
