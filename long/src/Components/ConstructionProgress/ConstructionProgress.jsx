@@ -99,6 +99,7 @@ const ConstructionProgress = () => {
                                                 </button>
                                                 <ul className="dropdown-menu" aria-labelledby={`dropdown-${order.constructionOrderId}-${task.taskName}`}>
                                                     <li>
+                                                        {/** truyen vao ham handle id cung nhu la taskName de biet dang thay doi thang nao */}
                                                         <button onClick={() => handleStatusChange(order.constructionOrderId, task.taskName, 'constructed')}>
                                                             Done
                                                         </button>
