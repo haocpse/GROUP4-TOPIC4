@@ -23,7 +23,7 @@ public class ConsultationController {
     @GetMapping("/owned-tasks")
     public ApiResponse<List<ConstructionOrderInStepResponse>> listTask() {
         return ApiResponse.<List<ConstructionOrderInStepResponse>>builder()
-                .data(consultationService.listOwnedTask())
+                .data(consultationService.listOwnedConsultTask())
                 .build();
     }
 
