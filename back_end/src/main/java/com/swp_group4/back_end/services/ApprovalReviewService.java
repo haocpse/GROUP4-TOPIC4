@@ -8,6 +8,7 @@ import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.mapper.QuotationMapper;
 import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.responses.ConstructQuotationResponse;
+import com.swp_group4.back_end.responses.StateTransitionResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -58,5 +59,24 @@ public class ApprovalReviewService {
             responses.add(quotationMapper.toQuotationResponse(quotation, response));
         }
         return responses;
+    }
+
+    public StateTransitionResponse approveQuotation(String quotationId) {
+        ConstructionOrder order = constructOrderRepository.findByQuotationId(quotationId);
+        order.setStatus(ConstructionOrderStatus.CONFIRMED_QUOTATION);
+        constructOrderRepository.save(order);
+        return StateTransitionResponse.builder()
+                .constructionOrderId(order.getConstructionOrderId())
+                .status(order.getStatus())
+                .build();
+    }
+
+    public StateTransitionResponse rejectQuotation(String quotationId) {
+        ConstructionOrder order = constructOrderRepository.findByQuotationId(quotationId);
+        order.setQuotationId(null);
+        return StateTransitionResponse.builder()
+                .constructionOrderId(order.getConstructionOrderId())
+                .status(order.getStatus())
+                .build();
     }
 }
