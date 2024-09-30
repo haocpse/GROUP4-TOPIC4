@@ -8,8 +8,8 @@ import com.swp_group4.back_end.enums.QuotationBatch;
 import com.swp_group4.back_end.mapper.QuotationMapper;
 import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.requests.QuotationDetailRequest;
+import com.swp_group4.back_end.responses.ConstructQuotationResponse;
 import com.swp_group4.back_end.responses.ConstructionOrderInStepResponse;
-import com.swp_group4.back_end.responses.QuotationResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -87,10 +87,13 @@ public class ConsultationService {
                 return this.response(order);
     }
 
-    public QuotationResponse exportQuotation(String constructionOrderId, QuotationDetailRequest request) {
+    public ConstructQuotationResponse exportQuotation(String constructionOrderId, QuotationDetailRequest request) {
+        PackagePrice packagePrice = packagePriceRepository.findById(request.getPackagePriceId()).orElseThrow(
+                () -> new RuntimeException("Package price not found for id: " + request.getPackagePriceId()));
         Quotation quotation = Quotation.builder()
                 .batch(QuotationBatch.STAGE_1)
                 .paymentStatus(PaymentStatus.PENDING)
+                .volume(packagePrice.getVolume())
                 .build();
         quotationRepository.save(quotationMapper.toQuotation(request, quotation));
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
@@ -108,11 +111,8 @@ public class ConsultationService {
         }
         Packages packages = packageRepository.findById(quotation.getPackageId()).orElseThrow(
                 () -> new RuntimeException("Package not found for id: " + quotation.getPackageId()));
-        PackagePrice packagePrice = packagePriceRepository.findById(request.getPackagePriceId()).orElseThrow(
-                () -> new RuntimeException("Package price not found for id: " + request.getPackagePriceId()));
-        QuotationResponse response = QuotationResponse.builder()
+        ConstructQuotationResponse response = ConstructQuotationResponse.builder()
                 .packageType(packages.getPackageType())
-                .volume(packagePrice.getVolume())
                 .totalPrice(request.getTotalPrice())
                 .content(contentList)
                 .build();

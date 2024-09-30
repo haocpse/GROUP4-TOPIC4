@@ -23,6 +23,7 @@ public class Quotation {
     QuotationBatch batch;
     @Enumerated(EnumType.STRING)
     PaymentStatus paymentStatus;
+    double volume;
     double priceStage1;
     double priceStage2;
     double priceStage3;
