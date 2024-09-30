@@ -40,11 +40,11 @@ public class DesignService {
     public List<ConstructionOrderInStepResponse> listOwnedDesignTask() {
         var context = SecurityContextHolder.getContext();
         String accountId = context.getAuthentication().getName();
-        Staff consultant = staffRepository.findByAccountId(accountId).orElseThrow(
+        Staff staff = staffRepository.findByAccountId(accountId).orElseThrow(
                 ()-> new RuntimeException("ACCOUNT DOES NOT EXIST"));
         List<ConstructionOrderStatus> statusList = List.of(ConstructionOrderStatus.DESIGNING,
                                                             ConstructionOrderStatus.DESIGNED);
-        List<ConstructionOrder> orders = constructOrderRepository.findByConsultantAndStatusIn(consultant.getStaffId(), statusList);
+        List<ConstructionOrder> orders = constructOrderRepository.findByDesignLeaderAndStatusIn(staff.getStaffId(), statusList);
         return orders.stream()
                 .map(this::response)
                 .toList();

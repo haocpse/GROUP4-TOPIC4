@@ -21,35 +21,19 @@ public class StaffService {
     @Autowired
     AccountRepository accountRepository;
 
-    public List<StaffResponse> listAllConsultant(){
-        List<Account> consultantAccount = accountRepository.findByRole(Role.CONSULTANT);
-
-        return consultantAccount.stream()
+    public List<StaffResponse> listAllStaff(String staff){
+        List<Account> staffAccounts;
+        if (staff.equals("consultant")) {
+            staffAccounts = accountRepository.findByRole(Role.CONSULTANT);
+        } else if (staff.equals("designer")) {
+            staffAccounts = accountRepository.findByRole(Role.DESIGNER);
+        } else {
+            staffAccounts = accountRepository.findByRole(Role.CONSTRUCTOR);
+        }
+        return staffAccounts.stream()
                 .map(account -> staffRepository.findByAccountId(account.getAccountId())
-                        .map(staff -> new StaffResponse(staff.getStaffId(), staff.getStaffName()))
+                        .map(staffs -> new StaffResponse(staffs.getStaffId(), staffs.getStaffName()))
                         .orElseThrow(() -> new RuntimeException("Staff not found for account: " + account.getAccountId())))
                 .toList();
     }
-
-    public List<StaffResponse> listAllDesigner(){
-        List<Account> designerAccount = accountRepository.findByRole(Role.DESIGNER);
-
-        return designerAccount.stream()
-                .map(account -> staffRepository.findByAccountId(account.getAccountId())
-                        .map(staff -> new StaffResponse(staff.getStaffId(), staff.getStaffName()))
-                        .orElseThrow(() -> new RuntimeException("Staff not found for account: " + account.getAccountId())))
-                .toList();
-    }
-
-    public List<StaffResponse> listAllConstructor(){
-        List<Account> constructorAccount = accountRepository.findByRole(Role.CONSTRUCTOR);
-
-        return constructorAccount.stream()
-                .map(account -> staffRepository.findByAccountId(account.getAccountId())
-                        .map(staff -> new StaffResponse(staff.getStaffId(), staff.getStaffName()))
-                        .orElseThrow(() -> new RuntimeException("Staff not found for account: " + account.getAccountId())))
-                .toList();
-    }
-
-
 }
