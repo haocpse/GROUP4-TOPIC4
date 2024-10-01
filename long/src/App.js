@@ -12,6 +12,8 @@ import ConstructionProgress from "./Components/ConstructionProgress/Construction
 import ConsultantTasks from "./Components/ConsultantTasks/ConsultantTasks";
 import DesignUpload from "./Components/DesignUpload/DesignUpload";
 import ConstructionOrder  from "./Components/ConstructionProgress/ConstructionOrder";
+import QuotationOrder from "./Components/QuotationOrder/QuotationOrder";
+import QuotationPage from "./Components/QuotationOrder/QuotationPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -70,6 +72,13 @@ function App() {
       path: "construction-progress/:constructionOrderId", // Sử dụng orderId từ URL
       element: <ConstructionProgress />, // Trang hiển thị chi tiết task của constructionOrderId
     },
+    {
+      path:"Quotation-order",
+      element:<QuotationOrder/>,
+    },
+    
+    
+
   ]);
 
   return <RouterProvider router={router} />;
