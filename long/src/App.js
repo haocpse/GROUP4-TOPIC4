@@ -12,6 +12,8 @@ import ConstructionProgress from "./Components/ConstructionProgress/Construction
 import ConsultantTasks from "./Components/ConsultantTasks/ConsultantTasks";
 import DesignUpload from "./Components/DesignUpload/DesignUpload";
 import ConstructionOrder from "./Components/ConstructionProgress/ConstructionOrder";
+import ApproveQuotation from "./Components/ApproveQuotation/ApproveQuatation";
+import ViewQuotation from "./Components/ApproveQuotation/ViewQuotation";
 
 function App() {
   const router = createBrowserRouter([
@@ -50,6 +52,14 @@ function App() {
         {
           path: "construction",
           element: <Construction />,
+        },
+        {
+          path: "approve-quotation",
+          element: <ApproveQuotation />,
+        },
+        {
+          path: "view-quotation",
+          element: <ViewQuotation />,
         },
       ],
     },

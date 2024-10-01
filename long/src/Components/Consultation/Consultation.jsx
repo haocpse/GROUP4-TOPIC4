@@ -1,124 +1,212 @@
+// import React, { useEffect, useState } from "react";
+// import './Consultation.module.css';
+// import axios from "axios";
+// import { toast, ToastContainer } from "react-toastify";
+
+// const Consultation = () => {
+//     const [requests, setRequests] = useState([]);
+//     const [staffList, setStaffList] = useState([]);
+//     const [isStaffListOpen, setIsStaffListOpen] = useState(false);
+//     const [selectedRequestId, setSelectedRequestId] = useState(null);
+
+//     useEffect(() => {
+//         const fetchRequests = async () => {
+//             try {
+//                 const response = await axios.get('http://localhost:8080/consultation-request');
+//                 setRequests(response.data);
+//             } catch (error) {
+//                 console.error('Error fetching requests:', error);
+//                 toast.error('Failed to load requests. Please try again later.');
+//             }
+//         };
+//         fetchRequests();
+//     }, []);
+
+//     const fetchStaff = async () => {
+//         try {
+//             const response = await axios.get('http://localhost:8080/consultation-staff');
+//             setStaffList(response.data);
+//         } catch (error) {
+//             console.error('Error fetching staff:', error);
+//             toast.error('Failed to load staff. Please try again later.');
+//         }
+//     };
+
+//     useEffect(() => {
+//         if (isStaffListOpen) fetchStaff();
+//     }, [isStaffListOpen]);
+
+//     const handleAssignStaff = async (requestId, staffId, staffName) => {
+//         try {
+//             await axios.post('http://localhost:8080/assign-staff', {
+//                 requestId,
+//                 staffId,
+//             });
+//             setRequests(prevRequests =>
+//                 prevRequests.map(request =>
+//                     request.id === requestId ? { ...request, assignedStaff: staffName } : request
+//                 )
+//             );
+//             toast.success("Staff assigned successfully!");
+//             setIsStaffListOpen(false);
+//             setSelectedRequestId(null);
+//         } catch (error) {
+//             console.error('Error assigning staff:', error);
+//             toast.error("Failed to assign staff. Please try again.");
+//         }
+//     };
+
+//     return (
+//         <div className="container mt-4">
+//             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
+//             <h2 className="text-center">Manage Requests</h2>
+//             <table className="table table-bordered">
+//                 <thead>
+//                     <tr>
+//                         <th scope="col">Customer</th>
+//                         <th scope="col">Date</th>
+//                         <th scope="col">Phone</th>
+//                         <th scope="col">Address</th>
+//                         <th scope="col">Assign To</th>
+//                         <th scope="col">Status</th>
+//                     </tr>
+//                 </thead>
+//                 <tbody>
+//                     {requests.map(request => (
+//                         <tr key={request.id}>
+//                             <td>{request.customerName}</td>
+//                             <td>{request.date}</td>
+//                             <td>{request.phone}</td>
+//                             <td>{request.address}</td>
+//                             <td>
+//                                 <div className="dropdown">
+//                                     <button
+//                                         className="btn btn-secondary dropdown-toggle"
+//                                         type="button"
+//                                         onClick={() => {
+//                                             setIsStaffListOpen(prev => !prev);
+//                                             setSelectedRequestId(request.id);
+//                                         }}
+//                                     >
+//                                         {request.assignedStaff ? request.assignedStaff : 'Assign Staff'}
+//                                     </button>
+//                                     {isStaffListOpen && selectedRequestId === request.id && (
+//                                         <ul className="dropdown-menu">
+//                                             {staffList.map(staff => (
+//                                                 <li key={staff.id}>
+//                                                     <button onClick={() => handleAssignStaff(request.id, staff.id, staff.name)}>
+//                                                         {staff.name}
+//                                                     </button>
+//                                                 </li>
+//                                             ))}
+//                                         </ul>
+//                                     )}
+//                                 </div>
+//                             </td>
+//                             <td>{request.status}</td>
+//                         </tr>
+//                     ))}
+//                 </tbody>
+//             </table>
+//         </div>
+//     );
+// };
+
+// export default Consultation;
+
 import React, { useEffect, useState } from "react";
 import './Consultation.css';
-import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
 
 const Consultation = () => {
+    // Dữ liệu giả cho các yêu cầu và nhân viên
+    const mockRequests = [
+        { id: 1, customerName: "Nguyễn Văn A", date: "2024-10-01", phone: "0123456789", address: "123 Đường ABC", status: "Pending", assignedStaff: null },
+        { id: 2, customerName: "Trần Thị B", date: "2024-10-02", phone: "0987654321", address: "456 Đường XYZ", status: "In Progress", assignedStaff: null },
+    ];
 
-    const [request, setRequset] = useState([]);
-    const [staffList, setStaffList] = useState([]); // tao ra 1 list de luu nhan vien
-    const [isStaffListOpen, setIsStaffListOpen] = useState(false); // dong mo cai list
-    const [selectedRequest, setSelectedRequest] = useState(null); // gan rq dc chon
+    const mockStaffList = [
+        { id: 1, name: "Khoa Nguyễn" },
+        { id: 2, name: "Tú Đặng" },
+        { id: 3, name: "Háo Phù" },
+    ];
 
+    const [requests, setRequests] = useState(mockRequests);
+    const [staffList, setStaffList] = useState(mockStaffList);
+    const [isStaffListOpen, setIsStaffListOpen] = useState(false);
+    const [selectedRequestId, setSelectedRequestId] = useState(null);
 
-    // fetch du lieu api neee ^^
-    const fetchRequest = async () => {
-        try {
-            const respone = await axios.get('http://localhost:8080/manage/consultations');
-            setRequset(respone.data); // luu du lieu vao state
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        }
-    }
-
-
-    // fetch du lieu staff
-    const fetchStaff = async () => {
-        try {
-            const respone = await axios.get('http://localhost:8080/staff');
-            setStaffList(respone.data);
-        } catch (error) {
-            console.error("Error fetching staff:", error);
-        }
-    }
-    // su dung khi component dc mount
-    useEffect(() => {
-        fetchRequest(); // Gọi hàm fetchRequests để lấy dữ liệu khi component được hiển thị
-    }, []);  // Mảng rỗng [] nghĩa là hàm chỉ chạy một lần khi component được mount
-
-    // Gọi fetchStaff khi modal mở
-    useEffect(() => {
-        if (isStaffListOpen === true) {
-            fetchStaff();
-        }
-    }, [isStaffListOpen]);
-
-    const handleAssignStaffClick = (request) => {
-        setSelectedRequest(request);
-        setIsStaffListOpen(true);
+    const handleAssignStaff = (requestId, staffId, staffName) => {
+        // Gán nhân viên cho yêu cầu
+        setRequests(prevRequests =>
+            prevRequests.map(request =>
+                request.id === requestId ? { ...request, assignedStaff: staffName } : request
+            )
+        );
+        toast.success("Staff assigned successfully!");
+        setIsStaffListOpen(false);
+        setSelectedRequestId(null);
     };
 
-    const handleSelectedStaff = async (staffId) => {
-        if (selectedRequest) {
-            try {
-                await axios.post('http://localhost:8080/manage/assign', {
-                    requestId: selectedRequest.id,
-                    staffId: staffId
-                });
-            } catch (error) {
-                console.error("Error assigning staff:", error);
-            }
-        }
-        setIsStaffListOpen(false); // Đóng lít 
-    }
-
-
-
-
-
     return (
-        <div className="table-container">
-            <table>
+        <div className="container mt-4">
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
+            <h2 className="text-center">Manage Requests</h2>
+            <table className="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Request ID</th>
-                        <th>Customer</th>
-                        <th>Date</th>
-                        <th>Phone</th>
-                        <th>Address</th>
-                        <th>Assign To</th>
-                        <th>Status</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">Assign To</th>
+                        <th scope="col">Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {request.length > 0 ? (
-                        request.map((request, index) => ( // duyet qua tung yeu cau
-                            <tr key={request.id}> {/* new 1 dong moi roi su dung rq id lam key ! */}
+                    {requests.map(request => (
+                        <tr key={request.id}>
+                            <td>{request.customerName}</td>
+                            <td>{request.date}</td>
+                            <td>{request.phone}</td>
+                            <td>{request.address}</td>
+                            <td>
+                                <div className="dropdown">
+                                    <button
+                                        className="btn btn-secondary dropdown-toggle"
+                                        type="button"
 
-                                <td>{index}</td>
-                                <td>{request.customerName}</td>
-                                <td>{request.startDate}</td>
-                                <td>{request.phone}</td>
-                                <td>{request.address}</td>
-                                <td>
-                                    <button className="assign-button" onClick={() => handleAssignStaffClick(request)} >Assign</button>
-                                </td>
-                                <td>{request.status}</td>
-                            </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="7">No requests found</td>
+
+                                        onClick={() => {
+                                            setIsStaffListOpen(true);
+                                            setSelectedRequestId(request.id);
+                                        }}
+                                    >
+                                        {request.assignedStaff ? request.assignedStaff : 'Assign Staff'}
+                                    </button >
+                                    {isStaffListOpen && selectedRequestId === request.id && (
+                                        <ul className="dropdown-menu menu-task">
+                                            {staffList.map(staff => (
+                                                <li key={staff.id}>
+                                                    <button className="py-2 d-flex justify-content-center align-items-center"
+                                                        style={{ backgroundColor: 'pink', width: '100%' }} 
+                                                        onClick={() => handleAssignStaff(request.id, staff.id, staff.name)}>
+                                                            
+                                                        {staff.name}
+                                                    </button>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                </div>
+                            </td>
+                            <td>{request.status}</td>
                         </tr>
-                    )}
+                    ))}
                 </tbody>
             </table>
-            {isStaffListOpen && (
-                <div className="list">
-                    <div className="list-content">
-                        <h2>Select Staff</h2>
-                        <ul>
-                            {staffList.map(staff => (
-                                <li key={staff.staffId} onClick={() => handleSelectedStaff(staff.staffId)}>
-                                    {staff.staffName}
-                                </li>
-                            )
-                            )}
-                        </ul>
-                        <button onClick={() => setIsStaffListOpen(false)} >close</button>
-                    </div>
-                </div>
-            )}
         </div>
-    )
+    );
 };
+
 export default Consultation;

@@ -45,7 +45,24 @@ const Manage = () => {
                     </a>
                     <div className="collapse" id="maintenance">
                         <ul className="nav flex-column ms-4">
-                            <li><Link to="/manage/Consultation" className="nav-link text-dark">Consultation</Link></li>
+                            <li><Link to="/manage/consultation" className="nav-link text-dark">Consultation</Link></li>
+                        </ul>
+                    </div>
+                </li>
+                <li className="nav-item">
+                    <a
+                        className="nav-link text-dark d-flex align-items-center"
+                        data-bs-toggle="collapse"
+                        href="#approve"
+                        role="button"
+                        aria-expanded="false"
+                        aria-controls="approve">
+
+                        Approve Request
+                    </a>
+                    <div className="collapse" id="approve">
+                        <ul className="nav flex-column ms-4">
+                            <li><Link to="/manage/approve-quotation" className="nav-link text-dark">Aprrove Quotation</Link></li>
                         </ul>
                     </div>
                 </li>
