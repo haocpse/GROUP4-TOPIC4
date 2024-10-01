@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class DesignResponse {
 
+    String designId;
     String constructionOrderId;
     String url2dDesign;
     String url3dDesign;

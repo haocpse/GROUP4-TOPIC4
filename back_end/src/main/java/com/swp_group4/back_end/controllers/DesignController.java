@@ -1,5 +1,6 @@
 package com.swp_group4.back_end.controllers;
 
+import com.swp_group4.back_end.entities.Design;
 import com.swp_group4.back_end.requests.UrlDesignRequest;
 import com.swp_group4.back_end.responses.ApiResponse;
 import com.swp_group4.back_end.responses.ConstructionOrderInStepResponse;
@@ -35,8 +36,8 @@ public class DesignController {
     }
 
     @PostMapping("/owned-tasks/{constructionOrderId}/upload-design")
-    public ApiResponse<DesignResponse> exportQuotation(@PathVariable String constructionOrderId, @RequestBody UrlDesignRequest request) {
-        return ApiResponse.<DesignResponse>builder()
+    public ApiResponse<Design> exportQuotation(@PathVariable String constructionOrderId, @RequestBody UrlDesignRequest request) {
+        return ApiResponse.<Design>builder()
                 .data(designService.uploadDesign(constructionOrderId, request))
                 .build();
     }

@@ -16,5 +16,6 @@ public interface ConstructOrderRepository extends JpaRepository<ConstructionOrde
     List<ConstructionOrder> findByConstructionLeaderAndStatusIn(String constructionLeader, List<ConstructionOrderStatus> statuses);
     List<ConstructionOrder> findByDesignLeaderAndStatusIn(String designLeader, List<ConstructionOrderStatus> statuses);
     ConstructionOrder findByQuotationId(String quotationId);
+    ConstructionOrder findByDesignId(String designId);
 
 }
