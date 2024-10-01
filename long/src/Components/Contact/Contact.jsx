@@ -75,7 +75,7 @@ const Contact = () => {
             <Navbar />
 
             <div className="container mb-5">
-                <h1 className="text-center my-4">Contact us</h1>
+                <h1 className="text-center my-4" style={{ color: 'red' }}>Contact us</h1>
                 <div className="row">
                     <div className="col-md-6">
                         {/* check xem la form dc submit hong */}
@@ -94,8 +94,12 @@ const Contact = () => {
                         ) : ( // FAIL !
                             <form onSubmit={handleSubmit} className="bg-light p-4 rounded shadow-lg" >
                                 {error && <div className="notification-error alert-danger">{error}</div>}
+                                <div className="text-center label-upload">
+                                    <label> Contact Form </label>
+                                </div>
 
                                 <div className="form-group mb-6">
+
                                     <label>Select Service</label>
                                     <select
                                         name="service"
@@ -104,7 +108,7 @@ const Contact = () => {
                                         onChange={handleChange}
                                         required
                                     >
-                                        <option value="">-- Choose a Service --</option>
+                                        <option value="">-- Choose a Service -- </option>
                                         <option value="maintenance">Maintenance</option>
                                         <option value="build-koi-pond">Build Koi Pond</option>
                                     </select>
@@ -149,7 +153,7 @@ const Contact = () => {
                                     <label>Detail</label>
                                     <textarea
                                         className="form-control"
-                                        name="detail"
+                                        name="customerRequest"
                                         rows="4"
                                         value={formData.customerRequest}
                                         onChange={handleChange}

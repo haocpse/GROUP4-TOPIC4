@@ -24,6 +24,8 @@ build/
 # Class files
 *.class
 
+*.java
+
 # Generated files
 bin/
 out/
