@@ -5,13 +5,6 @@ build/
 
 /login
 
-### Backend (Spring Boot - Java) ###
-# Maven/Gradle
-target/
-build/
-
-
-
 # Logs
 *.log
 /logs
@@ -23,8 +16,6 @@ build/
 
 # Class files
 *.class
-
-*.java
 
 # Generated files
 bin/
@@ -119,4 +110,3 @@ Thumbs.db
 
 # Git-specific files
 .gitignore
-
