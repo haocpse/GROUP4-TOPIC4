@@ -11,6 +11,8 @@ import Consultation from "./Components/Consultation/Consultation";
 import ConstructionProgress from "./Components/ConstructionProgress/ConstructionProgress";
 import ConsultantTasks from "./Components/ConsultantTasks/ConsultantTasks";
 import DesignUpload from "./Components/DesignUpload/DesignUpload";
+import ConstructionOrder  from "./Components/ConstructionProgress/ConstructionOrder";
+
 function App() {
   const router = createBrowserRouter([
     {
@@ -52,16 +54,21 @@ function App() {
       ],
     },
     {
-      path: "construction-progress",
-      element: <ConstructionProgress />,
-    },
-    {
       path: "consultant-tasks",
       element: <ConsultantTasks />,
     },
     {
       path: "design-upload", // Add the route for DesignUpload
       element: <DesignUpload />,
+    },
+    {
+      path: "construction-order",
+      element: <ConstructionOrder />, // Trang hiển thị danh sách ConstructionOrderId
+    },
+    // Route cho ConstructionProgress hiển thị chi tiết dựa trên orderId
+    {
+      path: "construction-progress/:constructionOrderId", // Sử dụng orderId từ URL
+      element: <ConstructionProgress />, // Trang hiển thị chi tiết task của constructionOrderId
     },
   ]);
 
