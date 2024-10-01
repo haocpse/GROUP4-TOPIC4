@@ -2,10 +2,12 @@ package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.*;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
+import com.swp_group4.back_end.mapper.DesignMapper;
 import com.swp_group4.back_end.mapper.QuotationMapper;
 import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.responses.ConstructQuotationResponse;
-import com.swp_group4.back_end.responses.OverallQuotationResponse;
+import com.swp_group4.back_end.responses.DesignResponse;
+import com.swp_group4.back_end.responses.OverallReviewResponse;
 import com.swp_group4.back_end.responses.StateTransitionResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -35,24 +37,26 @@ public class ApprovalReviewService {
     PackageRepository packageRepository;
     @Autowired
     CustomerRepository customerRepository;
+    @Autowired
+    DesignRepository designRepository;
 
-    public List<OverallQuotationResponse> listAllQuotation(){
+    public List<OverallReviewResponse> listAllQuotation(){
         List<ConstructionOrder> orders = constructOrderRepository
                 .findByStatus(ConstructionOrderStatus.QUOTATION);
-        List<OverallQuotationResponse> responses = new ArrayList<>();
+        List<OverallReviewResponse> responsesQuotation = new ArrayList<>();
         for (ConstructionOrder order : orders) {
             Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow(
                     () -> new RuntimeException("Customer not found"));
-            OverallQuotationResponse response = OverallQuotationResponse.builder()
+            OverallReviewResponse response = OverallReviewResponse.builder()
                     .constructionOrderId(order.getConstructionOrderId())
-                    .quotationId(order.getQuotationId())
+                    .id(order.getQuotationId())
                     .customerName(customer.getFirstname() + " " + customer.getLastname())
                     .phone(customer.getPhone())
                     .address(customer.getAddress())
                     .build();
-            responses.add(response);
+            responsesQuotation.add(response);
         }
-        return responses;
+        return responsesQuotation;
     }
 
     public ConstructQuotationResponse detailQuotation(String quotationId) {
@@ -89,6 +93,49 @@ public class ApprovalReviewService {
     public StateTransitionResponse rejectQuotation(String quotationId) {
         ConstructionOrder order = constructOrderRepository.findByQuotationId(quotationId);
         order.setQuotationId(null);
+        return StateTransitionResponse.builder()
+                .constructionOrderId(order.getConstructionOrderId())
+                .status(order.getStatus())
+                .build();
+    }
+
+    public List<OverallReviewResponse> listAllDesign() {
+        List<ConstructionOrder> orders = constructOrderRepository
+                .findByStatus(ConstructionOrderStatus.DESIGNED);
+        List<OverallReviewResponse> responsesDesign = new ArrayList<>();
+        for (ConstructionOrder order : orders) {
+            Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow(
+                    () -> new RuntimeException("Customer not found"));
+            OverallReviewResponse response = OverallReviewResponse.builder()
+                    .constructionOrderId(order.getConstructionOrderId())
+                    .id(order.getQuotationId())
+                    .customerName(customer.getFirstname() + " " + customer.getLastname())
+                    .phone(customer.getPhone())
+                    .address(customer.getAddress())
+                    .build();
+            responsesDesign.add(response);
+        }
+        return responsesDesign;
+    }
+
+    public Design detailDesign(String designId) {
+        return designRepository.findById(designId).orElseThrow(
+                () -> new RuntimeException("Error"));
+    }
+
+    public StateTransitionResponse approveDesign(String designId) {
+        ConstructionOrder order = constructOrderRepository.findByDesignId(designId);
+        order.setStatus(ConstructionOrderStatus.CONFIRM_DESIGN);
+        constructOrderRepository.save(order);
+        return StateTransitionResponse.builder()
+                .constructionOrderId(order.getConstructionOrderId())
+                .status(order.getStatus())
+                .build();
+    }
+
+    public StateTransitionResponse rejectDesign(String designId) {
+        ConstructionOrder order = constructOrderRepository.findByQuotationId(designId);
+        order.setDesignId(null);
         return StateTransitionResponse.builder()
                 .constructionOrderId(order.getConstructionOrderId())
                 .status(order.getStatus())
