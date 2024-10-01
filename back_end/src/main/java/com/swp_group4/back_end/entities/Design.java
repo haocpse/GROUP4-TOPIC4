@@ -18,6 +18,7 @@ public class Design {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String designId;
+    String constructionOrderId;
     String url2dDesign;
     String url3dDesign;
     String urlFrontDesign;

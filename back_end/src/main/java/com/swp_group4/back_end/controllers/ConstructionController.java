@@ -1,7 +1,6 @@
 package com.swp_group4.back_end.controllers;
 
 import com.swp_group4.back_end.requests.AssignTaskStaffRequest;
-import com.swp_group4.back_end.requests.CompleteConstructTaskRequest;
 import com.swp_group4.back_end.responses.*;
 import com.swp_group4.back_end.services.ConstructionService;
 import lombok.AccessLevel;
@@ -46,13 +45,5 @@ public class ConstructionController {
                 .data(constructionService.assignTask(constructionOrderId, request))
                 .build();
     }
-
-    @PostMapping("/owned-tasks/{constructionOrderId}/complete-task")
-    public ApiResponse<CompleteConstructTaskResponse> completeTask(@PathVariable String constructionOrderId, @RequestBody CompleteConstructTaskRequest request){
-        return ApiResponse.<CompleteConstructTaskResponse>builder()
-                .data(constructionService.completeTask(constructionOrderId, request))
-                .build();
-    }
-
 
 }

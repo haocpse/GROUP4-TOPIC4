@@ -1,13 +1,95 @@
+// import React, { useState, useEffect } from 'react';
+// import axios from 'axios';
+// import ItemsList from './ItemsList';
+// import styles from './QuotationForm.module.css';
+
+// const QuotationForm = ({ onFormSubmit }) => {
+//   const [selectedItems, setSelectedItems] = useState([]);
+//   const [selectedPackage, setSelectedPackage] = useState(''); // Package đã chọn
+//   const [packages, setPackages] = useState([]); // Danh sách packages từ API
+//   const [items, setItems] = useState([]); // Danh sách items từ API
+
+//   // Gọi API lấy danh sách packages khi component mount
+//   useEffect(() => {
+//     axios.get('/api/packages')
+//       .then(response => {
+//         setPackages(response.data);
+//       })
+//       .catch(error => {
+//         console.error("There was an error fetching the packages!", error);
+//       });
+//   }, []);
+
+//   // Gọi API lấy danh sách items dựa trên package đã chọn
+//   useEffect(() => {
+//     if (selectedPackage) {
+//       axios.get(`/api/packages/${selectedPackage}/items`)
+//         .then(response => {
+//           setItems(response.data);
+//         })
+//         .catch(error => {
+//           console.error("There was an error fetching the items!", error);
+//         });
+//     }
+//   }, [selectedPackage]);
+
+//   const handleItemChange = (event) => {
+//     const itemPrice = parseFloat(event.target.value);
+//     const isChecked = event.target.checked;
+
+//     setSelectedItems((prevItems) =>
+//       isChecked
+//         ? [...prevItems, { price: itemPrice, name: event.target.nextSibling.textContent }]
+//         : prevItems.filter((item) => item.price !== itemPrice)
+//     );
+//   };
+
+//   const handleExport = () => {
+//     if (!selectedPackage) {
+//       alert("Please select a package before exporting the quotation.");
+//       return;
+//     }
+//     // Chuyển package và các item đã chọn qua `QuotationPage`
+//     onFormSubmit({ selectedItems, selectedPackage });
+//   };
+
+//   return (
+//     <div className={styles.quotationFormContainer}>
+//       <label className={styles.label} htmlFor="package">Select Package:</label>
+//       <select
+//         id="package"
+//         className={styles.selectBox}
+//         value={selectedPackage}
+//         onChange={(e) => setSelectedPackage(e.target.value)}
+//       >
+//         <option value="">Select package</option>
+//         {packages.map((pkg, index) => (
+//           <option key={index} value={pkg.name}>
+//             {pkg.name} - ${pkg.price}
+//           </option>
+//         ))}
+//       </select>
+
+//       {/* Hiển thị danh sách item dựa trên package đã chọn */}
+//       <ItemsList items={items} handleItemChange={handleItemChange} />
+
+//       <div className={styles.submitButtonContainer}>
+//         <button type="button" className={styles.submitButton} onClick={handleExport}>
+//           Export Quotation
+//         </button>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default QuotationForm;
 import React, { useState } from 'react';
 import ItemsList from './ItemsList';
+import styles from './QuotationForm.module.css'; // Import CSS module
 
-
-const QuotationForm = () => {
+const QuotationForm = ({ onFormSubmit }) => {
   const [selectedItems, setSelectedItems] = useState([]);
-  const [batchPrice, setBatchPrice] = useState(0);
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [batch, setBatch] = useState(1);
-
+  const [selectedPackage, setSelectedPackage] = useState(''); // State để lưu package đã chọn
 
   const items = [
     { name: "Thiết kế hồ cá koi", description: "Lên bản vẽ thiết kế hồ...", price: 500 },
@@ -27,65 +109,56 @@ const QuotationForm = () => {
 
     setSelectedItems((prevItems) =>
       isChecked
-
-        ? [...prevItems, itemPrice]
-        : prevItems.filter((price) => price !== itemPrice)
+        ? [...prevItems, { price: itemPrice, name: event.target.nextSibling.textContent }]
+        : prevItems.filter((item) => item.price !== itemPrice)
     );
   };
 
-  const calculateTotal = () => {
-    const total = selectedItems.reduce((sum, price) => sum + price, 0);
-    setTotalPrice(total);
-
-    let batchPercentage = 0;
-    if (batch === "1") {
-      batchPercentage = 0.2;
-    } else if (batch === "2") {
-      batchPercentage = 0.3;
-    } else if (batch === "3") {
-      batchPercentage = 0.5;
+  const handleExport = () => {
+    if (!selectedPackage) {
+      alert("Please select a package before exporting the quotation.");
+      return;
     }
-
-    setBatchPrice(total * batchPercentage);
+    // Chuyển package và các item đã chọn qua `QuotationPage`
+    onFormSubmit({ selectedItems, selectedPackage });
   };
 
   return (
-    <div>
-      <label htmlFor="volume">Select Volume:</label>
-      <select id="volume">
-
+    <div className={styles.quotationFormContainer}>
+      <label className={styles.label} htmlFor="volume">Select Volume:</label>
+      <select id="volume" className={styles.selectBox}>
         <option value="0">Select volume</option>
         <option value="1">1 unit</option>
         <option value="2">2 units</option>
         <option value="3">3 units</option>
       </select>
 
-
-      <label htmlFor="package-select">Select Package:</label>
-      <select id="package-select">
-        <option value="">Select a package</option>
-        <option value="package1">Package 1</option>
-        <option value="package2">Package 2</option>
-        <option value="package3">Package 3</option>
-      </select>
+      {/* Thêm lựa chọn package */}
+      <div className={styles.packageSelection}>
+        <label className={styles.label} htmlFor="package">Select Package:</label>
+        <select
+          id="package"
+          className={styles.selectBox}
+          value={selectedPackage}
+          onChange={(e) => setSelectedPackage(e.target.value)}
+        >
+          <option value="">Select package</option>
+          <option value="Standard">Standard</option>
+          <option value="Premium">Premium</option>
+          <option value="Deluxe">Deluxe</option>
+        </select>
+      </div>
 
       <ItemsList items={items} handleItemChange={handleItemChange} />
 
-      <p>Total Price: ${totalPrice}</p>
-
-      <label htmlFor="batch-select">Select Batch:</label>
-      <select id="batch-select" value={batch} onChange={(e) => setBatch(e.target.value)}>
-        <option value="1">Batch 1 (20%)</option>
-        <option value="2">Batch 2 (30%)</option>
-        <option value="3">Batch 3 (50%)</option>
-      </select>
-
-      <p>Batch Price: ${batchPrice.toFixed(2)}</p>
-
-      <button type="button" onClick={calculateTotal}>Calculate Total</button>
-
+      <div className={styles.submitButtonContainer}>
+        <button type="button" className={styles.submitButton} onClick={handleExport}>
+          Export Quotation
+        </button>
+      </div>
     </div>
   );
 };
 
 export default QuotationForm;
+

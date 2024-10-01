@@ -1,10 +1,11 @@
 package com.swp_group4.back_end.controllers;
 
-import com.swp_group4.back_end.entities.Design;
+import com.swp_group4.back_end.requests.QuotationDetailRequest;
 import com.swp_group4.back_end.requests.UrlDesignRequest;
 import com.swp_group4.back_end.responses.ApiResponse;
 import com.swp_group4.back_end.responses.ConstructionOrderInStepResponse;
 import com.swp_group4.back_end.responses.DesignResponse;
+import com.swp_group4.back_end.responses.QuotationResponse;
 import com.swp_group4.back_end.services.DesignService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -36,8 +37,8 @@ public class DesignController {
     }
 
     @PostMapping("/owned-tasks/{constructionOrderId}/upload-design")
-    public ApiResponse<Design> exportQuotation(@PathVariable String constructionOrderId, @RequestBody UrlDesignRequest request) {
-        return ApiResponse.<Design>builder()
+    public ApiResponse<DesignResponse> exportQuotation(@PathVariable String constructionOrderId, @RequestBody UrlDesignRequest request) {
+        return ApiResponse.<DesignResponse>builder()
                 .data(designService.uploadDesign(constructionOrderId, request))
                 .build();
     }

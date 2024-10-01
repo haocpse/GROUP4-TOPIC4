@@ -1,16 +1,12 @@
 package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.*;
-import com.swp_group4.back_end.enums.ConstructStatus;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.mapper.QuotationMapper;
 import com.swp_group4.back_end.mapper.StaffMapper;
 import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.requests.AssignTaskStaffRequest;
-import com.swp_group4.back_end.requests.CompleteConstructTaskRequest;
 import com.swp_group4.back_end.responses.*;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +17,6 @@ import java.util.List;
 
 @Service
 @Slf4j
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ConstructionService {
 
     @Autowired
@@ -112,17 +107,6 @@ public class ConstructionService {
                 .build();
     }
 
-    public CompleteConstructTaskResponse completeTask(String constructionOrderId, CompleteConstructTaskRequest request) {
-        ConstructionTasks task = constructionTasksRepository
-                .findByConstructionOrderIdAndTaskId(constructionOrderId, request.getTaskId());
-        task.setStatus(ConstructStatus.DONE);
 
-        List<ConstructionTasks> listCompleteTasks = constructionTasksRepository
-        .findByStatus(ConstructStatus.DONE);
 
-        return CompleteConstructTaskResponse.builder()
-                .completeList(listCompleteTasks)
-                .build();
-
-    }
 }

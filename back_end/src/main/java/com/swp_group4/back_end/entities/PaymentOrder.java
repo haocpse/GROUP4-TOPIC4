@@ -1,8 +1,6 @@
 package com.swp_group4.back_end.entities;
 
 //import com.swp_group4.back_end.enums.PaymentOrderStatus;
-import com.swp_group4.back_end.enums.PaymentMethods;
-import com.swp_group4.back_end.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -21,8 +19,6 @@ public class PaymentOrder {
     String paymentId;
     String serviceId;
     ZonedDateTime date;
-    PaymentMethods paymentMethods;
-    Double total;
-    @Enumerated(EnumType.STRING)
-    PaymentStatus status;
+//    @Enumerated(EnumType.STRING)
+//    PaymentOrderStatus status;
 }

@@ -13,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class Packages {
+public class Package {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String packageId;

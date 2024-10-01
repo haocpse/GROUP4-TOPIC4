@@ -25,7 +25,6 @@ public class ConstructionOrder {
     ZonedDateTime startDate;
     ZonedDateTime endDate;
     String quotationId;
-    String designId;
     String consultant;
     String designLeader;
     String constructionLeader;
