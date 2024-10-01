@@ -2,14 +2,12 @@ package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.ConstructionOrder;
 import com.swp_group4.back_end.entities.Customer;
-import com.swp_group4.back_end.enums.Gender;
 import com.swp_group4.back_end.exception.AppException;
 import com.swp_group4.back_end.exception.ErrorCode;
 import com.swp_group4.back_end.mapper.CustomerMapper;
 import com.swp_group4.back_end.repositories.CustomerRepository;
 import com.swp_group4.back_end.requests.ServiceRequest;
 import com.swp_group4.back_end.requests.UpdateInfoRequest;
-import com.swp_group4.back_end.responses.ConstructOrderResponse;
 import com.swp_group4.back_end.responses.CustomerResponse;
 import com.swp_group4.back_end.responses.ServiceResponse;
 import lombok.AccessLevel;
@@ -18,8 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 @Slf4j
 @Service

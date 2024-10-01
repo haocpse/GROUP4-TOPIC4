@@ -1,6 +1,5 @@
 package com.swp_group4.back_end.controllers;
 
-import com.swp_group4.back_end.entities.Customer;
 import com.swp_group4.back_end.requests.ServiceRequest;
 import com.swp_group4.back_end.requests.UpdateInfoRequest;
 import com.swp_group4.back_end.responses.ApiResponse;
@@ -18,13 +17,6 @@ public class CustomerController {
 
     @Autowired
     CustomerService customerService;
-
-//    @GetMapping("/owner-info")
-//    public ApiResponse<CustomerResponse> getOwnerInfo(){
-//        return ApiResponse.<CustomerResponse>builder()
-//                .data(customerService.getOwnerInfo())
-//                .build();
-//    }
 
     // Gọi hàm gửi request từ Customer (URL: localhost:8080/contact-us)
     @PostMapping("/contact-us")

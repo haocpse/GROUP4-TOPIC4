@@ -3,7 +3,6 @@ package com.swp_group4.back_end.services;
 import com.swp_group4.back_end.entities.*;
 import com.swp_group4.back_end.enums.ConstructStatus;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
-import com.swp_group4.back_end.mapper.QuotationMapper;
 import com.swp_group4.back_end.mapper.StaffMapper;
 import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.requests.AssignTaskStaffRequest;
@@ -123,6 +122,5 @@ public class ConstructionService {
         return CompleteConstructTaskResponse.builder()
                 .completeList(listCompleteTasks)
                 .build();
-
     }
 }
