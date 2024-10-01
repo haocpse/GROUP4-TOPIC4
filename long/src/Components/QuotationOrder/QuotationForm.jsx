@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import ItemsList from './ItemsList';
 
+
 const QuotationForm = () => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [batchPrice, setBatchPrice] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
   const [batch, setBatch] = useState(1);
+
 
   const items = [
     { name: "Thiết kế hồ cá koi", description: "Lên bản vẽ thiết kế hồ...", price: 500 },
@@ -25,6 +27,7 @@ const QuotationForm = () => {
 
     setSelectedItems((prevItems) =>
       isChecked
+
         ? [...prevItems, itemPrice]
         : prevItems.filter((price) => price !== itemPrice)
     );
@@ -50,11 +53,13 @@ const QuotationForm = () => {
     <div>
       <label htmlFor="volume">Select Volume:</label>
       <select id="volume">
+
         <option value="0">Select volume</option>
         <option value="1">1 unit</option>
         <option value="2">2 units</option>
         <option value="3">3 units</option>
       </select>
+
 
       <label htmlFor="package-select">Select Package:</label>
       <select id="package-select">
@@ -78,6 +83,7 @@ const QuotationForm = () => {
       <p>Batch Price: ${batchPrice.toFixed(2)}</p>
 
       <button type="button" onClick={calculateTotal}>Calculate Total</button>
+
     </div>
   );
 };
