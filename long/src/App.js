@@ -11,11 +11,13 @@ import Consultation from "./Components/Consultation/Consultation";
 import ConstructionProgress from "./Components/ConstructionProgress/ConstructionProgress";
 import ConsultantTasks from "./Components/ConsultantTasks/ConsultantTasks";
 import DesignUpload from "./Components/DesignUpload/DesignUpload";
-import ConstructionOrder  from "./Components/ConstructionProgress/ConstructionOrder";
+import ConstructionOrder from "./Components/ConstructionProgress/ConstructionOrder";
 import QuotationOrder from "./Components/QuotationOrder/QuotationOrder";
 import QuotationPage from "./Components/QuotationOrder/QuotationPage";
 import ApproveQuotation from "./Components/ApproveQuotation/ApproveQuatation";
 import ViewQuotation from "./Components/ApproveQuotation/ViewQuotation";
+import Pricing from "./Components/CustomerView/pricing";
+import Customer from "./Components/CustomerView/Customer";
 
 function App() {
   const router = createBrowserRouter([
@@ -83,12 +85,17 @@ function App() {
       element: <ConstructionProgress />, // Trang hiển thị chi tiết task của constructionOrderId
     },
     {
-      path:"Quotation-order",
-      element:<QuotationOrder/>,
+      path: "Quotation-order",
+      element: <QuotationOrder />,
     },
-
-
-
+    {
+      path: "pricing", // Route cho Pricing
+      element: <Pricing />,
+    },
+    {
+      path: "customer", // Route cho Customer
+      element: <Customer />,
+    },
   ]);
 
   return <RouterProvider router={router} />;
