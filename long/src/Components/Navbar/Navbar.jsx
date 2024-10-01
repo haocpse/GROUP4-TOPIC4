@@ -16,12 +16,12 @@ const Navbar = () => {
             </div>
         </div>
         <ul className="ul-navbar">
-            <li><Link to="/">MAIN</Link></li>
+            <li><Link to="/main">MAIN</Link></li>
             <li><Link to="/project">PROJECTS</Link></li>
             <li><Link to="/service">SERVICE</Link></li>
             <li><Link to="/contact">CONTACT</Link></li>
             <li><Link to="/blog">BLOG</Link></li>
-            <li><Link to="/about-">ABOUT US</Link></li>
+            <li><Link to="/about-us">ABOUT US</Link></li>
         </ul>
     </nav>);
 };

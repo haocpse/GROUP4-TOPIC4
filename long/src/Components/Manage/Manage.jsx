@@ -1,11 +1,11 @@
 import React from "react";
-import './SideBar.css';
+import './Manage.css';
 import logo from '../Assests/logo-navbar.png';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Link } from "react-router-dom";
 
-const SideBar = () => {
+const Manage = () => {
     return (
         <div className="d-flex flex-column p-3 bg-light" style={{ width: '250px', height: '100vh' }}>
             <Link to="/main" className="d-flex align-items-center text-decoration-none">
@@ -26,9 +26,9 @@ const SideBar = () => {
                     </a>
                     <div className="collapse" id="construction">
                         <ul className="nav flex-column ms-4">
-                            <li><Link to="/sidebar/consultation" className="nav-link text-dark">Consultation</Link></li>
-                            <li><Link to="/sidebar/design" className="nav-link text-dark">Design</Link></li>
-                            <li><Link to="/sidebar/construction" className="nav-link text-dark">Construction</Link></li>
+                            <li><Link to="/manage/consultation" className="nav-link text-dark">Consultation</Link></li>
+                            <li><Link to="/manage/design" className="nav-link text-dark">Design</Link></li>
+                            <li><Link to="/manage/construction" className="nav-link text-dark">Construction</Link></li>
                         </ul>
                     </div>
                 </li>
@@ -45,7 +45,7 @@ const SideBar = () => {
                     </a>
                     <div className="collapse" id="maintenance">
                         <ul className="nav flex-column ms-4">
-                            <li><Link to="/sidebar/Consultation" className="nav-link text-dark">Consultation</Link></li>
+                            <li><Link to="/manage/Consultation" className="nav-link text-dark">Consultation</Link></li>
                         </ul>
                     </div>
                 </li>
@@ -54,4 +54,4 @@ const SideBar = () => {
     );
 }
 
-export default SideBar;
+export default Manage;
