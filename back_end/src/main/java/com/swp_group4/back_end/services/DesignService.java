@@ -13,7 +13,6 @@ import com.swp_group4.back_end.repositories.StaffRepository;
 import com.swp_group4.back_end.requests.UrlDesignRequest;
 import com.swp_group4.back_end.responses.ConstructionOrderInStepResponse;
 import com.swp_group4.back_end.responses.DesignResponse;
-import com.swp_group4.back_end.responses.QuotationResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,18 +68,15 @@ public class DesignService {
         return this.response(order);
     }
 
-    public DesignResponse uploadDesign(String constructionOrderId, UrlDesignRequest request) {
-        DesignResponse response = new DesignResponse();
-        Design design = Design.builder()
-                .constructionOrderId(constructionOrderId)
-                .build();
+    public Design uploadDesign(String constructionOrderId, UrlDesignRequest request) {
+        Design design = new Design();
         designMapper.toDesgin(request, design);
         designRepository.save(design);
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
                 () -> new RuntimeException("Order not found for id: " + constructionOrderId));
-        order.setQuotationId(design.getDesignId());
-        order.setStatus(ConstructionOrderStatus.CONFIRM_DESIGN);
+        order.setDesignId(design.getDesignId());
+        order.setStatus(ConstructionOrderStatus.DESIGNED);
         constructOrderRepository.save(order);
-        return designMapper.toDesignResponse(design, response);
+        return design;
     }
 }

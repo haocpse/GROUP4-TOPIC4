@@ -1,20 +1,18 @@
 package com.swp_group4.back_end.responses;
 
+import com.swp_group4.back_end.entities.ConstructionTasks;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class DesignResponse {
+public class CompleteConstructTaskResponse {
 
-    String designId;
-    String constructionOrderId;
-    String url2dDesign;
-    String url3dDesign;
-    String urlFrontDesign;
-    String urlBackDesign;
+    List<ConstructionTasks> completeList;
 
 }

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import CustomerInfo from './CustomerInfo';
 import QuotationForm from './QuotationForm';
@@ -8,11 +9,13 @@ function QuotationOrder() {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [formData, setFormData] = useState({ selectedItems: [], selectedPackage: '' });
 
+
   const customer = {
     name: "Nguyen Van A",
     phone: "0987654321",
     address: "123 Street, Hanoi"
   };
+
 
   const handleFormSubmit = (data) => {
     setFormData(data); // Lưu cả items và package
@@ -30,8 +33,10 @@ function QuotationOrder() {
       ) : (
         <QuotationPage customer={customer} formData={formData} />
       )}
+
     </div>
   );
 }
 
 export default QuotationOrder;
+
