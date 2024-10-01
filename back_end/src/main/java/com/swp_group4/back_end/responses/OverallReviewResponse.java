@@ -8,13 +8,12 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class DesignResponse {
+public class OverallReviewResponse {
 
-    String designId;
     String constructionOrderId;
-    String url2dDesign;
-    String url3dDesign;
-    String urlFrontDesign;
-    String urlBackDesign;
+    String id;
+    String customerName;
+    String phone;
+    String address;
 
 }

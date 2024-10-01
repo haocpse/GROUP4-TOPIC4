@@ -18,6 +18,6 @@ public class PackagePrice {
     @GeneratedValue(strategy = GenerationType.UUID)
     String packagePriceId;
     String packageId;
-    String volume;
+    double volume;
     double price;
 }
