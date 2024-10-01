@@ -1,15 +1,16 @@
-import './App.css';
-import { createBrowserRouter, Navigate, Route, Router, RouterProvider, Routes } from 'react-router-dom';
-import Login from './Components/Login/Login';
-import SignUp from './Components/SignUp/SignUp';
-import Contact from './Components/Contact/Contact';
-import Service from './Components/Service/Service';
-import MainLayout from './Components/MainLayout';
-import Construction from './Components/Construction/Construction';
-import Design from './Components/Design/Design';
-import Consultation from './Components/Consultation/Consultation';
-import ConstructionProgress from './Components/ConstructionProgress/ConstructionProgress';
-
+import "./App.css";
+import { createBrowserRouter, Route, RouterProvider } from "react-router-dom";
+import Login from "./Components/Login/Login";
+import SignUp from "./Components/SignUp/SignUp";
+import Contact from "./Components/Contact/Contact";
+import Service from "./Components/Service/Service";
+import MainLayout from "./Components/MainLayout";
+import Construction from "./Components/Construction/Construction";
+import Design from "./Components/Design/Design";
+import Consultation from "./Components/Consultation/Consultation";
+import ConstructionProgress from "./Components/ConstructionProgress/ConstructionProgress";
+import ConsultantTasks from "./Components/ConsultantTasks/ConsultantTasks";
+import DesignUpload from "./Components/DesignUpload/DesignUpload";
 function App() {
   const router = createBrowserRouter([
     {
@@ -37,30 +38,34 @@ function App() {
       element: <MainLayout />,
       children: [
         {
-          path: 'consultation',
+          path: "consultation",
           element: <Consultation />,
         },
         {
-          path: 'design',
+          path: "design",
           element: <Design />,
         },
         {
-          path: 'construction',
+          path: "construction",
           element: <Construction />,
         },
-      ]
-    },
-    {
-      path: "design",
-      element: <Contact />,
+      ],
     },
     {
       path: "construction-progress",
       element: <ConstructionProgress />,
     },
+    {
+      path: "consultant-tasks",
+      element: <ConsultantTasks />,
+    },
+    {
+      path: "design-upload", // Add the route for DesignUpload
+      element: <DesignUpload />,
+    },
   ]);
 
   return <RouterProvider router={router} />;
-};
+}
 
 export default App;
