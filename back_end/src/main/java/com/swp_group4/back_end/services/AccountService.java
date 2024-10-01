@@ -41,21 +41,15 @@ public class AccountService {
     String SIGNER_KEY;
 
     public LoginResponse login (LoginRequest request) {
-
         String userName = request.getUsername();
         String password = request.getPassword();
-
         Account acc = accountRepository.findByUsername(userName).orElseThrow(()
                                                                 -> new AppException(ErrorCode.USER_NOT_EXIST));
-
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-
         if (!passwordEncoder.matches(password, acc.getPassword())) {
             throw new AppException(ErrorCode.PASSWORD_WRONG);
         }
-
         String token = generateToken(acc);
-
         return LoginResponse.builder()
                 .token(token)
                 .role(acc.getRole())
@@ -63,24 +57,19 @@ public class AccountService {
     }
 
     public Account register(CreateAccountRequest request) {
-
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-
         Account acc = Account.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.CUSTOMER)
                 .build();
-
         accountRepository.save(acc);
         customerService.createCustomer(acc.getAccountId(), acc.getUsername());
         return acc;
     }
 
     public String generateToken(Account acc){
-
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
-
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(acc.getAccountId())
                 .issuer("swp_group4")
@@ -88,11 +77,8 @@ public class AccountService {
                 .expirationTime(new Date(Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()))
                 .claim("scope",buildScope(acc))
                 .build();
-
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
-
         JWSObject jwsObject = new JWSObject(header, payload);
-
         try {
             jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
             return jwsObject.serialize();
@@ -102,7 +88,6 @@ public class AccountService {
     }
 
     private String buildScope(Account acc){
-
         StringJoiner joiner = new StringJoiner(" ");
         joiner.add(acc.getRole().name());
         return joiner.toString();

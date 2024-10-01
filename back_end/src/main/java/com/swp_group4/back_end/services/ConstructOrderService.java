@@ -1,10 +1,12 @@
 package com.swp_group4.back_end.services;
 
+import com.swp_group4.back_end.entities.Account;
 import com.swp_group4.back_end.entities.ConstructionOrder;
 import com.swp_group4.back_end.entities.Customer;
 import com.swp_group4.back_end.entities.Staff;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.mapper.ConstructionOrderMapper;
+import com.swp_group4.back_end.repositories.AccountRepository;
 import com.swp_group4.back_end.repositories.ConstructOrderRepository;
 import com.swp_group4.back_end.repositories.CustomerRepository;
 import com.swp_group4.back_end.repositories.StaffRepository;
@@ -32,6 +34,10 @@ public class ConstructOrderService {
     StaffRepository staffRepository;
     @Autowired
     CustomerRepository customerRepository;
+    @Autowired
+    AccountRepository accountRepository;
+    @Autowired
+    HelperService helperService;
 
     ServiceResponse<ConstructOrderResponse> contactUsForConstruction(ServiceRequest serviceRequest, ConstructionOrder constructionOrder) {
         ConstructOrderResponse response = new ConstructOrderResponse();
@@ -59,39 +65,32 @@ public class ConstructOrderService {
             statusList.add(ConstructionOrderStatus.CONSULTING);
             statusList.add(ConstructionOrderStatus.QUOTATION);
         } else if (step.equals("design")) {
+            statusList.add(ConstructionOrderStatus.CONFIRMED_QUOTATION);
             statusList.add(ConstructionOrderStatus.DESIGNING);
             statusList.add(ConstructionOrderStatus.DESIGNED);
+        } else {
+            statusList.add(ConstructionOrderStatus.CONFIRM_DESIGN);
+            statusList.add(ConstructionOrderStatus.CONSTRUCTING);
+            statusList.add(ConstructionOrderStatus.CONSTRUCTED);
         }
-        List<ConstructionOrder> constructionOrdersInConsultStep = constructOrderRepository.findByStatusIn(statusList);
-        return constructionOrdersInConsultStep.stream()
-                .map(order -> {
-                    Customer customer = customerRepository.findById(order.getCustomerId())
-                            .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
-                    return ConstructionOrderInStepResponse.builder()
-                            .constructionOrderId(order.getConstructionOrderId())
-                            .customerName(customer.getFirstname() + " " + customer.getLastname())
-                            .startDate(order.getStartDate())
-                            .phone(customer.getPhone())
-                            .address(customer.getAddress())
-                            .status(order.getStatus())
-                            .build();
-                })
-                .toList();
+        return helperService.orderInStepResponses(statusList, "onlyStatus");
     }
 
     public StateTransitionResponse assignStaff(StaffAssignedRequest request){
         Staff staff = staffRepository.findById(request.getStaffId())
                 .orElseThrow(() -> new RuntimeException("Staff not found for id: " + request.getStaffId()));
+        Account acc = accountRepository.findById(staff.getAccountId()).orElseThrow(
+                () -> new RuntimeException("ERROR"));
         ConstructionOrder order = constructOrderRepository.findById(request.getConstructionOrderId())
                 .orElseThrow(() -> new RuntimeException("ConstructionOrder not found for id: " + request.getConstructionOrderId()));
-        if (order.getStatus().equals(ConstructionOrderStatus.CONFIRMED_QUOTATION)) {
-            order.setDesignLeader(staff.getStaffId());
-            order.setStatus(ConstructionOrderStatus.DESIGNING);
-        } else if (order.getStatus().equals(ConstructionOrderStatus.CONFIRM_DESIGN)) {
-            order.setConstructionLeader(staff.getStaffId());
-        } else {
+        if (acc.getRole().name().equals("CONSULTANT")) {
             order.setConsultant(staff.getStaffId());
             order.setStatus(ConstructionOrderStatus.CONSULTING);
+        } else if (acc.getRole().name().equals("DESIGN")) {
+            order.setDesignLeader(staff.getStaffId());
+            order.setStatus(ConstructionOrderStatus.DESIGNING);
+        } else {
+            order.setConstructionLeader(staff.getStaffId());
         }
         constructOrderRepository.save(order);
         return StateTransitionResponse.builder()

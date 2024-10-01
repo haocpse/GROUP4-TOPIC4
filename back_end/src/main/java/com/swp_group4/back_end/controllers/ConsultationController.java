@@ -20,21 +20,27 @@ public class ConsultationController {
     @Autowired
     ConsultationService consultationService;
 
-    @GetMapping("/owned-tasks")
+    // Hàm để CONSULTANT xem các task được Customer gán
+    // (Construction Order đang ở trạng thái CONSULTING)
+    @GetMapping("/ownedTasks")
     public ApiResponse<List<ConstructionOrderInStepResponse>> listTask() {
         return ApiResponse.<List<ConstructionOrderInStepResponse>>builder()
                 .data(consultationService.listOwnedConsultTask())
                 .build();
     }
 
-    @GetMapping("/owned-tasks/{constructionOrderId}")
+    // Hàm để CONSULTANT xem chi tiết Construction Order
+    // (Construction Order đang ở trạng thái CONSULTING)
+    @GetMapping("/ownedTasks/{constructionOrderId}")
     public ApiResponse<ConstructionOrderInStepResponse> detailTask(@PathVariable String constructionOrderId) {
         return ApiResponse.<ConstructionOrderInStepResponse>builder()
                 .data(consultationService.detailOfOrder(constructionOrderId))
                 .build();
     }
 
-    @PostMapping("/owned-tasks/{constructionOrderId}/export-quotation")
+    // Hàm để CONSULTANT xuất 1 quotation
+    // (Construction Order đang ở trạng thái QUOTATION)
+    @PostMapping("/ownedTasks/{constructionOrderId}/exportQuotation")
     public ApiResponse<ConstructQuotationResponse> exportQuotation(@PathVariable String constructionOrderId, @RequestBody QuotationDetailRequest request) {
         return ApiResponse.<ConstructQuotationResponse>builder()
                 .data(consultationService.exportQuotation(constructionOrderId, request))

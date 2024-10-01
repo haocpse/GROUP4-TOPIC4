@@ -15,7 +15,6 @@ public class ConstructionOrderInStepResponse {
 
     String constructionOrderId;
     String customerName;
-    ZonedDateTime startDate;
     String phone;
     String address;
     ConstructionOrderStatus status;

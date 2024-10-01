@@ -12,7 +12,6 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,37 +34,17 @@ public class ConstructionService {
     PackageConstructionRepository packageConstructionRepository;
     @Autowired
     StaffMapper staffMapper;
+    @Autowired
+    HelperService helperService;
 
     public List<ConstructionOrderInStepResponse> listOwnedConstructTask() {
-        var context = SecurityContextHolder.getContext();
-        String accountId = context.getAuthentication().getName();
-        Staff staff = staffRepository.findByAccountId(accountId).orElseThrow(
-                ()-> new RuntimeException("ACCOUNT DOES NOT EXIST"));
         List<ConstructionOrderStatus> statusList = List.of(ConstructionOrderStatus.CONFIRM_DESIGN,
                                                             ConstructionOrderStatus.CONSTRUCTING,
                                                             ConstructionOrderStatus.CONSTRUCTED);
-        List<ConstructionOrder> orders = constructOrderRepository.findByConstructionLeaderAndStatusIn(staff.getStaffId(), statusList);
-        return orders.stream()
-                .map(order -> {
-                    Customer customer = customerRepository.findById(order.getCustomerId())
-                            .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
-                    return ConstructionOrderInStepResponse.builder()
-                            .constructionOrderId(order.getConstructionOrderId())
-                            .customerName(customer.getFirstname() + " " + customer.getLastname())
-                            .startDate(order.getStartDate())
-                            .phone(customer.getPhone())
-                            .address(customer.getAddress())
-                            .status(order.getStatus())
-                            .build();
-                })
-                .toList();
+        return helperService.orderInStepResponses(statusList, "statusAndStaffId");
     }
 
     public ConstructStepResponse detailOfConstruct(String constructionOrderId) {
-        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
-                () -> new RuntimeException("Order not found for id: " + constructionOrderId));
-        Customer customer = customerRepository.findById(order.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
         List<ConstructionTasks> constructionTasksList = constructionTasksRepository.findByConstructionOrderId(constructionOrderId);
         List<ConstructionStatusResponse> constructionStatusResponseList = new ArrayList<>();
         for(ConstructionTasks constructionTask : constructionTasksList) {
@@ -78,6 +57,10 @@ public class ConstructionService {
                     .build();
             constructionStatusResponseList.add(statusResponse);
         }
+        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
+                () -> new RuntimeException("Order not found for id: " + constructionOrderId));
+        Customer customer = customerRepository.findById(order.getCustomerId())
+                .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
         return ConstructStepResponse.builder()
                 .constructionOrderId(constructionOrderId)
                 .customerName(customer.getFirstname() + " " + customer.getLastname())

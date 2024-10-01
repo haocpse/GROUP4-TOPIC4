@@ -21,20 +21,34 @@ public class ConstructOrderController {
     @Autowired
     StaffService staffService;
 
-    @GetMapping("/consultation-request")
+    // Hàm để MANAGER xem toàn bộ Construction Order đang ở các trạng thái
+    // REQUESTED, CONSULTING, QUOTATION
+    @GetMapping("/requests/consultation")
     public ApiResponse<List<ConstructionOrderInStepResponse>> listConsultationRequest() {
         return ApiResponse.<List<ConstructionOrderInStepResponse>>builder()
                 .data(constructOrderService.listAllOrderInStep("consult"))
                 .build();
     }
 
-    @GetMapping("/design-request")
+    // Hàm để MANAGER xem toàn bộ Construction Order đang ở các trạng thái
+    // CONFIRMED_QUOTATION, DESIGNING, DESIGNED
+    @GetMapping("/requests/design")
     public ApiResponse<List<ConstructionOrderInStepResponse>> listDesignRequest() {
         return ApiResponse.<List<ConstructionOrderInStepResponse>>builder()
                 .data(constructOrderService.listAllOrderInStep("design"))
                 .build();
     }
 
+    // Hàm để MANAGER xem toàn bộ Construction Order đang ở các trạng thái
+    // CONFIRMED_DESIGNED, CONSTRUCTING, CONSTRUCTED
+    @GetMapping("/requests/construction")
+    public ApiResponse<List<ConstructionOrderInStepResponse>> listConstructRequest() {
+        return ApiResponse.<List<ConstructionOrderInStepResponse>>builder()
+                .data(constructOrderService.listAllOrderInStep("construct"))
+                .build();
+    }
+
+    // Hàm để MANAGER xem toàn bộ các staff có ROLE: CONSULTANT
     @GetMapping("/consultants")
     public ApiResponse<List<StaffResponse>> listAllConsultant(){
         return ApiResponse.<List<StaffResponse>>builder()
@@ -42,6 +56,7 @@ public class ConstructOrderController {
                 .build();
     }
 
+    // Hàm để MANAGER xem toàn bộ các staff có ROLE: DESIGNER
     @GetMapping("/designers")
     public ApiResponse<List<StaffResponse>> listAllDesigner(){
         return ApiResponse.<List<StaffResponse>>builder()
@@ -49,21 +64,17 @@ public class ConstructOrderController {
                 .build();
     }
 
-    @PostMapping("/assign-consultant")
-    public ApiResponse<StateTransitionResponse> assignConsultant(@RequestBody StaffAssignedRequest request) {
-        return ApiResponse.<StateTransitionResponse>builder()
-                .data(constructOrderService.assignStaff(request))
+    // Hàm để MANAGER xem toàn bộ các staff có ROLE: CONSTRUCTOR
+    @GetMapping("/constructors")
+    public ApiResponse<List<StaffResponse>> listAllConstructor(){
+        return ApiResponse.<List<StaffResponse>>builder()
+                .data(staffService.listAllStaff("constructor"))
                 .build();
     }
 
-    @PostMapping("/assign-designer")
-    public ApiResponse<StateTransitionResponse> assignDesigner(@RequestBody StaffAssignedRequest request) {
-        return ApiResponse.<StateTransitionResponse>builder()
-                .data(constructOrderService.assignStaff(request))
-                .build();
-    }
-    @PostMapping("/assign-constructor")
-    public ApiResponse<StateTransitionResponse> assignConstructor(@RequestBody StaffAssignedRequest request) {
+    // Hàm để MANAGER gán các leader cho từng giai đoạn của Construction Order
+    @PostMapping("/assignStaff")
+    public ApiResponse<StateTransitionResponse> assignStaff(@RequestBody StaffAssignedRequest request) {
         return ApiResponse.<StateTransitionResponse>builder()
                 .data(constructOrderService.assignStaff(request))
                 .build();

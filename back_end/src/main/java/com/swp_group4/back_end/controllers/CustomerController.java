@@ -18,22 +18,24 @@ public class CustomerController {
     @Autowired
     CustomerService customerService;
 
-    // Gọi hàm gửi request từ Customer (URL: localhost:8080/contact-us)
-    @PostMapping("/contact-us")
+    // Gọi hàm gửi request từ Customer
+    @PostMapping("/contactUs")
     public ApiResponse<ServiceResponse<?>> contactUs(@RequestBody ServiceRequest request) {
         return ApiResponse.<ServiceResponse<?>>builder()
                 .data(customerService.contactUs(request))
                 .build();
     }
 
-    @GetMapping("/owned-info")
+    // Hàm để Customer xem thông tin cá nhân
+    @GetMapping("/ownedInfo")
     public ApiResponse<CustomerResponse> getOwnedInfo() {
         return ApiResponse.<CustomerResponse>builder()
                 .data(customerService.getOwnedInfo())
                 .build();
     }
 
-    @PutMapping("/owned-info/update")
+    // Hàm để Customer thay đổi thông tin cá nhân
+    @PutMapping("/ownedInfo/update")
     public ApiResponse<CustomerResponse> updateOwnedInfo(@RequestBody UpdateInfoRequest request) {
         return ApiResponse.<CustomerResponse>builder()
                 .data(customerService.updateOwnedInfo(request))

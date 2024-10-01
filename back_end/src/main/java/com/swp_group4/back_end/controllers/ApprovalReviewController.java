@@ -1,11 +1,12 @@
 package com.swp_group4.back_end.controllers;
 
 import com.swp_group4.back_end.entities.Design;
+import com.swp_group4.back_end.requests.ManageReviewRequest;
 import com.swp_group4.back_end.responses.ApiResponse;
 import com.swp_group4.back_end.responses.ConstructQuotationResponse;
 import com.swp_group4.back_end.responses.OverallReviewResponse;
 import com.swp_group4.back_end.responses.StateTransitionResponse;
-import com.swp_group4.back_end.services.ApprovalReviewService;
+import com.swp_group4.back_end.services.QuotationAndDesignApprovalService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,61 +20,59 @@ import java.util.List;
 public class ApprovalReviewController {
 
     @Autowired
-    ApprovalReviewService approvalReviewService;
+    QuotationAndDesignApprovalService quotationAndDesignApprovalService;
 
-    @GetMapping("/review-quotation")
+    // Hàm để MANAGER xem toàn bộ các quotation trên hệ thống đang chờ phê duyệt
+    // (Construction Order đang ở trạng thái QUOTATION)
+    @GetMapping("/quotations")
     public ApiResponse<List<OverallReviewResponse>> listAllQuotation(){
         return ApiResponse.<List<OverallReviewResponse>>builder()
-                .data(approvalReviewService.listAllQuotation())
+                .data(quotationAndDesignApprovalService.listAllQuotation())
                 .build();
     }
 
-    @GetMapping("/review-quotation/{quotationId}")
+    // Hàm để MANAGER xem chi tiết 1 quotation
+    // (Construction Order đang ở trạng thái QUOTATION)
+    @GetMapping("/quotations/{quotationId}")
     public ApiResponse<ConstructQuotationResponse> getQuotation(@PathVariable String quotationId){
         return ApiResponse.<ConstructQuotationResponse>builder()
-                .data(approvalReviewService.detailQuotation(quotationId))
+                .data(quotationAndDesignApprovalService.detailQuotation(quotationId))
                 .build();
     }
 
-    @PostMapping("/approval/{quotationId}")
-    public ApiResponse<StateTransitionResponse> approveQuotation(@PathVariable String quotationId){
+    // Hàm để MANAGER quyết định APPROVE hay không
+    // (Nếu APPROVE Construction Order chuyển sang trạng thái CONFIRMED_QUOTATION)
+    @PostMapping("/quotations/manageQuotation")
+    public ApiResponse<StateTransitionResponse> approveQuotation(@RequestBody ManageReviewRequest request){
         return ApiResponse.<StateTransitionResponse>builder()
-                .data(approvalReviewService.approveQuotation(quotationId))
+                .data(quotationAndDesignApprovalService.manageQuotation(request))
                 .build();
     }
 
-    @PostMapping("/reject/{quotationId}")
-    public ApiResponse<StateTransitionResponse> rejectQuotation(@PathVariable String quotationId){
-        return ApiResponse.<StateTransitionResponse>builder()
-                .data(approvalReviewService.rejectQuotation(quotationId))
-                .build();
-    }
-
-    @GetMapping("/review-design")
+    // Hàm để MANAGER xem toàn bộ các design trên hệ thống đang chờ phê duyệt
+    // (Construction Order đang ở trạng thái DESIGNED)
+    @GetMapping("/designs")
     public ApiResponse<List<OverallReviewResponse>> listAllDesign(){
         return ApiResponse.<List<OverallReviewResponse>>builder()
-                .data(approvalReviewService.listAllDesign())
+                .data(quotationAndDesignApprovalService.listAllDesign())
                 .build();
     }
 
-    @GetMapping("/review-design/{designId}")
+    // Hàm để MANAGER xem chi tiết 1 design
+    // (Construction Order đang ở trạng thái DESIGNED)
+    @GetMapping("/designs/{designId}")
     public ApiResponse<Design> getDesign(@PathVariable String designId){
         return ApiResponse.<Design>builder()
-                .data(approvalReviewService.detailDesign(designId))
+                .data(quotationAndDesignApprovalService.detailDesign(designId))
                 .build();
     }
 
-    @PostMapping("/approval/{designId}")
-    public ApiResponse<StateTransitionResponse> approveDesign(@PathVariable String designId){
+    // Hàm để MANAGER quyết định APPROVE hay không
+    // (Nếu APPROVE Construction Order chuyển sang trạng thái CONFIRMED_DESIGN)
+    @PostMapping("/designs/manageDesign")
+    public ApiResponse<StateTransitionResponse> approveDesign(@RequestBody ManageReviewRequest request){
         return ApiResponse.<StateTransitionResponse>builder()
-                .data(approvalReviewService.approveDesign(designId))
-                .build();
-    }
-
-    @PostMapping("/reject/{designId}")
-    public ApiResponse<StateTransitionResponse> rejectDesign(@PathVariable String designId){
-        return ApiResponse.<StateTransitionResponse>builder()
-                .data(approvalReviewService.rejectDesign(designId))
+                .data(quotationAndDesignApprovalService.manageDesign(request))
                 .build();
     }
 

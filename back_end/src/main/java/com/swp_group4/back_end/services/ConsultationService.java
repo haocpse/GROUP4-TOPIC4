@@ -26,8 +26,6 @@ import java.util.List;
 public class ConsultationService {
 
     @Autowired
-    StaffRepository staffRepository;
-    @Autowired
     ConstructOrderRepository constructOrderRepository;
     @Autowired
     CustomerRepository customerRepository;
@@ -43,48 +41,19 @@ public class ConsultationService {
     PackageRepository packageRepository;
     @Autowired
     PackagePriceRepository packagePriceRepository;
+    @Autowired
+    HelperService helperService;
 
     public List<ConstructionOrderInStepResponse> listOwnedConsultTask() {
-        var context = SecurityContextHolder.getContext();
-        String accountId = context.getAuthentication().getName();
-        Staff staff = staffRepository.findByAccountId(accountId).orElseThrow(
-                ()-> new RuntimeException("ACCOUNT DOES NOT EXIST"));
         List<ConstructionOrderStatus> statusList = List.of(ConstructionOrderStatus.CONSULTING,
                                                             ConstructionOrderStatus.QUOTATION);
-        List<ConstructionOrder> orders = constructOrderRepository.findByConsultantAndStatusIn(staff.getStaffId(), statusList);
-        return orders.stream()
-                .map(order -> {
-                    Customer customer = customerRepository.findById(order.getCustomerId())
-                            .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
-                    return ConstructionOrderInStepResponse.builder()
-                            .constructionOrderId(order.getConstructionOrderId())
-                            .customerName(customer.getFirstname() + " " + customer.getLastname())
-                            .startDate(order.getStartDate())
-                            .phone(customer.getPhone())
-                            .address(customer.getAddress())
-                            .status(order.getStatus())
-                            .build();
-                })
-                .toList();
-    }
-
-    private ConstructionOrderInStepResponse response (ConstructionOrder order) {
-        Customer customer = customerRepository.findById(order.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
-        return ConstructionOrderInStepResponse.builder()
-                .constructionOrderId(order.getConstructionOrderId())
-                .customerName(customer.getFirstname() + " " + customer.getLastname())
-                .startDate(order.getStartDate())
-                .phone(customer.getPhone())
-                .address(customer.getAddress())
-                .status(order.getStatus())
-                .build();
+        return helperService.orderInStepResponses(statusList, "statusAndStaffId");
     }
 
     public ConstructionOrderInStepResponse detailOfOrder(String constructionOrderId) {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
                 () -> new RuntimeException("Order not found for id: " + constructionOrderId));
-                return this.response(order);
+        return helperService.detailOfOrder(order);
     }
 
     public ConstructQuotationResponse exportQuotation(String constructionOrderId, QuotationDetailRequest request) {

@@ -19,35 +19,46 @@ public class ConstructionController {
     @Autowired
     ConstructionService constructionService;
 
-    @GetMapping("/owned-tasks")
+    // Hàm để CONSTRUCTOR xem các task được MANAGER gán
+    // (Construction Order đang ở trạng thái CONFIRMED_DESIGN)
+    @GetMapping("/ownedTasks")
     public ApiResponse<List<ConstructionOrderInStepResponse>> listTask() {
         return ApiResponse.<List<ConstructionOrderInStepResponse>>builder()
                 .data(constructionService.listOwnedConstructTask())
                 .build();
     }
 
-    @GetMapping("/owned-tasks/{constructionOrderId}")
+    // Hàm để CONSTRUCTOR xem chi tiết task
+    // (Construction Order đang ở trạng thái CONFIRMED_DESIGN)
+    @GetMapping("/ownedTasks/{constructionOrderId}")
     public ApiResponse<ConstructStepResponse> detailTask(@PathVariable String constructionOrderId) {
         return ApiResponse.<ConstructStepResponse>builder()
                 .data(constructionService.detailOfConstruct(constructionOrderId))
                 .build();
     }
 
-    @GetMapping("/owned-tasks/{constructionOrderId}/constructors")
+    // Hàm để CONSTRUCTOR xem danh sách các construction staff
+    // (Construction Order đang ở trạng thái CONFIRMED_DESIGN)
+    @GetMapping("/ownedTasks/{constructionOrderId}/constructors")
     public ApiResponse<List<ConstructorStaffResponse>> listAllStaff(@PathVariable String constructionOrderId){
         return ApiResponse.<List<ConstructorStaffResponse>>builder()
                 .data(constructionService.listAllStaff())
                 .build();
     }
 
-    @PostMapping("/owned-tasks/{constructionOrderId}/assign-task")
+    // Hàm để CONSTRUCTOR gán task cho các staff
+    // (Construction Order đang ở trạng thái CONSTRUCTING)
+    @PostMapping("/ownedTasks/{constructionOrderId}/assignTask")
     public ApiResponse<AssignConstructionTaskResponse> assignTask(@PathVariable String constructionOrderId, @RequestBody AssignTaskStaffRequest request) {
         return ApiResponse.<AssignConstructionTaskResponse>builder()
                 .data(constructionService.assignTask(constructionOrderId, request))
                 .build();
     }
 
-    @PostMapping("/owned-tasks/{constructionOrderId}/complete-task")
+    // Hàm để CONSTRUCTOR xác nhận đã hoàn thành task
+    // (Construction Order đang ở trạng thái CONSTRUCTING
+    // nếu hoàn thành toàn bộ các task trạng thái của Construction Order sẽ chuyển sang CONSTRUCTED)
+    @PostMapping("/ownedTasks/{constructionOrderId}/completeTask")
     public ApiResponse<CompleteConstructTaskResponse> completeTask(@PathVariable String constructionOrderId, @RequestBody CompleteConstructTaskRequest request){
         return ApiResponse.<CompleteConstructTaskResponse>builder()
                 .data(constructionService.completeTask(constructionOrderId, request))

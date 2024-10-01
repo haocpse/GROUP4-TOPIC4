@@ -20,21 +20,27 @@ public class DesignController {
     @Autowired
     DesignService designService;
 
-    @GetMapping("/owned-tasks")
+    // Hàm để DESIGNER xem các task được gán bởi MANAGER
+    // (Construction Order đang ở trạng thái DESIGNING)
+    @GetMapping("/ownedTasks")
     public ApiResponse<List<ConstructionOrderInStepResponse>> listTask() {
         return ApiResponse.<List<ConstructionOrderInStepResponse>>builder()
                 .data(designService.listOwnedDesignTask())
                 .build();
     }
 
-    @GetMapping("/owned-tasks/{constructionOrderId}")
+    // Hàm để DESIGNER thông tin Construction Order
+    // (Construction Order đang ở trạng thái DESIGNING)
+    @GetMapping("/ownedTasks/{constructionOrderId}")
     public ApiResponse<ConstructionOrderInStepResponse> detailTask(@PathVariable String constructionOrderId) {
         return ApiResponse.<ConstructionOrderInStepResponse>builder()
                 .data(designService.detailOfOrder(constructionOrderId))
                 .build();
     }
 
-    @PostMapping("/owned-tasks/{constructionOrderId}/upload-design")
+    // Hàm để DESIGNER upload các ảnh design
+    // (Construction Order đang ở trạng thái DESIGNED)
+    @PostMapping("/ownedTasks/{constructionOrderId}/uploadDesign")
     public ApiResponse<Design> exportQuotation(@PathVariable String constructionOrderId, @RequestBody UrlDesignRequest request) {
         return ApiResponse.<Design>builder()
                 .data(designService.uploadDesign(constructionOrderId, request))
