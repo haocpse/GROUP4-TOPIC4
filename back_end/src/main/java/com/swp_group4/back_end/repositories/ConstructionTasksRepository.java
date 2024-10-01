@@ -13,4 +13,5 @@ public interface ConstructionTasksRepository extends JpaRepository<ConstructionT
     List<ConstructionTasks> findByConstructionOrderId(String id);
     ConstructionTasks findByConstructionOrderIdAndTaskId(String id, String taskId);
     List<ConstructionTasks> findByStatus(ConstructStatus status);
+    List<ConstructionTasks> findByConstructionOrderIdAndStatusIn(String id, List<ConstructStatus> statuses);
 }

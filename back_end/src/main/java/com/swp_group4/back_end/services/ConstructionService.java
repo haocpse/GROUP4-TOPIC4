@@ -115,12 +115,21 @@ public class ConstructionService {
         ConstructionTasks task = constructionTasksRepository
                 .findByConstructionOrderIdAndTaskId(constructionOrderId, request.getTaskId());
         task.setStatus(ConstructStatus.DONE);
-
+        constructionTasksRepository.save(task);
+        List<ConstructStatus> statuses = List.of(ConstructStatus.NOT_YET, ConstructStatus.IN_PROGRESS);
+        List<ConstructionTasks> listInCompleteTasks = constructionTasksRepository
+                .findByConstructionOrderIdAndStatusIn(constructionOrderId, statuses);
+        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
+                () -> new RuntimeException("Order not found for id: " + constructionOrderId));
+        if (listInCompleteTasks.isEmpty()) {
+                order.setStatus(ConstructionOrderStatus.CONSTRUCTED);
+        }
         List<ConstructionTasks> listCompleteTasks = constructionTasksRepository
-        .findByStatus(ConstructStatus.DONE);
-
+                .findByStatus(ConstructStatus.DONE);
         return CompleteConstructTaskResponse.builder()
                 .completeList(listCompleteTasks)
+                .status(order.getStatus())
                 .build();
     }
+
 }
