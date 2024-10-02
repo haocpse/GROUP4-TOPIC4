@@ -153,7 +153,7 @@
 // export default Consultation;
 
 import React, { useEffect, useState } from "react";
-import './Consultation.css';
+import './Consultation.module.css';
 import { toast, ToastContainer } from "react-toastify";
 
 const Consultation = () => {

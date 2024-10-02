@@ -173,7 +173,6 @@
 
 
 import React, { useEffect, useState } from "react";
-import './ConstructionProgress.css';
 import Navbar from "../Navbar/Navbar";
 import { ToastContainer, toast } from 'react-toastify'; // Import toast
 import 'react-toastify/dist/ReactToastify.css'; // Import CSS cho toast de hien thong bao
