@@ -18,7 +18,7 @@ import ApproveQuotation from "./Components/ApproveQuotation/ApproveQuatation";
 import ViewQuotation from "./Components/ApproveQuotation/ViewQuotation";
 import Pricing from "./Components/CustomerView/pricing";
 import Customer from "./Components/CustomerView/Customer";
-
+import ConsultationPage from "./Components/ConsultationPage/ConsultationPage";
 function App() {
   const router = createBrowserRouter([
     {
