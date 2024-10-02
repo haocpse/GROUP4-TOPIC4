@@ -1,5 +1,5 @@
 import "./App.css";
-import { createBrowserRouter, Route, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";  // Không cần import Route ở đây
 import Login from "./Components/Login/Login";
 import SignUp from "./Components/SignUp/SignUp";
 import Contact from "./Components/Contact/Contact";
@@ -11,12 +11,15 @@ import Consultation from "./Components/Consultation/Consultation";
 import ConstructionProgress from "./Components/ConstructionProgress/ConstructionProgress";
 import ConsultantTasks from "./Components/ConsultantTasks/ConsultantTasks";
 import DesignUpload from "./Components/DesignUpload/DesignUpload";
-import ConstructionOrder  from "./Components/ConstructionProgress/ConstructionOrder";
+import ConstructionOrder from "./Components/ConstructionProgress/ConstructionOrder";
 import QuotationOrder from "./Components/QuotationOrder/QuotationOrder";
 import QuotationPage from "./Components/QuotationOrder/QuotationPage";
 import ApproveQuotation from "./Components/ApproveQuotation/ApproveQuatation";
 import ViewQuotation from "./Components/ApproveQuotation/ViewQuotation";
-
+import Pricing from "./Components/CustomerView/pricing";
+import Customer from "./Components/CustomerView/Customer";
+import ConsultationPage from "./Components/ConsultationPage/ConsultationPage";
+import ListQuotation from "./Components/ListQuotation/ListQuotation";
 function App() {
   const router = createBrowserRouter([
     {
@@ -83,12 +86,29 @@ function App() {
       element: <ConstructionProgress />, // Trang hiển thị chi tiết task của constructionOrderId
     },
     {
-      path:"Quotation-order",
-      element:<QuotationOrder/>,
+      path: "consultation-page",  // Sửa lại path thành chữ thường để thống nhất
+      element: <ConsultationPage />,
+      children: [
+        
+      ],
     },
-
-
-
+    {
+      path: "list-quotation",  // Sửa path này thành list-quotation thay vì 'list quotation'
+      element: <ListQuotation />,
+    },
+    
+    {
+      path: "Quotation-order",
+      element: <QuotationOrder />
+    },
+    {
+      path: "pricing", // Route cho Pricing
+      element: <Pricing />,
+    },
+    {
+      path: "customer", // Route cho Customer
+      element: <Customer />,
+    },
   ]);
 
   return <RouterProvider router={router} />;
