@@ -1,5 +1,5 @@
 import "./App.css";
-import { createBrowserRouter, Route, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";  // Không cần import Route ở đây
 import Login from "./Components/Login/Login";
 import SignUp from "./Components/SignUp/SignUp";
 import Contact from "./Components/Contact/Contact";
@@ -13,8 +13,7 @@ import ConsultantTasks from "./Components/ConsultantTasks/ConsultantTasks";
 import DesignUpload from "./Components/DesignUpload/DesignUpload";
 import ConstructionOrder  from "./Components/ConstructionProgress/ConstructionOrder";
 import QuotationOrder from "./Components/QuotationOrder/QuotationOrder";
-import QuotationPage from "./Components/QuotationOrder/QuotationPage";
-
+import ConsultationPage from "./Components/ConsultationPage/ConsultationPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -74,12 +73,16 @@ function App() {
       element: <ConstructionProgress />, // Trang hiển thị chi tiết task của constructionOrderId
     },
     {
-      path:"Quotation-order",
-      element:<QuotationOrder/>,
+      path: "Consultation-page",
+      element: <ConsultationPage />,
+      children: [
+        
+      ],
     },
-    
-    
-
+    {
+      path: "Quotation-order",
+      element: <QuotationOrder />,
+    },
   ]);
 
   return <RouterProvider router={router} />;
