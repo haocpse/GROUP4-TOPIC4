@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Link } from "react-router-dom";
 
+
 const ConsultationPage = () => {
     return (
         <div className="d-flex flex-column p-3 bg-light" style={{ width: '250px', height: '100vh' }}>
@@ -22,12 +23,12 @@ const ConsultationPage = () => {
                         aria-expanded="false"
                         aria-controls="consultation">
 
-                        Construction Request
+                       Consultation
                     </a>
                     <div className="collapse" id="consultation">
                         <ul className="nav flex-column ms-4">
-                            <li><Link to="/Consultation-page/consultation-Request" className="nav-link text-dark">Consultation Request</Link></li>
-                            <li><Link to="/Quotation-order" className="nav-link text-dark">Quotation Order</Link></li>
+                        <li><Link to="/list-quotation" className="nav-link text-dark">List Quotation</Link></li>
+                            <li><Link to="/Quotation-order" className="nav-link text-dark">Quotation</Link></li>
 
                         </ul>
                     </div>

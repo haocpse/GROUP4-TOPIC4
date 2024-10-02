@@ -19,6 +19,7 @@ import ViewQuotation from "./Components/ApproveQuotation/ViewQuotation";
 import Pricing from "./Components/CustomerView/pricing";
 import Customer from "./Components/CustomerView/Customer";
 import ConsultationPage from "./Components/ConsultationPage/ConsultationPage";
+import ListQuotation from "./Components/ListQuotation/ListQuotation";
 function App() {
   const router = createBrowserRouter([
     {
@@ -85,17 +86,20 @@ function App() {
       element: <ConstructionProgress />, // Trang hiển thị chi tiết task của constructionOrderId
     },
     {
-      path: "Consultation-page",
+      path: "consultation-page",  // Sửa lại path thành chữ thường để thống nhất
       element: <ConsultationPage />,
       children: [
         
       ],
     },
     {
+      path: "list-quotation",  // Sửa path này thành list-quotation thay vì 'list quotation'
+      element: <ListQuotation />,
+    },
+    
+    {
       path: "Quotation-order",
-      element: <QuotationOrder />,
-      path: "Quotation-order",
-      element: <QuotationOrder />,
+      element: <QuotationOrder />
     },
     {
       path: "pricing", // Route cho Pricing
