@@ -11,9 +11,13 @@ import Consultation from "./Components/Consultation/Consultation";
 import ConstructionProgress from "./Components/ConstructionProgress/ConstructionProgress";
 import ConsultantTasks from "./Components/ConsultantTasks/ConsultantTasks";
 import DesignUpload from "./Components/DesignUpload/DesignUpload";
-import ConstructionOrder  from "./Components/ConstructionProgress/ConstructionOrder";
+import ConstructionOrder from "./Components/ConstructionProgress/ConstructionOrder";
 import QuotationOrder from "./Components/QuotationOrder/QuotationOrder";
-import ConsultationPage from "./Components/ConsultationPage/ConsultationPage";
+import QuotationPage from "./Components/QuotationOrder/QuotationPage";
+import ApproveQuotation from "./Components/ApproveQuotation/ApproveQuatation";
+import ViewQuotation from "./Components/ApproveQuotation/ViewQuotation";
+import Pricing from "./Components/CustomerView/pricing";
+import Customer from "./Components/CustomerView/Customer";
 
 function App() {
   const router = createBrowserRouter([
@@ -53,6 +57,14 @@ function App() {
           path: "construction",
           element: <Construction />,
         },
+        {
+          path: "approve-quotation",
+          element: <ApproveQuotation />,
+        },
+        {
+          path: "view-quotation",
+          element: <ViewQuotation />,
+        },
       ],
     },
     {
@@ -82,6 +94,16 @@ function App() {
     {
       path: "Quotation-order",
       element: <QuotationOrder />,
+      path: "Quotation-order",
+      element: <QuotationOrder />,
+    },
+    {
+      path: "pricing", // Route cho Pricing
+      element: <Pricing />,
+    },
+    {
+      path: "customer", // Route cho Customer
+      element: <Customer />,
     },
   ]);
 
