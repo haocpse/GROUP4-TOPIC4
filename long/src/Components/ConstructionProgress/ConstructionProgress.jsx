@@ -54,13 +54,14 @@
 
 
 //     // set status cho task
-//     const handleStatusChange = async (orderId, taskId) => {
+//     const handleStatusChange = async (newStatus, taskId) => {
 
 //         try {
-//             await axios.post('http://localhost:8080/updateTaskStatus', {
-//                 constructionOrderId: orderId,
-//                 taskId: taskId
+//             await axios.post(`http://localhost:8080/updateTaskStatus/${constructionOrderId}`, {
+//                 newStatus: newStatus,
+//                 taskId : taskId
 //             });
+//             // cập nhật giao diện
 //             setOrders(prevOrders =>
 //                 prevOrders.map(order => ({
 //                     ...order,
@@ -126,59 +127,37 @@
 //                                 </tr>
 //                             </thead>
 //                             <tbody>
-//                                 {/* chay qa tat ca cac phan tu trong mang */}
 //                                 {order.tasks.map(task => (
 //                                     <tr key={task.taskId}>
 //                                         <td>{task.content}</td>
 //                                         <td className="text-center">
-//                                             <div className="dropdown">
-//                                                 <button
-//                                                     className="btn btn-secondary dropdown-toggle"
-//                                                     type="button"
-//                                                     id={`dropdown-${order.constructionOrderId}-${task.taskId}`}
-//                                                     data-bs-toggle="dropdown"
-//                                                     aria-expanded="false"
-//                                                 >
-//                                                     {task.constructionStatus === 'completed' ? 'Completed' : 'In Progressing'}
-//                                                 </button>
-//                                                 <ul className="dropdown-menu" aria-labelledby={`dropdown-${order.constructionOrderId}-${task.taskId}`}>
-//                                                     <li>
-//                                                         {/** truyen vao ham handle id cung nhu la taskName de biet dang thay doi thang nao */}
-//                                                         <button onClick={() => handleStatusChange(order.constructionOrderId, task.taskId)}>
-//                                                             Done
-//                                                         </button>
-//                                                     </li>
-//                                                     <li>
-//                                                         <button onClick={() => handleStatusChange(order.constructionOrderId, task.taskId)}>
-//                                                             In Progressing
-//                                                         </button>
-//                                                     </li>
-//                                                 </ul>
-//                                             </div>
+//                                             <select
+//                                                 value={task.constructionStatus}
+//                                                 onChange={(e) => handleStatusChange(e.target.value, task.taskId)}
+//                                                 className="form-select"
+//                                             >
+//                                                 <option value="inprogressing">In Progressing</option>
+//                                                 <option value="completed">Completed</option>
+//                                             </select>
 //                                         </td>
 //                                         <td>
-//                                             {/**assign task ở đây */}
-//                                             <div className="dropdown">
-//                                                 <button
-//                                                     className="btn btn-secondary dropdown-toggle"
-//                                                     type="button"
-//                                                     id={`dropdown-staff-${order.constructionOrderId}-${task.taskId}`}
-//                                                     data-bs-toggle="dropdown"
-//                                                     aria-expanded="false"
-//                                                     onClick={() => setIsConstructionStaffListOpen(true)}
-//                                                 >
-//                                                     {task.assignedStaff ? task.assignedStaff : 'Assign staff'}
-//                                                 </button>
-//                                                 <ul className="dropdown-menu" aria-labelledby={`dropdown-staff-${order.constructionOrderId}-${task.taskId}`}>
-//                                                     {staffList.map(staff => (
-//                                                         <li key={staff.id}>
-//                                                             <button onClick={() => handleAssignStaff(order.constructionOrderId, staff.id, staff.name)}>
-//                                                                 {staff.name}
-//                                                             </button>
-//                                                         </li>
-//                                                     ))}
-//                                                 </ul>
-//                                             </div>
+//                                             <select
+//                                                  value={staffList.find(staff => staff.name === task.assignedStaff)?.id || ''}
+//                                                 onChange={e => {
+//                                                     const staffId = e.target.value;
+//                                                     const staffName = staffList.find(staff => staff.id === parseInt(staffId))?.name || '';
+//                                                     handleAssignStaff(order.constructionOrderId, task.taskId, staffId, staffName);
+//                                                 }}
+//                                                 className="form-select"
+//                                                 onClick={() => setIsConstructionStaffListOpen(true)}
+//                                             >
+//                                                 <option value="">Assign staff</option>
+//                                                 {staffList.map(staff => (
+//                                                     <option key={staff.id} value={staff.id}>
+//                                                         {staff.name}
+//                                                     </option>
+//                                                 ))}
+//                                             </select>
 //                                         </td>
 //                                     </tr>
 //                                 ))}
@@ -191,70 +170,70 @@
 //     );
 // }
 // export default ConstructionProgress;
+
+
 import React, { useEffect, useState } from "react";
 import './ConstructionProgress.css';
 import Navbar from "../Navbar/Navbar";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify'; // Import toast
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS cho toast de hien thong bao
 import { useParams } from "react-router-dom";
 
 const ConstructionProgress = () => {
-
     const { constructionOrderId } = useParams(); // Lấy constructionOrderId từ URL
-    const [orders, setOrders] = useState([]);
-    const [staffList, setStaffList] = useState([]);
-    const [isConstructonStaffListOpen, setIsConstructionStaffListOpen] = useState(false);
+    const [orders, setOrders] = useState([]); // Giữ danh sách orders
+    const [staffList, setStaffList] = useState([]); // Giữ danh sách nhân viên
+    const [isConstructionStaffListOpen, setIsConstructionStaffListOpen] = useState(false);
 
-    // Mock data cho danh sách orders
-    const mockOrders = [
-        {
-            constructionOrderId: constructionOrderId,
-            tasks: [
-                { taskId: "T001", content: "Laying foundation", constructionStatus: "inprogressing", assignedStaff: null },
-                { taskId: "T002", content: "Bottom and wall concrete of the pond", constructionStatus: "inprogressing", assignedStaff: null },
-                { taskId: "T003", content: "Installing roof", constructionStatus: "inprogressing", assignedStaff: null },
-                { taskId: "T004", content: "Laying foundation", constructionStatus: "inprogressing", assignedStaff: null },
-                { taskId: "T005", content: "Taiwan pump and filter equipment", constructionStatus: "inprogressing", assignedStaff: null },
-                { taskId: "T006", content: "Small flowers and basic shrubs", constructionStatus: "inprogressing", assignedStaff: null },
-            ]
-        }
-    ];
-
-    // Mock data cho danh sách staff
-    const mockStaffList = [
-        { id: "S001", name: "Tú Đặng" },
-        { id: "S002", name: "Khoa Nguyễn" },
-        { id: "S003", name: "Long Trương" }
-    ];
-
+    // Giả lập việc gọi API để nhận dữ liệu từ backend
     useEffect(() => {
-        // Set mock data vào state thay vì gọi API
-        setOrders(mockOrders);
+        const mockOrders = [
+            {
+                constructionOrderId: constructionOrderId,
+                tasks: [
+                    { taskId: 1, content: 'Bottom and wall concrete of the pond', constructionStatus: 'inprogressing', assignedStaff: '' },
+                    { taskId: 2, content: 'Oil tank waterproofing', constructionStatus: 'inprogressing', assignedStaff: '' },
+                    { taskId: 3, content: '1 layer cloud-patterned cobblestone revetment', constructionStatus: 'inprogressing', assignedStaff: '' },
+                    { taskId: 4, content: '4-compartment rough filter - 75% clean', constructionStatus: 'inprogressing', assignedStaff: '' },
+                    { taskId: 5, content: 'Taiwan pump and filter equipment', constructionStatus: 'inprogressing', assignedStaff: '' },
+                    { taskId: 6, content: 'Small flowers and basic shrubs', constructionStatus: 'inprogressing', assignedStaff: '' },
+                ]
+            }
+        ];
+        setOrders(mockOrders); // Đặt dữ liệu giả vào state
     }, [constructionOrderId]);
 
-    // Hàm này sẽ chạy khi mở danh sách staff
+    // Giả lập gọi API lấy danh sách nhân viên
     useEffect(() => {
-        if (isConstructonStaffListOpen) {
-            // Set mock data cho staff list thay vì gọi API
-            setStaffList(mockStaffList);
+        if (isConstructionStaffListOpen === true) {
+            const mockStaffList = [
+                { id: 1, name: 'Tú Đặng' },
+                { id: 2, name: 'Háo Phù' },
+                { id: 3, name: 'Uỗng Dung' },
+                { id: 4, name: 'Khoa Nguyễn' },
+                { id: 5, name: 'Long Trương' },
+            ];
+            setStaffList(mockStaffList); // Đặt dữ liệu giả vào state
         }
-    }, [isConstructonStaffListOpen]);
+    }, [isConstructionStaffListOpen]);
 
-    // Hàm thay đổi trạng thái task
-    const handleStatusChange = (orderId, taskId) => {
+    // Hàm xử lý thay đổi trạng thái task (mock)
+    const handleStatusChange = async (newStatus, taskId) => {
+        // Cập nhật trực tiếp trên frontend
         setOrders(prevOrders =>
             prevOrders.map(order => ({
                 ...order,
                 tasks: order.tasks.map(task =>
-                    task.taskId === taskId ? { ...task, constructionStatus: 'completed' } : task
+                    task.taskId === taskId ? { ...task, constructionStatus: newStatus } : task
                 )
             }))
         );
-        toast.success('Update status COMPLETELY. ^^');
+        toast.success('Update status successfully (Mocked)');
     };
 
-    // Hàm gán staff cho task
-    const handleAssignStaff = (orderId, taskId, staffId, staffName) => {
+    // Hàm giả lập phân công nhân viên cho task
+    const handleAssignStaff = async (orderId, taskId, staffId, staffName) => {
+        // Cập nhật trực tiếp trên frontend
         setOrders(prevOrders =>
             prevOrders.map(order => ({
                 ...order,
@@ -263,9 +242,9 @@ const ConstructionProgress = () => {
                 )
             }))
         );
-        toast.success("Staff assigned SUCCESSFULLY !");
+        toast.success("Staff assigned successfully (Mocked)!");
         setIsConstructionStaffListOpen(false);
-    };
+    }
 
     return (
         <>
@@ -279,7 +258,7 @@ const ConstructionProgress = () => {
                     <h2>CONSTRUCTION PROGRESS</h2>
                 </div>
 
-                {/* Duyệt qua các construction order */}
+                {/* Chạy qua các construction orders */}
                 {orders.map(order => (
                     <div key={order.constructionOrderId}>
                         <table className="table table-bordered">
@@ -291,57 +270,37 @@ const ConstructionProgress = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {/* Duyệt qua các task */}
                                 {order.tasks.map(task => (
                                     <tr key={task.taskId}>
                                         <td>{task.content}</td>
                                         <td className="text-center">
-                                            <div className="dropdown">
-                                                <button
-                                                    className="btn btn-secondary dropdown-toggle"
-                                                    type="button"
-                                                    id={`dropdown-${order.constructionOrderId}-${task.taskId}`}
-                                                    data-bs-toggle="dropdown"
-                                                    aria-expanded="false"
-                                                >
-                                                    {task.constructionStatus === 'completed' ? 'Completed' : 'In Progressing'}
-                                                </button>
-                                                <ul className="dropdown-menu" aria-labelledby={`dropdown-${order.constructionOrderId}-${task.taskId}`}>
-                                                    <li>
-                                                        <button className="py-2 d-flex justify-content-center align-items-center" style={{ backgroundColor: 'pink', width: '100%' }} onClick={() => handleStatusChange(order.constructionOrderId, task.taskId)}>
-                                                            Complete
-                                                        </button>
-                                                    </li>
-                                                    {/* <li>
-                                                        <button onClick={() => handleStatusChange(order.constructionOrderId, task.taskId)}>
-                                                            In Progressing
-                                                        </button>
-                                                    </li> */}
-                                                </ul>
-                                            </div>
+                                            <select
+                                                value={task.constructionStatus}
+                                                onChange={(e) => handleStatusChange(e.target.value, task.taskId)}
+                                                className="form-select"
+                                            >
+                                                <option value="inprogressing">In Progressing</option>
+                                                <option value="completed">Completed</option>
+                                            </select>
                                         </td>
                                         <td>
-                                            <div className="dropdown d-flex justify-content-center align-items-center">
-                                                <button
-                                                    className="btn btn-secondary dropdown-toggle"
-                                                    type="button"
-                                                    id={`dropdown-staff-${order.constructionOrderId}-${task.taskId}`}
-                                                    data-bs-toggle="dropdown"
-                                                    aria-expanded="false"
-                                                    onClick={() => setIsConstructionStaffListOpen(true)}
-                                                >
-                                                    {task.assignedStaff ? task.assignedStaff : 'Assign staff'}
-                                                </button>
-                                                <ul className="dropdown-menu " aria-labelledby={`dropdown-staff-${order.constructionOrderId}-${task.taskId}`}>
-                                                    {staffList.map(staff => (
-                                                        <li key={staff.id}>
-                                                            <button className="py-2 d-flex justify-content-center align-items-center" style={{ backgroundColor: 'pink', width: '100%' }} onClick={() => handleAssignStaff(order.constructionOrderId, task.taskId, staff.id, staff.name)}>
-                                                                {staff.name}
-                                                            </button>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
+                                            <select
+                                                value={task.assignedStaff ? staffList.find(staff => staff.name === task.assignedStaff)?.id : ''}
+                                                onChange={e => {
+                                                    const staffId = e.target.value;
+                                                    const staffName = staffList.find(staff => staff.id === parseInt(staffId))?.name || '';
+                                                    handleAssignStaff(order.constructionOrderId, task.taskId, staffId, staffName);
+                                                }}
+                                                className="form-select"
+                                                onClick={() => setIsConstructionStaffListOpen(true)}
+                                            >
+                                                <option value="">Assign staff</option>
+                                                {staffList.map(staff => (
+                                                    <option key={staff.id} value={staff.id}>
+                                                        {staff.name}
+                                                    </option>
+                                                ))}
+                                            </select>
                                         </td>
                                     </tr>
                                 ))}
@@ -352,6 +311,6 @@ const ConstructionProgress = () => {
             </div>
         </>
     );
-};
+}
 
 export default ConstructionProgress;

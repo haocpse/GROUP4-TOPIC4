@@ -132,7 +132,7 @@ const ApproveQuotation = () => {
             priceStage2: 1200000,
             priceStage3: 1500000,
             totalPrice: 3700000,
-            content: ["Công việc 3", "Công việc 4"]
+            content: ["Bottom and wall concrete of the pond", "Oil tank waterproofing", "Epoxy waterproofing", "3-layer cloud-patterned pebble embankment", "Large ancient stone smoke bridge waterfall", "4-compartment rough filter", "Vertical drum filter - 100% clean", "Set automatic timer equipment", "Japanese filter equipment", "All Japanese pumps", "Floating LED floodlights", "Underwater LED floodlights", "Misting - Automatic smoke spraying", "Small flowers and basic shrubs", "Decorative flying bonsai", "Decorative La Han pine", "Wooden floor of filter pit"]
         },
         {
             constructionOrderId: "3",
