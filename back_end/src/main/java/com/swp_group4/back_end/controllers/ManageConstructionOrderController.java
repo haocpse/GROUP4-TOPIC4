@@ -25,8 +25,8 @@ public class ManageConstructionOrderController {
     // Hàm để MANAGER xem toàn bộ Construction Order đang ở các trạng thái
     // REQUESTED, CONSULTING, QUOTATION
     @GetMapping()
-    public ApiResponse<List<ConstructionOrderInStepResponse>> listConsultationRequest() {
-        return ApiResponse.<List<ConstructionOrderInStepResponse>>builder()
+    public ApiResponse<List<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>>> listConsultationRequest() {
+        return ApiResponse.<List<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>>>builder()
                 .data(manageConstructionOrderService.listAllOrder())
                 .build();
     }
@@ -55,12 +55,12 @@ public class ManageConstructionOrderController {
                 .build();
     }
 
-    // Hàm để MANAGER gán các leader cho từng giai đoạn của Construction Order
-    @PutMapping("/assignLeader")
-    public ApiResponse<StateTransitionResponse<ConstructionOrderStatus>> assignLeader(@RequestBody StaffAssignedRequest request) {
-        return ApiResponse.<StateTransitionResponse<ConstructionOrderStatus>>builder()
-                .data(manageConstructionOrderService.assignLeader(request))
-                .build();
-    }
+//    // Hàm để MANAGER gán các leader cho từng giai đoạn của Construction Order
+//    @PutMapping("/assignLeader")
+//    public ApiResponse<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>> assignLeader(@RequestBody StaffAssignedRequest request) {
+//        return ApiResponse.<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>>builder()
+//                .data(manageConstructionOrderService.assignLeader(request))
+//                .build();
+//    }
 
 }

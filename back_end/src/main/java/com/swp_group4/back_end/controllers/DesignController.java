@@ -1,9 +1,10 @@
 package com.swp_group4.back_end.controllers;
 
 import com.swp_group4.back_end.entities.Design;
+import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.requests.UrlDesignRequest;
 import com.swp_group4.back_end.responses.ApiResponse;
-import com.swp_group4.back_end.responses.ConstructionOrderInStepResponse;
+import com.swp_group4.back_end.responses.ConstructOrderStatusTransitionResponse;
 import com.swp_group4.back_end.services.DesignService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -23,8 +24,8 @@ public class DesignController {
     // Hàm để DESIGNER xem các task được gán bởi MANAGER
     // (Construction Order đang ở trạng thái DESIGNING)
     @GetMapping("/ownedTasks")
-    public ApiResponse<List<ConstructionOrderInStepResponse>> listTask() {
-        return ApiResponse.<List<ConstructionOrderInStepResponse>>builder()
+    public ApiResponse<List<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>>> listTask() {
+        return ApiResponse.<List<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>>>builder()
                 .data(designService.listOwnedDesignTask())
                 .build();
     }
@@ -32,8 +33,8 @@ public class DesignController {
     // Hàm để DESIGNER thông tin Construction Order
     // (Construction Order đang ở trạng thái DESIGNING)
     @GetMapping("/ownedTasks/{constructionOrderId}")
-    public ApiResponse<ConstructionOrderInStepResponse> detailTask(@PathVariable String constructionOrderId) {
-        return ApiResponse.<ConstructionOrderInStepResponse>builder()
+    public ApiResponse<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>> detailTask(@PathVariable String constructionOrderId) {
+        return ApiResponse.<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>>builder()
                 .data(designService.detailOfOrder(constructionOrderId))
                 .build();
     }

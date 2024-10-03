@@ -1,5 +1,6 @@
 package com.swp_group4.back_end.controllers;
 
+import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.requests.AssignTaskStaffRequest;
 import com.swp_group4.back_end.requests.CompleteConstructTaskRequest;
 import com.swp_group4.back_end.responses.*;
@@ -22,8 +23,8 @@ public class ConstructionController {
     // Hàm để CONSTRUCTOR xem các task được MANAGER gán
     // (Construction Order đang ở trạng thái CONFIRMED_DESIGN)
     @GetMapping("/ownedTasks")
-    public ApiResponse<List<ConstructionOrderInStepResponse>> listTask() {
-        return ApiResponse.<List<ConstructionOrderInStepResponse>>builder()
+    public ApiResponse<List<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>>> listTask() {
+        return ApiResponse.<List<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>>>builder()
                 .data(constructionService.listOwnedConstructTask())
                 .build();
     }
@@ -31,8 +32,8 @@ public class ConstructionController {
     // Hàm để CONSTRUCTOR xem chi tiết task
     // (Construction Order đang ở trạng thái CONFIRMED_DESIGN)
     @GetMapping("/ownedTasks/{constructionOrderId}")
-    public ApiResponse<ConstructStepResponse> detailTask(@PathVariable String constructionOrderId) {
-        return ApiResponse.<ConstructStepResponse>builder()
+    public ApiResponse<ConstructionTasksAndStatusResponse> detailTask(@PathVariable String constructionOrderId) {
+        return ApiResponse.<ConstructionTasksAndStatusResponse>builder()
                 .data(constructionService.detailOfConstruct(constructionOrderId))
                 .build();
     }
@@ -40,8 +41,8 @@ public class ConstructionController {
     // Hàm để CONSTRUCTOR xem danh sách các construction staff
     // (Construction Order đang ở trạng thái CONFIRMED_DESIGN)
     @GetMapping("/ownedTasks/{constructionOrderId}/constructors")
-    public ApiResponse<List<ConstructorStaffResponse>> listAllStaff(@PathVariable String constructionOrderId){
-        return ApiResponse.<List<ConstructorStaffResponse>>builder()
+    public ApiResponse<List<StaffResponse>> listAllStaff(@PathVariable String constructionOrderId){
+        return ApiResponse.<List<StaffResponse>>builder()
                 .data(constructionService.listAllStaff())
                 .build();
     }
@@ -59,8 +60,8 @@ public class ConstructionController {
     // (Construction Order đang ở trạng thái CONSTRUCTING
     // nếu hoàn thành toàn bộ các task trạng thái của Construction Order sẽ chuyển sang CONSTRUCTED)
     @PostMapping("/ownedTasks/{constructionOrderId}/completeTask")
-    public ApiResponse<CompleteConstructTaskResponse> completeTask(@PathVariable String constructionOrderId, @RequestBody CompleteConstructTaskRequest request){
-        return ApiResponse.<CompleteConstructTaskResponse>builder()
+    public ApiResponse<CompleteConstructionTaskResponse> completeTask(@PathVariable String constructionOrderId, @RequestBody CompleteConstructTaskRequest request){
+        return ApiResponse.<CompleteConstructionTaskResponse>builder()
                 .data(constructionService.completeTask(constructionOrderId, request))
                 .build();
     }

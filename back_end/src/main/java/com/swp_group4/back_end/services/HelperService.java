@@ -2,7 +2,6 @@ package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.ConstructionOrder;
 import com.swp_group4.back_end.entities.Customer;
-import com.swp_group4.back_end.entities.OrderAndStaff;
 import com.swp_group4.back_end.entities.Staff;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.exception.AppException;
@@ -11,8 +10,7 @@ import com.swp_group4.back_end.repositories.ConstructOrderRepository;
 import com.swp_group4.back_end.repositories.CustomerRepository;
 import com.swp_group4.back_end.repositories.StaffRepository;
 import com.swp_group4.back_end.requests.StaffAssignedRequest;
-import com.swp_group4.back_end.responses.ConstructionOrderInStepResponse;
-import com.swp_group4.back_end.responses.StateTransitionResponse;
+import com.swp_group4.back_end.responses.ConstructOrderStatusTransitionResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +30,14 @@ public class HelperService {
     @Autowired
     CustomerRepository customerRepository;
 
-    List<ConstructionOrderInStepResponse> listAllOrder() {
+    List<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>> listAllOrder() {
         List<ConstructionOrder> orders = constructOrderRepository.findAll();
         return orders.stream()
                 .map(this::detailOfOrder)
                 .toList();
     }
 
-    List<ConstructionOrderInStepResponse> orderInStepResponses(List<ConstructionOrderStatus> orderStatuses) {
+    List<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>> orderInStepResponses(List<ConstructionOrderStatus> orderStatuses) {
         List<ConstructionOrder> orders;
         var context = SecurityContextHolder.getContext();
         String accountId = context.getAuthentication().getName();
@@ -50,11 +48,11 @@ public class HelperService {
                 .toList();
     }
 
-    ConstructionOrderInStepResponse detailOfOrder (ConstructionOrder order) {
+    ConstructOrderStatusTransitionResponse<ConstructionOrderStatus> detailOfOrder (ConstructionOrder order) {
         Customer customer = customerRepository.findById(order.getCustomerId())
                 .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
-        return ConstructionOrderInStepResponse.builder()
-                .constructionOrderId(order.getConstructionOrderId())
+        return ConstructOrderStatusTransitionResponse.<ConstructionOrderStatus>builder()
+                .orderId(order.getConstructionOrderId())
                 .customerName(customer.getFirstname() + " " + customer.getLastname())
                 .phone(customer.getPhone())
                 .address(customer.getAddress())
@@ -69,22 +67,18 @@ public class HelperService {
                 -> new AppException(ErrorCode.USER_NOT_EXIST));
     }
 
-    OrderAndStaff findOrderAndStaff(StaffAssignedRequest request){
-        return OrderAndStaff.builder()
-                .order(constructOrderRepository.findById(request.getConstructionOrderId())
-                        .orElseThrow(() -> new RuntimeException("ConstructionOrder not found for id: " + request.getConstructionOrderId())))
-                .staff(staffRepository.findById(request.getStaffId())
-                        .orElseThrow(() -> new RuntimeException("Staff not found for id: " + request.getStaffId())))
-                .build();
+    ConstructionOrder findOrder(StaffAssignedRequest request){
+        return constructOrderRepository.findById(request.getConstructionOrderId())
+                        .orElseThrow(() -> new RuntimeException("ConstructionOrder not found for id: " + request.getConstructionOrderId()));
     }
 
-    StateTransitionResponse<ConstructionOrderStatus> response(OrderAndStaff helOrderAndStaff){
-        return StateTransitionResponse.<ConstructionOrderStatus>builder()
-                .orderId(helOrderAndStaff.getOrder().getConstructionOrderId())
-                .staffName(helOrderAndStaff.getStaff().getStaffName())
-                .status(helOrderAndStaff.getOrder().getStatus())
-                .build();
-    }
+//    ConstructOrderStatusTransitionResponse<ConstructionOrderStatus> response(OrderAndStaff helOrderAndStaff){
+//        return ConstructOrderStatusTransitionResponse.<ConstructionOrderStatus>builder()
+//                .orderId(helOrderAndStaff.getOrder().getConstructionOrderId())
+//                .(helOrderAndStaff.getStaff().getStaffName())
+//                .status(helOrderAndStaff.getOrder().getStatus())
+//                .build();
+//    }
 
 
 }

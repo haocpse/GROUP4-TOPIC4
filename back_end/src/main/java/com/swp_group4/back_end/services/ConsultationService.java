@@ -8,13 +8,12 @@ import com.swp_group4.back_end.enums.QuotationBatch;
 import com.swp_group4.back_end.mapper.QuotationMapper;
 import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.requests.QuotationDetailRequest;
+import com.swp_group4.back_end.responses.ConstructOrderStatusTransitionResponse;
 import com.swp_group4.back_end.responses.ConstructQuotationResponse;
-import com.swp_group4.back_end.responses.ConstructionOrderInStepResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -44,12 +43,12 @@ public class ConsultationService {
     @Autowired
     HelperService helperService;
 
-    public List<ConstructionOrderInStepResponse> listOwnedConsultTask() {
+    public List<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>> listOwnedConsultTask() {
         List<ConstructionOrderStatus> statusList = List.of(ConstructionOrderStatus.CONSULTING);
         return helperService.orderInStepResponses(statusList);
     }
 
-    public ConstructionOrderInStepResponse detailOfOrder(String constructionOrderId) {
+    public ConstructOrderStatusTransitionResponse<ConstructionOrderStatus> detailOfOrder(String constructionOrderId) {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
                 () -> new RuntimeException("Order not found for id: " + constructionOrderId));
         return helperService.detailOfOrder(order);

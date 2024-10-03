@@ -1,9 +1,10 @@
 package com.swp_group4.back_end.controllers;
 
+import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.requests.QuotationDetailRequest;
 import com.swp_group4.back_end.responses.ApiResponse;
+import com.swp_group4.back_end.responses.ConstructOrderStatusTransitionResponse;
 import com.swp_group4.back_end.responses.ConstructQuotationResponse;
-import com.swp_group4.back_end.responses.ConstructionOrderInStepResponse;
 import com.swp_group4.back_end.services.ConsultationService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -23,8 +24,8 @@ public class ConsultationController {
     // Hàm để CONSULTANT xem các task được Customer gán
     // (Construction Order đang ở trạng thái CONSULTING)
     @GetMapping("/ownedTasks")
-    public ApiResponse<List<ConstructionOrderInStepResponse>> listTask() {
-        return ApiResponse.<List<ConstructionOrderInStepResponse>>builder()
+    public ApiResponse<List<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>>> listTask() {
+        return ApiResponse.<List<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>>>builder()
                 .data(consultationService.listOwnedConsultTask())
                 .build();
     }
@@ -32,8 +33,8 @@ public class ConsultationController {
     // Hàm để CONSULTANT xem chi tiết Construction Order
     // (Construction Order đang ở trạng thái CONSULTING)
     @GetMapping("/ownedTasks/{constructionOrderId}")
-    public ApiResponse<ConstructionOrderInStepResponse> detailTask(@PathVariable String constructionOrderId) {
-        return ApiResponse.<ConstructionOrderInStepResponse>builder()
+    public ApiResponse<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>> detailTask(@PathVariable String constructionOrderId) {
+        return ApiResponse.<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>>builder()
                 .data(consultationService.detailOfOrder(constructionOrderId))
                 .build();
     }

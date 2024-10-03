@@ -10,10 +10,10 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class ConstructStepResponse {
+public class ConstructionTasksAndStatusResponse {
 
     String constructionOrderId;
     String customerName;
-    List<ConstructionStatusResponse> constructionStatusResponses;
+    List<ConstructTaskStatusResponse> constructTaskStatusResponses;
 
 }

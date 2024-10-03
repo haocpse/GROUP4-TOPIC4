@@ -7,7 +7,7 @@ import com.swp_group4.back_end.mapper.DesignMapper;
 import com.swp_group4.back_end.repositories.ConstructOrderRepository;
 import com.swp_group4.back_end.repositories.DesignRepository;
 import com.swp_group4.back_end.requests.UrlDesignRequest;
-import com.swp_group4.back_end.responses.ConstructionOrderInStepResponse;
+import com.swp_group4.back_end.responses.ConstructOrderStatusTransitionResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +28,12 @@ public class DesignService {
     @Autowired
     HelperService helperService;
 
-    public List<ConstructionOrderInStepResponse> listOwnedDesignTask() {
+    public List<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>> listOwnedDesignTask() {
         List<ConstructionOrderStatus> statusList = List.of(ConstructionOrderStatus.DESIGNING);
         return helperService.orderInStepResponses(statusList);
     }
 
-    public ConstructionOrderInStepResponse detailOfOrder(String constructionOrderId) {
+    public ConstructOrderStatusTransitionResponse<ConstructionOrderStatus> detailOfOrder(String constructionOrderId) {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
                 () -> new RuntimeException("Order not found for id: " + constructionOrderId));
         return helperService.detailOfOrder(order);

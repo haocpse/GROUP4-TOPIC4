@@ -8,7 +8,7 @@ import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.requests.ManageReviewRequest;
 import com.swp_group4.back_end.responses.ConstructQuotationResponse;
 import com.swp_group4.back_end.responses.OverallReviewResponse;
-import com.swp_group4.back_end.responses.StateTransitionResponse;
+import com.swp_group4.back_end.responses.ConstructOrderStatusTransitionResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -23,7 +23,7 @@ import java.util.List;
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-public class QuotationAndDesignApprovalService<T> {
+public class QuotationAndDesignApprovalService {
 
     @Autowired
     QuotationRepository quotationRepository;
@@ -115,27 +115,27 @@ public class QuotationAndDesignApprovalService<T> {
                 () -> new RuntimeException("Error"));
     }
 
-    public StateTransitionResponse<QuotationStatus> manageQuotation(ManageReviewRequest request) {
+    public ConstructOrderStatusTransitionResponse<QuotationStatus> manageQuotation(ManageReviewRequest request) {
         Quotation quotation = quotationRepository.findById(request.getId()).orElseThrow(
                 () -> new RuntimeException("Quotation not found"));
         if (request.getStatus().name().equals("APPROVED")) {
             quotation.setStatus(QuotationStatus.CONFIRMED_QUOTATION);
             quotationRepository.save(quotation);
         }
-        return StateTransitionResponse.<QuotationStatus>builder()
+        return ConstructOrderStatusTransitionResponse.<QuotationStatus>builder()
                 .orderId(request.getId())
                 .status(quotation.getStatus())
                 .build();
     }
 
-    public StateTransitionResponse<DesignStatus> manageDesign(ManageReviewRequest request) {
+    public ConstructOrderStatusTransitionResponse<DesignStatus> manageDesign(ManageReviewRequest request) {
         Design design = designRepository.findById(request.getId()).orElseThrow(
                 () -> new RuntimeException("Design not found"));
         if (request.getStatus().name().equals("APPROVED")) {
             design.setStatus(DesignStatus.CONFIRMED_DESIGN);
             designRepository.save(design);
         }
-        return StateTransitionResponse.<DesignStatus>builder()
+        return ConstructOrderStatusTransitionResponse.<DesignStatus>builder()
                 .orderId(request.getId())
                 .status(design.getStatus())
                 .build();

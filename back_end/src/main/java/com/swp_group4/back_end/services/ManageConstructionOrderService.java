@@ -3,10 +3,7 @@ package com.swp_group4.back_end.services;
 import com.swp_group4.back_end.entities.*;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.mapper.ConstructionOrderMapper;
-import com.swp_group4.back_end.repositories.AccountRepository;
 import com.swp_group4.back_end.repositories.ConstructOrderRepository;
-import com.swp_group4.back_end.repositories.CustomerRepository;
-import com.swp_group4.back_end.repositories.StaffRepository;
 import com.swp_group4.back_end.requests.ServiceRequest;
 import com.swp_group4.back_end.requests.StaffAssignedRequest;
 import com.swp_group4.back_end.responses.*;
@@ -26,10 +23,6 @@ public class ManageConstructionOrderService {
     ConstructOrderRepository constructOrderRepository;
     @Autowired
     ConstructionOrderMapper constructionOrderMapper;
-    @Autowired
-    StaffRepository staffRepository;
-    @Autowired
-    AccountRepository accountRepository;
     @Autowired
     HelperService helperService;
 
@@ -52,19 +45,19 @@ public class ManageConstructionOrderService {
         return constructOrderRepository.save(constructionOrder);
     }
 
-    public List<ConstructionOrderInStepResponse> listAllOrder() {
+    public List<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>> listAllOrder() {
         return helperService.listAllOrder();
     }
 
-    public StateTransitionResponse<ConstructionOrderStatus> assignLeader(StaffAssignedRequest request){
-        OrderAndStaff helperOrderAndStaff = helperService.findOrderAndStaff(request);
-        constructOrderRepository
-                .save(constructionOrderMapper
-                .toConstructionOrder(request,helperOrderAndStaff
-                                .getOrder()
-                ));
-        return helperService.response(helperOrderAndStaff);
-    }
+//    public ConstructOrderStatusTransitionResponse<ConstructionOrderStatus> assignLeader(StaffAssignedRequest request){
+//        constructOrderRepository
+//                .save(constructionOrderMapper
+//                .toConstructionOrder(
+//                        request,
+//                        helperService.findOrder(request)
+//                ));
+//        return helperService.response(helperService.);
+//    }
 
 //    public ServiceResponse<MaintenanceOrderResponse> contactUsForMaintenance(ServiceRequest serviceRequest) {
 //        // Your logic for maintenance service...
