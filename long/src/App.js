@@ -1,5 +1,5 @@
 import "./App.css";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";  // Không cần import Route ở đây
+import { createBrowserRouter, RouterProvider } from "react-router-dom"; // Không cần import Route ở đây
 import Login from "./Components/Login/Login";
 import SignUp from "./Components/SignUp/SignUp";
 import Contact from "./Components/Contact/Contact";
@@ -20,15 +20,21 @@ import Pricing from "./Components/CustomerView/pricing";
 import Customer from "./Components/CustomerView/Customer";
 import ConsultationPage from "./Components/ConsultationPage/ConsultationPage";
 import ListQuotation from "./Components/ListQuotation/ListQuotation";
-import ViewQuotationInConsultationPage from "./Components/ListQuotation/ViewQuotationInConsultationPage";
-import ViewPayment from "./Components/ListQuotation/ViewPayment";
+import Homepage from "./Components/Homepage/Homepage";
+import Header from "./Components/Header/header";
+import Footer from "./Components/Footer/Footer";
 import DesignerTasks from "./Components/DesignerTasks/DesignerTasks";
-
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Login />,
+      element: (
+        <>
+          <Header />
+          <Homepage />
+          <Footer />
+        </>
+      ),
     },
     {
       path: "login",
@@ -88,27 +94,18 @@ function App() {
       element: <ConstructionProgress />, // Trang hiển thị chi tiết task của constructionOrderId
     },
     {
-      path: "consultation-page",  // Sửa lại path thành chữ thường để thống nhất
+      path: "consultation-page", // Sửa lại path thành chữ thường để thống nhất
       element: <ConsultationPage />,
-      children: [
-
-      ],
+      children: [],
     },
     {
-      path: "list-quotation",  // Sửa path này thành list-quotation thay vì 'list quotation'
+      path: "list-quotation", // Sửa path này thành list-quotation thay vì 'list quotation'
       element: <ListQuotation />,
     },
+
     {
-      path: "view-Quotation",  // Sửa path này thành list-quotation thay vì 'list quotation'
-      element: <ViewQuotationInConsultationPage />,
-    },
-    {
-      path: "view-payment",  // Sửa path này thành list-quotation thay vì 'list quotation'
-      element: <ViewPayment />,
-    },
-    {
-      path: "quotation-order",
-      element: <QuotationOrder />
+      path: "Quotation-order",
+      element: <QuotationOrder />,
     },
     {
       path: "pricing", // Route cho Pricing
@@ -127,9 +124,6 @@ function App() {
       path: "designer-tasks/design-upload", // Add the route for DesignUpload
       element: <DesignUpload />,
     },
-
-
-
   ]);
 
   return <RouterProvider router={router} />;
