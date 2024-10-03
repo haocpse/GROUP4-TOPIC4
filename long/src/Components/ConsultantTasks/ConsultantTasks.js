@@ -62,120 +62,77 @@
 
 // export default ConsultantTasks;
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./ConsultantTasks.css"; // Import CSS file for styling
-import { toast, ToastContainer } from "react-toastify";
+import Navbar from "../Navbar/Navbar";
 
 const ConsultantTasks = () => {
-  const mockTasks = [
-    {
-      constructionOrderId: 1,
-      customerName: "Nguyễn Văn A",
-      startDate: "2024-10-01",
-      phone: "0123456789",
-      address: "123 Đường ABC, Quận 1",
-      status: "In Progress",
-    },
-    {
-      constructionOrderId: 2,
-      customerName: "Trần Thị B",
-      startDate: "2024-10-02",
-      phone: "0987654321",
-      address: "456 Đường XYZ, Quận 2",
-      status: "Requested",
-    },
-  ];
+  const [tasks, setTasks] = useState([]);
 
-  const [tasks, setTasks] = useState(mockTasks);
-  const statusOptions = ["Requested", "In Progress", "Completed"];
+  // Fetch tasks assigned to the consultant (mocked for testing)
+  useEffect(() => {
+    const mockTasks = [
+      {
+        constructionOrderId: 1,
+        customerName: "Đặng Mai Anh Tú",
+        startDate: "2024-09-10T00:00:00",
+        phone: "123-456-7890",
+        address: "123 Main St",
+        status: "Consulting",
+      },
+      {
+        constructionOrderId: 2,
+        customerName: "Háo Phù",
+        startDate: "2024-10-01T00:00:00",
+        phone: "987-654-3210",
+        address: "456 Oak Ave",
+        status: "Consulting",
+      },
+      // Add more mock data here if needed
+    ];
 
-  const handleStatusChange = (taskId, newStatus) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.constructionOrderId === taskId
-          ? { ...task, status: newStatus }
-          : task
-      )
-    );
-    toast.success("Status updated successfully!");
-  };
-
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "Requested":
-        return <i className="fas fa-clock text-warning"></i>; // Icon for Requested status
-      case "In Progress":
-        return <i className="fas fa-spinner fa-spin text-info"></i>; // Icon for In Progress status
-      case "Completed":
-        return <i className="fas fa-check-circle text-success"></i>; // Icon for Completed status
-      default:
-        return null;
-    }
-  };
+    setTasks(mockTasks);
+  }, []);
 
   return (
-    <div className="consultant-tasks">
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        closeOnClick
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-      <h1>Assigned Tasks</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Construction Order ID</th>
-            <th>Customer Name</th>
-            <th>Start Date</th>
-            <th>Phone</th>
-            <th>Address</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tasks.length > 0 ? (
-            tasks.map((task) => (
-              <tr key={task.constructionOrderId}>
-                <td>{task.constructionOrderId}</td>
-                <td>{task.customerName}</td>
-                <td>{new Date(task.startDate).toLocaleDateString()}</td>
-                <td>{task.phone}</td>
-                <td>{task.address}</td>
-                <td>
-                  <div className="d-flex align-items-center">
-                    {getStatusIcon(task.status)} {/* Status icon */}
-                    <select
-                      value={task.status}
-                      onChange={(e) =>
-                        handleStatusChange(
-                          task.constructionOrderId,
-                          e.target.value
-                        )
-                      }
-                      className="form-select ms-2"
-                    >
-                      {statusOptions.map((status) => (
-                        <option key={status} value={status}>
-                          {status}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </td>
-              </tr>
-            ))
-          ) : (
+    <>
+      <Navbar />
+      <div className="consultant-tasks">
+        <h1 className="text-center mt-4" style={{ color: "blue" }}>
+          Consultant Tasks
+        </h1>
+        <table>
+          <thead>
             <tr>
-              <td colSpan="6">No tasks assigned</td>
+              <th>Construction Order ID</th>
+              <th>Customer Name</th>
+              <th>Start Date</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Status</th>
             </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {tasks.length > 0 ? (
+              tasks.map((task) => (
+                <tr key={task.constructionOrderId}>
+                  <td>{task.constructionOrderId}</td>
+                  <td>{task.customerName}</td>
+                  <td>{new Date(task.startDate).toLocaleDateString()}</td>
+                  <td>{task.phone}</td>
+                  <td>{task.address}</td>
+                  <td>{task.status}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6">No tasks assigned</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 };
 

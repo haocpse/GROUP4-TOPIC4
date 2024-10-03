@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import styles from "./ListQuotation.module.css";
+import Navbar from "../Navbar/Navbar";
 
 const ListQuotation = () => {
     const [quotes, setQuotes] = useState([]);
@@ -14,7 +15,7 @@ const ListQuotation = () => {
     const sampleQuotes = [
         {
             constructionOrderId: "1",
-            customerName: "Nguyễn Minh Khoa",
+            customerName: "Đặng Mai Anh Tú",
             packageType: "BASIC PACKAGE",
             volume: 100,
             priceStage1: 500000,
@@ -36,6 +37,66 @@ const ListQuotation = () => {
             content: ["Công việc 3", "Công việc 4"],
             status: getRandomStatus()
         },
+        {
+            constructionOrderId: "3",
+            customerName: "Tấn Nhàn",
+            packageType: "ECONOMIC PACKAGE",
+            volume: 100,
+            priceStage1: 86700,
+            priceStage2: 657000,
+            priceStage3: 900000,
+            totalPrice: 2100000,
+            content: ["Công việc 1", "Công việc 2"],
+            status: getRandomStatus()
+        },
+        {
+            constructionOrderId: "4",
+            customerName: "Châu Phú Hào",
+            packageType: "BASIC PACKAGE",
+            volume: 100,
+            priceStage1: 500000,
+            priceStage2: 700000,
+            priceStage3: 900000,
+            totalPrice: 2100000,
+            content: ["Công việc 1", "Công việc 2"],
+            status: getRandomStatus()
+        },
+        {
+            constructionOrderId: "5",
+            customerName: "Nguyễn Ngọc Khuyên",
+            packageType: "ECONOMIC PACKAGE",
+            volume: 100,
+            priceStage1: 500000,
+            priceStage2: 700000,
+            priceStage3: 900000,
+            totalPrice: 2100000,
+            content: ["Công việc 1", "Công việc 2"],
+            status: getRandomStatus()
+        },
+        {
+            constructionOrderId: "6",
+            customerName: "Phùng Thanh Độ",
+            packageType: "VIP PACKAGE",
+            volume: 100,
+            priceStage1: 500000,
+            priceStage2: 700000,
+            priceStage3: 900000,
+            totalPrice: 2100000,
+            content: ["Công việc 1", "Công việc 2"],
+            status: getRandomStatus()
+        },
+        {
+            constructionOrderId: "7",
+            customerName: "Uông Đình Dũng",
+            packageType: "VIP PACKAGE",
+            volume: 100,
+            priceStage1: 500000,
+            priceStage2: 700000,
+            priceStage3: 900000,
+            totalPrice: 2100000,
+            content: ["Công việc 1", "Công việc 2"],
+            status: getRandomStatus()
+        },
         // Các báo giá khác
     ];
 
@@ -54,13 +115,15 @@ const ListQuotation = () => {
     };
 
     const handleViewDetails = (quote) => {
-        navigate('/manage/view-quotation', { state: { quote } });
+        navigate('/view-Quotation', { state: { quote } });
     };
 
     return (
         <>
+            <Navbar />
             <ToastContainer position="top-right" autoClose={5000} />
             <div className="container mt-4">
+                <h1 className="text-center mt-4" style={{color: 'blue'}}>List Quotation</h1>
                 <table className="table table-bordered mt-4">
                     <thead>
                         <tr>

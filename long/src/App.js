@@ -77,14 +77,12 @@ function App() {
         },
       ],
     },
+
     {
       path: "consultant-tasks",
       element: <ConsultantTasks />,
     },
-    {
-      path: "design-upload", // Add the route for DesignUpload
-      element: <DesignUpload />,
-    },
+
     {
       path: "construction-order",
       element: <ConstructionOrder />, // Trang hiển thị danh sách ConstructionOrderId
@@ -115,6 +113,15 @@ function App() {
     {
       path: "customer", // Route cho Customer
       element: <Customer />,
+    },
+
+    {
+      path: "designer-tasks", // Route cho Customer
+      element: <DesignerTasks />,
+    },
+    {
+      path: "designer-tasks/design-upload", // Add the route for DesignUpload
+      element: <DesignUpload />,
     },
   ]);
 
