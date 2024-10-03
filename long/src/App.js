@@ -1,5 +1,5 @@
 import "./App.css";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";  // Không cần import Route ở đây
+import { createBrowserRouter, RouterProvider } from "react-router-dom"; // Không cần import Route ở đây
 import Login from "./Components/Login/Login";
 import SignUp from "./Components/SignUp/SignUp";
 import Contact from "./Components/Contact/Contact";
@@ -20,11 +20,20 @@ import Pricing from "./Components/CustomerView/pricing";
 import Customer from "./Components/CustomerView/Customer";
 import ConsultationPage from "./Components/ConsultationPage/ConsultationPage";
 import ListQuotation from "./Components/ListQuotation/ListQuotation";
+import Homepage from "./Components/Homepage/Homepage";
+import Header from "./Components/Header/header";
+import Footer from "./Components/Footer/Footer";
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Login />,
+      element: (
+        <>
+          <Header />
+          <Homepage />
+          <Footer />
+        </>
+      ),
     },
     {
       path: "login",
@@ -86,20 +95,18 @@ function App() {
       element: <ConstructionProgress />, // Trang hiển thị chi tiết task của constructionOrderId
     },
     {
-      path: "consultation-page",  // Sửa lại path thành chữ thường để thống nhất
+      path: "consultation-page", // Sửa lại path thành chữ thường để thống nhất
       element: <ConsultationPage />,
-      children: [
-        
-      ],
+      children: [],
     },
     {
-      path: "list-quotation",  // Sửa path này thành list-quotation thay vì 'list quotation'
+      path: "list-quotation", // Sửa path này thành list-quotation thay vì 'list quotation'
       element: <ListQuotation />,
     },
-    
+
     {
       path: "Quotation-order",
-      element: <QuotationOrder />
+      element: <QuotationOrder />,
     },
     {
       path: "pricing", // Route cho Pricing
