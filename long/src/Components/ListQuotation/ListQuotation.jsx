@@ -15,7 +15,7 @@ const ListQuotation = () => {
     const sampleQuotes = [
         {
             constructionOrderId: "1",
-            customerName: "Tú Đặng",
+            customerName: "Đặng Mai Anh Tú",
             packageType: "BASIC PACKAGE",
             volume: 100,
             priceStage1: 500000,
@@ -39,7 +39,7 @@ const ListQuotation = () => {
         },
         {
             constructionOrderId: "3",
-            customerName: "Đặng Mai Anh Tú",
+            customerName: "Tấn Nhàn",
             packageType: "ECONOMIC PACKAGE",
             volume: 100,
             priceStage1: 86700,
@@ -123,7 +123,7 @@ const ListQuotation = () => {
             <Navbar />
             <ToastContainer position="top-right" autoClose={5000} />
             <div className="container mt-4">
-                <h1 className="text-center mt-4">List Quotation</h1>
+                <h1 className="text-center mt-4" style={{color: 'blue'}}>List Quotation</h1>
                 <table className="table table-bordered mt-4">
                     <thead>
                         <tr>

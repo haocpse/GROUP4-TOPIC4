@@ -244,9 +244,9 @@ const Consultation = () => {
     return (
         <div className="container mt-4">
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
-            <h2 className="text-center" style={{ color: 'red' }}>Manage Requests</h2>
+            <h2 className="text-center" style={{ color: 'blue' }}>Manage Requests</h2>
             <table className="table table-bordered">
-                <thead className="table-dark">
+                <thead>
                     <tr>
                         <th scope="col">Customer</th>
                         <th scope="col">Date</th>

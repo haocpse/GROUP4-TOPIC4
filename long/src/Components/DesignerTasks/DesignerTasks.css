@@ -1,0 +1,5 @@
+/* DesignerTasks.css */
+.table thead th {
+    background-color: #dc3545; /* Màu đỏ Bootstrap (danger) */
+    color: white; /* Đặt màu chữ trắng cho rõ ràng */
+}

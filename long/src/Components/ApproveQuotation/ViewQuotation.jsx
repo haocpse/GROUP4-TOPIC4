@@ -62,7 +62,7 @@ const ViewQuotation = () => {
             <div className="card">
                 <div className="card-body">
                     <table className="table table-bordered table-striped">
-                        <thead className="table-dark">
+                        <thead>
                             <tr>
                                 <th>Package Type</th>
                                 <th>Volume (m³)</th>

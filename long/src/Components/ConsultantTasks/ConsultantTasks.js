@@ -74,7 +74,7 @@ const ConsultantTasks = () => {
     const mockTasks = [
       {
         constructionOrderId: 1,
-        customerName: "Tú Đặng",
+        customerName: "Đặng Mai Anh Tú",
         startDate: "2024-09-10T00:00:00",
         phone: "123-456-7890",
         address: "123 Main St",
@@ -98,7 +98,7 @@ const ConsultantTasks = () => {
     <>
       <Navbar />
       <div className="consultant-tasks">
-        <h1 className="text-center mt-4">Assigned Tasks</h1>
+        <h1 className="text-center mt-4" style={{ color: 'blue' }}>Consultant Tasks</h1>
         <table>
           <thead>
             <tr>

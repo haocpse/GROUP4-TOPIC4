@@ -117,10 +117,10 @@ const ConstructionOrder = () => {
     const navigate = useNavigate();
 
     const mockData = [
-        { constructionOrderId: 1, customerName: "Khoa Nguyễn", status: "inprogress" },
-        { constructionOrderId: 2, customerName: "Háo Phù", status: "inprogress" },
-        { constructionOrderId: 3, customerName: "Long Trương", status: "inprogress" },
-        { constructionOrderId: 4, customerName: "Tú Đặng", status: "inprogress" },
+        { constructionOrderId: 1, customerName: "Tú Đặng", status: "inprogress" },
+        { constructionOrderId: 2, customerName: "Khoa Nguyễn", status: "inprogress" },
+        { constructionOrderId: 3, customerName: "Háo Phù", status: "inprogress" },
+        { constructionOrderId: 4, customerName: "Long Trương", status: "inprogress" },
         { constructionOrderId: 5, customerName: "Uỗng Dung", status: "inprogress" },
     ];
 
@@ -163,7 +163,7 @@ const ConstructionOrder = () => {
             <Navbar />
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
             <div className="container mt-4">
-                <div className="text-center" style={{ color: 'red' }}>
+                <div className="text-center" style={{ color: 'blue' }}>
                     <h2>Construction Orders</h2>
                 </div>
                 <table className="table table-bordered">

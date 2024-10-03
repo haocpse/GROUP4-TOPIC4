@@ -133,9 +133,9 @@ import Navbar from "../Navbar/Navbar";
 
 const DesignUpload = () => {
   const [customerInfo, setCustomerInfo] = useState({
-    customerName: "",
-    phone: "",
-    address: "",
+    customerName: "Tú Đặng",
+    phone: "0707804907",
+    address: "1052 Quang Trung, quận Gò Vấp, TPHCM ",
   });
 
   const [images, setImages] = useState({
@@ -164,92 +164,56 @@ const DesignUpload = () => {
 
   return (
     <>
-      |<Navbar />
+      <Navbar />
       <div className="design-upload mt-4">
-        <h1>Upload Design Images</h1>
+        <h1 style={{color: 'blue'}}>Upload Design Images</h1>
         <div className="customer-info">
           <h2>Customer Information</h2>
           <p>Name: {customerInfo.customerName}</p>
           <p>Phone: {customerInfo.phone}</p>
           <p>Address: {customerInfo.address}</p>
         </div>
-
-        <form onSubmit={handleSubmit}>
-          <div className="input-group">
-            <label>
-              Customer Name:
-              <input
-                type="text"
-                name="customerName"
-                value={customerInfo.customerName}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-            <label>
-              Phone:
-              <input
-                type="text"
-                name="phone"
-                value={customerInfo.phone}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-            <label>
-              Address:
-              <input
-                type="text"
-                name="address"
-                value={customerInfo.address}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
+        <h2>Upload Images</h2>
+        <div className="upload-container">
+          <div className="upload-box">
+            <label>2D Image:</label>
+            <input
+              type="file"
+              name="image2D"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
           </div>
-
-          <h2>Upload Images</h2>
-          <div className="upload-container">
-            <div className="upload-box">
-              <label>2D Image:</label>
-              <input
-                type="file"
-                name="image2D"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
-            </div>
-            <div className="upload-box">
-              <label>3D Image:</label>
-              <input
-                type="file"
-                name="image3D"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
-            </div>
-            <div className="upload-box">
-              <label>Front View:</label>
-              <input
-                type="file"
-                name="frontView"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
-            </div>
-            <div className="upload-box">
-              <label>Rear View:</label>
-              <input
-                type="file"
-                name="rearView"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
-            </div>
+          <div className="upload-box">
+            <label>3D Image:</label>
+            <input
+              type="file"
+              name="image3D"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
           </div>
+          <div className="upload-box">
+            <label>Front View:</label>
+            <input
+              type="file"
+              name="frontView"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+          </div>
+          <div className="upload-box">
+            <label>Rear View:</label>
+            <input
+              type="file"
+              name="rearView"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+          </div>
+        </div>
 
-          <button type="submit">Submit</button>
-        </form>
+        <button type="submit">Submit</button>
       </div>
     </>
   );
@@ -257,4 +221,5 @@ const DesignUpload = () => {
 };
 
 export default DesignUpload;
+
 
