@@ -23,6 +23,7 @@ import ListQuotation from "./Components/ListQuotation/ListQuotation";
 import Homepage from "./Components/Homepage/Homepage";
 import Header from "./Components/Header/header";
 import Footer from "./Components/Footer/Footer";
+import DesignerTasks from "./Components/DesignerTasks/DesignerTasks";
 function App() {
   const router = createBrowserRouter([
     {
