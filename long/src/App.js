@@ -89,16 +89,16 @@ function App() {
       path: "consultation-page",  // Sửa lại path thành chữ thường để thống nhất
       element: <ConsultationPage />,
       children: [
-        
+
       ],
     },
     {
       path: "list-quotation",  // Sửa path này thành list-quotation thay vì 'list quotation'
       element: <ListQuotation />,
     },
-    
+
     {
-      path: "Quotation-order",
+      path: "quotation-order",
       element: <QuotationOrder />
     },
     {

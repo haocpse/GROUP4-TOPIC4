@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import styles from "./ListQuotation.module.css";
+import Navbar from "../Navbar/Navbar";
 
 const ListQuotation = () => {
     const [quotes, setQuotes] = useState([]);
@@ -14,7 +15,7 @@ const ListQuotation = () => {
     const sampleQuotes = [
         {
             constructionOrderId: "1",
-            customerName: "Nguyễn Minh Khoa",
+            customerName: "Tú Đặng",
             packageType: "BASIC PACKAGE",
             volume: 100,
             priceStage1: 500000,
@@ -59,8 +60,10 @@ const ListQuotation = () => {
 
     return (
         <>
+            <Navbar />
             <ToastContainer position="top-right" autoClose={5000} />
             <div className="container mt-4">
+                <h1 className="text-center mt-4">List Quotation</h1>
                 <table className="table table-bordered mt-4">
                     <thead>
                         <tr>

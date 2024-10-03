@@ -194,19 +194,26 @@ const Consultation = () => {
         setRequests(prevRequests =>
             prevRequests.map(request => {
                 if (request.id === requestId) {
+                    let updatedStatus = request.status;
+
+                    // Cập nhật thông tin nhân viên được gán
                     if (role === 'Consultant') {
-                        return { ...request, assignedConsultant: staffName };
+                        updatedStatus = "Consulting";  // Đổi trạng thái khi gán nhân viên tư vấn
+                        return { ...request, assignedConsultant: staffName, status: updatedStatus };
                     } else if (role === 'Designer') {
-                        return { ...request, assignedDesigner: staffName };
+                        updatedStatus = "Designing";  // Đổi trạng thái khi gán nhân viên thiết kế
+                        return { ...request, assignedDesigner: staffName, status: updatedStatus };
                     } else if (role === 'Constructor') {
-                        return { ...request, assignedConstructor: staffName };
+                        updatedStatus = "Constructing";  // Đổi trạng thái khi gán nhân viên xây dựng
+                        return { ...request, assignedConstructor: staffName, status: updatedStatus };
                     }
                 }
                 return request;
             })
         );
-        toast.success("Staff assigned successfully!");
+        toast.success("Staff assigned and status updated successfully!");
     };
+
 
     const handleStatusChange = (requestId, newStatus) => {
         setRequests(prevRequests =>
