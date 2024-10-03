@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class StateTransitionResponse<T> {
 
-    String id;
+    String orderId;
     String staffName;
     T status;
 

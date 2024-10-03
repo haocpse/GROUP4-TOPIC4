@@ -2,22 +2,24 @@ package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.ConstructionOrder;
 import com.swp_group4.back_end.entities.Customer;
+import com.swp_group4.back_end.entities.OrderAndStaff;
 import com.swp_group4.back_end.entities.Staff;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
+import com.swp_group4.back_end.exception.AppException;
+import com.swp_group4.back_end.exception.ErrorCode;
 import com.swp_group4.back_end.repositories.ConstructOrderRepository;
 import com.swp_group4.back_end.repositories.CustomerRepository;
 import com.swp_group4.back_end.repositories.StaffRepository;
+import com.swp_group4.back_end.requests.StaffAssignedRequest;
 import com.swp_group4.back_end.responses.ConstructionOrderInStepResponse;
-import com.swp_group4.back_end.responses.OverallReviewResponse;
+import com.swp_group4.back_end.responses.StateTransitionResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 @Service
 @FieldDefaults(level = AccessLevel.PACKAGE)
@@ -59,5 +61,30 @@ public class HelperService {
                 .status(order.getStatus())
                 .build();
     }
+
+    Customer identifyCustomer() {
+        var context = SecurityContextHolder.getContext();
+        String accountId = context.getAuthentication().getName();
+        return customerRepository.findByAccountId(accountId).orElseThrow(()
+                -> new AppException(ErrorCode.USER_NOT_EXIST));
+    }
+
+    OrderAndStaff findOrderAndStaff(StaffAssignedRequest request){
+        return OrderAndStaff.builder()
+                .order(constructOrderRepository.findById(request.getConstructionOrderId())
+                        .orElseThrow(() -> new RuntimeException("ConstructionOrder not found for id: " + request.getConstructionOrderId())))
+                .staff(staffRepository.findById(request.getStaffId())
+                        .orElseThrow(() -> new RuntimeException("Staff not found for id: " + request.getStaffId())))
+                .build();
+    }
+
+    StateTransitionResponse<ConstructionOrderStatus> response(OrderAndStaff helOrderAndStaff){
+        return StateTransitionResponse.<ConstructionOrderStatus>builder()
+                .orderId(helOrderAndStaff.getOrder().getConstructionOrderId())
+                .staffName(helOrderAndStaff.getStaff().getStaffName())
+                .status(helOrderAndStaff.getOrder().getStatus())
+                .build();
+    }
+
 
 }

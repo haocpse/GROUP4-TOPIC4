@@ -28,6 +28,8 @@ public class CustomerService {
     CustomerMapper customerMapper;
     @Autowired
     ManageConstructionOrderService manageConstructionOrderService;
+    @Autowired
+    HelperService helperService;
 
     public void createCustomer(String accountId, String firstname) {
         customerRepository.save(Customer.builder()
@@ -37,19 +39,13 @@ public class CustomerService {
     }
 
     public CustomerResponse getOwnedInfo(){
-        var context = SecurityContextHolder.getContext();
-        String accountId = context.getAuthentication().getName();
-        Customer customer = customerRepository.findByAccountId(accountId).orElseThrow(()
-                -> new AppException(ErrorCode.USER_NOT_EXIST));
+        Customer customer = helperService.identifyCustomer();
         CustomerResponse response = new CustomerResponse();
         return customerMapper.customerToResponse(customer, response);
     }
 
     public CustomerResponse updateOwnedInfo(UpdateInfoRequest request) {
-        var context = SecurityContextHolder.getContext();
-        String accountId = context.getAuthentication().getName();
-        Customer customer = customerRepository.findByAccountId(accountId).orElseThrow(()
-                -> new AppException(ErrorCode.USER_NOT_EXIST));
+        Customer customer = helperService.identifyCustomer();
         customerMapper.updateInfoToCustomer(request, customer);
         customerRepository.save(customer);
         CustomerResponse response = new CustomerResponse();
@@ -57,14 +53,9 @@ public class CustomerService {
     }
 
     public ServiceResponse<?> contactUs(ServiceRequest serviceRequest) {
-
-        var context = SecurityContextHolder.getContext();
-        String accountId = context.getAuthentication().getName();
-        Customer customer = customerRepository.findByAccountId(accountId).orElseThrow(()
-                -> new AppException(ErrorCode.USER_NOT_EXIST));
+        Customer customer = helperService.identifyCustomer();
         customerMapper.serviceRequestToCustomer(serviceRequest, customer);
         customerRepository.save(customer);
-
         if (serviceRequest.getService().name().equals("CONSTRUCTION_SERVICE")) {
             ConstructionOrder constructionOrder = manageConstructionOrderService.createOrder(serviceRequest, customer);
             return manageConstructionOrderService.contactUsForConstruction(serviceRequest, constructionOrder);

@@ -1,9 +1,6 @@
 package com.swp_group4.back_end.services;
 
-import com.swp_group4.back_end.entities.Account;
-import com.swp_group4.back_end.entities.ConstructionOrder;
-import com.swp_group4.back_end.entities.Customer;
-import com.swp_group4.back_end.entities.Staff;
+import com.swp_group4.back_end.entities.*;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.mapper.ConstructionOrderMapper;
 import com.swp_group4.back_end.repositories.AccountRepository;
@@ -32,8 +29,6 @@ public class ManageConstructionOrderService {
     @Autowired
     StaffRepository staffRepository;
     @Autowired
-    CustomerRepository customerRepository;
-    @Autowired
     AccountRepository accountRepository;
     @Autowired
     HelperService helperService;
@@ -61,29 +56,37 @@ public class ManageConstructionOrderService {
         return helperService.listAllOrder();
     }
 
-    public StateTransitionResponse assignStaff(StaffAssignedRequest request){
-        Staff staff = staffRepository.findById(request.getStaffId())
-                .orElseThrow(() -> new RuntimeException("Staff not found for id: " + request.getStaffId()));
-        Account acc = accountRepository.findById(staff.getAccountId()).orElseThrow(
-                () -> new RuntimeException("ERROR"));
-        ConstructionOrder order = constructOrderRepository.findById(request.getConstructionOrderId())
-                .orElseThrow(() -> new RuntimeException("ConstructionOrder not found for id: " + request.getConstructionOrderId()));
-        if (acc.getRole().name().equals("CONSULTANT")) {
-            order.setConsultant(staff.getStaffId());
-            order.setStatus(request.getStatus());
-        } else if (acc.getRole().name().equals("DESIGN")) {
-            order.setDesignLeader(staff.getStaffId());
-            order.setStatus(request.getStatus());
-        } else {
-            order.setConstructionLeader(staff.getStaffId());
-        }
-        constructOrderRepository.save(order);
-        return StateTransitionResponse.builder()
-                .id(order.getConstructionOrderId())
-                .staffName(staff.getStaffName())
-                .status(order.getStatus())
+    public StateTransitionResponse<ConstructionOrderStatus> assignConsultLeader(StaffAssignedRequest request){
+        OrderAndStaff heleperOrderAndStaff = helperService.findOrderAndStaff(request);
+        ConstructionOrder order = ConstructionOrder.builder()
+                .consultant(request.getStaffId())
+                .status(request.getStatus())
                 .build();
+        constructOrderRepository.save(order);
+        return helperService.response(heleperOrderAndStaff);
     }
+
+    public StateTransitionResponse<ConstructionOrderStatus> assignDesignLeader(StaffAssignedRequest request) {
+        OrderAndStaff helperOrderAndStaff = helperService.findOrderAndStaff(request);
+        ConstructionOrder order = ConstructionOrder.builder()
+                .designLeader(request.getStaffId())
+                .status(request.getStatus())
+                .build();
+        constructOrderRepository.save(order);
+        return helperService.response(helperOrderAndStaff);
+    }
+
+    public StateTransitionResponse<ConstructionOrderStatus> assignConstructLeader(StaffAssignedRequest request) {
+        OrderAndStaff helperOrderAndStaff = helperService.findOrderAndStaff(request);
+        ConstructionOrder order = ConstructionOrder.builder()
+                .constructionLeader(request.getStaffId())
+                .status(request.getStatus())
+                .build();
+        constructOrderRepository.save(order);
+        return helperService.response(helperOrderAndStaff);
+    }
+
+
 
 //    public ServiceResponse<MaintenanceOrderResponse> contactUsForMaintenance(ServiceRequest serviceRequest) {
 //        // Your logic for maintenance service...
