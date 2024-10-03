@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/manage")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ApprovalReviewController {
+public class QuotationAndDesignApprovalController {
 
     @Autowired
     QuotationAndDesignApprovalService quotationAndDesignApprovalService;

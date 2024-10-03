@@ -8,6 +8,7 @@ import com.swp_group4.back_end.repositories.ConstructOrderRepository;
 import com.swp_group4.back_end.repositories.CustomerRepository;
 import com.swp_group4.back_end.repositories.StaffRepository;
 import com.swp_group4.back_end.responses.ConstructionOrderInStepResponse;
+import com.swp_group4.back_end.responses.OverallReviewResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 @Service
 @FieldDefaults(level = AccessLevel.PACKAGE)
@@ -28,16 +30,19 @@ public class HelperService {
     @Autowired
     CustomerRepository customerRepository;
 
-    List<ConstructionOrderInStepResponse> orderInStepResponses(List<ConstructionOrderStatus> orderStatuses, String note) {
+    List<ConstructionOrderInStepResponse> listAllOrder() {
+        List<ConstructionOrder> orders = constructOrderRepository.findAll();
+        return orders.stream()
+                .map(this::detailOfOrder)
+                .toList();
+    }
+
+    List<ConstructionOrderInStepResponse> orderInStepResponses(List<ConstructionOrderStatus> orderStatuses) {
         List<ConstructionOrder> orders;
-        if (note.equals("statusAndStaffId")) {
-            var context = SecurityContextHolder.getContext();
-            String accountId = context.getAuthentication().getName();
-            Staff staff = staffRepository.findByAccountId(accountId).orElseThrow(() -> new RuntimeException("ACCOUNT DOES NOT EXIST"));
-            orders = constructOrderRepository.findByConstructionLeaderAndStatusIn(staff.getStaffId(), orderStatuses);
-        } else {
-            orders = constructOrderRepository.findByStatusIn(orderStatuses);
-        }
+        var context = SecurityContextHolder.getContext();
+        String accountId = context.getAuthentication().getName();
+        Staff staff = staffRepository.findByAccountId(accountId).orElseThrow(() -> new RuntimeException("ACCOUNT DOES NOT EXIST"));
+        orders = constructOrderRepository.findByConstructionLeaderAndStatusIn(staff.getStaffId(), orderStatuses);
         return orders.stream()
                 .map(this::detailOfOrder)
                 .toList();
@@ -54,6 +59,5 @@ public class HelperService {
                 .status(order.getStatus())
                 .build();
     }
-
 
 }

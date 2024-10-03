@@ -9,10 +9,10 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class StateTransitionResponse {
+public class StateTransitionResponse<T> {
 
-    String constructionOrderId;
+    String id;
     String staffName;
-    ConstructionOrderStatus status;
+    T status;
 
 }

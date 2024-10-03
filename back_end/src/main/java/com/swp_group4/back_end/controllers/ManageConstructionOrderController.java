@@ -2,7 +2,7 @@ package com.swp_group4.back_end.controllers;
 
 import com.swp_group4.back_end.requests.StaffAssignedRequest;
 import com.swp_group4.back_end.responses.*;
-import com.swp_group4.back_end.services.ConstructOrderService;
+import com.swp_group4.back_end.services.ManageConstructionOrderService;
 import com.swp_group4.back_end.services.StaffService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -12,39 +12,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/manage")
+@RequestMapping("/manage/requests")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ConstructOrderController {
+public class ManageConstructionOrderController {
 
     @Autowired
-    ConstructOrderService constructOrderService;
+    ManageConstructionOrderService manageConstructionOrderService;
     @Autowired
     StaffService staffService;
 
     // Hàm để MANAGER xem toàn bộ Construction Order đang ở các trạng thái
     // REQUESTED, CONSULTING, QUOTATION
-    @GetMapping("/requests/consultation")
+    @GetMapping()
     public ApiResponse<List<ConstructionOrderInStepResponse>> listConsultationRequest() {
         return ApiResponse.<List<ConstructionOrderInStepResponse>>builder()
-                .data(constructOrderService.listAllOrderInStep("consult"))
-                .build();
-    }
-
-    // Hàm để MANAGER xem toàn bộ Construction Order đang ở các trạng thái
-    // CONFIRMED_QUOTATION, DESIGNING, DESIGNED
-    @GetMapping("/requests/design")
-    public ApiResponse<List<ConstructionOrderInStepResponse>> listDesignRequest() {
-        return ApiResponse.<List<ConstructionOrderInStepResponse>>builder()
-                .data(constructOrderService.listAllOrderInStep("design"))
-                .build();
-    }
-
-    // Hàm để MANAGER xem toàn bộ Construction Order đang ở các trạng thái
-    // CONFIRMED_DESIGNED, CONSTRUCTING, CONSTRUCTED
-    @GetMapping("/requests/construction")
-    public ApiResponse<List<ConstructionOrderInStepResponse>> listConstructRequest() {
-        return ApiResponse.<List<ConstructionOrderInStepResponse>>builder()
-                .data(constructOrderService.listAllOrderInStep("construct"))
+                .data(manageConstructionOrderService.listAllOrder())
                 .build();
     }
 
@@ -76,7 +58,7 @@ public class ConstructOrderController {
     @PostMapping("/assignStaff")
     public ApiResponse<StateTransitionResponse> assignStaff(@RequestBody StaffAssignedRequest request) {
         return ApiResponse.<StateTransitionResponse>builder()
-                .data(constructOrderService.assignStaff(request))
+                .data(manageConstructionOrderService.assignStaff(request))
                 .build();
     }
 

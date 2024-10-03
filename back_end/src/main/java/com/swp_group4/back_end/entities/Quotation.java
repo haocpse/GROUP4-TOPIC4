@@ -2,6 +2,7 @@ package com.swp_group4.back_end.entities;
 
 import com.swp_group4.back_end.enums.QuotationBatch;
 import com.swp_group4.back_end.enums.PaymentStatus;
+import com.swp_group4.back_end.enums.QuotationStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -29,5 +30,6 @@ public class Quotation {
     double priceStage3;
     String promotionId;
     String packageId;
+    QuotationStatus status;
 
 }

@@ -45,9 +45,8 @@ public class ConsultationService {
     HelperService helperService;
 
     public List<ConstructionOrderInStepResponse> listOwnedConsultTask() {
-        List<ConstructionOrderStatus> statusList = List.of(ConstructionOrderStatus.CONSULTING,
-                                                            ConstructionOrderStatus.QUOTATION);
-        return helperService.orderInStepResponses(statusList, "statusAndStaffId");
+        List<ConstructionOrderStatus> statusList = List.of(ConstructionOrderStatus.CONSULTING);
+        return helperService.orderInStepResponses(statusList);
     }
 
     public ConstructionOrderInStepResponse detailOfOrder(String constructionOrderId) {
@@ -68,7 +67,6 @@ public class ConsultationService {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
                 () -> new RuntimeException("Order not found for id: " + constructionOrderId));
         order.setQuotationId(quotation.getQuotationId());
-        order.setStatus(ConstructionOrderStatus.QUOTATION);
         order.setTotal(request.getTotalPrice());
         constructOrderRepository.save(order);
         List<String> listPackageConstructionId = request.getPackageConstructionId();

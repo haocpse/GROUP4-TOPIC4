@@ -27,7 +27,7 @@ public class CustomerService {
     @Autowired
     CustomerMapper customerMapper;
     @Autowired
-    ConstructOrderService constructOrderService;
+    ManageConstructionOrderService manageConstructionOrderService;
 
     public void createCustomer(String accountId, String firstname) {
         customerRepository.save(Customer.builder()
@@ -66,8 +66,8 @@ public class CustomerService {
         customerRepository.save(customer);
 
         if (serviceRequest.getService().name().equals("CONSTRUCTION_SERVICE")) {
-            ConstructionOrder constructionOrder = constructOrderService.createOrder(serviceRequest, customer);
-            return constructOrderService.contactUsForConstruction(serviceRequest, constructionOrder);
+            ConstructionOrder constructionOrder = manageConstructionOrderService.createOrder(serviceRequest, customer);
+            return manageConstructionOrderService.contactUsForConstruction(serviceRequest, constructionOrder);
         }
 //        if (serviceRequest.getService().name().equals("MAINTENANCE_SERVICE")) {
 //          return contactUsForMaintenance(serviceRequest);

@@ -19,12 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ConstructOrderService {
+public class ManageConstructionOrderService {
 
     @Autowired
     ConstructOrderRepository constructOrderRepository;
@@ -58,22 +57,8 @@ public class ConstructOrderService {
         return constructOrderRepository.save(constructionOrder);
     }
 
-    public List<ConstructionOrderInStepResponse> listAllOrderInStep(String step) {
-        List<ConstructionOrderStatus> statusList = new ArrayList<>();
-        if (step.equals("consult")){
-            statusList.add(ConstructionOrderStatus.REQUESTED);
-            statusList.add(ConstructionOrderStatus.CONSULTING);
-            statusList.add(ConstructionOrderStatus.QUOTATION);
-        } else if (step.equals("design")) {
-            statusList.add(ConstructionOrderStatus.CONFIRMED_QUOTATION);
-            statusList.add(ConstructionOrderStatus.DESIGNING);
-            statusList.add(ConstructionOrderStatus.DESIGNED);
-        } else {
-            statusList.add(ConstructionOrderStatus.CONFIRM_DESIGN);
-            statusList.add(ConstructionOrderStatus.CONSTRUCTING);
-            statusList.add(ConstructionOrderStatus.CONSTRUCTED);
-        }
-        return helperService.orderInStepResponses(statusList, "onlyStatus");
+    public List<ConstructionOrderInStepResponse> listAllOrder() {
+        return helperService.listAllOrder();
     }
 
     public StateTransitionResponse assignStaff(StaffAssignedRequest request){
@@ -85,16 +70,16 @@ public class ConstructOrderService {
                 .orElseThrow(() -> new RuntimeException("ConstructionOrder not found for id: " + request.getConstructionOrderId()));
         if (acc.getRole().name().equals("CONSULTANT")) {
             order.setConsultant(staff.getStaffId());
-            order.setStatus(ConstructionOrderStatus.CONSULTING);
+            order.setStatus(request.getStatus());
         } else if (acc.getRole().name().equals("DESIGN")) {
             order.setDesignLeader(staff.getStaffId());
-            order.setStatus(ConstructionOrderStatus.DESIGNING);
+            order.setStatus(request.getStatus());
         } else {
             order.setConstructionLeader(staff.getStaffId());
         }
         constructOrderRepository.save(order);
         return StateTransitionResponse.builder()
-                .constructionOrderId(order.getConstructionOrderId())
+                .id(order.getConstructionOrderId())
                 .staffName(staff.getStaffName())
                 .status(order.getStatus())
                 .build();

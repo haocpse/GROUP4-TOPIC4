@@ -29,9 +29,8 @@ public class DesignService {
     HelperService helperService;
 
     public List<ConstructionOrderInStepResponse> listOwnedDesignTask() {
-        List<ConstructionOrderStatus> statusList = List.of(ConstructionOrderStatus.DESIGNING,
-                                                            ConstructionOrderStatus.DESIGNED);
-        return helperService.orderInStepResponses(statusList,"statusAndStaffId");
+        List<ConstructionOrderStatus> statusList = List.of(ConstructionOrderStatus.DESIGNING);
+        return helperService.orderInStepResponses(statusList);
     }
 
     public ConstructionOrderInStepResponse detailOfOrder(String constructionOrderId) {
@@ -47,7 +46,7 @@ public class DesignService {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
                 () -> new RuntimeException("Order not found for id: " + constructionOrderId));
         order.setDesignId(design.getDesignId());
-        order.setStatus(ConstructionOrderStatus.DESIGNED);
+      
         constructOrderRepository.save(order);
         return design;
     }

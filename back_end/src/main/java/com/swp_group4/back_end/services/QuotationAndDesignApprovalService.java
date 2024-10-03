@@ -1,7 +1,8 @@
 package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.*;
-import com.swp_group4.back_end.enums.ConstructionOrderStatus;
+import com.swp_group4.back_end.enums.DesignStatus;
+import com.swp_group4.back_end.enums.QuotationStatus;
 import com.swp_group4.back_end.mapper.QuotationMapper;
 import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.requests.ManageReviewRequest;
@@ -9,6 +10,7 @@ import com.swp_group4.back_end.responses.ConstructQuotationResponse;
 import com.swp_group4.back_end.responses.OverallReviewResponse;
 import com.swp_group4.back_end.responses.StateTransitionResponse;
 import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,8 @@ import java.util.List;
 @Service
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class QuotationAndDesignApprovalService {
+@RequiredArgsConstructor
+public class QuotationAndDesignApprovalService<T> {
 
     @Autowired
     QuotationRepository quotationRepository;
@@ -39,12 +42,51 @@ public class QuotationAndDesignApprovalService {
     @Autowired
     DesignRepository designRepository;
 
-    public List<OverallReviewResponse> listAllQuotation(){
-        return responseList(ConstructionOrderStatus.QUOTATION);
+    public List<OverallReviewResponse<QuotationStatus>> listAllQuotation() {
+        List<Quotation> quotations = quotationRepository.findByStatus(QuotationStatus.QUOTATION);
+        List<OverallReviewResponse<QuotationStatus>> responses = new ArrayList<>();
+        for (Quotation quotation : quotations) {
+            String orderId = constructOrderRepository
+                    .findByQuotationId(quotation.getQuotationId())
+                    .getConstructionOrderId();
+            ConstructionOrder order = constructOrderRepository.findById(orderId).orElseThrow(
+                    () -> new RuntimeException("Order not found for id: " + orderId));
+            Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow(
+                    () -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
+            OverallReviewResponse<QuotationStatus> response = OverallReviewResponse.<QuotationStatus>builder()
+                    .constructionOrderId(order.getConstructionOrderId())
+                    .id(quotation.getQuotationId())
+                    .customerName(customer.getFirstname() + " " + customer.getLastname())
+                    .phone(customer.getPhone())
+                    .address(customer.getAddress())
+                    .build();
+            responses.add(response);
+        }
+        return responses;
     }
 
-    public List<OverallReviewResponse> listAllDesign() {
-        return responseList(ConstructionOrderStatus.DESIGNED);
+    public List<OverallReviewResponse<DesignStatus>> listAllDesign() {
+        List<Design> designs = designRepository.findByStatus(DesignStatus.DESIGNED);
+        List<OverallReviewResponse<DesignStatus>> responses = new ArrayList<>();
+        for (Design design : designs) {
+            String orderId = constructOrderRepository
+                    .findByQuotationId(design.getDesignId())
+                    .getConstructionOrderId();
+            ConstructionOrder order = constructOrderRepository.findById(orderId).orElseThrow(
+                    () -> new RuntimeException("Order not found for id: " + orderId));
+            Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow(
+                    () -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
+            OverallReviewResponse<DesignStatus>
+                    response = OverallReviewResponse.<DesignStatus>builder()
+                    .constructionOrderId(orderId)
+                    .id(design.getDesignId())
+                    .customerName(customer.getFirstname() + " " + customer.getLastname())
+                    .phone(customer.getPhone())
+                    .address(customer.getAddress())
+                    .build();
+            responses.add(response);
+        }
+        return responses;
     }
 
     public ConstructQuotationResponse detailQuotation(String quotationId) {
@@ -73,54 +115,29 @@ public class QuotationAndDesignApprovalService {
                 () -> new RuntimeException("Error"));
     }
 
-    public StateTransitionResponse manageQuotation(ManageReviewRequest request) {
-        ConstructionOrder order = constructOrderRepository.findByQuotationId(request.getId());
+    public StateTransitionResponse<QuotationStatus> manageQuotation(ManageReviewRequest request) {
+        Quotation quotation = quotationRepository.findById(request.getId()).orElseThrow(
+                () -> new RuntimeException("Quotation not found"));
         if (request.getStatus().name().equals("APPROVED")) {
-            order.setStatus(ConstructionOrderStatus.CONFIRMED_QUOTATION);
-        } else {
-            order.setQuotationId(null);
+            quotation.setStatus(QuotationStatus.CONFIRMED_QUOTATION);
+            quotationRepository.save(quotation);
         }
-        constructOrderRepository.save(order);
-        return response(order.getConstructionOrderId(), order.getStatus());
+        return StateTransitionResponse.<QuotationStatus>builder()
+                .id(request.getId())
+                .status(quotation.getStatus())
+                .build();
     }
 
-    public StateTransitionResponse manageDesign(ManageReviewRequest request) {
-        ConstructionOrder order = constructOrderRepository.findByDesignId(request.getId());
+    public StateTransitionResponse<DesignStatus> manageDesign(ManageReviewRequest request) {
+        Design design = designRepository.findById(request.getId()).orElseThrow(
+                () -> new RuntimeException("Design not found"));
         if (request.getStatus().name().equals("APPROVED")) {
-            order.setStatus(ConstructionOrderStatus.CONFIRM_DESIGN);
-        } else {
-            order.setDesignId(null);
+            design.setStatus(DesignStatus.CONFIRMED_DESIGN);
+            designRepository.save(design);
         }
-        constructOrderRepository.save(order);
-        return response(order.getConstructionOrderId(), order.getStatus());
-    }
-
-    List<ConstructionOrder> constructionOrders (ConstructionOrderStatus status) {
-        return constructOrderRepository.findByStatus(status);
-    }
-
-    List<OverallReviewResponse> responseList (ConstructionOrderStatus status){
-        List<ConstructionOrder> orders = constructionOrders(status);
-        List<OverallReviewResponse> responses = new ArrayList<>();
-        for (ConstructionOrder order : orders) {
-            Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow(
-                    () -> new RuntimeException("Customer not found"));
-            OverallReviewResponse response = OverallReviewResponse.builder()
-                    .constructionOrderId(order.getConstructionOrderId())
-                    .id(order.getQuotationId())
-                    .customerName(customer.getFirstname() + " " + customer.getLastname())
-                    .phone(customer.getPhone())
-                    .address(customer.getAddress())
-                    .build();
-            responses.add(response);
-        }
-        return responses;
-    }
-
-    StateTransitionResponse response (String id, ConstructionOrderStatus status) {
-        return StateTransitionResponse.builder()
-                .constructionOrderId(id)
-                .status(status)
+        return StateTransitionResponse.<DesignStatus>builder()
+                .id(request.getId())
+                .status(design.getStatus())
                 .build();
     }
 

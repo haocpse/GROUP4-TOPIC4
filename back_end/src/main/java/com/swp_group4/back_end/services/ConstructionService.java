@@ -38,10 +38,9 @@ public class ConstructionService {
     HelperService helperService;
 
     public List<ConstructionOrderInStepResponse> listOwnedConstructTask() {
-        List<ConstructionOrderStatus> statusList = List.of(ConstructionOrderStatus.CONFIRM_DESIGN,
-                                                            ConstructionOrderStatus.CONSTRUCTING,
+        List<ConstructionOrderStatus> statusList = List.of(ConstructionOrderStatus.CONSTRUCTING,
                                                             ConstructionOrderStatus.CONSTRUCTED);
-        return helperService.orderInStepResponses(statusList, "statusAndStaffId");
+        return helperService.orderInStepResponses(statusList);
     }
 
     public ConstructStepResponse detailOfConstruct(String constructionOrderId) {
@@ -82,10 +81,8 @@ public class ConstructionService {
     public AssignConstructionTaskResponse assignTask(String constructionOrderId, AssignTaskStaffRequest request) {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
                 () -> new RuntimeException("Order not found for id: " + constructionOrderId));
-        if (order.getStatus().equals(ConstructionOrderStatus.CONFIRM_DESIGN)) {
             order.setStatus(ConstructionOrderStatus.CONSTRUCTING);
             constructOrderRepository.save(order);
-        }
         Staff staff = staffRepository.findById(request.getStaffId()).orElseThrow(
                 () -> new RuntimeException("Staff not found for id: " + request.getStaffId()));
         return AssignConstructionTaskResponse.builder()
