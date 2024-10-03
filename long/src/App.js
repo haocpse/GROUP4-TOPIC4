@@ -20,6 +20,8 @@ import Pricing from "./Components/CustomerView/pricing";
 import Customer from "./Components/CustomerView/Customer";
 import ConsultationPage from "./Components/ConsultationPage/ConsultationPage";
 import ListQuotation from "./Components/ListQuotation/ListQuotation";
+import ViewPayment from "./Components/ListQuotation/ViewPayment";
+import ViewQuotationInConsultationPage from "./Components/ListQuotation/ViewQuotationInConsultationPage";
 function App() {
   const router = createBrowserRouter([
     {
@@ -95,6 +97,14 @@ function App() {
     {
       path: "list-quotation",  // Sửa path này thành list-quotation thay vì 'list quotation'
       element: <ListQuotation />,
+    },
+    {
+      path: "view-Quotation",
+      element:<ViewQuotationInConsultationPage/>
+    },
+    {
+      path : "view-payment",
+      element: <ViewPayment/>,
     },
     
     {
