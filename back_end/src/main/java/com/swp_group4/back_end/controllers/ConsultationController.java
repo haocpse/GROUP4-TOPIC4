@@ -1,9 +1,10 @@
 package com.swp_group4.back_end.controllers;
 
-import com.swp_group4.back_end.requests.QuotationDetailRequest;
+import com.swp_group4.back_end.requests.ExportQuotationRequest;
 import com.swp_group4.back_end.responses.ApiResponse;
+import com.swp_group4.back_end.responses.ConstructOrderDetailForManagerResponse;
+import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
 import com.swp_group4.back_end.responses.ConstructQuotationResponse;
-import com.swp_group4.back_end.responses.ConstructionOrderInStepResponse;
 import com.swp_group4.back_end.services.ConsultationService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -20,22 +21,28 @@ public class ConsultationController {
     @Autowired
     ConsultationService consultationService;
 
-    @GetMapping("/owned-tasks")
-    public ApiResponse<List<ConstructionOrderInStepResponse>> listTask() {
-        return ApiResponse.<List<ConstructionOrderInStepResponse>>builder()
+    // Hàm để CONSULTANT xem các task được Customer gán
+    // (Construction Order đang ở trạng thái CONSULTING)
+    @GetMapping("/ownedTasks")
+    public ApiResponse<List<ConstructOrderDetailForStaffResponse>> listTask() {
+        return ApiResponse.<List<ConstructOrderDetailForStaffResponse>>builder()
                 .data(consultationService.listOwnedConsultTask())
                 .build();
     }
 
-    @GetMapping("/owned-tasks/{constructionOrderId}")
-    public ApiResponse<ConstructionOrderInStepResponse> detailTask(@PathVariable String constructionOrderId) {
-        return ApiResponse.<ConstructionOrderInStepResponse>builder()
+    // Hàm để CONSULTANT xem chi tiết Construction Order
+    // (Construction Order đang ở trạng thái CONSULTING)
+    @GetMapping("/ownedTasks/{constructionOrderId}")
+    public ApiResponse<ConstructOrderDetailForStaffResponse> detailTask(@PathVariable String constructionOrderId) {
+        return ApiResponse.<ConstructOrderDetailForStaffResponse>builder()
                 .data(consultationService.detailOfOrder(constructionOrderId))
                 .build();
     }
 
-    @PostMapping("/owned-tasks/{constructionOrderId}/export-quotation")
-    public ApiResponse<ConstructQuotationResponse> exportQuotation(@PathVariable String constructionOrderId, @RequestBody QuotationDetailRequest request) {
+    // Hàm để CONSULTANT xuất 1 quotation
+    // (Construction Order đang ở trạng thái QUOTATION)
+    @PostMapping("/ownedTasks/{constructionOrderId}/exportQuotation")
+    public ApiResponse<ConstructQuotationResponse> exportQuotation(@PathVariable String constructionOrderId, @RequestBody ExportQuotationRequest request) {
         return ApiResponse.<ConstructQuotationResponse>builder()
                 .data(consultationService.exportQuotation(constructionOrderId, request))
                 .build();

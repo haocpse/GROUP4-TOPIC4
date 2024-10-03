@@ -14,11 +14,14 @@ public class ConstructQuotationResponse {
 
     String quotationId;
     String packageType;
+    String customerName;
+    String consultantName;
     double volume;
     double priceStage1;
     double priceStage2;
     double priceStage3;
     double totalPrice;
+    String customerRequest;
     List<String> content;
 
 }

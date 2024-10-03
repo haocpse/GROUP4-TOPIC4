@@ -1,8 +1,8 @@
 package com.swp_group4.back_end.mapper;
 
 import com.swp_group4.back_end.entities.Quotation;
-import com.swp_group4.back_end.requests.QuotationDetailRequest;
-import com.swp_group4.back_end.responses.QuotationResponse;
+import com.swp_group4.back_end.requests.ExportQuotationRequest;
+import com.swp_group4.back_end.responses.ConstructQuotationResponse;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class QuotationMapperImpl implements QuotationMapper {
 
     @Override
-    public Quotation toQuotation(QuotationDetailRequest request, Quotation quotation) {
+    public Quotation toQuotation(ExportQuotationRequest request, Quotation quotation) {
         if ( request == null ) {
             return quotation;
         }
@@ -29,16 +29,17 @@ public class QuotationMapperImpl implements QuotationMapper {
     }
 
     @Override
-    public QuotationResponse toQuotationResponse(Quotation quotation, QuotationResponse quotationResponse) {
+    public ConstructQuotationResponse toQuotationResponse(Quotation quotation, ConstructQuotationResponse constructQuotationResponse) {
         if ( quotation == null ) {
-            return quotationResponse;
+            return constructQuotationResponse;
         }
 
-        quotationResponse.setQuotationId( quotation.getQuotationId() );
-        quotationResponse.setPriceStage1( quotation.getPriceStage1() );
-        quotationResponse.setPriceStage2( quotation.getPriceStage2() );
-        quotationResponse.setPriceStage3( quotation.getPriceStage3() );
+        constructQuotationResponse.setQuotationId( quotation.getQuotationId() );
+        constructQuotationResponse.setVolume( quotation.getVolume() );
+        constructQuotationResponse.setPriceStage1( quotation.getPriceStage1() );
+        constructQuotationResponse.setPriceStage2( quotation.getPriceStage2() );
+        constructQuotationResponse.setPriceStage3( quotation.getPriceStage3() );
 
-        return quotationResponse;
+        return constructQuotationResponse;
     }
 }

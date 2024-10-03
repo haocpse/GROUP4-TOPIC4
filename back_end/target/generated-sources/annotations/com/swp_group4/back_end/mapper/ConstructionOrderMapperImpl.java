@@ -1,6 +1,7 @@
 package com.swp_group4.back_end.mapper;
 
 import com.swp_group4.back_end.entities.ConstructionOrder;
+import com.swp_group4.back_end.requests.StaffAssignedRequest;
 import com.swp_group4.back_end.responses.ConstructOrderResponse;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
@@ -25,5 +26,30 @@ public class ConstructionOrderMapperImpl implements ConstructionOrderMapper {
         response.setStatus( constructionOrder.getStatus() );
 
         return response;
+    }
+
+    @Override
+    public ConstructionOrder toConstructionOrder(StaffAssignedRequest request, ConstructionOrder order) {
+        if ( request == null ) {
+            return order;
+        }
+
+        if ( request.getConstructionOrderId() != null ) {
+            order.setConstructionOrderId( request.getConstructionOrderId() );
+        }
+        if ( request.getConsultant() != null ) {
+            order.setConsultant( request.getConsultant() );
+        }
+        if ( request.getDesignLeader() != null ) {
+            order.setDesignLeader( request.getDesignLeader() );
+        }
+        if ( request.getConstructionLeader() != null ) {
+            order.setConstructionLeader( request.getConstructionLeader() );
+        }
+        if ( request.getStatus() != null ) {
+            order.setStatus( request.getStatus() );
+        }
+
+        return order;
     }
 }

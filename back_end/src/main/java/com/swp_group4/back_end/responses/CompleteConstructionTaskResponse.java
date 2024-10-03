@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class CompleteConstructTaskResponse {
+public class CompleteConstructionTaskResponse {
 
     List<ConstructionTasks> completeList;
     ConstructionOrderStatus status;

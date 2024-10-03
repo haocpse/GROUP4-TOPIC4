@@ -1,7 +1,6 @@
 package com.swp_group4.back_end.requests;
 
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import com.swp_group4.back_end.enums.ReviewStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,9 +9,9 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class CreateAccountRequest {
+public class ManageReviewRequest {
 
-    String username;
-    String password;
+    String id;
+    ReviewStatus status;
 
 }
