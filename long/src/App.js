@@ -22,6 +22,7 @@ import ConsultationPage from "./Components/ConsultationPage/ConsultationPage";
 import ListQuotation from "./Components/ListQuotation/ListQuotation";
 import ViewPayment from "./Components/ListQuotation/ViewPayment";
 import ViewQuotationInConsultationPage from "./Components/ListQuotation/ViewQuotationInConsultationPage";
+import ApproveDesign from "./Components/ApproveDesign/ApproveDesign";
 function App() {
   const router = createBrowserRouter([
     {
@@ -63,6 +64,10 @@ function App() {
         {
           path: "approve-quotation",
           element: <ApproveQuotation />,
+        },
+        {
+          path: "approve-design",
+          element: <ApproveDesign/>
         },
         {
           path: "view-quotation",

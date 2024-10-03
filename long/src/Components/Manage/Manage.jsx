@@ -63,6 +63,7 @@ const Manage = () => {
                     <div className="collapse" id="approve">
                         <ul className="nav flex-column ms-4">
                             <li><Link to="/manage/approve-quotation" className="nav-link text-dark">Aprrove Quotation</Link></li>
+                            <li><Link to="/manage/approve-design" className="nav-link text-dark">Aprrove Design</Link></li>
                         </ul>
                     </div>
                 </li>
