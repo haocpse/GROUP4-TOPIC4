@@ -213,7 +213,7 @@ const ApproveQuotation = () => {
                 <h2 className="text-center" style={{ color: 'blue' }}>Admin - Approve Quotes</h2>
                 <table className="table table-bordered mt-4">
                     <thead>
-                        <tr>
+                        <tr className="table-dark">
                             <th>Construction Order ID</th>
                             <th>Customer Name</th>
                             <th>View Details</th>
