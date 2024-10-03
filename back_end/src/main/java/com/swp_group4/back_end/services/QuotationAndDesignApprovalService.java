@@ -123,7 +123,7 @@ public class QuotationAndDesignApprovalService<T> {
             quotationRepository.save(quotation);
         }
         return StateTransitionResponse.<QuotationStatus>builder()
-                .id(request.getId())
+                .orderId(request.getId())
                 .status(quotation.getStatus())
                 .build();
     }
@@ -136,7 +136,7 @@ public class QuotationAndDesignApprovalService<T> {
             designRepository.save(design);
         }
         return StateTransitionResponse.<DesignStatus>builder()
-                .id(request.getId())
+                .orderId(request.getId())
                 .status(design.getStatus())
                 .build();
     }

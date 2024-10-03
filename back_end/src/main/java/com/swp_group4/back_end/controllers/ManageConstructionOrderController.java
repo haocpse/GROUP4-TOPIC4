@@ -56,24 +56,10 @@ public class ManageConstructionOrderController {
     }
 
     // Hàm để MANAGER gán các leader cho từng giai đoạn của Construction Order
-    @PostMapping("/assignConsultLeader")
-    public ApiResponse<StateTransitionResponse<ConstructionOrderStatus>> assignConsultLeader(@RequestBody StaffAssignedRequest request) {
+    @PutMapping("/assignLeader")
+    public ApiResponse<StateTransitionResponse<ConstructionOrderStatus>> assignLeader(@RequestBody StaffAssignedRequest request) {
         return ApiResponse.<StateTransitionResponse<ConstructionOrderStatus>>builder()
-                .data(manageConstructionOrderService.assignConsultLeader(request))
-                .build();
-    }
-
-    @PostMapping("/assignDesignLeader")
-    public ApiResponse<StateTransitionResponse<ConstructionOrderStatus>> assignDesignLeader(@RequestBody StaffAssignedRequest request) {
-        return ApiResponse.<StateTransitionResponse<ConstructionOrderStatus>>builder()
-                .data(manageConstructionOrderService.assignDesignLeader(request))
-                .build();
-    }
-
-    @PostMapping("/assignConstructLeader")
-    public ApiResponse<StateTransitionResponse<ConstructionOrderStatus>> assignConstructLeader(@RequestBody StaffAssignedRequest request) {
-        return ApiResponse.<StateTransitionResponse<ConstructionOrderStatus>>builder()
-                .data(manageConstructionOrderService.assignConstructLeader(request))
+                .data(manageConstructionOrderService.assignLeader(request))
                 .build();
     }
 

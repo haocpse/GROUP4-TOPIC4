@@ -110,3 +110,4 @@ Thumbs.db
 
 # Git-specific files
 .gitignore
+/back_end/.idea

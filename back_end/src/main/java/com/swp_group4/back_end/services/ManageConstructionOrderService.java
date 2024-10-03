@@ -56,37 +56,15 @@ public class ManageConstructionOrderService {
         return helperService.listAllOrder();
     }
 
-    public StateTransitionResponse<ConstructionOrderStatus> assignConsultLeader(StaffAssignedRequest request){
-        OrderAndStaff heleperOrderAndStaff = helperService.findOrderAndStaff(request);
-        ConstructionOrder order = ConstructionOrder.builder()
-                .consultant(request.getStaffId())
-                .status(request.getStatus())
-                .build();
-        constructOrderRepository.save(order);
-        return helperService.response(heleperOrderAndStaff);
-    }
-
-    public StateTransitionResponse<ConstructionOrderStatus> assignDesignLeader(StaffAssignedRequest request) {
+    public StateTransitionResponse<ConstructionOrderStatus> assignLeader(StaffAssignedRequest request){
         OrderAndStaff helperOrderAndStaff = helperService.findOrderAndStaff(request);
-        ConstructionOrder order = ConstructionOrder.builder()
-                .designLeader(request.getStaffId())
-                .status(request.getStatus())
-                .build();
-        constructOrderRepository.save(order);
+        constructOrderRepository
+                .save(constructionOrderMapper
+                .toConstructionOrder(request,helperOrderAndStaff
+                                .getOrder()
+                ));
         return helperService.response(helperOrderAndStaff);
     }
-
-    public StateTransitionResponse<ConstructionOrderStatus> assignConstructLeader(StaffAssignedRequest request) {
-        OrderAndStaff helperOrderAndStaff = helperService.findOrderAndStaff(request);
-        ConstructionOrder order = ConstructionOrder.builder()
-                .constructionLeader(request.getStaffId())
-                .status(request.getStatus())
-                .build();
-        constructOrderRepository.save(order);
-        return helperService.response(helperOrderAndStaff);
-    }
-
-
 
 //    public ServiceResponse<MaintenanceOrderResponse> contactUsForMaintenance(ServiceRequest serviceRequest) {
 //        // Your logic for maintenance service...

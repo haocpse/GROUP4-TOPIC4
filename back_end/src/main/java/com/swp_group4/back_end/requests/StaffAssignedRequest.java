@@ -12,7 +12,9 @@ import lombok.experimental.FieldDefaults;
 public class StaffAssignedRequest {
 
     String constructionOrderId;
-    String staffId;
+    String consultant;
+    String designLeader;
+    String constructionLeader;
     ConstructionOrderStatus status;
 
 }
