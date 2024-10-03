@@ -46,9 +46,9 @@ function QuotationOrder() {
   const [formData, setFormData] = useState({ selectedItems: [], selectedPackage: '' });
 
   const customer = {
-    name: "Nguyen Van A",
-    phone: "0987654321",
-    address: "123 Street, Hanoi"
+    name: "Đặng Mai Anh Tú",
+    phone: "0707804907",
+    address: "1057 Quang Trung, quận Gò Vấp, TPHCM"
   };
 
   const handleFormSubmit = (data) => {
@@ -58,7 +58,7 @@ function QuotationOrder() {
 
   return (
     <div className={styles.quotationOrderContainer}>
-      <h1 className={styles.header}>Quotation Order</h1>
+      <h1 className={styles.header} style={{color: 'blue'}}>Quotation Order</h1>
       {!isFormSubmitted ? (
         <>
           <CustomerInfo name={customer.name} phone={customer.phone} address={customer.address} />

@@ -1,56 +1,111 @@
 /* DesignUpload.css */
 
+/* DesignUpload.css */
+
+/* Căn chỉnh trang tổng thể */
 .design-upload {
+  max-width: 800px;
+  margin: 0 auto;
   padding: 20px;
-  max-width: 600px;
-  margin: auto;
-  border: 1px solid #ccc;
-  border-radius: 5px;
   background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
+.design-upload h1,
+.design-upload h2 {
   text-align: center;
+  color: #333;
   margin-bottom: 20px;
 }
 
+/* Phần thông tin khách hàng */
 .customer-info {
-  margin-bottom: 30px;
-  font-weight: bold;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
-.upload-container {
+.customer-info h2 {
+  margin-bottom: 15px;
+}
+
+.customer-info p {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+/* Nhóm input */
+.input-group {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  margin-bottom: 20px;
 }
 
-.upload-section {
+.input-group label {
+  font-weight: bold;
+  color: #555;
   display: flex;
   flex-direction: column;
 }
 
-.upload-label {
-  margin-bottom: 5px;
-}
-
-.upload-input {
-  border: 1px solid #ccc;
-  border-radius: 5px;
+.input-group input[type="text"] {
   padding: 10px;
-  font-size: 14px;
-}
-
-.upload-button {
-  padding: 10px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
   font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 5px;
+  transition: border 0.3s;
 }
 
-.upload-button:hover {
-  background-color: #45a049;
+.input-group input[type="text"]:focus {
+  border-color: #007bff;
+}
+
+/* Phần upload ảnh */
+.upload-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.upload-box {
+  background-color: #fff;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.upload-box label {
+  font-weight: bold;
+  color: #555;
+}
+
+.upload-box input[type="file"] {
+  margin-top: 10px;
+}
+
+/* Nút submit */
+button[type="submit"] {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background-color: red;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #ab3d18;
 }

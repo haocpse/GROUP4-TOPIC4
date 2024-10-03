@@ -114,7 +114,7 @@ const ApproveQuotation = () => {
     const sampleQuotes = [
         {
             constructionOrderId: "1",
-            customerName: "Nguyễn Minh Khoa",
+            customerName: "Đặng Mai Anh Tú",
             packageType: "BASIC PACKAGE",
             volume: 100,
             priceStage1: 500000,
@@ -136,7 +136,7 @@ const ApproveQuotation = () => {
         },
         {
             constructionOrderId: "3",
-            customerName: "Đặng Mai Anh Tú",
+            customerName: "Nguyễn Minh",
             packageType: "ECONOMIC PACKAGE",
             volume: 100,
             priceStage1: 86700,
@@ -213,7 +213,7 @@ const ApproveQuotation = () => {
                 <h2 className="text-center" style={{ color: 'blue' }}>Admin - Approve Quotes</h2>
                 <table className="table table-bordered mt-4">
                     <thead>
-                        <tr className="table-dark">
+                        <tr>
                             <th>Construction Order ID</th>
                             <th>Customer Name</th>
                             <th>View Details</th>

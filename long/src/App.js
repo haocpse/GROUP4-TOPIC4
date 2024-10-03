@@ -20,10 +20,12 @@ import Pricing from "./Components/CustomerView/pricing";
 import Customer from "./Components/CustomerView/Customer";
 import ConsultationPage from "./Components/ConsultationPage/ConsultationPage";
 import ListQuotation from "./Components/ListQuotation/ListQuotation";
-import ViewPayment from "./Components/ListQuotation/ViewPayment";
 import ViewQuotationInConsultationPage from "./Components/ListQuotation/ViewQuotationInConsultationPage";
 import ApproveDesign from "./Components/ApproveDesign/ApproveDesign";
 import ViewDesign from "./Components/ApproveDesign/ViewDesign";
+import ViewPayment from "./Components/ListQuotation/ViewPayment";
+import DesignerTasks from "./Components/DesignerTasks/DesignerTasks";
+
 function App() {
   const router = createBrowserRouter([
     {
@@ -80,14 +82,12 @@ function App() {
         },
       ],
     },
+
     {
       path: "consultant-tasks",
       element: <ConsultantTasks />,
     },
-    {
-      path: "design-upload", // Add the route for DesignUpload
-      element: <DesignUpload />,
-    },
+
     {
       path: "construction-order",
       element: <ConstructionOrder />, // Trang hiển thị danh sách ConstructionOrderId
@@ -101,7 +101,7 @@ function App() {
       path: "consultation-page",  // Sửa lại path thành chữ thường để thống nhất
       element: <ConsultationPage />,
       children: [
-        
+
       ],
     },
     {
@@ -109,18 +109,18 @@ function App() {
       element: <ListQuotation />,
     },
     {
-      path: "view-Quotation",
-      element:<ViewQuotationInConsultationPage/>
+      path: "view-Quotation",  // Sửa path này thành list-quotation thay vì 'list quotation'
+      element: <ViewQuotationInConsultationPage />,
     },
     {
-      path : "view-payment",
-      element: <ViewPayment/>,
+      path: "view-payment",  // Sửa path này thành list-quotation thay vì 'list quotation'
+      element: <ViewPayment />,
     },
     
  
     
     {
-      path: "Quotation-order",
+      path: "quotation-order",
       element: <QuotationOrder />
     },
     {
@@ -131,6 +131,18 @@ function App() {
       path: "customer", // Route cho Customer
       element: <Customer />,
     },
+
+    {
+      path: "designer-tasks", // Route cho Customer
+      element: <DesignerTasks />,
+    },
+    {
+      path: "designer-tasks/design-upload", // Add the route for DesignUpload
+      element: <DesignUpload />,
+    },
+
+
+
   ]);
 
   return <RouterProvider router={router} />;
