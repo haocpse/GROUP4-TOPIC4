@@ -37,6 +37,66 @@ const ListQuotation = () => {
             content: ["Công việc 3", "Công việc 4"],
             status: getRandomStatus()
         },
+        {
+            constructionOrderId: "3",
+            customerName: "Đặng Mai Anh Tú",
+            packageType: "ECONOMIC PACKAGE",
+            volume: 100,
+            priceStage1: 86700,
+            priceStage2: 657000,
+            priceStage3: 900000,
+            totalPrice: 2100000,
+            content: ["Công việc 1", "Công việc 2"],
+            status: getRandomStatus()
+        },
+        {
+            constructionOrderId: "4",
+            customerName: "Châu Phú Hào",
+            packageType: "BASIC PACKAGE",
+            volume: 100,
+            priceStage1: 500000,
+            priceStage2: 700000,
+            priceStage3: 900000,
+            totalPrice: 2100000,
+            content: ["Công việc 1", "Công việc 2"],
+            status: getRandomStatus()
+        },
+        {
+            constructionOrderId: "5",
+            customerName: "Nguyễn Ngọc Khuyên",
+            packageType: "ECONOMIC PACKAGE",
+            volume: 100,
+            priceStage1: 500000,
+            priceStage2: 700000,
+            priceStage3: 900000,
+            totalPrice: 2100000,
+            content: ["Công việc 1", "Công việc 2"],
+            status: getRandomStatus()
+        },
+        {
+            constructionOrderId: "6",
+            customerName: "Phùng Thanh Độ",
+            packageType: "VIP PACKAGE",
+            volume: 100,
+            priceStage1: 500000,
+            priceStage2: 700000,
+            priceStage3: 900000,
+            totalPrice: 2100000,
+            content: ["Công việc 1", "Công việc 2"],
+            status: getRandomStatus()
+        },
+        {
+            constructionOrderId: "7",
+            customerName: "Uông Đình Dũng",
+            packageType: "VIP PACKAGE",
+            volume: 100,
+            priceStage1: 500000,
+            priceStage2: 700000,
+            priceStage3: 900000,
+            totalPrice: 2100000,
+            content: ["Công việc 1", "Công việc 2"],
+            status: getRandomStatus()
+        },
         // Các báo giá khác
     ];
 
@@ -55,7 +115,7 @@ const ListQuotation = () => {
     };
 
     const handleViewDetails = (quote) => {
-        navigate('/manage/view-quotation', { state: { quote } });
+        navigate('/view-Quotation', { state: { quote } });
     };
 
     return (

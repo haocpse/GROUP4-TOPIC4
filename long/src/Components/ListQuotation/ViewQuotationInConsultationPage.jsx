@@ -47,15 +47,26 @@
 // export default ViewQuotation;
 
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const ViewQuotation = () => {
+const ViewQuotationInConsultationPage = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const quote = location.state?.quote;
 
+    const handleViewPayment = (stage, amount) => {
+        navigate('/view-payment', {
+            state: {
+                stage,
+                amount,
+                paymentStatus: "Pending",
+                paymentMethod: "Bank Transfer",
+                description: `Payment for ${stage}`
+            }
+        });
+    };
 
-    // Sử dụng dữ liệu mẫu nếu không có quote trong location.state
-    const quoteToDisplay = quote ;
+    const quoteToDisplay = quote;
 
     return (
         <div className="container mt-4">
@@ -75,9 +86,33 @@ const ViewQuotation = () => {
                     <tr>
                         <td>{quoteToDisplay.packageType}</td>
                         <td>{quoteToDisplay.volume}</td>
-                        <td>{quoteToDisplay.priceStage1}</td>
-                        <td>{quoteToDisplay.priceStage2}</td>
-                        <td>{quoteToDisplay.priceStage3}</td>
+                        <td>
+                            {quoteToDisplay.priceStage1}
+                            <button 
+                                className="btn btn-link" 
+                                onClick={() => handleViewPayment("Stage 1", quoteToDisplay.priceStage1)}
+                            >
+                                View Payment
+                            </button>
+                        </td>
+                        <td>
+                            {quoteToDisplay.priceStage2}
+                            <button 
+                                className="btn btn-link" 
+                                onClick={() => handleViewPayment("Stage 2", quoteToDisplay.priceStage2)}
+                            >
+                                View Payment
+                            </button>
+                        </td>
+                        <td>
+                            {quoteToDisplay.priceStage3}
+                            <button 
+                                className="btn btn-link" 
+                                onClick={() => handleViewPayment("Stage 3", quoteToDisplay.priceStage3)}
+                            >
+                                View Payment
+                            </button>
+                        </td>
                         <td>{quoteToDisplay.totalPrice}</td>
                     </tr>
                 </tbody>
@@ -92,5 +127,4 @@ const ViewQuotation = () => {
     );
 };
 
-export default ViewQuotation;
-
+export default ViewQuotationInConsultationPage;
