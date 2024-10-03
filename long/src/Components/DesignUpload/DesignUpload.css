@@ -1,56 +1,75 @@
-/* DesignUpload.css */
-
 .design-upload {
-  padding: 20px;
-  max-width: 600px;
-  margin: auto;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #f9f9f9;
+  max-width: 800px; /* Set a maximum width for the form */
+  margin: 0 auto; /* Center the form */
+  padding: 20px; /* Add padding around the content */
+  border: 1px solid #ddd; /* Add a border */
+  border-radius: 8px; /* Rounded corners */
+  background-color: #f9f9f9; /* Light background color */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
 
 h1 {
-  text-align: center;
-  margin-bottom: 20px;
+  text-align: center; /* Center the heading */
+  color: #333; /* Darker text color */
 }
 
 .customer-info {
-  margin-bottom: 30px;
-  font-weight: bold;
+  margin-bottom: 20px; /* Space below the customer info section */
+}
+
+.input-group {
+  display: flex; /* Use flexbox for layout */
+  flex-direction: column; /* Stack the inputs vertically */
+  gap: 10px; /* Space between inputs */
+}
+
+.input-group input {
+  padding: 10px; /* Add padding to inputs */
+  border: 1px solid #ccc; /* Light border color */
+  border-radius: 4px; /* Rounded corners for inputs */
+  font-size: 16px; /* Increase font size */
 }
 
 .upload-container {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+  display: grid; /* Use grid for layout */
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(200px, 1fr)
+  ); /* Responsive columns */
+  gap: 20px; /* Space between upload boxes */
 }
 
-.upload-section {
-  display: flex;
-  flex-direction: column;
+.upload-box {
+  border: 1px dashed #007bff; /* Dashed border for upload boxes */
+  padding: 10px; /* Add padding */
+  border-radius: 4px; /* Rounded corners */
+  background-color: #fff; /* White background for boxes */
+  text-align: center; /* Center the text */
 }
 
-.upload-label {
-  margin-bottom: 5px;
+.upload-box label {
+  display: block; /* Make label take full width */
+  margin-bottom: 8px; /* Space between label and input */
+  color: #007bff; /* Blue text color for labels */
 }
 
-.upload-input {
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
-  font-size: 14px;
+.upload-box img {
+  margin-top: 10px; /* Space above images */
+  max-width: 100%; /* Make images responsive */
+  border-radius: 4px; /* Rounded corners for images */
 }
 
-.upload-button {
-  padding: 10px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
+button {
+  padding: 10px 20px; /* Add padding to the button */
+  background-color: #007bff; /* Blue background color */
+  color: white; /* White text color */
+  border: none; /* Remove border */
+  border-radius: 4px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  font-size: 16px; /* Increase font size */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
 }
 
-.upload-button:hover {
-  background-color: #45a049;
+button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
 }
