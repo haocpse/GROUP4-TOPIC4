@@ -78,7 +78,7 @@ const ConsultantTasks = () => {
         startDate: "2024-09-10T00:00:00",
         phone: "123-456-7890",
         address: "123 Main St",
-        status: "Consulting",
+        status: "Consulting"
       },
       {
         constructionOrderId: 2,
@@ -86,7 +86,7 @@ const ConsultantTasks = () => {
         startDate: "2024-10-01T00:00:00",
         phone: "987-654-3210",
         address: "456 Oak Ave",
-        status: "Consulting",
+        status: "Consulting"
       },
       // Add more mock data here if needed
     ];
@@ -98,9 +98,7 @@ const ConsultantTasks = () => {
     <>
       <Navbar />
       <div className="consultant-tasks">
-        <h1 className="text-center mt-4" style={{ color: "blue" }}>
-          Consultant Tasks
-        </h1>
+        <h1 className="text-center mt-4" style={{ color: 'blue' }}>Consultant Tasks</h1>
         <table>
           <thead>
             <tr>
