@@ -1,7 +1,7 @@
 package com.swp_group4.back_end.mapper;
 
 import com.swp_group4.back_end.entities.Quotation;
-import com.swp_group4.back_end.requests.QuotationDetailRequest;
+import com.swp_group4.back_end.requests.ExportQuotationRequest;
 import com.swp_group4.back_end.responses.ConstructQuotationResponse;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class QuotationMapperImpl implements QuotationMapper {
 
     @Override
-    public Quotation toQuotation(QuotationDetailRequest request, Quotation quotation) {
+    public Quotation toQuotation(ExportQuotationRequest request, Quotation quotation) {
         if ( request == null ) {
             return quotation;
         }

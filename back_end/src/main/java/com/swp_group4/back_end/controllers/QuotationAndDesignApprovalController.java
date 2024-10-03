@@ -4,10 +4,7 @@ import com.swp_group4.back_end.entities.Design;
 import com.swp_group4.back_end.enums.DesignStatus;
 import com.swp_group4.back_end.enums.QuotationStatus;
 import com.swp_group4.back_end.requests.ManageReviewRequest;
-import com.swp_group4.back_end.responses.ApiResponse;
-import com.swp_group4.back_end.responses.ConstructQuotationResponse;
-import com.swp_group4.back_end.responses.OverallReviewResponse;
-import com.swp_group4.back_end.responses.ConstructOrderStatusTransitionResponse;
+import com.swp_group4.back_end.responses.*;
 import com.swp_group4.back_end.services.QuotationAndDesignApprovalService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -27,8 +24,8 @@ public class QuotationAndDesignApprovalController {
     // Hàm để MANAGER xem toàn bộ các quotation trên hệ thống đang chờ phê duyệt
     // (Construction Order đang ở trạng thái QUOTATION)
     @GetMapping("/quotations")
-    public ApiResponse<List<OverallReviewResponse<QuotationStatus>>> listAllQuotation(){
-        return ApiResponse.<List<OverallReviewResponse<QuotationStatus>>>builder()
+    public ApiResponse<List<QuotationAndDesignReviewResponse<QuotationStatus>>> listAllQuotation(){
+        return ApiResponse.<List<QuotationAndDesignReviewResponse<QuotationStatus>>>builder()
                 .data(quotationAndDesignApprovalService.listAllQuotation())
                 .build();
     }
@@ -45,8 +42,8 @@ public class QuotationAndDesignApprovalController {
     // Hàm để MANAGER quyết định APPROVE hay không
     // (Nếu APPROVE Construction Order chuyển sang trạng thái CONFIRMED_QUOTATION)
     @PostMapping("/quotations/manageQuotation")
-    public ApiResponse<ConstructOrderStatusTransitionResponse<QuotationStatus>> approveQuotation(@RequestBody ManageReviewRequest request){
-        return ApiResponse.<ConstructOrderStatusTransitionResponse<QuotationStatus>>builder()
+    public ApiResponse<ConstructOrderDetailForManagerResponse> approveQuotation(@RequestBody ManageReviewRequest request){
+        return ApiResponse.<ConstructOrderDetailForManagerResponse<QuotationStatus>>builder()
                 .data(quotationAndDesignApprovalService.manageQuotation(request))
                 .build();
     }
@@ -54,8 +51,8 @@ public class QuotationAndDesignApprovalController {
     // Hàm để MANAGER xem toàn bộ các design trên hệ thống đang chờ phê duyệt
     // (Construction Order đang ở trạng thái DESIGNED)
     @GetMapping("/designs")
-    public ApiResponse<List<OverallReviewResponse<DesignStatus>>> listAllDesign(){
-        return ApiResponse.<List<OverallReviewResponse<DesignStatus>>>builder()
+    public ApiResponse<List<QuotationAndDesignReviewResponse<DesignStatus>>> listAllDesign(){
+        return ApiResponse.<List<QuotationAndDesignReviewResponse<DesignStatus>>>builder()
                 .data(quotationAndDesignApprovalService.listAllDesign())
                 .build();
     }
@@ -63,8 +60,8 @@ public class QuotationAndDesignApprovalController {
     // Hàm để MANAGER xem chi tiết 1 design
     // (Construction Order đang ở trạng thái DESIGNED)
     @GetMapping("/designs/{designId}")
-    public ApiResponse<Design> getDesign(@PathVariable String designId){
-        return ApiResponse.<Design>builder()
+    public ApiResponse<ConstructDesignResponse> getDesign(@PathVariable String designId){
+        return ApiResponse.<ConstructDesignResponse>builder()
                 .data(quotationAndDesignApprovalService.detailDesign(designId))
                 .build();
     }
@@ -72,8 +69,8 @@ public class QuotationAndDesignApprovalController {
     // Hàm để MANAGER quyết định APPROVE hay không
     // (Nếu APPROVE Construction Order chuyển sang trạng thái CONFIRMED_DESIGN)
     @PostMapping("/designs/manageDesign")
-    public ApiResponse<ConstructOrderStatusTransitionResponse<DesignStatus>> approveDesign(@RequestBody ManageReviewRequest request){
-        return ApiResponse.<ConstructOrderStatusTransitionResponse<DesignStatus>>builder()
+    public ApiResponse<ConstructOrderDetailForManagerResponse<DesignStatus>> approveDesign(@RequestBody ManageReviewRequest request){
+        return ApiResponse.<ConstructOrderDetailForManagerResponse<DesignStatus>>builder()
                 .data(quotationAndDesignApprovalService.manageDesign(request))
                 .build();
     }

@@ -35,20 +35,18 @@ public class ConstructionService {
     @Autowired
     StaffMapper staffMapper;
     @Autowired
-    HelperService helperService;
+    StaffService staffService;
 
-    public List<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>> listOwnedConstructTask() {
-        List<ConstructionOrderStatus> statusList = List.of(ConstructionOrderStatus.CONSTRUCTING,
-                                                            ConstructionOrderStatus.CONSTRUCTED);
-        return helperService.orderInStepResponses(statusList);
+    public List<ConstructOrderDetailForStaffResponse> listOwnedConstructTask() {
+        return staffService.listOwnedStaffTask();
     }
 
     public ConstructionTasksAndStatusResponse detailOfConstruct(String constructionOrderId) {
         List<ConstructionTasks> constructionTasksList = constructionTasksRepository.findByConstructionOrderId(constructionOrderId);
         List<ConstructTaskStatusResponse> constructTaskStatusResponseList = new ArrayList<>();
         for(ConstructionTasks constructionTask : constructionTasksList) {
-            PackageConstruction packageConstruction = packageConstructionRepository.findById(constructionTask.getPackageConstructionId()).orElseThrow(
-                    () -> new RuntimeException("Package construction not found for id: " + constructionTask.getPackageConstructionId()));
+            PackageConstruction packageConstruction = packageConstructionRepository.findById(constructionTask.getPackageConstructionId())
+                    .orElseThrow(() -> new RuntimeException("Package construction not found for id: " + constructionTask.getPackageConstructionId()));
             ConstructTaskStatusResponse statusResponse = ConstructTaskStatusResponse.builder()
                     .packageConstructionId(constructionTask.getPackageConstructionId())
                     .content(packageConstruction.getContent())
@@ -56,8 +54,8 @@ public class ConstructionService {
                     .build();
             constructTaskStatusResponseList.add(statusResponse);
         }
-        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
-                () -> new RuntimeException("Order not found for id: " + constructionOrderId));
+        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId)
+                .orElseThrow(() -> new RuntimeException("Order not found for id: " + constructionOrderId));
         Customer customer = customerRepository.findById(order.getCustomerId())
                 .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
         return ConstructionTasksAndStatusResponse.builder()
@@ -79,12 +77,12 @@ public class ConstructionService {
     }
 
     public AssignConstructionTaskResponse assignTask(String constructionOrderId, AssignTaskStaffRequest request) {
-        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
-                () -> new RuntimeException("Order not found for id: " + constructionOrderId));
+        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId)
+                .orElseThrow(() -> new RuntimeException("Order not found for id: " + constructionOrderId));
             order.setStatus(ConstructionOrderStatus.CONSTRUCTING);
             constructOrderRepository.save(order);
-        Staff staff = staffRepository.findById(request.getStaffId()).orElseThrow(
-                () -> new RuntimeException("Staff not found for id: " + request.getStaffId()));
+        Staff staff = staffRepository.findById(request.getStaffId())
+                .orElseThrow(() -> new RuntimeException("Staff not found for id: " + request.getStaffId()));
         return AssignConstructionTaskResponse.builder()
                 .taskId(request.getTaskId())
                 .staffName(staff.getStaffName())
@@ -93,7 +91,8 @@ public class ConstructionService {
 
     public CompleteConstructionTaskResponse completeTask(String constructionOrderId, CompleteConstructTaskRequest request) {
         ConstructionTasks task = constructionTasksRepository
-                .findByConstructionOrderIdAndTaskId(constructionOrderId, request.getTaskId());
+                .findByConstructionOrderIdAndTaskId
+                        (constructionOrderId, request.getTaskId());
         task.setStatus(ConstructStatus.DONE);
         constructionTasksRepository.save(task);
         List<ConstructStatus> statuses = List.of(ConstructStatus.NOT_YET, ConstructStatus.IN_PROGRESS);

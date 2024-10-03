@@ -10,8 +10,8 @@ import java.util.List;
 @Repository
 public interface ConstructOrderRepository extends JpaRepository<ConstructionOrder, String> {
 
-    List<ConstructionOrder> findByConstructionLeaderAndStatusIn(String constructionLeader, List<ConstructionOrderStatus> statuses);
     ConstructionOrder findByQuotationId(String quotationId);
     ConstructionOrder findByDesignId(String designId);
+    List<ConstructionOrder> findByConsultant(String consultant);
 
 }

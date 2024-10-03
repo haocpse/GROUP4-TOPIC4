@@ -1,6 +1,5 @@
 package com.swp_group4.back_end.controllers;
 
-import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.requests.AssignTaskStaffRequest;
 import com.swp_group4.back_end.requests.CompleteConstructTaskRequest;
 import com.swp_group4.back_end.responses.*;
@@ -23,8 +22,8 @@ public class ConstructionController {
     // Hàm để CONSTRUCTOR xem các task được MANAGER gán
     // (Construction Order đang ở trạng thái CONFIRMED_DESIGN)
     @GetMapping("/ownedTasks")
-    public ApiResponse<List<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>>> listTask() {
-        return ApiResponse.<List<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>>>builder()
+    public ApiResponse<List<ConstructOrderDetailForStaffResponse>> listTask() {
+        return ApiResponse.<List<ConstructOrderDetailForStaffResponse>>builder()
                 .data(constructionService.listOwnedConstructTask())
                 .build();
     }

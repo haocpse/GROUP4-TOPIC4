@@ -3,6 +3,7 @@ package com.swp_group4.back_end.requests;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -10,15 +11,18 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class QuotationDetailRequest {
+public class ExportQuotationRequest {
 
     String packageId;
     List<String> packageConstructionId;
-    String packagePriceId;
-    String promotionId;
-    double totalPrice;
+    double volume;
     double priceStage1;
     double priceStage2;
     double priceStage3;
+    double totalPrice;
+    String customerRequest;
+    Date startDate;
+    Date endDate;
+    String promotionId;
 
 }
