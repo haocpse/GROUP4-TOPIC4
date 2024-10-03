@@ -23,6 +23,7 @@ import ListQuotation from "./Components/ListQuotation/ListQuotation";
 import ViewPayment from "./Components/ListQuotation/ViewPayment";
 import ViewQuotationInConsultationPage from "./Components/ListQuotation/ViewQuotationInConsultationPage";
 import ApproveDesign from "./Components/ApproveDesign/ApproveDesign";
+import ViewDesign from "./Components/ApproveDesign/ViewDesign";
 function App() {
   const router = createBrowserRouter([
     {
@@ -70,6 +71,10 @@ function App() {
           element: <ApproveDesign/>
         },
         {
+          path:"view-design",
+          element:<ViewDesign/>
+        },
+        {
           path: "view-quotation",
           element: <ViewQuotation />,
         },
@@ -111,6 +116,8 @@ function App() {
       path : "view-payment",
       element: <ViewPayment/>,
     },
+    
+ 
     
     {
       path: "Quotation-order",
