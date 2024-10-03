@@ -27,8 +27,6 @@ public class ConsultationService {
     @Autowired
     ConstructOrderRepository constructOrderRepository;
     @Autowired
-    CustomerRepository customerRepository;
-    @Autowired
     QuotationMapper quotationMapper;
     @Autowired
     QuotationRepository quotationRepository;
