@@ -1,14 +1,11 @@
 package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.*;
-import com.swp_group4.back_end.enums.ConstructStatus;
-import com.swp_group4.back_end.enums.ConstructionOrderStatus;
-import com.swp_group4.back_end.enums.PaymentStatus;
-import com.swp_group4.back_end.enums.QuotationBatch;
+import com.swp_group4.back_end.enums.*;
 import com.swp_group4.back_end.mapper.QuotationMapper;
 import com.swp_group4.back_end.repositories.*;
-import com.swp_group4.back_end.requests.QuotationDetailRequest;
-import com.swp_group4.back_end.responses.ConstructOrderStatusTransitionResponse;
+import com.swp_group4.back_end.requests.ExportQuotationRequest;
+import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
 import com.swp_group4.back_end.responses.ConstructQuotationResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -27,8 +24,6 @@ public class ConsultationService {
     @Autowired
     ConstructOrderRepository constructOrderRepository;
     @Autowired
-    CustomerRepository customerRepository;
-    @Autowired
     QuotationMapper quotationMapper;
     @Autowired
     QuotationRepository quotationRepository;
@@ -41,58 +36,55 @@ public class ConsultationService {
     @Autowired
     PackagePriceRepository packagePriceRepository;
     @Autowired
-    HelperService helperService;
+    StaffService staffService;
 
-    public List<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>> listOwnedConsultTask() {
-        List<ConstructionOrderStatus> statusList = List.of(ConstructionOrderStatus.CONSULTING);
-        return helperService.orderInStepResponses(statusList);
+    public List<ConstructOrderDetailForStaffResponse> listOwnedConsultTask() {
+        return staffService.listOwnedStaffTask();
     }
 
-    public ConstructOrderStatusTransitionResponse<ConstructionOrderStatus> detailOfOrder(String constructionOrderId) {
-        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
-                () -> new RuntimeException("Order not found for id: " + constructionOrderId));
-        return helperService.detailOfOrder(order);
+    public ConstructOrderDetailForStaffResponse detailOfOrder(String constructionOrderId) {
+        return staffService.detailOfOrder(constructionOrderId);
     }
 
-    public ConstructQuotationResponse exportQuotation(String constructionOrderId, QuotationDetailRequest request) {
-        PackagePrice packagePrice = packagePriceRepository.findById(request.getPackagePriceId()).orElseThrow(
-                () -> new RuntimeException("Package price not found for id: " + request.getPackagePriceId()));
-        Quotation quotation = Quotation.builder()
-                .batch(QuotationBatch.STAGE_1)
-                .paymentStatus(PaymentStatus.PENDING)
-                .volume(packagePrice.getVolume())
-                .build();
-        quotationRepository.save(quotationMapper.toQuotation(request, quotation));
-        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
-                () -> new RuntimeException("Order not found for id: " + constructionOrderId));
-        order.setQuotationId(quotation.getQuotationId());
-        order.setTotal(request.getTotalPrice());
-        constructOrderRepository.save(order);
+    public ConstructQuotationResponse exportQuotation(String constructionOrderId, ExportQuotationRequest request) {
+        String packageId = request.getPackageId();
+        Packages packages = packageRepository.findById(packageId)
+                .orElseThrow(() -> new RuntimeException("Package not found for id: " + packageId));
+        String packageType = packages.getPackageType();
+        double volume = request.getVolume();
+        PackagePrice packagePrice = packagePriceRepository
+                .findFirstByPackageIdAndMinVolumeLessThanEqualAndMaxVolumeGreaterThanEqual
+                        (packageId, volume, volume);
+        double totalPrice = packagePrice.getPrice() * volume;
         List<String> listPackageConstructionId = request.getPackageConstructionId();
         List<String> contentList = new ArrayList<>();
         for (String packageConstructionId : listPackageConstructionId){
-            PackageConstruction packageConstruction = packageConstructionRepository.findById(packageConstructionId).orElseThrow(
-                    () -> new RuntimeException("Package construction not found for id: " + packageConstructionId));
+            PackageConstruction packageConstruction = packageConstructionRepository.findById(packageConstructionId)
+                    .orElseThrow(() -> new RuntimeException("Package construction not found for id: " + packageConstructionId));
+            totalPrice += packageConstruction.getPrice();
             contentList.add(packageConstruction.getContent());
-        }
-        Packages packages = packageRepository.findById(quotation.getPackageId()).orElseThrow(
-                () -> new RuntimeException("Package not found for id: " + quotation.getPackageId()));
-        ConstructQuotationResponse response = ConstructQuotationResponse.builder()
-                .packageType(packages.getPackageType())
-                .totalPrice(request.getTotalPrice())
-                .content(contentList)
-                .build();
-        quotationMapper.toQuotationResponse(quotation, response);
-        List<String> packageConstructionIds = request.getPackageConstructionId();
-        for(String packConstructionId : packageConstructionIds) {
             ConstructionTasks tasks = ConstructionTasks.builder()
                     .constructionOrderId(constructionOrderId)
-                    .packageConstructionId(packConstructionId)
+                    .packageConstructionId(packageConstructionId)
                     .status(ConstructStatus.NOT_YET)
                     .build();
             constructionTasksRepository.save(tasks);
         }
-        return response;
+        Quotation quotation = Quotation.builder()
+                .batch(QuotationBatch.STAGE_1)
+                .paymentStatus(PaymentStatus.PENDING)
+                .status(QuotationStatus.QUOTED)
+                .build();
+        quotationMapper.toQuotation(request, quotation);
+        quotationRepository.save(quotation);
+        ConstructQuotationResponse response = ConstructQuotationResponse.builder()
+                .packageType(packageType)
+                .totalPrice(totalPrice)
+                .content(contentList)
+                .build();
+        return quotationMapper.toQuotationResponse(quotation, response);
     }
+
+
 
 }

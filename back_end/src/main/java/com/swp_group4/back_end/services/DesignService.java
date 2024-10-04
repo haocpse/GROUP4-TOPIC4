@@ -2,12 +2,11 @@ package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.ConstructionOrder;
 import com.swp_group4.back_end.entities.Design;
-import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.mapper.DesignMapper;
 import com.swp_group4.back_end.repositories.ConstructOrderRepository;
 import com.swp_group4.back_end.repositories.DesignRepository;
 import com.swp_group4.back_end.requests.UrlDesignRequest;
-import com.swp_group4.back_end.responses.ConstructOrderStatusTransitionResponse;
+import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,17 +25,15 @@ public class DesignService {
     @Autowired
     DesignMapper designMapper;
     @Autowired
-    HelperService helperService;
+    StaffService staffService;
 
-    public List<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>> listOwnedDesignTask() {
-        List<ConstructionOrderStatus> statusList = List.of(ConstructionOrderStatus.DESIGNING);
-        return helperService.orderInStepResponses(statusList);
+
+    public List<ConstructOrderDetailForStaffResponse> listOwnedDesignTask() {
+        return staffService.listOwnedStaffTask();
     }
 
-    public ConstructOrderStatusTransitionResponse<ConstructionOrderStatus> detailOfOrder(String constructionOrderId) {
-        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
-                () -> new RuntimeException("Order not found for id: " + constructionOrderId));
-        return helperService.detailOfOrder(order);
+    public ConstructOrderDetailForStaffResponse detailOfOrder(String constructionOrderId) {
+        return staffService.detailOfOrder(constructionOrderId);
     }
 
     public Design uploadDesign(String constructionOrderId, UrlDesignRequest request) {

@@ -1,6 +1,5 @@
 package com.swp_group4.back_end.controllers;
 
-import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.requests.StaffAssignedRequest;
 import com.swp_group4.back_end.responses.*;
 import com.swp_group4.back_end.services.ManageConstructionOrderService;
@@ -22,11 +21,10 @@ public class ManageConstructionOrderController {
     @Autowired
     StaffService staffService;
 
-    // Hàm để MANAGER xem toàn bộ Construction Order đang ở các trạng thái
-    // REQUESTED, CONSULTING, QUOTATION
+    // Hàm để MANAGER xem toàn bộ Construction Order
     @GetMapping()
-    public ApiResponse<List<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>>> listConsultationRequest() {
-        return ApiResponse.<List<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>>>builder()
+    public ApiResponse<List<ConstructOrderDetailForManagerResponse>> listConsultationRequest() {
+        return ApiResponse.<List<ConstructOrderDetailForManagerResponse>>builder()
                 .data(manageConstructionOrderService.listAllOrder())
                 .build();
     }
@@ -55,12 +53,12 @@ public class ManageConstructionOrderController {
                 .build();
     }
 
-//    // Hàm để MANAGER gán các leader cho từng giai đoạn của Construction Order
-//    @PutMapping("/assignLeader")
-//    public ApiResponse<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>> assignLeader(@RequestBody StaffAssignedRequest request) {
-//        return ApiResponse.<ConstructOrderStatusTransitionResponse<ConstructionOrderStatus>>builder()
-//                .data(manageConstructionOrderService.assignLeader(request))
-//                .build();
-//    }
+    // Hàm để MANAGER gán các leader cho từng giai đoạn của Construction Order
+    @PutMapping("/assignLeader")
+    public ApiResponse<ConstructOrderDetailForManagerResponse> assignLeader(@RequestBody StaffAssignedRequest request) {
+        return ApiResponse.<ConstructOrderDetailForManagerResponse>builder()
+                .data(manageConstructionOrderService.assignLeader(request))
+                .build();
+    }
 
 }

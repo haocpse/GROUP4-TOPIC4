@@ -2,8 +2,7 @@ package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.ConstructionOrder;
 import com.swp_group4.back_end.entities.Customer;
-import com.swp_group4.back_end.exception.AppException;
-import com.swp_group4.back_end.exception.ErrorCode;
+import com.swp_group4.back_end.entities.Staff;
 import com.swp_group4.back_end.mapper.CustomerMapper;
 import com.swp_group4.back_end.repositories.CustomerRepository;
 import com.swp_group4.back_end.requests.ServiceRequest;
@@ -28,8 +27,6 @@ public class CustomerService {
     CustomerMapper customerMapper;
     @Autowired
     ManageConstructionOrderService manageConstructionOrderService;
-    @Autowired
-    HelperService helperService;
 
     public void createCustomer(String accountId, String firstname) {
         customerRepository.save(Customer.builder()
@@ -39,13 +36,13 @@ public class CustomerService {
     }
 
     public CustomerResponse getOwnedInfo(){
-        Customer customer = helperService.identifyCustomer();
+        Customer customer = this.identifyCustomer();
         CustomerResponse response = new CustomerResponse();
         return customerMapper.customerToResponse(customer, response);
     }
 
     public CustomerResponse updateOwnedInfo(UpdateInfoRequest request) {
-        Customer customer = helperService.identifyCustomer();
+        Customer customer = this.identifyCustomer();
         customerMapper.updateInfoToCustomer(request, customer);
         customerRepository.save(customer);
         CustomerResponse response = new CustomerResponse();
@@ -53,7 +50,7 @@ public class CustomerService {
     }
 
     public ServiceResponse<?> contactUs(ServiceRequest serviceRequest) {
-        Customer customer = helperService.identifyCustomer();
+        Customer customer = this.identifyCustomer();
         customerMapper.serviceRequestToCustomer(serviceRequest, customer);
         customerRepository.save(customer);
         if (serviceRequest.getService().name().equals("CONSTRUCTION_SERVICE")) {
@@ -64,6 +61,13 @@ public class CustomerService {
 //          return contactUsForMaintenance(serviceRequest);
 //        }
        return null;
+    }
+
+    Customer identifyCustomer() {
+        var context = SecurityContextHolder.getContext();
+        String accountId = context.getAuthentication().getName();
+        return customerRepository.findById(accountId).orElseThrow(
+                () -> new RuntimeException("Customer not found"));
     }
 
 }
