@@ -1,18 +1,15 @@
 package com.swp_group4.back_end.services;
 
-import com.swp_group4.back_end.entities.ConstructionOrder;
-import com.swp_group4.back_end.entities.Design;
-import com.swp_group4.back_end.entities.Staff;
-import com.swp_group4.back_end.enums.ConstructionOrderStatus;
+import com.swp_group4.back_end.entities.*;
 import com.swp_group4.back_end.enums.DesignStatus;
-import com.swp_group4.back_end.mapper.DesignMapper;
-import com.swp_group4.back_end.repositories.ConstructOrderRepository;
-import com.swp_group4.back_end.repositories.DesignRepository;
+import com.swp_group4.back_end.mapper.*;
+import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.requests.UrlDesignRequest;
 import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +25,13 @@ public class DesignService {
     @Autowired
     DesignMapper designMapper;
     @Autowired
+    @Lazy
     StaffService staffService;
+    @Autowired
+    ConstructionOrderMapperImpl constructionOrderMapper;
+    @Autowired
+    @Lazy
+    ManageConstructionOrderService manageConstructionOrderService;
 
 
     public List<ConstructOrderDetailForStaffResponse> listOwnedDesignTask() {
@@ -41,15 +44,18 @@ public class DesignService {
     }
 
     public Design uploadDesign(String constructionOrderId, UrlDesignRequest request) {
-        Design design = new Design();
-        design.setStatus(DesignStatus.DESIGNED);
-        designMapper.toDesgin(request, design);
-        designRepository.save(design);
-        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
-                () -> new RuntimeException("Order not found for id: " + constructionOrderId));
-        order.setDesignId(design.getDesignId());
-        order.setStatus(ConstructionOrderStatus.DESIGNED);
-        constructOrderRepository.save(order);
+        Design design = Design.builder()
+                .status(DesignStatus.DESIGNED)
+                .build();
+        designRepository.save(designMapper.toDesgin(request, design));
+        ConstructionOrder order = manageConstructionOrderService.findConstructOrder(constructionOrderId);
+        constructOrderRepository.save(constructionOrderMapper.toConstructionOrder(design, order));
         return design;
     }
+
+    Design findDesign(String designId) {
+        return designRepository.findById(designId)
+                .orElseThrow(() -> new RuntimeException("Design not found"));
+    }
+
 }

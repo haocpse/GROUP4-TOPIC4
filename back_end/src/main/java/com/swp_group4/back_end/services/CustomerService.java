@@ -12,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ public class CustomerService {
     @Autowired
     CustomerMapper customerMapper;
     @Autowired
+    @Lazy
     ManageConstructionOrderService manageConstructionOrderService;
 
     public void createCustomer(String accountId, String firstname) {
@@ -65,8 +67,12 @@ public class CustomerService {
     Customer identifyCustomer() {
         var context = SecurityContextHolder.getContext();
         String accountId = context.getAuthentication().getName();
-        log.info(accountId);
         return customerRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+    }
+
+    Customer findCustomer(String customerId) {
+        return customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
     }
 

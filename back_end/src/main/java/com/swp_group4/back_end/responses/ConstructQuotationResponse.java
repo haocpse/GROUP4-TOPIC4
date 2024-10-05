@@ -12,6 +12,7 @@ import java.util.List;
 @Builder
 public class ConstructQuotationResponse {
 
+    String constructOrderId;
     String quotationId;
     String packageType;
     String customerName;

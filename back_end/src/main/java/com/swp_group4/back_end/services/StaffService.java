@@ -5,16 +5,16 @@ import com.swp_group4.back_end.entities.ConstructionOrder;
 import com.swp_group4.back_end.entities.Customer;
 import com.swp_group4.back_end.entities.Staff;
 import com.swp_group4.back_end.enums.Role;
-import com.swp_group4.back_end.mapper.CustomerMapper;
+import com.swp_group4.back_end.mapper.StaffMapper;
 import com.swp_group4.back_end.repositories.AccountRepository;
 import com.swp_group4.back_end.repositories.ConstructOrderRepository;
-import com.swp_group4.back_end.repositories.CustomerRepository;
 import com.swp_group4.back_end.repositories.StaffRepository;
 import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
 import com.swp_group4.back_end.responses.StaffResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -32,9 +32,13 @@ public class StaffService {
     @Autowired
     ConstructOrderRepository constructOrderRepository;
     @Autowired
-    CustomerRepository customerRepository;
+    StaffMapper staffMapper;
     @Autowired
-    CustomerMapper customerMapper;
+    @Lazy
+    ManageConstructionOrderService manageConstructionOrderService;
+    @Autowired
+    @Lazy
+    CustomerService customerService;
 
     public List<StaffResponse> listAllStaff(String staff) {
         List<Account> staffAccounts;
@@ -83,19 +87,18 @@ public class StaffService {
     }
 
     public ConstructOrderDetailForStaffResponse detailOfOrder(String constructionOrderId, String name) {
-        ConstructOrderDetailForStaffResponse response = new ConstructOrderDetailForStaffResponse();
+        ConstructionOrder order = manageConstructionOrderService.findConstructOrder(constructionOrderId);
+        Customer customer = customerService.findCustomer(order.getCustomerId());
+        ConstructOrderDetailForStaffResponse response = ConstructOrderDetailForStaffResponse.builder()
+                .constructOrderId(order.getConstructionOrderId())
+                .customerName(customer.getFirstname() + " " + customer.getLastname())
+                .phone(customer.getPhone())
+                .address(customer.getAddress())
+                .customerRequest(order.getCustomerRequest())
+                .build();
         if (!name.isEmpty()){
             response.setStaffName(name);
         }
-        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId)
-                .orElseThrow(() -> new RuntimeException("Order not found for id: " + constructionOrderId));
-        Customer customer = customerRepository.findById(order.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Error"));
-        response.setConstructOrderId(order.getConstructionOrderId());
-        response.setCustomerName(customer.getFirstname() + " " + customer.getLastname());
-        response.setPhone(customer.getPhone());
-        response.setAddress(customer.getAddress());
-        response.setCustomerRequest(order.getCustomerRequest());
         return response;
     }
 
@@ -104,6 +107,30 @@ public class StaffService {
         String accountId = context.getAuthentication().getName();
         return staffRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new RuntimeException("Error"));
+    }
+
+    Staff findStaff(String staffId){
+        return staffRepository.findById(staffId)
+                .orElseThrow(() -> new RuntimeException("Error"));
+    }
+
+    String getStaffName(String staffId) {
+        if (staffId != null && !staffId.isEmpty()) {
+            return staffRepository.findById(staffId)
+                    .orElseThrow(() -> new RuntimeException("Staff not found")).getStaffName();
+        }
+        return "";
+    }
+
+    List<StaffResponse> listStaffHasNoRole() {
+        List<Staff> staffList = staffRepository.findByAccountIdIsNull();
+        List<StaffResponse> responseList = new ArrayList<>();
+        for (Staff staff : staffList) {
+            StaffResponse response = new StaffResponse();
+            staffMapper.toStaffResponse(staff, response);
+            responseList.add(response);
+        }
+        return responseList;
     }
 
 }
