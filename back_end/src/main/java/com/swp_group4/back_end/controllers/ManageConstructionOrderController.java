@@ -54,7 +54,7 @@ public class ManageConstructionOrderController {
     }
 
     // Hàm để MANAGER gán các leader cho từng giai đoạn của Construction Order
-    @PutMapping("/assignLeader")
+    @PutMapping()
     public ApiResponse<ConstructOrderDetailForManagerResponse> assignLeader(@RequestBody StaffAssignedRequest request) {
         return ApiResponse.<ConstructOrderDetailForManagerResponse>builder()
                 .data(manageConstructionOrderService.assignLeader(request))

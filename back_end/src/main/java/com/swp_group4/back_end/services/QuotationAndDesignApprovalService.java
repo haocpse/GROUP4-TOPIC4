@@ -1,6 +1,7 @@
 package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.*;
+import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.enums.DesignStatus;
 import com.swp_group4.back_end.enums.QuotationStatus;
 import com.swp_group4.back_end.mapper.DesignMapper;
@@ -142,7 +143,7 @@ public class QuotationAndDesignApprovalService {
     public ConstructDesignResponse detailDesign(String designId) {
         Design design = designRepository.findById(designId)
                 .orElseThrow(() -> new RuntimeException("Design not found"));
-        ConstructionOrder order = constructOrderRepository.findByQuotationId(designId);
+        ConstructionOrder order = constructOrderRepository.findByDesignId(designId);
         Customer customer = customerRepository.findById(order.getCustomerId())
                 .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
         ConstructDesignResponse response = ConstructDesignResponse.builder()
@@ -156,30 +157,31 @@ public class QuotationAndDesignApprovalService {
         return response;
     }
 
-    public ConstructOrderDetailForManagerResponse manageQuotation(ManageReviewRequest request) {
-        Quotation quotation = quotationRepository.findById(request.getId())
+    public ConstructOrderDetailForManagerResponse manageQuotation(ManageReviewRequest request, String quotationId) {
+        Quotation quotation = quotationRepository.findById(quotationId)
                 .orElseThrow(() -> new RuntimeException("Quotation not found"));
-        ConstructionOrder order = constructOrderRepository.findByQuotationId(quotation.getQuotationId());
+        ConstructionOrder order = constructOrderRepository.findByQuotationId(quotationId);
         if (request.getStatus().name().equals("APPROVED")) {
             quotation.setStatus(QuotationStatus.CONFIRMED_QUOTATION);
+            order.setStatus(ConstructionOrderStatus.CONFIRMED_QUOTATION);
             quotationRepository.save(quotation);
         }
         return ConstructOrderDetailForManagerResponse.builder()
-                .orderId(request.getId())
+                .orderId(order.getConstructionOrderId())
                 .orderStatus(order.getStatus())
                 .build();
     }
 
-    public ConstructOrderDetailForManagerResponse manageDesign(ManageReviewRequest request) {
-        Design design = designRepository.findById(request.getId())
+    public ConstructOrderDetailForManagerResponse manageDesign(ManageReviewRequest request, String designId) {
+        Design design = designRepository.findById(designId)
                 .orElseThrow(() -> new RuntimeException("Design not found"));
-        ConstructionOrder order = constructOrderRepository.findByQuotationId(design.getDesignId());
+        ConstructionOrder order = constructOrderRepository.findByDesignId(designId);
         if (request.getStatus().name().equals("APPROVED")) {
-            design.setStatus(DesignStatus.CONFIRMED_DESIGN);
-            designRepository.save(design);
+            order.setStatus(ConstructionOrderStatus.CONFIRM_DESIGN);
+            constructOrderRepository.save(order);
         }
         return ConstructOrderDetailForManagerResponse.builder()
-                .orderId(request.getId())
+                .orderId(order.getConstructionOrderId())
                 .orderStatus(order.getStatus())
                 .build();
     }

@@ -36,6 +36,8 @@ public class ConstructionService {
     StaffMapper staffMapper;
     @Autowired
     StaffService staffService;
+    @Autowired
+    ConstructionTaskStaffRepository constructionTaskStaffRepository;
 
     public List<ConstructOrderDetailForStaffResponse> listOwnedConstructTask() {
         return staffService.listOwnedStaffTask();
@@ -83,6 +85,17 @@ public class ConstructionService {
             constructOrderRepository.save(order);
         Staff staff = staffRepository.findById(request.getStaffId())
                 .orElseThrow(() -> new RuntimeException("Staff not found for id: " + request.getStaffId()));
+
+        ConstructionTaskStaffKey key = ConstructionTaskStaffKey.builder()
+                .staffId(request.getStaffId())
+                .taskId(request.getTaskId())
+                .build();
+
+        ConstructionTaskStaff constructionTaskStaff = ConstructionTaskStaff.builder()
+                .id(key)
+                .staffName(staff.getStaffName())
+                .build();
+        constructionTaskStaffRepository.save(constructionTaskStaff);
         return AssignConstructionTaskResponse.builder()
                 .taskId(request.getTaskId())
                 .staffName(staff.getStaffName())

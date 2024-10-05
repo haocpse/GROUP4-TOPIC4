@@ -63,8 +63,22 @@ public class StaffService {
                 response.setStaffName(staff.getStaffName());
                 responses.add(response);
             }
+        } else if (accountRepository.findById(staff.getAccountId())
+                .orElseThrow().getRole().equals(Role.DESIGNER)) {
+            List<ConstructionOrder> orders = constructOrderRepository.findByDesignLeader(staff.getStaffId());
+            for (ConstructionOrder order : orders) {
+                ConstructOrderDetailForStaffResponse response = this.detailOfOrder(order.getConstructionOrderId(), "");
+                response.setStaffName(staff.getStaffName());
+                responses.add(response);
+            }
+        } else {
+            List<ConstructionOrder> orders = constructOrderRepository.findByConstructionLeader(staff.getStaffId());
+            for (ConstructionOrder order : orders) {
+                ConstructOrderDetailForStaffResponse response = this.detailOfOrder(order.getConstructionOrderId(), "");
+                response.setStaffName(staff.getStaffName());
+                responses.add(response);
+            }
         }
-
         return responses;
     }
 

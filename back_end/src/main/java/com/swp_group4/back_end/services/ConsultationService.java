@@ -36,11 +36,11 @@ public class ConsultationService {
     @Autowired
     StaffService staffService;
     @Autowired
-    private ConstructOrderRepository constructOrderRepository;
+    ConstructOrderRepository constructOrderRepository;
     @Autowired
-    private CustomerRepository customerRepository;
+    CustomerRepository customerRepository;
     @Autowired
-    private StaffRepository staffRepository;
+    StaffRepository staffRepository;
 
     public List<ConstructOrderDetailForStaffResponse> listOwnedConsultTask() {
         return staffService.listOwnedStaffTask();

@@ -11,7 +11,6 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class ManageReviewRequest {
 
-    String id;
     ReviewStatus status;
 
 }

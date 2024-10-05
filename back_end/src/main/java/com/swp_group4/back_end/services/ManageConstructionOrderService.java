@@ -49,12 +49,34 @@ public class ManageConstructionOrderService {
         List<ConstructionOrder> constructionOrders = constructOrderRepository.findAll();
         for (ConstructionOrder constructionOrder : constructionOrders) {
             String orderId = constructionOrder.getConstructionOrderId();
+            ConstructionOrder order = constructOrderRepository.findById(orderId)
+                    .orElseThrow(() -> new RuntimeException("Order not found"));
             Customer customer = customerRepository.findById(constructOrderRepository.findById(orderId).orElseThrow(
                     () -> new RuntimeException("Can't find order")).getCustomerId()).orElseThrow(
                             () -> new RuntimeException("Can't find customer"));
+            log.info(order.toString());
+            String consultantName = "";
+            String designLeaderName = "";
+            String constructorLeaderName = "";
+            if (order.getConsultant()!=null && !order.getConsultant().isEmpty()) {
+                consultantName = staffRepository.findById(order.getConsultant())
+                        .orElseThrow(() -> new RuntimeException("Error")).getStaffName();
+            }
+            if (order.getDesignLeader()!=null && !order.getDesignLeader().isEmpty()) {
+                designLeaderName = staffRepository.findById(order.getDesignLeader())
+                        .orElseThrow(() -> new RuntimeException("Error")).getStaffName();
+            }
+            if (order.getConstructionLeader()!=null && !order.getConstructionLeader().isEmpty()) {
+                constructorLeaderName = staffRepository.findById(order.getConstructionLeader())
+                        .orElseThrow(() -> new RuntimeException("Error")).getStaffName();
+            }
             ConstructOrderDetailForManagerResponse response = ConstructOrderDetailForManagerResponse.builder()
                     .orderId(orderId)
                     .customerName(customer.getFirstname() + " " + customer.getLastname())
+                    .consultantName(consultantName)
+                    .designLeaderName(designLeaderName)
+                    .constructorLeaderName(constructorLeaderName)
+                    .totalPrice(constructionOrder.getTotal())
                     .orderStatus(constructionOrder.getStatus())
                     .build();
             customerMapper.toDetailForManager(customer, response);
@@ -74,15 +96,15 @@ public class ManageConstructionOrderService {
         String consultantName = "";
         String designerLeader = "";
         String constructorLeader = "";
-        if (!order.getConsultant().isEmpty()){
+        if (order.getConsultant()!=null && !order.getConsultant().isEmpty()){
             consultantName = staffRepository.findById(order.getConsultant())
                     .orElseThrow(() -> new RuntimeException("Error")).getStaffName();
         }
-        if (!order.getDesignLeader().isEmpty()) {
+        if (order.getDesignLeader()!=null && !order.getDesignLeader().isEmpty()) {
             designerLeader = staffRepository.findById(order.getDesignLeader())
                     .orElseThrow(() -> new RuntimeException("Error")).getStaffName();
         }
-        if (!order.getConstructionLeader().isEmpty()) {
+        if (order.getConstructionLeader()!=null && !order.getConstructionLeader().isEmpty()) {
             constructorLeader = staffRepository.findById(order.getConstructionLeader())
                     .orElseThrow(() -> new RuntimeException("Error")).getStaffName();
         }
