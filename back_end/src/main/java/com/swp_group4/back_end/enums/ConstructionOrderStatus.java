@@ -4,7 +4,7 @@ public enum ConstructionOrderStatus {
 
     REQUESTED, // Trạng thái của CONSTRUCTION ORDER sau khi CUSTOMER gửi REQUEST
     CONSULTING,
-    QUOTED, // Trạng thái của QUOTATION sau khi CONSULTANT export 1 QUOTATION
+    QUOTATION, // Trạng thái của QUOTATION sau khi CONSULTANT export 1 QUOTATION
     CONFIRMED_QUOTATION, // Trạng thái của QUOTATION sau khi được phê duyệt từ MANAGER// Trạng thái của CONSTRUCTION ORDER sau khi MANAGER assign ORDER cho 1 CONSULTANT
     DESIGNING,
     DESIGNED, // Trạng thái của DESIGN sau khi DESIGNER upload các design

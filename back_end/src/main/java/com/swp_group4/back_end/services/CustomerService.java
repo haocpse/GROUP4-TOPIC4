@@ -2,7 +2,6 @@ package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.ConstructionOrder;
 import com.swp_group4.back_end.entities.Customer;
-import com.swp_group4.back_end.entities.Staff;
 import com.swp_group4.back_end.mapper.CustomerMapper;
 import com.swp_group4.back_end.repositories.CustomerRepository;
 import com.swp_group4.back_end.requests.ServiceRequest;
@@ -66,8 +65,9 @@ public class CustomerService {
     Customer identifyCustomer() {
         var context = SecurityContextHolder.getContext();
         String accountId = context.getAuthentication().getName();
-        return customerRepository.findById(accountId).orElseThrow(
-                () -> new RuntimeException("Customer not found"));
+        log.info(accountId);
+        return customerRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
     }
 
 }

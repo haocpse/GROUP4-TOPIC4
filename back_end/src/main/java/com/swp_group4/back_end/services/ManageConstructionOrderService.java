@@ -6,11 +6,13 @@ import com.swp_group4.back_end.mapper.ConstructionOrderMapper;
 import com.swp_group4.back_end.mapper.CustomerMapper;
 import com.swp_group4.back_end.repositories.ConstructOrderRepository;
 import com.swp_group4.back_end.repositories.CustomerRepository;
+import com.swp_group4.back_end.repositories.StaffRepository;
 import com.swp_group4.back_end.requests.ServiceRequest;
 import com.swp_group4.back_end.requests.StaffAssignedRequest;
 import com.swp_group4.back_end.responses.*;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ import java.util.List;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Slf4j
 public class ManageConstructionOrderService {
 
     @Autowired
@@ -29,6 +32,8 @@ public class ManageConstructionOrderService {
     CustomerRepository customerRepository;
     @Autowired
     CustomerMapper customerMapper;
+    @Autowired
+    private StaffRepository staffRepository;
 
     public ConstructionOrder createOrder(ServiceRequest request, Customer customer) {
         ConstructionOrder constructionOrder = ConstructionOrder.builder()
@@ -48,7 +53,9 @@ public class ManageConstructionOrderService {
                     () -> new RuntimeException("Can't find order")).getCustomerId()).orElseThrow(
                             () -> new RuntimeException("Can't find customer"));
             ConstructOrderDetailForManagerResponse response = ConstructOrderDetailForManagerResponse.builder()
+                    .orderId(orderId)
                     .customerName(customer.getFirstname() + " " + customer.getLastname())
+                    .orderStatus(constructionOrder.getStatus())
                     .build();
             customerMapper.toDetailForManager(customer, response);
             constructionOrderMapper.toDetailForManager(constructionOrder, response);
@@ -58,11 +65,41 @@ public class ManageConstructionOrderService {
     }
 
     public ConstructOrderDetailForManagerResponse assignLeader(StaffAssignedRequest request){
-        ConstructOrderDetailForManagerResponse response = new ConstructOrderDetailForManagerResponse();
         ConstructionOrder order = constructOrderRepository.findById(request.getConstructionOrderId())
                 .orElseThrow(() -> new RuntimeException("Can't find order"));
         constructOrderRepository.save(constructionOrderMapper.toConstructionOrder(request, order));
-        return constructionOrderMapper.toDetailForManager(order, response);
+        log.info(order.toString());
+        Customer customer = customerRepository.findById(order.getCustomerId())
+                .orElseThrow(() -> new RuntimeException("Can't find customer"));
+        String consultantName = "";
+        String designerLeader = "";
+        String constructorLeader = "";
+        if (!order.getConsultant().isEmpty()){
+            consultantName = staffRepository.findById(order.getConsultant())
+                    .orElseThrow(() -> new RuntimeException("Error")).getStaffName();
+        }
+        if (!order.getDesignLeader().isEmpty()) {
+            designerLeader = staffRepository.findById(order.getDesignLeader())
+                    .orElseThrow(() -> new RuntimeException("Error")).getStaffName();
+        }
+        if (!order.getConstructionLeader().isEmpty()) {
+            constructorLeader = staffRepository.findById(order.getConstructionLeader())
+                    .orElseThrow(() -> new RuntimeException("Error")).getStaffName();
+        }
+
+        return ConstructOrderDetailForManagerResponse.builder()
+                .orderId(order.getConstructionOrderId())
+                .customerName(customer.getFirstname() + " " + customer.getLastname())
+                .phone(customer.getPhone())
+                .address(customer.getAddress())
+                .startDate(order.getStartDate())
+                .endDate(order.getEndDate())
+                .totalPrice(order.getTotal())
+                .consultantName(consultantName)
+                .designLeaderName(designerLeader)
+                .constructorLeaderName(constructorLeader)
+                .orderStatus(order.getStatus())
+                .build();
     }
 
 //    public ServiceResponse<MaintenanceOrderResponse> contactUsForMaintenance(ServiceRequest serviceRequest) {

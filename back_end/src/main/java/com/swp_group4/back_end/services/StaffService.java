@@ -3,6 +3,7 @@ package com.swp_group4.back_end.services;
 import com.swp_group4.back_end.entities.Account;
 import com.swp_group4.back_end.entities.ConstructionOrder;
 import com.swp_group4.back_end.entities.Customer;
+import com.swp_group4.back_end.entities.Staff;
 import com.swp_group4.back_end.enums.Role;
 import com.swp_group4.back_end.mapper.CustomerMapper;
 import com.swp_group4.back_end.repositories.AccountRepository;
@@ -35,7 +36,7 @@ public class StaffService {
     @Autowired
     CustomerMapper customerMapper;
 
-    public List<StaffResponse> listAllStaff(String staff){
+    public List<StaffResponse> listAllStaff(String staff) {
         List<Account> staffAccounts;
         if (staff.equals("consultant")) {
             staffAccounts = accountRepository.findByRole(Role.CONSULTANT);
@@ -52,28 +53,43 @@ public class StaffService {
     }
 
     public List<ConstructOrderDetailForStaffResponse> listOwnedStaffTask() {
-        var context = SecurityContextHolder.getContext();
-        String accountId = context.getAuthentication().getName();
-        List<ConstructionOrder> orders = constructOrderRepository.findByConsultant(staffRepository.findByAccountId(accountId)
-                .orElseThrow(() -> new RuntimeException("Error"))
-                .getStaffId());
         List<ConstructOrderDetailForStaffResponse> responses = new ArrayList<>();
-        for (ConstructionOrder order : orders) {
-            ConstructOrderDetailForStaffResponse response = this.detailOfOrder(order.getConstructionOrderId());
-            responses.add(response);
+        Staff staff = this.identifyStaff();
+        if (accountRepository.findById(staff.getAccountId())
+                .orElseThrow().getRole().equals(Role.CONSULTANT)) {
+            List<ConstructionOrder> orders = constructOrderRepository.findByConsultant(staff.getStaffId());
+            for (ConstructionOrder order : orders) {
+                ConstructOrderDetailForStaffResponse response = this.detailOfOrder(order.getConstructionOrderId(), "");
+                response.setStaffName(staff.getStaffName());
+                responses.add(response);
+            }
         }
+
         return responses;
     }
 
-    public ConstructOrderDetailForStaffResponse detailOfOrder(String constructionOrderId) {
+    public ConstructOrderDetailForStaffResponse detailOfOrder(String constructionOrderId, String name) {
+        ConstructOrderDetailForStaffResponse response = new ConstructOrderDetailForStaffResponse();
+        if (!name.isEmpty()){
+            response.setStaffName(name);
+        }
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId)
                 .orElseThrow(() -> new RuntimeException("Order not found for id: " + constructionOrderId));
         Customer customer = customerRepository.findById(order.getCustomerId())
                 .orElseThrow(() -> new RuntimeException("Error"));
-        ConstructOrderDetailForStaffResponse response = ConstructOrderDetailForStaffResponse.builder()
-                .constructOrderId(order.getConstructionOrderId())
-                .build();
-        return customerMapper.toDetailForStaff(customer, response);
+        response.setConstructOrderId(order.getConstructionOrderId());
+        response.setCustomerName(customer.getFirstname() + " " + customer.getLastname());
+        response.setPhone(customer.getPhone());
+        response.setAddress(customer.getAddress());
+        response.setCustomerRequest(order.getCustomerRequest());
+        return response;
+    }
+
+    Staff identifyStaff() {
+        var context = SecurityContextHolder.getContext();
+        String accountId = context.getAuthentication().getName();
+        return staffRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new RuntimeException("Error"));
     }
 
 }

@@ -13,5 +13,7 @@ public interface ConstructOrderRepository extends JpaRepository<ConstructionOrde
     ConstructionOrder findByQuotationId(String quotationId);
     ConstructionOrder findByDesignId(String designId);
     List<ConstructionOrder> findByConsultant(String consultant);
+    List<ConstructionOrder> findByDesignLeader(String designLeader);
+    List<ConstructionOrder> findByConstructionLeader(String constructionLeader);
 
 }

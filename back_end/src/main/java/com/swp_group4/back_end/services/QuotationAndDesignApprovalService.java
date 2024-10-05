@@ -1,7 +1,6 @@
 package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.*;
-import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.enums.DesignStatus;
 import com.swp_group4.back_end.enums.QuotationStatus;
 import com.swp_group4.back_end.mapper.DesignMapper;
@@ -69,7 +68,8 @@ public class QuotationAndDesignApprovalService {
                     .customerName(customer.getFirstname() + " " + customer.getLastname())
                     .phone(customer.getPhone())
                     .address(customer.getAddress())
-                    .leaderName(order.getConsultant())
+                    .leaderName(staffRepository.findById(order.getConsultant())
+                            .orElseThrow(() -> new RuntimeException("error")).getStaffName())
                     .packageType(packages.getPackageType())
                     .volume(quotation.getVolume())
                     .totalPrice(order.getTotal())
@@ -164,7 +164,7 @@ public class QuotationAndDesignApprovalService {
             quotation.setStatus(QuotationStatus.CONFIRMED_QUOTATION);
             quotationRepository.save(quotation);
         }
-        return ConstructOrderDetailForManagerResponse.<QuotationStatus>builder()
+        return ConstructOrderDetailForManagerResponse.builder()
                 .orderId(request.getId())
                 .orderStatus(order.getStatus())
                 .build();
@@ -178,7 +178,7 @@ public class QuotationAndDesignApprovalService {
             design.setStatus(DesignStatus.CONFIRMED_DESIGN);
             designRepository.save(design);
         }
-        return ConstructOrderDetailForManagerResponse.<DesignStatus>builder()
+        return ConstructOrderDetailForManagerResponse.builder()
                 .orderId(request.getId())
                 .orderStatus(order.getStatus())
                 .build();

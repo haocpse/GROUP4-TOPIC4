@@ -2,6 +2,7 @@ package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.ConstructionOrder;
 import com.swp_group4.back_end.entities.Design;
+import com.swp_group4.back_end.entities.Staff;
 import com.swp_group4.back_end.mapper.DesignMapper;
 import com.swp_group4.back_end.repositories.ConstructOrderRepository;
 import com.swp_group4.back_end.repositories.DesignRepository;
@@ -33,7 +34,8 @@ public class DesignService {
     }
 
     public ConstructOrderDetailForStaffResponse detailOfOrder(String constructionOrderId) {
-        return staffService.detailOfOrder(constructionOrderId);
+        Staff staff = staffService.identifyStaff();
+        return staffService.detailOfOrder(constructionOrderId, staff.getStaffName());
     }
 
     public Design uploadDesign(String constructionOrderId, UrlDesignRequest request) {

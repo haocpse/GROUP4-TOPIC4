@@ -22,8 +22,6 @@ import java.util.List;
 public class ConsultationService {
 
     @Autowired
-    ConstructOrderRepository constructOrderRepository;
-    @Autowired
     QuotationMapper quotationMapper;
     @Autowired
     QuotationRepository quotationRepository;
@@ -37,13 +35,20 @@ public class ConsultationService {
     PackagePriceRepository packagePriceRepository;
     @Autowired
     StaffService staffService;
+    @Autowired
+    private ConstructOrderRepository constructOrderRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
+    @Autowired
+    private StaffRepository staffRepository;
 
     public List<ConstructOrderDetailForStaffResponse> listOwnedConsultTask() {
         return staffService.listOwnedStaffTask();
     }
 
     public ConstructOrderDetailForStaffResponse detailOfOrder(String constructionOrderId) {
-        return staffService.detailOfOrder(constructionOrderId);
+        Staff staff = staffService.identifyStaff();
+        return staffService.detailOfOrder(constructionOrderId, staff.getStaffName());
     }
 
     public ConstructQuotationResponse exportQuotation(String constructionOrderId, ExportQuotationRequest request) {
@@ -77,7 +82,21 @@ public class ConsultationService {
                 .build();
         quotationMapper.toQuotation(request, quotation);
         quotationRepository.save(quotation);
+        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId)
+                .orElseThrow(() -> new RuntimeException("Order not found for id: " + constructionOrderId));
+        order.setQuotationId(quotation.getQuotationId());
+        order.setTotal(totalPrice);
+        order.setStartDate(request.getStartDate());
+        order.setEndDate(request.getEndDate());
+        order.setStatus(ConstructionOrderStatus.QUOTATION);
+        constructOrderRepository.save(order);
+        Customer customer = customerRepository.findById(order.getCustomerId())
+                .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
         ConstructQuotationResponse response = ConstructQuotationResponse.builder()
+                .customerName(customer.getFirstname() + " " + customer.getLastname())
+                .consultantName(staffRepository.findById(order.getConsultant())
+                        .orElseThrow(() -> new RuntimeException("error")).getStaffName())
+                .customerRequest(order.getCustomerRequest())
                 .packageType(packageType)
                 .totalPrice(totalPrice)
                 .content(contentList)
