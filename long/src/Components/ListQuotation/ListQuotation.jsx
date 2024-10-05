@@ -4,6 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 import styles from "./ListQuotation.module.css";
 import Navbar from "../Navbar/Navbar";
 
+
 const ListQuotation = () => {
     const [quotes, setQuotes] = useState([]);
     const navigate = useNavigate();
@@ -40,6 +41,66 @@ const ListQuotation = () => {
         {
             constructionOrderId: "3",
             customerName: "Tấn Nhàn",
+            packageType: "ECONOMIC PACKAGE",
+            volume: 100,
+            priceStage1: 86700,
+            priceStage2: 657000,
+            priceStage3: 900000,
+            totalPrice: 2100000,
+            content: ["Công việc 1", "Công việc 2"],
+            status: getRandomStatus()
+        },
+        {
+            constructionOrderId: "4",
+            customerName: "Châu Phú Hào",
+            packageType: "BASIC PACKAGE",
+            volume: 100,
+            priceStage1: 500000,
+            priceStage2: 700000,
+            priceStage3: 900000,
+            totalPrice: 2100000,
+            content: ["Công việc 1", "Công việc 2"],
+            status: getRandomStatus()
+        },
+        {
+            constructionOrderId: "5",
+            customerName: "Nguyễn Ngọc Khuyên",
+            packageType: "ECONOMIC PACKAGE",
+            volume: 100,
+            priceStage1: 500000,
+            priceStage2: 700000,
+            priceStage3: 900000,
+            totalPrice: 2100000,
+            content: ["Công việc 1", "Công việc 2"],
+            status: getRandomStatus()
+        },
+        {
+            constructionOrderId: "6",
+            customerName: "Phùng Thanh Độ",
+            packageType: "VIP PACKAGE",
+            volume: 100,
+            priceStage1: 500000,
+            priceStage2: 700000,
+            priceStage3: 900000,
+            totalPrice: 2100000,
+            content: ["Công việc 1", "Công việc 2"],
+            status: getRandomStatus()
+        },
+        {
+            constructionOrderId: "7",
+            customerName: "Uông Đình Dũng",
+            packageType: "VIP PACKAGE",
+            volume: 100,
+            priceStage1: 500000,
+            priceStage2: 700000,
+            priceStage3: 900000,
+            totalPrice: 2100000,
+            content: ["Công việc 1", "Công việc 2"],
+            status: getRandomStatus()
+        },
+        {
+            constructionOrderId: "3",
+            customerName: "Đặng Mai Anh Tú",
             packageType: "ECONOMIC PACKAGE",
             volume: 100,
             priceStage1: 86700,

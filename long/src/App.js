@@ -21,6 +21,8 @@ import Customer from "./Components/CustomerView/Customer";
 import ConsultationPage from "./Components/ConsultationPage/ConsultationPage";
 import ListQuotation from "./Components/ListQuotation/ListQuotation";
 import ViewQuotationInConsultationPage from "./Components/ListQuotation/ViewQuotationInConsultationPage";
+import ApproveDesign from "./Components/ApproveDesign/ApproveDesign";
+import ViewDesign from "./Components/ApproveDesign/ViewDesign";
 import ViewPayment from "./Components/ListQuotation/ViewPayment";
 import DesignerTasks from "./Components/DesignerTasks/DesignerTasks";
 
@@ -63,6 +65,14 @@ function App() {
           element: <ApproveQuotation />,
         },
         {
+          path: "approve-design",
+          element: <ApproveDesign/>
+        },
+        {
+          path:"view-design",
+          element:<ViewDesign/>
+        },
+        {
           path: "view-quotation",
           element: <ViewQuotation />,
         },
@@ -102,6 +112,9 @@ function App() {
       path: "view-payment",  // Sửa path này thành list-quotation thay vì 'list quotation'
       element: <ViewPayment />,
     },
+    
+ 
+    
     {
       path: "quotation-order",
       element: <QuotationOrder />
