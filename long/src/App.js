@@ -6,7 +6,7 @@ import Contact from "./Components/Contact/Contact";
 import Service from "./Components/Service/Service";
 import MainLayout from "./Components/MainLayout";
 import Construction from "./Components/Construction/Construction";
-import Design from "./Components/Design/Design";
+import ApproveDesign from "./Components/ApproveDesign/ApproveDesign";
 import Consultation from "./Components/Consultation/Consultation";
 import ConstructionProgress from "./Components/ConstructionProgress/ConstructionProgress";
 import ConsultantTasks from "./Components/ConsultantTasks/ConsultantTasks";
@@ -55,12 +55,8 @@ function App() {
           element: <Consultation />,
         },
         {
-          path: "design",
-          element: <Design />,
-        },
-        {
-          path: "construction",
-          element: <Construction />,
+          path: "approve-design",
+          element: <ApproveDesign />,
         },
         {
           path: "approve-quotation",
