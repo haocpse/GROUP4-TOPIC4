@@ -43,7 +43,7 @@ public class QuotationAndDesignApprovalController {
     // (Nếu APPROVE Construction Order chuyển sang trạng thái CONFIRMED_QUOTATION)
     @PostMapping("/quotations/manageQuotation")
     public ApiResponse<ConstructOrderDetailForManagerResponse> approveQuotation(@RequestBody ManageReviewRequest request){
-        return ApiResponse.<ConstructOrderDetailForManagerResponse<QuotationStatus>>builder()
+        return ApiResponse.<ConstructOrderDetailForManagerResponse>builder()
                 .data(quotationAndDesignApprovalService.manageQuotation(request))
                 .build();
     }
@@ -69,8 +69,8 @@ public class QuotationAndDesignApprovalController {
     // Hàm để MANAGER quyết định APPROVE hay không
     // (Nếu APPROVE Construction Order chuyển sang trạng thái CONFIRMED_DESIGN)
     @PostMapping("/designs/manageDesign")
-    public ApiResponse<ConstructOrderDetailForManagerResponse<DesignStatus>> approveDesign(@RequestBody ManageReviewRequest request){
-        return ApiResponse.<ConstructOrderDetailForManagerResponse<DesignStatus>>builder()
+    public ApiResponse<ConstructOrderDetailForManagerResponse> approveDesign(@RequestBody ManageReviewRequest request){
+        return ApiResponse.<ConstructOrderDetailForManagerResponse>builder()
                 .data(quotationAndDesignApprovalService.manageDesign(request))
                 .build();
     }

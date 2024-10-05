@@ -2,6 +2,7 @@ package com.swp_group4.back_end.mapper;
 
 import com.swp_group4.back_end.entities.ConstructionOrder;
 import com.swp_group4.back_end.requests.StaffAssignedRequest;
+import com.swp_group4.back_end.responses.ConstructOrderDetailForManagerResponse;
 import com.swp_group4.back_end.responses.ConstructOrderResponse;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
@@ -51,5 +52,21 @@ public class ConstructionOrderMapperImpl implements ConstructionOrderMapper {
         }
 
         return order;
+    }
+
+    @Override
+    public ConstructOrderDetailForManagerResponse toDetailForManager(ConstructionOrder order, ConstructOrderDetailForManagerResponse detail) {
+        if ( order == null ) {
+            return detail;
+        }
+
+        if ( order.getStartDate() != null ) {
+            detail.setStartDate( order.getStartDate() );
+        }
+        if ( order.getEndDate() != null ) {
+            detail.setEndDate( order.getEndDate() );
+        }
+
+        return detail;
     }
 }
