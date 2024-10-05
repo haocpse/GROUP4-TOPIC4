@@ -3,6 +3,8 @@ package com.swp_group4.back_end.services;
 import com.swp_group4.back_end.entities.PaymentOrder;
 import com.swp_group4.back_end.enums.PaymentStatus;
 import com.swp_group4.back_end.repositories.PaymentOrderRepository;
+import com.swp_group4.back_end.requests.PaymentRequest;
+import com.swp_group4.back_end.responses.ApiResponse;
 import com.swp_group4.back_end.responses.PaymentResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -14,17 +16,66 @@ import java.util.Map;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PaymentService {
+
     @Autowired
     PaymentOrderRepository paymentOrderRepository;
+
+    // Xử lý tạo thanh toán
+    public ApiResponse<PaymentResponse> createPayment(PaymentRequest request) {
+        PaymentOrder paymentOrder = PaymentOrder.builder()
+                .serviceId(request.getServiceId())
+                .date(java.time.ZonedDateTime.now())
+                .paymentMethods(request.getMethod())
+                .total(request.getTotal())
+                .status(PaymentStatus.PENDING)
+                .build();
+
+        PaymentResponse responseDTO;
+
+        switch (request.getMethod()) {
+            case VNPAY:
+                responseDTO = createVNPayPayment(paymentOrder);
+                break;
+            case MOMO:
+                responseDTO = createMomoPayment(paymentOrder);
+                break;
+            default:
+                return ApiResponse.<PaymentResponse>builder()
+                        .code(4000)  // Mã lỗi tuỳ chỉnh
+                        .message("Unsupported payment method")
+                        .build();
+        }
+
+        return ApiResponse.<PaymentResponse>builder()
+                .code(1000)  // Mã thành công
+                .message("Payment initiated successfully")
+                .data(responseDTO)
+                .build();
+    }
+
+    // Xử lý phản hồi (callback) từ cổng thanh toán
+    public ApiResponse<String> handlePaymentReturn(Map<String, String> params) {
+        boolean paymentSuccess = processPaymentReturn(params);
+
+        if (paymentSuccess) {
+            return ApiResponse.<String>builder()
+                    .code(1000)  // Mã thành công
+                    .message("Payment successful!")
+                    .data("Payment completed successfully")
+                    .build();
+        } else {
+            return ApiResponse.<String>builder()
+                    .code(2000)  // Mã lỗi
+                    .message("Payment failed!")
+                    .data("Payment failed to process")
+                    .build();
+        }
+    }
+
     // Tạo yêu cầu thanh toán qua VNPAY
-    public PaymentResponse createVNPayPayment(PaymentOrder paymentOrder) {
-        // Lưu đơn hàng vào database với trạng thái PENDING
+    private PaymentResponse createVNPayPayment(PaymentOrder paymentOrder) {
         paymentOrderRepository.save(paymentOrder);
-
-        // Tạo URL thanh toán VNPAY với các tham số cần thiết
         String vnPayUrl = generateVNPayUrl(paymentOrder);
-
-        // Trả về URL để frontend redirect tới VNPAY
         return PaymentResponse.builder()
                 .paymentId(paymentOrder.getPaymentId())
                 .redirectUrl(vnPayUrl)
@@ -34,14 +85,9 @@ public class PaymentService {
     }
 
     // Tạo yêu cầu thanh toán qua MOMO
-    public PaymentResponse createMomoPayment(PaymentOrder paymentOrder) {
-        // Lưu đơn hàng vào database với trạng thái PENDING
+    private PaymentResponse createMomoPayment(PaymentOrder paymentOrder) {
         paymentOrderRepository.save(paymentOrder);
-
-        // Tạo URL thanh toán MOMO với các tham số cần thiết
         String momoUrl = generateMomoUrl(paymentOrder);
-
-        // Trả về URL để frontend redirect tới MOMO
         return PaymentResponse.builder()
                 .paymentId(paymentOrder.getPaymentId())
                 .redirectUrl(momoUrl)
@@ -50,41 +96,30 @@ public class PaymentService {
                 .build();
     }
 
-    // Xử lý phản hồi từ VNPAY hoặc MOMO sau khi thanh toán
-    public boolean processPaymentReturn(Map<String, String> params) {
-        // Xác thực phản hồi và cập nhật trạng thái thanh toán
-        String paymentId = params.get("paymentId"); // Lấy ID đơn hàng từ callback
-
-        // Tìm đơn hàng trong database
+    // Phương thức xử lý phản hồi từ cổng thanh toán
+    private boolean processPaymentReturn(Map<String, String> params) {
+        String paymentId = params.get("paymentId");
         PaymentOrder paymentOrder = paymentOrderRepository.findById(paymentId).orElse(null);
         if (paymentOrder == null) {
             return false;
         }
-
-        // Xử lý kết quả dựa trên tham số phản hồi từ cổng thanh toán
-        String resultCode = params.get("resultCode"); // Giả sử từ MOMO
-        if ("0".equals(resultCode)) {  // '0' là thành công với MOMO
+        String resultCode = params.get("resultCode");
+        if ("0".equals(resultCode)) {  // Mã '0' là thành công
             paymentOrder.setStatus(PaymentStatus.SUCCESS);
         } else {
             paymentOrder.setStatus(PaymentStatus.FAILED);
         }
-
-        // Cập nhật trạng thái đơn hàng trong database
         paymentOrderRepository.save(paymentOrder);
-
-        // Trả về kết quả xử lý thanh toán (thành công hoặc thất bại)
         return "0".equals(resultCode);
     }
 
-    // Phương thức giả định để tạo URL thanh toán VNPAY (bạn cần bổ sung logic thực tế)
+    // Giả lập tạo URL thanh toán cho VNPAY
     private String generateVNPayUrl(PaymentOrder paymentOrder) {
-        // Xây dựng URL để chuyển hướng người dùng tới trang thanh toán của VNPAY
         return "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?params";
     }
 
-    // Phương thức giả định để tạo URL thanh toán MOMO (bạn cần bổ sung logic thực tế)
+    // Giả lập tạo URL thanh toán cho MOMO
     private String generateMomoUrl(PaymentOrder paymentOrder) {
-        // Xây dựng URL để chuyển hướng người dùng tới trang thanh toán của MOMO
         return "https://test-payment.momo.vn/pay?params";
     }
 }

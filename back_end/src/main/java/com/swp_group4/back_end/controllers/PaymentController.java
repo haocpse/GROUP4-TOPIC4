@@ -1,8 +1,7 @@
 package com.swp_group4.back_end.controllers;
 
-import com.swp_group4.back_end.entities.PaymentOrder;
-import com.swp_group4.back_end.enums.PaymentStatus;
 import com.swp_group4.back_end.requests.PaymentRequest;
+import com.swp_group4.back_end.responses.ApiResponse;
 import com.swp_group4.back_end.responses.PaymentResponse;
 import com.swp_group4.back_end.services.PaymentService;
 import lombok.AccessLevel;
@@ -17,44 +16,23 @@ import java.util.Map;
 @RequestMapping("/payment")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PaymentController {
+
     @Autowired
     PaymentService paymentService;
 
-    // Endpoint để tạo thanh toán
+    // Tạo yêu cầu thanh toán (theo định dạng bạn yêu cầu)
     @PostMapping("/create")
-    public PaymentResponse createPayment(@RequestBody PaymentRequest request) {
-        PaymentOrder paymentOrder = PaymentOrder.builder()
-                .serviceId(request.getServiceId())
-                .date(ZonedDateTime.now())
-                .paymentMethods(request.getMethod())
-                .total(request.getTotal())
-                .status(PaymentStatus.PENDING)
+    public ApiResponse<PaymentResponse> createPayment(@RequestBody PaymentRequest request) {
+        return ApiResponse.<PaymentResponse>builder()
+                .data(paymentService.createPayment(request).getData()) // Lấy data từ service trả về
                 .build();
-
-        switch (request.getMethod()) {
-            case VNPAY:
-                return paymentService.createVNPayPayment(paymentOrder);
-            case MOMO:
-                return paymentService.createMomoPayment(paymentOrder);
-            default:
-                return PaymentResponse.builder()
-                        .paymentId(null)
-                        .message("Unsupported payment method")
-                        .success(false)
-                        .build();
-        }
     }
 
-    // Endpoint để xử lý callback từ cổng thanh toán (VNPAY/MOMO)
+    // Xử lý callback từ cổng thanh toán (theo định dạng bạn yêu cầu)
     @GetMapping("/return")
-    public String handlePaymentReturn(@RequestParam Map<String, String> params) {
-        String paymentId = params.get("paymentId");
-        // Xử lý kết quả thanh toán và cập nhật trạng thái của PaymentOrder
-        boolean paymentSuccess = paymentService.processPaymentReturn(params);
-        if (paymentSuccess) {
-            return "Payment successful!";
-        } else {
-            return "Payment failed!";
-        }
+    public ApiResponse<String> handlePaymentReturn(@RequestParam Map<String, String> params) {
+        return ApiResponse.<String>builder()
+                .data(paymentService.handlePaymentReturn(params).getData()) // Lấy data từ service trả về
+                .build();
     }
 }
