@@ -23,6 +23,7 @@ import ViewDesign from "./Components/ApproveDesign/ViewDesign";
 import ViewPayment from "./Components/ListQuotation/ViewPayment";
 import DesignerTasks from "./Components/DesignerTasks/DesignerTasks";
 import CustomerView from "./Components/CustomerView/CustomerView";
+import CustomerQuotationList from "./Components/CustomerView/CustomerQuotationList";
 function App() {
   const router = createBrowserRouter([
     {
@@ -114,7 +115,10 @@ function App() {
       path: "quotation-order",
       element: <QuotationOrder />,
     },
-
+    {
+      path:"customrer-quotation",
+      element: <CustomerQuotationList />,
+    },
     {
       path: "customer-view", // Add a route for CustomerView
       element: <CustomerView />,
