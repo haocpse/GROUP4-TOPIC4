@@ -1,22 +1,17 @@
 package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.*;
-import com.swp_group4.back_end.enums.ConstructionOrderStatus;
-import com.swp_group4.back_end.enums.DesignStatus;
-import com.swp_group4.back_end.enums.QuotationStatus;
-import com.swp_group4.back_end.mapper.DesignMapper;
-import com.swp_group4.back_end.mapper.QuotationMapper;
+import com.swp_group4.back_end.enums.*;
+import com.swp_group4.back_end.mapper.*;
 import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.requests.ManageReviewRequest;
-import com.swp_group4.back_end.responses.ConstructDesignResponse;
-import com.swp_group4.back_end.responses.ConstructQuotationResponse;
-import com.swp_group4.back_end.responses.QuotationAndDesignReviewResponse;
-import com.swp_group4.back_end.responses.ConstructOrderDetailForManagerResponse;
+import com.swp_group4.back_end.responses.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,41 +30,42 @@ public class QuotationAndDesignApprovalService {
     @Autowired
     QuotationMapper quotationMapper;
     @Autowired
-    ConstructionTasksRepository constructionTasksRepository;
-    @Autowired
-    PackageConstructionRepository packageConstructionRepository;
-    @Autowired
-    PackageRepository packageRepository;
-    @Autowired
-    CustomerRepository customerRepository;
-    @Autowired
     DesignRepository designRepository;
     @Autowired
-    StaffRepository staffRepository;
-    @Autowired
     DesignMapper designMapper;
+    @Autowired
+    ManageConstructionOrderService manageConstructionOrderService;
+    @Autowired
+    @Lazy
+    CustomerService customerService;
+    @Autowired
+    @Lazy
+    ConsultationService consultationService;
+    @Autowired
+    @Lazy
+    StaffService staffService;
+    @Autowired
+    @Lazy
+    ConstructionService constructionService;
+    @Autowired
+    @Lazy
+    DesignService designService;
 
     public List<QuotationAndDesignReviewResponse<QuotationStatus>> listAllQuotation() {
         List<Quotation> quotations = quotationRepository.findByStatus(QuotationStatus.QUOTED);
         List<QuotationAndDesignReviewResponse<QuotationStatus>> responses = new ArrayList<>();
         for (Quotation quotation : quotations) {
-            String orderId = constructOrderRepository
-                    .findByQuotationId(quotation.getQuotationId())
-                    .getConstructionOrderId();
-            ConstructionOrder order = constructOrderRepository.findById(orderId)
-                    .orElseThrow(() -> new RuntimeException("Order not found for id: " + orderId));
-            Customer customer = customerRepository.findById(order.getCustomerId())
-                    .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
-            String packageId = quotation.getPackageId();
-            Packages packages = packageRepository.findById(packageId)
-                    .orElseThrow(() -> new RuntimeException("Package not found"));
+            ConstructionOrder order = manageConstructionOrderService
+                    .findConstructOrderByQuotationId(quotation.getQuotationId());
+            Customer customer = customerService.findCustomer(order.getCustomerId());
+            Packages packages = consultationService.findPackage(quotation.getPackageId());
             QuotationAndDesignReviewResponse<QuotationStatus> response = QuotationAndDesignReviewResponse.<QuotationStatus>builder()
                     .constructionOrderId(order.getConstructionOrderId())
                     .id(quotation.getQuotationId())
                     .customerName(customer.getFirstname() + " " + customer.getLastname())
                     .phone(customer.getPhone())
                     .address(customer.getAddress())
-                    .leaderName(order.getConsultant())
+                    .leaderName(staffService.getStaffName(order.getConsultant()))
                     .packageType(packages.getPackageType())
                     .volume(quotation.getVolume())
                     .totalPrice(order.getTotal())
@@ -84,24 +80,18 @@ public class QuotationAndDesignApprovalService {
         List<Design> Designs = designRepository.findByStatus(DesignStatus.DESIGNED);
         List<QuotationAndDesignReviewResponse<DesignStatus>> responses = new ArrayList<>();
         for (Design design : Designs) {
-            String orderId = constructOrderRepository
-                    .findByDesignId(design.getDesignId())
-                    .getConstructionOrderId();
-            ConstructionOrder order = constructOrderRepository.findById(orderId)
-                    .orElseThrow(() -> new RuntimeException("Order not found for id: " + orderId));
-            Customer customer = customerRepository.findById(order.getCustomerId())
-                    .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
-            Quotation quotation = quotationRepository.findById(order.getQuotationId())
-                    .orElseThrow(() -> new RuntimeException("Quotation not found for id: " + order.getQuotationId()));
-            Packages packages = packageRepository.findById(quotation.getPackageId())
-                    .orElseThrow(() -> new RuntimeException("Package not found"));
+            ConstructionOrder order = manageConstructionOrderService
+                    .findConstructOrderByQuotationId(design.getDesignId());
+            Customer customer =  customerService.findCustomer(order.getCustomerId());
+            Quotation quotation = consultationService.findQuotation(order.getQuotationId());
+            Packages packages = consultationService.findPackage(quotation.getPackageId());
             QuotationAndDesignReviewResponse<DesignStatus> response = QuotationAndDesignReviewResponse.<DesignStatus>builder()
                     .constructionOrderId(order.getConstructionOrderId())
                     .id(design.getDesignId())
                     .customerName(customer.getFirstname() + " " + customer.getLastname())
                     .phone(customer.getPhone())
                     .address(customer.getAddress())
-                    .leaderName(order.getDesignLeader())
+                    .leaderName(staffService.getStaffName(order.getDesignLeader()))
                     .packageType(packages.getPackageType())
                     .volume(quotation.getVolume())
                     .totalPrice(order.getTotal())
@@ -113,25 +103,16 @@ public class QuotationAndDesignApprovalService {
     }
 
     public ConstructQuotationResponse detailQuotation(String quotationId) {
-        Quotation quotation = quotationRepository.findById(quotationId)
-                .orElseThrow(() -> new RuntimeException("Quotation not found"));
-        ConstructionOrder order = constructOrderRepository.findByQuotationId(quotationId);
-        Customer customer = customerRepository.findById(order.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
-        List<ConstructionTasks> tasks = constructionTasksRepository.findByConstructionOrderId(order.getConstructionOrderId());
-        List<String> contentTask = new ArrayList<>();
-        for (ConstructionTasks task : tasks) {
-            PackageConstruction packageConstruction = packageConstructionRepository.findById(task.getPackageConstructionId())
-                    .orElseThrow(() -> new RuntimeException("Package construction not found"));
-            contentTask.add(packageConstruction.getContent());
-        }
+        Quotation quotation = consultationService.findQuotation(quotationId);
+        ConstructionOrder order = manageConstructionOrderService.findConstructOrderByQuotationId(quotationId);
+        Customer customer = customerService.findCustomer(order.getCustomerId());
+        List<ConstructionTasks> tasks = constructionService.findConstructionTasks(order.getConstructionOrderId());
         ConstructQuotationResponse response = ConstructQuotationResponse.builder()
+                .constructOrderId(order.getConstructionOrderId())
                 .customerName(customer.getFirstname() + " " + customer.getLastname())
-                .consultantName(staffRepository.findById(order.getConsultant())
-                        .orElseThrow(() -> new RuntimeException("Error")).getStaffName())
-                .packageType(packageRepository.findById(quotation.getPackageId())
-                        .orElseThrow(() -> new RuntimeException("Error")).getPackageType())
-                .content(contentTask)
+                .consultantName(staffService.getStaffName(order.getConsultant()))
+                .packageType(consultationService.findPackage(quotation.getPackageId()).getPackageType())
+                .content(this.contentTasks(tasks))
                 .totalPrice(order.getTotal())
                 .customerRequest(order.getCustomerRequest())
                 .build();
@@ -140,48 +121,57 @@ public class QuotationAndDesignApprovalService {
     }
 
     public ConstructDesignResponse detailDesign(String designId) {
-        Design design = designRepository.findById(designId)
-                .orElseThrow(() -> new RuntimeException("Design not found"));
-        ConstructionOrder order = constructOrderRepository.findByQuotationId(designId);
-        Customer customer = customerRepository.findById(order.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
+        Design design = designService.findDesign(designId);
+        ConstructionOrder order = manageConstructionOrderService.findConstructOrderByDesignId(designId);
+        Customer customer = customerService.findCustomer(order.getCustomerId());
         ConstructDesignResponse response = ConstructDesignResponse.builder()
                 .constructionOrderId(order.getConstructionOrderId())
                 .customerName(customer.getFirstname() + " " + customer.getLastname())
-                .designName(staffRepository.findById(order.getDesignLeader())
-                        .orElseThrow(() -> new RuntimeException("Error")).getStaffName())
+                .designName(staffService.getStaffName(order.getDesignLeader()))
                 .customerRequest(order.getCustomerRequest())
                 .build();
         designMapper.toDesignResponse(design, response);
         return response;
     }
 
-    public ConstructOrderDetailForManagerResponse manageQuotation(ManageReviewRequest request) {
-        Quotation quotation = quotationRepository.findById(request.getId())
-                .orElseThrow(() -> new RuntimeException("Quotation not found"));
-        ConstructionOrder order = constructOrderRepository.findByQuotationId(quotation.getQuotationId());
+    public ConstructOrderDetailForManagerResponse manageQuotation(ManageReviewRequest request, String quotationId) {
+        Quotation quotation = consultationService.findQuotation(quotationId);
+        ConstructionOrder order = manageConstructionOrderService.findConstructOrderByQuotationId(quotationId);
         if (request.getStatus().name().equals("APPROVED")) {
             quotation.setStatus(QuotationStatus.CONFIRMED_QUOTATION);
             quotationRepository.save(quotation);
+            order.setStatus(ConstructionOrderStatus.CONFIRMED_QUOTATION);
+            constructOrderRepository.save(order);
         }
-        return ConstructOrderDetailForManagerResponse.<QuotationStatus>builder()
-                .orderId(request.getId())
+        return this.buildConstructOrderDetailForManagerResponse(order);
+    }
+
+    public ConstructOrderDetailForManagerResponse manageDesign(ManageReviewRequest request, String designId) {
+        Design design = designService.findDesign(designId);
+        ConstructionOrder order = manageConstructionOrderService.findConstructOrderByDesignId(designId);
+        if (request.getStatus().name().equals("APPROVED")) {
+            design.setStatus(DesignStatus.CONFIRMED_DESIGN);
+            designRepository.save(design);
+            order.setStatus(ConstructionOrderStatus.CONFIRMED_DESIGN);
+            constructOrderRepository.save(order);
+        }
+        return this.buildConstructOrderDetailForManagerResponse(order);
+    }
+
+    ConstructOrderDetailForManagerResponse buildConstructOrderDetailForManagerResponse(ConstructionOrder order) {
+        return ConstructOrderDetailForManagerResponse.builder()
+                .orderId(order.getConstructionOrderId())
                 .orderStatus(order.getStatus())
                 .build();
     }
 
-    public ConstructOrderDetailForManagerResponse manageDesign(ManageReviewRequest request) {
-        Design design = designRepository.findById(request.getId())
-                .orElseThrow(() -> new RuntimeException("Design not found"));
-        ConstructionOrder order = constructOrderRepository.findByQuotationId(design.getDesignId());
-        if (request.getStatus().name().equals("APPROVED")) {
-            design.setStatus(DesignStatus.CONFIRMED_DESIGN);
-            designRepository.save(design);
+    List<String> contentTasks(List<ConstructionTasks> tasks) {
+        List<String> contentTasks = new ArrayList<>();
+        for (ConstructionTasks task : tasks) {
+            PackageConstruction packageConstruction = constructionService.findPackageConstruction(task.getPackageConstructionId());
+            contentTasks.add(packageConstruction.getContent());
         }
-        return ConstructOrderDetailForManagerResponse.<DesignStatus>builder()
-                .orderId(request.getId())
-                .orderStatus(order.getStatus())
-                .build();
+        return contentTasks;
     }
 
 }

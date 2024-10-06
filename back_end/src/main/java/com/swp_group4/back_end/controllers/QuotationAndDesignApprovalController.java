@@ -41,10 +41,10 @@ public class QuotationAndDesignApprovalController {
 
     // Hàm để MANAGER quyết định APPROVE hay không
     // (Nếu APPROVE Construction Order chuyển sang trạng thái CONFIRMED_QUOTATION)
-    @PostMapping("/quotations/manageQuotation")
-    public ApiResponse<ConstructOrderDetailForManagerResponse> approveQuotation(@RequestBody ManageReviewRequest request){
-        return ApiResponse.<ConstructOrderDetailForManagerResponse<QuotationStatus>>builder()
-                .data(quotationAndDesignApprovalService.manageQuotation(request))
+    @PostMapping("/quotations/{quotationId}")
+    public ApiResponse<ConstructOrderDetailForManagerResponse> approveQuotation(@RequestBody ManageReviewRequest request, @PathVariable String quotationId){
+        return ApiResponse.<ConstructOrderDetailForManagerResponse>builder()
+                .data(quotationAndDesignApprovalService.manageQuotation(request, quotationId))
                 .build();
     }
 
@@ -68,10 +68,10 @@ public class QuotationAndDesignApprovalController {
 
     // Hàm để MANAGER quyết định APPROVE hay không
     // (Nếu APPROVE Construction Order chuyển sang trạng thái CONFIRMED_DESIGN)
-    @PostMapping("/designs/manageDesign")
-    public ApiResponse<ConstructOrderDetailForManagerResponse<DesignStatus>> approveDesign(@RequestBody ManageReviewRequest request){
-        return ApiResponse.<ConstructOrderDetailForManagerResponse<DesignStatus>>builder()
-                .data(quotationAndDesignApprovalService.manageDesign(request))
+    @PostMapping("/designs/{designId}")
+    public ApiResponse<ConstructOrderDetailForManagerResponse> approveDesign(@RequestBody ManageReviewRequest request, @PathVariable String designId){
+        return ApiResponse.<ConstructOrderDetailForManagerResponse>builder()
+                .data(quotationAndDesignApprovalService.manageDesign(request, designId))
                 .build();
     }
 

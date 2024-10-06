@@ -5,14 +5,32 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="578a2655-301d-4a04-ab78-bc687f4b6d3b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/entities/OrderAndStaff.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ed0cf93e-9f43-410d-9444-67a302ff97c5.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/ed0cf93e-9f43-410d-9444-67a302ff97c5.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/controllers/ManageConstructionOrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/controllers/ManageConstructionOrderController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/responses/StateTransitionResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/responses/StateTransitionResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/controllers/ConstructionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/controllers/ConstructionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/entities/ConstructionTasks.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/entities/ConstructionTasks.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/entities/Design.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/entities/Design.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/entities/Quotation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/entities/Quotation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/enums/ConstructionOrderStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/enums/ConstructionOrderStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/mapper/ConstructionOrderMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/mapper/ConstructionOrderMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/mapper/CustomerMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/mapper/CustomerMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/repositories/ConstructOrderRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/repositories/ConstructOrderRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/repositories/ConstructionTasksRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/repositories/ConstructionTasksRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/responses/ConstructQuotationResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/responses/ConstructQuotationResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/AccountService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/AccountService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/ConstructionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/ConstructionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/ConsultationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/ConsultationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/CustomerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/CustomerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/HelperService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/HelperService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/DesignService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/DesignService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/ManageConstructionOrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/ManageConstructionOrderService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/QuotationAndDesignApprovalService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/QuotationAndDesignApprovalService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/StaffService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/StaffService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/swp_group4/back_end/repositories/ConstructOrderRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/swp_group4/back_end/repositories/ConstructOrderRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/swp_group4/back_end/services/ConsultationService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/swp_group4/back_end/services/ConsultationService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/swp_group4/back_end/services/CustomerService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/swp_group4/back_end/services/CustomerService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/swp_group4/back_end/services/StaffService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/swp_group4/back_end/services/StaffService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/generated-sources/annotations/com/swp_group4/back_end/mapper/ConstructionOrderMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/target/generated-sources/annotations/com/swp_group4/back_end/mapper/ConstructionOrderMapperImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/generated-sources/annotations/com/swp_group4/back_end/mapper/CustomerMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/target/generated-sources/annotations/com/swp_group4/back_end/mapper/CustomerMapperImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,6 +41,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -48,30 +67,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Spring Boot.BackEndApplication.executor": "Run",
-    "git-widget-placeholder": "back__end",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;Spring Boot.BackEndApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;back__end&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql_aurora",
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql_aurora&quot;,
+      &quot;mysql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="BackEndApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="back_end" />
@@ -104,6 +123,14 @@
       <workItem from="1727622475797" duration="885000" />
       <workItem from="1727684295586" duration="4710000" />
       <workItem from="1727928079737" duration="2747000" />
+      <workItem from="1727945540307" duration="41000" />
+      <workItem from="1728008774036" duration="3526000" />
+      <workItem from="1728034988661" duration="79000" />
+      <workItem from="1728105427536" duration="1658000" />
+      <workItem from="1728107169202" duration="5756000" />
+      <workItem from="1728113081656" duration="2054000" />
+      <workItem from="1728118003059" duration="664000" />
+      <workItem from="1728138479589" duration="9316000" />
     </task>
     <servers />
   </component>

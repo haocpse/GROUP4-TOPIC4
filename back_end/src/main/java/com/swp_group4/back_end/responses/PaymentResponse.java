@@ -1,4 +1,4 @@
-package com.swp_group4.back_end.entities;
+package com.swp_group4.back_end.responses;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,9 +8,9 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class OrderAndStaff {
-
-    ConstructionOrder order;
-    Staff staff;
-
+public class PaymentResponse {
+    String paymentId;
+    String redirectUrl;
+    String message;
+    Boolean success;
 }

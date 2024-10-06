@@ -1,10 +1,7 @@
 package com.swp_group4.back_end.entities;
 
 import com.swp_group4.back_end.enums.DesignStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -23,6 +20,7 @@ public class Design {
     String url3dDesign;
     String urlFrontDesign;
     String urlBackDesign;
+    @Enumerated(EnumType.STRING)
     DesignStatus status;
 
 }

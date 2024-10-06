@@ -42,7 +42,7 @@ public class ConstructionController {
     @GetMapping("/ownedTasks/{constructionOrderId}/constructors")
     public ApiResponse<List<StaffResponse>> listAllStaff(@PathVariable String constructionOrderId){
         return ApiResponse.<List<StaffResponse>>builder()
-                .data(constructionService.listAllStaff())
+                .data(constructionService.listAllStaffHasNoRole())
                 .build();
     }
 

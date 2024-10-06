@@ -1,10 +1,8 @@
 package com.swp_group4.back_end.controllers;
 
 import com.swp_group4.back_end.entities.Design;
-import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.requests.UrlDesignRequest;
 import com.swp_group4.back_end.responses.ApiResponse;
-import com.swp_group4.back_end.responses.ConstructOrderDetailForManagerResponse;
 import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
 import com.swp_group4.back_end.services.DesignService;
 import lombok.AccessLevel;
@@ -42,7 +40,7 @@ public class DesignController {
 
     // Hàm để DESIGNER upload các ảnh design
     // (Construction Order đang ở trạng thái DESIGNED)
-    @PostMapping("/ownedTasks/{constructionOrderId}/uploadDesign")
+    @PostMapping("/ownedTasks/{constructionOrderId}")
     public ApiResponse<Design> exportQuotation(@PathVariable String constructionOrderId, @RequestBody UrlDesignRequest request) {
         return ApiResponse.<Design>builder()
                 .data(designService.uploadDesign(constructionOrderId, request))

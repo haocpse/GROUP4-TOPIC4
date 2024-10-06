@@ -3,6 +3,7 @@ package com.swp_group4.back_end.mapper;
 import com.swp_group4.back_end.entities.Customer;
 import com.swp_group4.back_end.requests.ServiceRequest;
 import com.swp_group4.back_end.requests.UpdateInfoRequest;
+import com.swp_group4.back_end.responses.ConstructOrderDetailForManagerResponse;
 import com.swp_group4.back_end.responses.CustomerResponse;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
@@ -58,5 +59,21 @@ public class CustomerMapperImpl implements CustomerMapper {
         customerResponse.setBirthday( customer.getBirthday() );
 
         return customerResponse;
+    }
+
+    @Override
+    public ConstructOrderDetailForManagerResponse toDetailForManager(Customer customer, ConstructOrderDetailForManagerResponse detail) {
+        if ( customer == null ) {
+            return detail;
+        }
+
+        if ( customer.getPhone() != null ) {
+            detail.setPhone( customer.getPhone() );
+        }
+        if ( customer.getAddress() != null ) {
+            detail.setAddress( customer.getAddress() );
+        }
+
+        return detail;
     }
 }

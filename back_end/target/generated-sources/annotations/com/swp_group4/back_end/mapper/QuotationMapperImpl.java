@@ -19,6 +19,7 @@ public class QuotationMapperImpl implements QuotationMapper {
             return quotation;
         }
 
+        quotation.setVolume( request.getVolume() );
         quotation.setPriceStage1( request.getPriceStage1() );
         quotation.setPriceStage2( request.getPriceStage2() );
         quotation.setPriceStage3( request.getPriceStage3() );

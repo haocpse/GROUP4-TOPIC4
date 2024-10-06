@@ -30,6 +30,7 @@ public class Quotation {
     double priceStage3;
     String promotionId;
     String packageId;
+    @Enumerated(EnumType.STRING)
     QuotationStatus status;
 
 }

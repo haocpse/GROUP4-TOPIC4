@@ -2,7 +2,6 @@ package com.swp_group4.back_end.controllers;
 
 import com.swp_group4.back_end.requests.ExportQuotationRequest;
 import com.swp_group4.back_end.responses.ApiResponse;
-import com.swp_group4.back_end.responses.ConstructOrderDetailForManagerResponse;
 import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
 import com.swp_group4.back_end.responses.ConstructQuotationResponse;
 import com.swp_group4.back_end.services.ConsultationService;
@@ -41,7 +40,7 @@ public class ConsultationController {
 
     // Hàm để CONSULTANT xuất 1 quotation
     // (Construction Order đang ở trạng thái QUOTATION)
-    @PostMapping("/ownedTasks/{constructionOrderId}/exportQuotation")
+    @PostMapping("/ownedTasks/{constructionOrderId}")
     public ApiResponse<ConstructQuotationResponse> exportQuotation(@PathVariable String constructionOrderId, @RequestBody ExportQuotationRequest request) {
         return ApiResponse.<ConstructQuotationResponse>builder()
                 .data(consultationService.exportQuotation(constructionOrderId, request))

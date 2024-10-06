@@ -22,7 +22,5 @@ public interface CustomerMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     ConstructOrderDetailForManagerResponse toDetailForManager(Customer customer, @MappingTarget ConstructOrderDetailForManagerResponse detail);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    ConstructOrderDetailForStaffResponse toDetailForStaff(Customer customer, @MappingTarget ConstructOrderDetailForStaffResponse detail);
 
 }
