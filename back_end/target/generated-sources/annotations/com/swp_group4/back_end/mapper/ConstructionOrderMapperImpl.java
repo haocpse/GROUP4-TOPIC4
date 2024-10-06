@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.4 (Oracle Corporation)"
+    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.40.0.v20240919-1711, environment: Java 17.0.12 (Eclipse Adoptium)"
 )
 @Component
 public class ConstructionOrderMapperImpl implements ConstructionOrderMapper {
@@ -21,8 +21,8 @@ public class ConstructionOrderMapperImpl implements ConstructionOrderMapper {
         response.setConstructionOrderId( constructionOrder.getConstructionOrderId() );
         response.setCustomerId( constructionOrder.getCustomerId() );
         response.setCustomerRequest( constructionOrder.getCustomerRequest() );
-        response.setTotal( constructionOrder.getTotal() );
         response.setStatus( constructionOrder.getStatus() );
+        response.setTotal( constructionOrder.getTotal() );
 
         return response;
     }

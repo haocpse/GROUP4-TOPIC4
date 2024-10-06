@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.4 (Oracle Corporation)"
+    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.40.0.v20240919-1711, environment: Java 17.0.12 (Eclipse Adoptium)"
 )
 @Component
 public class CustomerMapperImpl implements CustomerMapper {
@@ -20,10 +20,10 @@ public class CustomerMapperImpl implements CustomerMapper {
             return customer;
         }
 
+        customer.setAddress( request.getAddress() );
         customer.setFirstname( request.getFirstname() );
         customer.setLastname( request.getLastname() );
         customer.setPhone( request.getPhone() );
-        customer.setAddress( request.getAddress() );
 
         return customer;
     }
@@ -34,12 +34,12 @@ public class CustomerMapperImpl implements CustomerMapper {
             return customer;
         }
 
+        customer.setAddress( request.getAddress() );
+        customer.setBirthday( request.getBirthday() );
         customer.setFirstname( request.getFirstname() );
+        customer.setGender( request.getGender() );
         customer.setLastname( request.getLastname() );
         customer.setPhone( request.getPhone() );
-        customer.setAddress( request.getAddress() );
-        customer.setGender( request.getGender() );
-        customer.setBirthday( request.getBirthday() );
 
         return customer;
     }
@@ -50,12 +50,12 @@ public class CustomerMapperImpl implements CustomerMapper {
             return customerResponse;
         }
 
+        customerResponse.setAddress( customer.getAddress() );
+        customerResponse.setBirthday( customer.getBirthday() );
         customerResponse.setFirstname( customer.getFirstname() );
+        customerResponse.setGender( customer.getGender() );
         customerResponse.setLastname( customer.getLastname() );
         customerResponse.setPhone( customer.getPhone() );
-        customerResponse.setAddress( customer.getAddress() );
-        customerResponse.setGender( customer.getGender() );
-        customerResponse.setBirthday( customer.getBirthday() );
 
         return customerResponse;
     }
