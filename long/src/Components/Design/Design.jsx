@@ -70,7 +70,7 @@ const Design = () => {
                 <div className="header">
                     <div />
                     <div className="manager">MANAGER #1</div>
-                    <img src={logo} alt="Logo" className="logo" />
+
                 </div>
                 <table>
                     <thead>

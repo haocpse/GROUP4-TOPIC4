@@ -6,7 +6,7 @@ import Contact from "./Components/Contact/Contact";
 import Service from "./Components/Service/Service";
 import MainLayout from "./Components/MainLayout";
 import Construction from "./Components/Construction/Construction";
-import Design from "./Components/Design/Design";
+import ApproveDesign from "./Components/ApproveDesign/ApproveDesign";
 import Consultation from "./Components/Consultation/Consultation";
 import ConstructionProgress from "./Components/ConstructionProgress/ConstructionProgress";
 import ConsultantTasks from "./Components/ConsultantTasks/ConsultantTasks";
@@ -19,6 +19,8 @@ import ViewQuotation from "./Components/ApproveQuotation/ViewQuotation";
 import ConsultationPage from "./Components/ConsultationPage/ConsultationPage";
 import ListQuotation from "./Components/ListQuotation/ListQuotation";
 import ViewQuotationInConsultationPage from "./Components/ListQuotation/ViewQuotationInConsultationPage";
+import ApproveDesign from "./Components/ApproveDesign/ApproveDesign";
+import ViewDesign from "./Components/ApproveDesign/ViewDesign";
 import ViewPayment from "./Components/ListQuotation/ViewPayment";
 import DesignerTasks from "./Components/DesignerTasks/DesignerTasks";
 import CustomerView from "./Components/CustomerView/CustomerView";
@@ -53,16 +55,20 @@ function App() {
           element: <Consultation />,
         },
         {
-          path: "design",
-          element: <Design />,
-        },
-        {
-          path: "construction",
-          element: <Construction />,
+          path: "approve-design",
+          element: <ApproveDesign />,
         },
         {
           path: "approve-quotation",
           element: <ApproveQuotation />,
+        },
+        {
+          path: "approve-design",
+          element: <ApproveDesign/>
+        },
+        {
+          path:"view-design",
+          element:<ViewDesign/>
         },
         {
           path: "view-quotation",
@@ -102,6 +108,9 @@ function App() {
       path: "view-payment", // Sửa path này thành list-quotation thay vì 'list quotation'
       element: <ViewPayment />,
     },
+    
+ 
+    
     {
       path: "quotation-order",
       element: <QuotationOrder />,
