@@ -35,37 +35,59 @@
 // }
 
 // export default QuotationOrder;
-import React, { useState } from 'react';
+// QuotationOrder.jsx
+// QuotationOrder.jsx
+
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import CustomerInfo from './CustomerInfo';
 import QuotationForm from './QuotationForm';
 import QuotationPage from './QuotationPage';
-import styles from './QuotationOrder.module.css'; // Import CSS module
+import styles from './QuotationOrder.module.css';
 
 function QuotationOrder() {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const [formData, setFormData] = useState({ selectedItems: [], selectedPackage: '' });
+  const [formData, setFormData] = useState({ selectedItems: [], selectedPackage: '', volume: '' });
+  const [customer, setCustomer] = useState(null);
+  const [items, setItems] = useState([]);
 
-  const customer = {
-    name: "Đặng Mai Anh Tú",
-    phone: "0707804907",
-    address: "1057 Quang Trung, quận Gò Vấp, TPHCM"
-  };
+  useEffect(() => {
+    axios.get('/http://localhost:8080/customer')
+      .then((response) => {
+        setCustomer(response.data.customer);
+      })
+      .catch((error) => {
+        console.error("Error fetching customer data:", error);
+      });
+  }, []);
 
   const handleFormSubmit = (data) => {
-    setFormData(data); // Lưu cả items và package
+    setFormData(data);
     setIsFormSubmitted(true);
+
+    axios.get(`/http://localhost:8080/quotations/item?package=${data.selectedPackage}`)
+      .then((response) => {
+        setItems(response.data.items);
+      })
+      .catch((error) => {
+        console.error("Error fetching items data:", error);
+      });
   };
+
+  if (!customer) {
+    return <div>Loading customer data...</div>;
+  }
 
   return (
     <div className={styles.quotationOrderContainer}>
-      <h1 className={styles.header} style={{color: 'blue'}}>Quotation Order</h1>
+      <h1 className={styles.header} style={{ color: 'blue' }}>Quotation Order</h1>
       {!isFormSubmitted ? (
         <>
           <CustomerInfo name={customer.name} phone={customer.phone} address={customer.address} />
           <QuotationForm onFormSubmit={handleFormSubmit} />
         </>
       ) : (
-        <QuotationPage customer={customer} formData={formData} />
+        <QuotationPage customer={customer} formData={{ ...formData, selectedItems: items }} />
       )}
     </div>
   );
