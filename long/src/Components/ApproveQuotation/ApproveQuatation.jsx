@@ -12,9 +12,9 @@ const ApproveQuotation = () => {
             const response = await axios.get('http://localhost:8080/manage/quotes');
             setQuotes(response.data);
         } catch (error) {
-            console.error("Error fetching quotes!", error);
+            console.error("Fail to fetch quotes! ^^", error);
 
-            toast.error("Error when fetching quote");
+            toast.error("Fail to fetch quotes! ^^");
         }
     };
 
@@ -33,14 +33,14 @@ const ApproveQuotation = () => {
             // fetchQuotes();
 
         } catch (error) {
-            console.error("Error approving/rejecting quote", error);
-            toast.error("Can not update status !");
+            console.error("Fail to approve/reject quote ^^", error);
+            toast.error("Fail to update status! ^^");
         }
     };
 
     const confirmApproval = (quotationId, status) => {
         const action = status ? "approve" : "reject";
-        const confirmed = window.confirm(`Are you sure you want to ${action} this quote?`);
+        const confirmed = window.confirm(`Are you sure to want to ${action} this quote?`);
         if (confirmed) {
             handleApproval(quotationId, status);
         }

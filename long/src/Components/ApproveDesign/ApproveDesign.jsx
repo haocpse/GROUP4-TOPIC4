@@ -15,8 +15,8 @@ const ApproveDesign = () => {
             const response = await axios.get('http://localhost:8080/manage/designs');
             setDesigns(response.data);
         } catch (error) {
-            console.error("Error fetching designs !!", error);
-            toast.error("Fail fetching Designs !!")
+            console.error("Fail to fetch designs! ^^", error);
+            toast.error("Fail fetching Designs! ^^")
         }
     };
 
@@ -33,13 +33,13 @@ const ApproveDesign = () => {
             // fetchDesigns();
         } catch (error) {
             console.error("Error approving/rejecting design", error);
-            toast.error("Can not update status !");
+            toast.error("Fail to update status! ^^");
         }
 
     };
     const confirmApproval = (designId, status) => {
         const action = status ? "approve" : "reject";
-        const confirmed = window.confirm(`Are you sure you want to ${action} this design?`);
+        const confirmed = window.confirm(`Are you sure to want to ${action} this design?`);
         if (confirmed) {
             handleApproval(designId, status);
         }
@@ -62,7 +62,10 @@ const ApproveDesign = () => {
                     <thead>
                         <tr>
                             <th>Design ID</th>
+                            <th>Construction Order ID</th>
                             <th>Customer Name</th>
+                            <th>Phone</th>
+                            <th>Address</th>
                             <th>View Details</th>
                             <th>Actions</th>
                         </tr>
@@ -76,7 +79,10 @@ const ApproveDesign = () => {
                             designs.map(design => (
                                 <tr key={design.designId}>
                                     <td>{design.designId}</td>
+                                    <td>{design.constructionOrderId}</td>
                                     <td>{design.customerName}</td>
+                                    <td>{design.phone}</td>
+                                    <td>{design.address}</td>
                                     <td>
                                         <button
                                             className="btn btn-primary"

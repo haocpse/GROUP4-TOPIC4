@@ -14,9 +14,9 @@ const ConstructionOrder = () => {
             const response = await axios.get('http://localhost:8080/construction-orders');
             setConstructionOrders(response.data);
         } catch (error) {
-            console.error('Error fetching order list', error);
-            
-            toast.error('Failed to load construction orders');
+            console.error('Fail fetch order list! ^^', error);
+
+            toast.error('Failed to load construction orders! ^^');
         }
     };
 
@@ -35,7 +35,7 @@ const ConstructionOrder = () => {
             toast.success('Status updated successfully!');
         } catch (error) {
             console.error('Error updating status', error);
-            toast.error('Failed to update status');
+            toast.error('Fail to update status! ^^');
         }
     };
 
@@ -46,8 +46,6 @@ const ConstructionOrder = () => {
     const handleViewDetails = (constructionOrderId) => {
         navigate(`/construction-progress/${constructionOrderId}`);
     }
-
-
 
 
     return (
