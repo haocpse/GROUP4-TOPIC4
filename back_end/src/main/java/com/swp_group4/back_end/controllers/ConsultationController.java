@@ -38,6 +38,13 @@ public class ConsultationController {
                 .build();
     }
 
+//    @GetMapping("/ownedTasks/{constructionOrderId}/packages")
+//    public ApiResponse<PackageResponse> detailPackage(@PathVariable String constructionOrderId) {
+//        return ApiResponse.<PackageResponse>builder()
+//                .data(packageService.detailPackage(constructionOrderId))
+//                .build();
+//    }
+
     // Hàm để CONSULTANT xuất 1 quotation
     // (Construction Order đang ở trạng thái QUOTATION)
     @PostMapping("/ownedTasks/{constructionOrderId}")

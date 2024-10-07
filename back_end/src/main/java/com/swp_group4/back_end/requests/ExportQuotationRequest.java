@@ -16,10 +16,6 @@ public class ExportQuotationRequest {
     String packageId;
     List<String> packageConstructionId;
     double volume;
-    double priceStage1;
-    double priceStage2;
-    double priceStage3;
-    double totalPrice;
     String customerRequest;
     Date startDate;
     Date endDate;
