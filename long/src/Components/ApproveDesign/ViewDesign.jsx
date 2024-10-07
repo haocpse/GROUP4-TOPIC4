@@ -4,6 +4,7 @@ const ViewDesign = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const { design } = location.state;
+    
     return (
         <div className="container mt-4">
             <h2 className="text-center" style={{ color: 'black' }}>Design Details</h2>

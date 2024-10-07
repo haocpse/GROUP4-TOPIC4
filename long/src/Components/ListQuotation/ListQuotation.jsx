@@ -12,7 +12,7 @@ const ListQuotation = () => {
     // Hàm gọi API để lấy danh sách báo giá
     const fetchQuotations = async () => {
         try {
-            const response = await axios.get("/api/quotations"); // Chỉnh sửa URL này theo API thực tế của bạn
+            const response = await axios.get("http://localhost:8080/consultant/quotations"); // Chỉnh sửa URL này theo API thực tế của bạn
             setQuotes(response.data);
         } catch (error) {
             console.error("Failed to fetch quotations:", error);

@@ -92,8 +92,9 @@ function App() {
       path: "consultation-page", // Sửa lại path thành chữ thường để thống nhất
       element: <ConsultationPage />,
     },
+    
     {
-      path: "consultation-page/consultant-tasks",
+      path: "consult/ownedTasks",
       element: <ConsultantTasks />,
     },
     {
@@ -112,7 +113,7 @@ function App() {
  
     
     {
-      path: "quotation-order",
+      path: "consult/ownedTasks/:constructionOrderId",
       element: <QuotationOrder />,
     },
     {
