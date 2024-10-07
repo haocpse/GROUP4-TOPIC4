@@ -1,5 +1,6 @@
 package com.swp_group4.back_end.controllers;
 
+import com.swp_group4.back_end.entities.PaymentOrder;
 import com.swp_group4.back_end.requests.PaymentRequest;
 import com.swp_group4.back_end.responses.ApiResponse;
 import com.swp_group4.back_end.responses.PaymentResponse;
@@ -21,10 +22,10 @@ public class PaymentController {
     @Autowired
     PaymentService paymentService;
 
-//    @GetMapping()
-//    public List<PaymentResponse> getAllPayments() {
-//
-//    }
+    @GetMapping()
+    public List<PaymentOrder> getAllPayments() {
+        return paymentService.listALl();
+    }
 
     // Tạo yêu cầu thanh toán (theo định dạng bạn yêu cầu)
     @PostMapping()
