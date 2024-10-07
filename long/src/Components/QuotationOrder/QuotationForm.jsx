@@ -1,4 +1,4 @@
-// import React, { useState, useEffect } from 'react';
+// import React, { useEffect, useState } from 'react';
 // import axios from 'axios';
 // import ItemsList from './ItemsList';
 // import styles from './QuotationForm.module.css';
@@ -8,10 +8,11 @@
 //   const [selectedPackage, setSelectedPackage] = useState(''); // Package đã chọn
 //   const [packages, setPackages] = useState([]); // Danh sách packages từ API
 //   const [items, setItems] = useState([]); // Danh sách items từ API
+//   const [volume, setVolume] = useState(''); // Volume mới thêm
 
 //   // Gọi API lấy danh sách packages khi component mount
 //   useEffect(() => {
-//     axios.get('/api/packages')
+//     axios.get('http://localhost:8080/consultant/quotations/packages')
 //       .then(response => {
 //         setPackages(response.data);
 //       })
@@ -23,7 +24,7 @@
 //   // Gọi API lấy danh sách items dựa trên package đã chọn
 //   useEffect(() => {
 //     if (selectedPackage) {
-//       axios.get(`/api/packages/${selectedPackage}/items`)
+//       axios.get(`http://localhost:8080/quotations/packages/${selectedPackage}/items`)
 //         .then(response => {
 //           setItems(response.data);
 //         })
@@ -45,12 +46,12 @@
 //   };
 
 //   const handleExport = () => {
-//     if (!selectedPackage) {
-//       alert("Please select a package before exporting the quotation.");
+//     if (!selectedPackage || !volume) {
+//       alert("Please select a package and enter a volume before exporting the quotation.");
 //       return;
 //     }
-//     // Chuyển package và các item đã chọn qua `QuotationPage`
-//     onFormSubmit({ selectedItems, selectedPackage });
+//     // Chuyển package, các item đã chọn và volume qua `QuotationPage`
+//     onFormSubmit({ selectedItems, selectedPackage, volume });
 //   };
 
 //   return (
@@ -70,6 +71,16 @@
 //         ))}
 //       </select>
 
+//       <label className={styles.label} htmlFor="volume">Enter Volume:</label>
+//       <input
+//         type="number"
+//         id="volume"
+//         className={styles.inputBox}
+//         value={volume}
+//         onChange={(e) => setVolume(e.target.value)}
+//         placeholder="Enter volume"
+//       />
+
 //       {/* Hiển thị danh sách item dựa trên package đã chọn */}
 //       <ItemsList items={items} handleItemChange={handleItemChange} />
 
@@ -83,6 +94,7 @@
 // };
 
 // export default QuotationForm;
+
 import React, { useState } from 'react';
 import ItemsList from './ItemsList';
 import styles from './QuotationForm.module.css'; // Import CSS module

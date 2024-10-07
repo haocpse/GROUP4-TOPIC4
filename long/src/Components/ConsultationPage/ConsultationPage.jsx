@@ -28,7 +28,7 @@ const ConsultationPage = () => {
                     <div className="collapse" id="consultation">
                         <ul className="nav flex-column ms-4">
                             <li><Link to="/list-quotation" className="nav-link text-dark">List Quotation</Link></li>
-                            <li><Link to="/Quotation-order" className="nav-link text-dark">Quotation</Link></li>
+                            <li><Link to="consult/ownedTasks/:constructionOrderId" className="nav-link text-dark">Quotation</Link></li>
 
                         </ul>
                     </div>
@@ -42,11 +42,12 @@ const ConsultationPage = () => {
                         aria-expanded="false"
                         aria-controls="maintenance">
 
-                        Maintenance Request
+                       Task
                     </a>
                     <div className="collapse" id="maintenance">
                         <ul className="nav flex-column ms-4">
-                            <li><Link to="/manage/Consultation" className="nav-link text-dark">Consultation</Link></li>
+                        <li><Link to="/consultation-page/consultant-tasks" className="nav-link text-dark">Task</Link></li>
+
                         </ul>
                     </div>
                 </li>
