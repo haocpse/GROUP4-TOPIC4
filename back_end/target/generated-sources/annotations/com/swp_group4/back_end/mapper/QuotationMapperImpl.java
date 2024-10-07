@@ -20,9 +20,6 @@ public class QuotationMapperImpl implements QuotationMapper {
         }
 
         quotation.setVolume( request.getVolume() );
-        quotation.setPriceStage1( request.getPriceStage1() );
-        quotation.setPriceStage2( request.getPriceStage2() );
-        quotation.setPriceStage3( request.getPriceStage3() );
         quotation.setPromotionId( request.getPromotionId() );
         quotation.setPackageId( request.getPackageId() );
 

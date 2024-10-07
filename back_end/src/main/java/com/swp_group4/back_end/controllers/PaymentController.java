@@ -10,21 +10,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/payment")
+@RequestMapping("/payments")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PaymentController {
 
     @Autowired
     PaymentService paymentService;
 
+//    @GetMapping()
+//    public List<PaymentResponse> getAllPayments() {
+//
+//    }
+
     // Tạo yêu cầu thanh toán (theo định dạng bạn yêu cầu)
-    @PostMapping("/create")
+    @PostMapping()
     public ApiResponse<PaymentResponse> createPayment(@RequestBody PaymentRequest request) {
         return ApiResponse.<PaymentResponse>builder()
-                .data(paymentService.createPayment(request).getData()) // Lấy data từ service trả về
+                .data(paymentService.createPayment(request)) // Lấy data từ service trả về
                 .build();
     }
 

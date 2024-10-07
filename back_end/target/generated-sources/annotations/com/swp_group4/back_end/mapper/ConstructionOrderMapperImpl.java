@@ -44,12 +44,6 @@ public class ConstructionOrderMapperImpl implements ConstructionOrderMapper {
         if ( request.getConsultant() != null ) {
             order.setConsultant( request.getConsultant() );
         }
-        if ( request.getDesignLeader() != null ) {
-            order.setDesignLeader( request.getDesignLeader() );
-        }
-        if ( request.getConstructionLeader() != null ) {
-            order.setConstructionLeader( request.getConstructionLeader() );
-        }
         if ( request.getStatus() != null ) {
             order.setStatus( request.getStatus() );
         }

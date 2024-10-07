@@ -46,14 +46,14 @@ public class ConstructionController {
                 .build();
     }
 
-    // Hàm để CONSTRUCTOR gán task cho các staff
-    // (Construction Order đang ở trạng thái CONSTRUCTING)
-    @PostMapping("/ownedTasks/{constructionOrderId}/assignTask")
-    public ApiResponse<AssignConstructionTaskResponse> assignTask(@PathVariable String constructionOrderId, @RequestBody AssignTaskStaffRequest request) {
-        return ApiResponse.<AssignConstructionTaskResponse>builder()
-                .data(constructionService.assignTask(constructionOrderId, request))
-                .build();
-    }
+//    // Hàm để CONSTRUCTOR gán task cho các staff
+//    // (Construction Order đang ở trạng thái CONSTRUCTING)
+//    @PostMapping("/ownedTasks/{constructionOrderId}/assignTask")
+//    public ApiResponse<AssignConstructionTaskResponse> assignTask(@PathVariable String constructionOrderId, @RequestBody AssignTaskStaffRequest request) {
+//        return ApiResponse.<AssignConstructionTaskResponse>builder()
+//                .data(constructionService.assignTask(constructionOrderId, request))
+//                .build();
+//    }
 
     // Hàm để CONSTRUCTOR xác nhận đã hoàn thành task
     // (Construction Order đang ở trạng thái CONSTRUCTING

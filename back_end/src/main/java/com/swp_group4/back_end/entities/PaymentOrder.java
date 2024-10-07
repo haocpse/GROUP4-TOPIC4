@@ -8,6 +8,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.ZonedDateTime;
+import java.util.Date;
 
 @Entity
 @Data
@@ -20,7 +21,7 @@ public class PaymentOrder {
     @GeneratedValue(strategy = GenerationType.UUID)
     String paymentId;
     String serviceId;
-    ZonedDateTime date;
+    Date date;
     PaymentMethods paymentMethods;
     Double total;
     @Enumerated(EnumType.STRING)
