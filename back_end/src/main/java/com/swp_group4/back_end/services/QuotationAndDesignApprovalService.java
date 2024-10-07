@@ -44,15 +44,15 @@ public class QuotationAndDesignApprovalService {
     @Lazy
     ConstructionService constructionService;
 
-    public List<QuotationAndDesignReviewResponse<QuotationStatus>> listAllQuotation() {
+    public List<QuotationAndDesignReviewResponse> listAllQuotation() {
         List<Quotation> quotations = quotationRepository.findByStatus(QuotationStatus.QUOTED);
-        List<QuotationAndDesignReviewResponse<QuotationStatus>> responses = new ArrayList<>();
+        List<QuotationAndDesignReviewResponse> responses = new ArrayList<>();
         for (Quotation quotation : quotations) {
             ConstructionOrder order = manageConstructionOrderService
                     .findConstructOrderByQuotationId(quotation.getQuotationId());
             Customer customer = customerService.findCustomer(order.getCustomerId());
             Packages packages = consultationService.findPackage(quotation.getPackageId());
-            QuotationAndDesignReviewResponse<QuotationStatus> response = QuotationAndDesignReviewResponse.<QuotationStatus>builder()
+            QuotationAndDesignReviewResponse response = QuotationAndDesignReviewResponse.builder()
                     .constructionOrderId(order.getConstructionOrderId())
                     .id(quotation.getQuotationId())
                     .customerName(customer.getFirstname() + " " + customer.getLastname())
@@ -62,7 +62,6 @@ public class QuotationAndDesignApprovalService {
                     .packageType(packages.getPackageType())
                     .volume(quotation.getVolume())
                     .totalPrice(order.getTotal())
-                    .status(QuotationStatus.QUOTED)
                     .build();
             responses.add(response);
         }

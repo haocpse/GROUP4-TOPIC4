@@ -24,8 +24,8 @@ public class QuotationAndDesignApprovalController {
     // Hàm để MANAGER xem toàn bộ các quotation trên hệ thống đang chờ phê duyệt
     // (Construction Order đang ở trạng thái QUOTATION)
     @GetMapping("/quotations")
-    public ApiResponse<List<QuotationAndDesignReviewResponse<QuotationStatus>>> listAllQuotation(){
-        return ApiResponse.<List<QuotationAndDesignReviewResponse<QuotationStatus>>>builder()
+    public ApiResponse<List<QuotationAndDesignReviewResponse>> listAllQuotation(){
+        return ApiResponse.<List<QuotationAndDesignReviewResponse>>builder()
                 .data(quotationAndDesignApprovalService.listAllQuotation())
                 .build();
     }
