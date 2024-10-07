@@ -21,6 +21,7 @@ public class PaymentOrder {
     @GeneratedValue(strategy = GenerationType.UUID)
     String paymentId;
     String serviceId;
+    String customerId;
     Date date;
     PaymentMethods paymentMethods;
     Double total;

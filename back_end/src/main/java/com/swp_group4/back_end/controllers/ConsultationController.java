@@ -4,7 +4,9 @@ import com.swp_group4.back_end.requests.ExportQuotationRequest;
 import com.swp_group4.back_end.responses.ApiResponse;
 import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
 import com.swp_group4.back_end.responses.ConstructQuotationResponse;
+import com.swp_group4.back_end.responses.PackageResponse;
 import com.swp_group4.back_end.services.ConsultationService;
+import com.swp_group4.back_end.services.PackageService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,8 @@ public class ConsultationController {
 
     @Autowired
     ConsultationService consultationService;
+    @Autowired
+    PackageService packageService;
 
     // Hàm để CONSULTANT xem các task được Customer gán
     // (Construction Order đang ở trạng thái CONSULTING)
@@ -38,12 +42,13 @@ public class ConsultationController {
                 .build();
     }
 
-//    @GetMapping("/ownedTasks/{constructionOrderId}/packages")
-//    public ApiResponse<PackageResponse> detailPackage(@PathVariable String constructionOrderId) {
-//        return ApiResponse.<PackageResponse>builder()
-//                .data(packageService.detailPackage(constructionOrderId))
-//                .build();
-//    }
+    // Hàm để CONSULTANT xem chi các package và package price
+    @GetMapping("/ownedTasks/{constructionOrderId}/packages")
+    public ApiResponse<PackageResponse> detailPackage(@PathVariable String constructionOrderId) {
+        return ApiResponse.<PackageResponse>builder()
+                .data(packageService.detailPackage(constructionOrderId))
+                .build();
+    }
 
     // Hàm để CONSULTANT xuất 1 quotation
     // (Construction Order đang ở trạng thái QUOTATION)
