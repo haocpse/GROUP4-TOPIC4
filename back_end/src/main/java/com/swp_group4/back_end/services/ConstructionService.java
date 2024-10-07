@@ -30,8 +30,6 @@ public class ConstructionService {
     @Lazy
     StaffService staffService;
     @Autowired
-    ConstructionTaskStaffRepository constructionTaskStaffRepository;
-    @Autowired
     @Lazy
     ManageConstructionOrderService manageConstructionOrderService;
     @Autowired
@@ -57,17 +55,8 @@ public class ConstructionService {
         return staffService.listStaffHasNoRole();
     }
 
-    public AssignConstructionTaskResponse assignTask(String constructionOrderId, AssignTaskStaffRequest request) {
-        ConstructionOrder order = manageConstructionOrderService.findConstructOrder(constructionOrderId);
-        order.setStatus(ConstructionOrderStatus.CONSTRUCTING);
-        constructOrderRepository.save(order);
-        Staff staff = staffService.findStaff(order.getCustomerId());
-        constructionTaskStaffRepository.save(this.constructionTaskStaff(request, staff.getStaffName()));
-        return AssignConstructionTaskResponse.builder()
-                .taskId(request.getTaskId())
-                .staffName(staff.getStaffName())
-                .build();
-    }
+//    public AssignConstructionTaskResponse assignTask(String constructionOrderId, AssignTaskStaffRequest request) {
+//    }
 
     public CompleteConstructionTaskResponse completeTask(String constructionOrderId, CompleteConstructTaskRequest request) {
         ConstructionTasks task = constructionTasksRepository
@@ -113,15 +102,15 @@ public class ConstructionService {
         return constructTaskStatusResponseList;
     }
 
-    ConstructionTaskStaff constructionTaskStaff(AssignTaskStaffRequest request, String staffName){
-        ConstructionTaskStaffKey key = ConstructionTaskStaffKey.builder()
-                .staffId(request.getStaffId())
-                .taskId(request.getTaskId())
-                .build();
-        return ConstructionTaskStaff.builder()
-                .id(key)
-                .staffName(staffName)
-                .build();
-    }
+//    ConstructionTaskStaff constructionTaskStaff(AssignTaskStaffRequest request, String staffName){
+//        ConstructionTaskStaffKey key = ConstructionTaskStaffKey.builder()
+//                .staffId(request.getStaffId())
+//                .taskId(request.getTaskId())
+//                .build();
+//        return ConstructionTaskStaff.builder()
+//                .id(key)
+//                .staffName(staffName)
+//                .build();
+//    }
 
 }

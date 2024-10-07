@@ -53,9 +53,5 @@ public class DesignService {
         return design;
     }
 
-    Design findDesign(String designId) {
-        return designRepository.findById(designId)
-                .orElseThrow(() -> new RuntimeException("Design not found"));
-    }
 
 }
