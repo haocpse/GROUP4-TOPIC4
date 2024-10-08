@@ -55,7 +55,7 @@ const Contact = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:8080/contact-us', dataToSend);
+            const response = await axios.post('http://localhost:8080/contactUs', dataToSend);
             console.log(response.data);
 
             if (response.status === 200) {

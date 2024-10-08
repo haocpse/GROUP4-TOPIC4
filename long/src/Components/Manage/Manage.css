@@ -19,8 +19,26 @@
   }
 
   .sidebar-link:hover i {
-    transform: scale(1.2);
-    /* Tăng kích thước khi hover */
-    color: #ffc107;
-    /* Thay đổi màu icon khi hover */
+    transform: scale(1.8);
+    color: red;
+  }
+
+  .sidebar-link.active i {
+    background-color: #ffc107;
+    padding: 10px;
+    border-radius: 50%;
+  }
+
+  .sidebar-link:hover i {
+    transform: scale(1.8);
+    color: red;
+  }
+
+  .nav-pills .nav-link.active,
+  .nav-pills .show>.nav-link {
+    background-color: transparent !important;
+    color: white !important;
+    border-radius: 50%;
+    padding: 8px;
+    transition: transform 0.2s ease-in-out;
   }

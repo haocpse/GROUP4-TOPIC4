@@ -3,7 +3,7 @@ import './Consultation.module.css';
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 
-const Consultation = () => {
+const Request = () => {
     const [requests, setRequests] = useState([]);
     const [consultantList, setConsultantList] = useState([]);
     const [designerList, setDesignerList] = useState([]);
@@ -18,11 +18,11 @@ const Consultation = () => {
     useEffect(() => {
         const fetchRequests = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/consultation-request');
+                const response = await axios.get('http://localhost:8080/manager/requests');
                 setRequests(response.data);
             } catch (error) {
                 console.error('Error fetching requests:', error);
-                toast.error('Failed to load requests. Please try again later.');
+                toast.error('Failed to load requests. ^^');
             }
         };
         fetchRequests();
@@ -31,18 +31,18 @@ const Consultation = () => {
     // lay du lieu consultant staff tu backend
     const fetchConsultants = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/consultation-staff/consultants');
+            const response = await axios.get('http://localhost:8080/manager/requests/consultants');
             setConsultantList(response.data);
         } catch (error) {
             console.error('Error fetching consultants:', error);
-            toast.error('Failed to load consultants. Please try again later.');
+            toast.error('Failed to load consultants. ^^');
         }
     };
 
     // lay du lieu desginer staff tu backend
     const fetchDesigners = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/consultation-staff/designers');
+            const response = await axios.get('http://localhost:8080/manager/requests/designers');
             setDesignerList(response.data);
         } catch (error) {
             console.error('Error fetching designers:', error);
@@ -53,69 +53,59 @@ const Consultation = () => {
     // lay du lieu constructor staff tu backend
     const fetchConstructors = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/consultation-staff/constructors');
+            const response = await axios.get('http://localhost:8080/manager/requests/constructors');
             setConstructorList(response.data);
         } catch (error) {
             console.error('Error fetching constructors:', error);
-            toast.error('Failed to load constructors. Please try again later.');
+            toast.error('Failed to load constructors. ^^');
         }
     };
 
     //handle staff assignment
-    const handleAssignStaff = async (requestId, staffId, staffName, staffType) => {
+    const handleAssignStaff = async (constructionOrderId, staffId, staffName, staffType) => {
         try {
-            await axios.post(`http://localhost:8080/assign-${staffType}-staff`, {
-                requestId,
-                staffId
-            });
-
-            // Xác định trạng thái mới dựa trên loại nhân viên
+            // xac dinh trang thai moi dua tren loai nhan vien
             let newStatus;
             switch (staffType) {
                 case "consultant":
-                    newStatus = "Consulting";
+                    newStatus = "consulting";
                     break;
-                case "designer":
-                    newStatus = "Designing";
+                case "designerLeader":
+                    newStatus = "designing";
                     break;
-                case "constructor":
-                    newStatus = "Constructing";
+                case "constructorLeader":
+                    newStatus = "constructing";
                     break;
                 default:
-                    newStatus = "Requested"; // Trạng thái mặc định
+                    newStatus = "requested"; // Trạng thái mặc định
                     break;
             }
 
-            // Cập nhật trạng thái cho yêu cầu
-            await handleStatusChange(requestId, newStatus);
-
-            setRequests(prevRequests =>
-                prevRequests.map(request =>
-                    request.id === requestId ? { ...request, assignedStaff: staffName, status: newStatus } : request
-                )
-            );
-            toast.success("Staff assigned successfully!");
-        } catch (error) {
-            console.error('Error assigning staff:', error);
-            toast.error("Failed to assign staff. Please try again.");
-        }
-    };
-    // UPDATE STATUS
-    const handleStatusChange = async (requestId, newStatus) => {
-        try {
-            await axios.post('http://localhost:8080/update-request-status', {
-                requestId,
+            await axios.put('http://localhost:8080/manager/requests', {
+                constructionOrderId,
+                consultant: staffType === 'consultant' ? staffId : null,
+                designerLeader: staffType === 'designerLeader' ? staffId : null,
+                constructorLeader: staffType === 'constructorLeader' ? staffId : null,
                 status: newStatus
             });
             setRequests(prevRequests =>
                 prevRequests.map(request =>
-                    request.id === requestId ? { ...request, status: newStatus } : request
+                    request.id === constructionOrderId
+                        ? {
+                            ...request,
+                            status: newStatus,
+                            consultant: staffType === 'consultant' ? staffName : request.assignedConsultant,
+                            designerLeader: staffType === 'designer' ? staffName : request.assignedDesigner,
+                            constructorLeader: staffType === 'constructor' ? staffName : request.assignedConstructor
+                        }
+                        : request
                 )
             );
-            toast.success("Status updated successfully!");
+
+            toast.success("Assign staff and status successfully!");
         } catch (error) {
-            console.error('Error updating status:', error);
-            toast.error("Failed to update status. Please try again.");
+            console.error('Error assigning staff:', error);
+            toast.error("Failed to assign staff or status. Please try again.");
         }
     };
 
@@ -163,7 +153,7 @@ const Consultation = () => {
                                         value={request.assignedConsultant || ""}
                                         onChange={(e) => {
                                             const selectedStaffId = e.target.value;
-                                            const selectedStaff = consultantList.find(staff => staff.id === parseInt(selectedStaffId));
+                                            const selectedStaff = consultantList.find(consultant => consultant.id === parseInt(selectedStaffId));
                                             if (selectedStaff) {
                                                 handleAssignStaff(request.id, selectedStaff.id, selectedStaff.name, "consultant");
                                             }
@@ -189,9 +179,9 @@ const Consultation = () => {
                                         value={request.assignedDesigner || ""}
                                         onChange={(e) => {
                                             const selectedStaffId = e.target.value;
-                                            const selectedStaff = designerList.find(staff => staff.id === parseInt(selectedStaffId));
+                                            const selectedStaff = designerList.find(designerLeader => designerLeader.id === parseInt(selectedStaffId));
                                             if (selectedStaff) {
-                                                handleAssignStaff(request.id, selectedStaff.id, selectedStaff.name, "designer");
+                                                handleAssignStaff(request.id, selectedStaff.id, selectedStaff.name, "designerLeader");
                                             }
                                         }}
                                     >
@@ -215,9 +205,9 @@ const Consultation = () => {
                                         value={request.assignedConstructor || ""}
                                         onChange={(e) => {
                                             const selectedStaffId = e.target.value;
-                                            const selectedStaff = constructorList.find(staff => staff.id === parseInt(selectedStaffId));
+                                            const selectedStaff = constructorList.find(constructorLeader => constructorLeader.id === parseInt(selectedStaffId));
                                             if (selectedStaff) {
-                                                handleAssignStaff(request.id, selectedStaff.id, selectedStaff.name, "constructor");
+                                                handleAssignStaff(request.id, selectedStaff.id, selectedStaff.name, "constructorLeader");
                                             }
                                         }}
                                     >
@@ -229,19 +219,7 @@ const Consultation = () => {
                                         ))}
                                     </select>
                                 </td>
-                                <td>
-                                    <select
-                                        value={request.status}
-                                        onChange={(e) => handleStatusChange(request.id, e.target.value)}
-                                        className="form-select"
-                                    >
-                                        {statusOptions.map(status => (
-                                            <option key={status} value={status}>
-                                                {status}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </td>
+                                <td>{request.status}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -251,5 +229,5 @@ const Consultation = () => {
     );
 };
 
-export default Consultation;
+export default Request;
 
