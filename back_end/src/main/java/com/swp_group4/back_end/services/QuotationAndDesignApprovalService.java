@@ -127,8 +127,7 @@ public class QuotationAndDesignApprovalService {
                 .urlFrontDesign(design.getUrlFrontDesign())
                 .urlBackDesign(design.getUrlBackDesign())
                 .build();
-        designMapperImpl.toDesignResponse(design, response);
-        return response;
+               return response;
     }
 
     public ConstructOrderDetailForManagerResponse manageQuotation(ManageReviewRequest request, String quotationId) {
