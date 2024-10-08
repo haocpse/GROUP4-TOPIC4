@@ -3,7 +3,7 @@ import axios from "axios";
 import Navbar from "../Navbar/Navbar";
 import { ToastContainer, toast } from 'react-toastify'; // Import toast
 import 'react-toastify/dist/ReactToastify.css'; // Import CSS cho toast de hien thong bao
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ConstructionProgress = () => {
 
@@ -11,12 +11,13 @@ const ConstructionProgress = () => {
     const [orders, setOrders] = useState([]);
     const [staffList, setStaffList] = useState([]);
     const [isConstructonStaffListOpen, setIsConstructionStaffListOpen] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handleTask = async () => { // ham de long lay du lieu tu backend ne ^^;
 
             try {
-                const response = await axios.get(`http://localhost:8080/construction-progress/${constructionOrderId}`);
+                const response = await axios.get(`http://localhost:8080//ownedTasks/${constructionOrderId}`);
                 setOrders([response.data]); // neu la mang se co []
             } catch (error) {
 
@@ -34,7 +35,7 @@ const ConstructionProgress = () => {
     const fetchStaff = async () => {
 
         try {
-            const response = await axios.get('http://localhost:8080/construction-staff');
+            const response = await axios.get(`http://localhost:8080/ownedTasks/${constructionOrderId}/constructors`);
             setStaffList(response.data);
         } catch (error) {
             console.error('Error get staff task ! ^^', error);
@@ -56,8 +57,8 @@ const ConstructionProgress = () => {
     const handleStatusChange = async (newStatus, taskId) => {
 
         try {
-            await axios.post(`http://localhost:8080/updateTaskStatus/${constructionOrderId}`, {
-                newStatus: newStatus,
+            await axios.post(`http://localhost:8080/ownedTasks/${constructionOrderId}`, {
+                status: newStatus,
                 taskId: taskId
             });
             // cập nhật giao diện
@@ -80,8 +81,7 @@ const ConstructionProgress = () => {
     // set nhan vien cho tung task
     const handleAssignStaff = async (orderId, taskId, staffId, staffName) => {
         try {
-            await axios.post('http://localhost:8080/assign-construction-staff', {
-                constructionOrderId: orderId,
+            await axios.post(`http://localhost:8080/ownedTasks/${constructionOrderId}/constructors`, {
                 taskId: taskId,
                 staffId: staffId
             });
@@ -141,10 +141,10 @@ const ConstructionProgress = () => {
                                         </td>
                                         <td>
                                             <select
-                                                value={staffList.find(staff => staff.name === task.assignedStaff)?.id || ''}
+                                                value={staffList.find(staff => staff.staffName === task.assignedStaff)?.id || ''}
                                                 onChange={e => {
                                                     const staffId = e.target.value;
-                                                    const staffName = staffList.find(staff => staff.id === parseInt(staffId))?.name || '';
+                                                    const staffName = staffList.find(staff => staff.staffId === parseInt(staffId))?.staffName || '';
                                                     handleAssignStaff(order.constructionOrderId, task.taskId, staffId, staffName);
                                                 }}
                                                 className="form-select"
@@ -152,8 +152,8 @@ const ConstructionProgress = () => {
                                             >
                                                 <option value="">Assign staff</option>
                                                 {staffList.map(staff => (
-                                                    <option key={staff.id} value={staff.id}>
-                                                        {staff.name}
+                                                    <option key={staff.staffId} value={staff.staffId}>
+                                                        {staff.staffName}
                                                     </option>
                                                 ))}
                                             </select>
@@ -164,6 +164,9 @@ const ConstructionProgress = () => {
                         </table>
                     </div>
                 ))}
+                 <button onClick={() => navigate(-1)} className="btn btn-secondary ">
+                    Back
+                </button>
             </div>
         </>
     );

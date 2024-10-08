@@ -44,7 +44,7 @@ const ConstructionOrder = () => {
     }, []);
 
     const handleViewDetails = (constructionOrderId) => {
-        navigate(`/construction-progress/${constructionOrderId}`);
+        navigate(`/ownedTasks/${constructionOrderId}`);
     }
 
 
