@@ -2,24 +2,19 @@ package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.ConstructionOrder;
 import com.swp_group4.back_end.entities.Customer;
-import com.swp_group4.back_end.enums.Gender;
-import com.swp_group4.back_end.exception.AppException;
-import com.swp_group4.back_end.exception.ErrorCode;
 import com.swp_group4.back_end.mapper.CustomerMapper;
 import com.swp_group4.back_end.repositories.CustomerRepository;
 import com.swp_group4.back_end.requests.ServiceRequest;
 import com.swp_group4.back_end.requests.UpdateInfoRequest;
-import com.swp_group4.back_end.responses.ConstructOrderResponse;
 import com.swp_group4.back_end.responses.CustomerResponse;
 import com.swp_group4.back_end.responses.ServiceResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 @Slf4j
 @Service
@@ -31,7 +26,8 @@ public class CustomerService {
     @Autowired
     CustomerMapper customerMapper;
     @Autowired
-    ConstructOrderService constructOrderService;
+    @Lazy
+    ManageConstructionOrderService manageConstructionOrderService;
 
     public void createCustomer(String accountId, String firstname) {
         customerRepository.save(Customer.builder()
@@ -41,19 +37,13 @@ public class CustomerService {
     }
 
     public CustomerResponse getOwnedInfo(){
-        var context = SecurityContextHolder.getContext();
-        String accountId = context.getAuthentication().getName();
-        Customer customer = customerRepository.findByAccountId(accountId).orElseThrow(()
-                -> new AppException(ErrorCode.USER_NOT_EXIST));
+        Customer customer = this.identifyCustomer();
         CustomerResponse response = new CustomerResponse();
         return customerMapper.customerToResponse(customer, response);
     }
 
     public CustomerResponse updateOwnedInfo(UpdateInfoRequest request) {
-        var context = SecurityContextHolder.getContext();
-        String accountId = context.getAuthentication().getName();
-        Customer customer = customerRepository.findByAccountId(accountId).orElseThrow(()
-                -> new AppException(ErrorCode.USER_NOT_EXIST));
+        Customer customer = this.identifyCustomer();
         customerMapper.updateInfoToCustomer(request, customer);
         customerRepository.save(customer);
         CustomerResponse response = new CustomerResponse();
@@ -61,22 +51,29 @@ public class CustomerService {
     }
 
     public ServiceResponse<?> contactUs(ServiceRequest serviceRequest) {
-
-        var context = SecurityContextHolder.getContext();
-        String accountId = context.getAuthentication().getName();
-        Customer customer = customerRepository.findByAccountId(accountId).orElseThrow(()
-                -> new AppException(ErrorCode.USER_NOT_EXIST));
+        Customer customer = this.identifyCustomer();
         customerMapper.serviceRequestToCustomer(serviceRequest, customer);
         customerRepository.save(customer);
-
         if (serviceRequest.getService().name().equals("CONSTRUCTION_SERVICE")) {
-            ConstructionOrder constructionOrder = constructOrderService.createOrder(serviceRequest, customer);
-            return constructOrderService.contactUsForConstruction(serviceRequest, constructionOrder);
+            ConstructionOrder constructionOrder = manageConstructionOrderService.createOrder(serviceRequest, customer);
+            return manageConstructionOrderService.contactUsForConstruction(serviceRequest, constructionOrder);
         }
 //        if (serviceRequest.getService().name().equals("MAINTENANCE_SERVICE")) {
 //          return contactUsForMaintenance(serviceRequest);
 //        }
        return null;
+    }
+
+    Customer identifyCustomer() {
+        var context = SecurityContextHolder.getContext();
+        String accountId = context.getAuthentication().getName();
+        return customerRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+    }
+
+    Customer findCustomer(String customerId) {
+        return customerRepository.findById(customerId)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
     }
 
 }

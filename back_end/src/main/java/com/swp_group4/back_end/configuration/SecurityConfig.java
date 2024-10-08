@@ -34,7 +34,7 @@ public class SecurityConfig {
 
     @NonFinal
     @Value("${jwt.SIGNER_KEY}")
-    String SIGNER_KEY = "aN+6Dcg0rur3Mlj2Qay3wckukj1UrRXGoaypTLH7U8yHLKQ4XMpe+4VT9wifs/gy";
+    String SIGNER_KEY;
 
 //    @Bean
 //    public CorsFilter corsFilter() {

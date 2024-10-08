@@ -6,13 +6,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ConstructOrderRepository extends JpaRepository<ConstructionOrder, String> {
 
-    List<ConstructionOrder> findByStatusIn(List<ConstructionOrderStatus> statuses);
-    List<ConstructionOrder> findByConsultantAndStatusIn(String consultant, List<ConstructionOrderStatus> statuses);
-    List<ConstructionOrder> findByConstructionLeaderAndStatusIn(String constructionLeader, List<ConstructionOrderStatus> statuses);
-    List<ConstructionOrder> findByDesignLeaderAndStatusIn(String designLeader, List<ConstructionOrderStatus> statuses);
+    Optional<ConstructionOrder> findByQuotationId(String quotationId);
+    Optional<ConstructionOrder> findByDesignId(String designId);
+    List<ConstructionOrder> findByConsultant(String consultant);
+    List<ConstructionOrder> findByDesignLeader(String designLeader);
+    List<ConstructionOrder> findByConstructionLeader(String constructionLeader);
 
 }

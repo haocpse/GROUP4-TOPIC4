@@ -22,9 +22,10 @@ public class ConstructionOrder {
     String customerId;
     String customerRequest;
     double total;
-    ZonedDateTime startDate;
-    ZonedDateTime endDate;
+    Date startDate;
+    Date endDate;
     String quotationId;
+    String designId;
     String consultant;
     String designLeader;
     String constructionLeader;
