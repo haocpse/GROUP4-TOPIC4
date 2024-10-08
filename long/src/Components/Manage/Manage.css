@@ -1,4 +1,44 @@
-  .img-manager{
-    width: 40%;
+  .sidebar i {
+    font-size: 18px;
+    color: #fff;
+    margin-top: 50px;
   }
-  
+
+  .sidebar a {
+    color: #fff;
+    padding: 10px 15px;
+    font-size: 16px;
+  }
+
+  .sidebar hr {
+    color: #fff;
+  }
+
+  .sidebar-link i {
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .sidebar-link:hover i {
+    transform: scale(1.8);
+    color: red;
+  }
+
+  .sidebar-link.active i {
+    background-color: #ffc107;
+    padding: 10px;
+    border-radius: 50%;
+  }
+
+  .sidebar-link:hover i {
+    transform: scale(1.8);
+    color: red;
+  }
+
+  .nav-pills .nav-link.active,
+  .nav-pills .show>.nav-link {
+    background-color: transparent !important;
+    color: white !important;
+    border-radius: 50%;
+    padding: 8px;
+    transition: transform 0.2s ease-in-out;
+  }

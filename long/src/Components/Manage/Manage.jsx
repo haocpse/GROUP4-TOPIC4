@@ -1,55 +1,52 @@
 import React from "react";
 import './Manage.css';
-import logo from '../Assests/logo-navbar.png';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 const Manage = () => {
     return (
-        <div className="d-flex flex-column p-3 bg-light" style={{ width: '250px', height: '100vh' }}>
-            <Link to="/main" className="d-flex align-items-center text-decoration-none">
-                <span className="fs-4"><img src={logo} alt="Logo" className="img-manager me-2" />Manager</span>
-            </Link>
+        <div className="d-flex flex-column p-3 bg-dark sidebar" style={{ width: '90px', height: 'auto' }}>
+            <p style={{ color: 'white', fontSize: '20px' }}>Koi Pond Design</p>
             <hr />
             <ul className="nav nav-pills flex-column mb-auto">
+                {/* Home */}
                 <li className="nav-item">
-                    <a
-                        className="nav-link text-dark d-flex align-items-center"
-                        data-bs-toggle="collapse"
-                        href="#construction"
-                        role="button"
-                        aria-expanded="false"
-                        aria-controls="construction">
-
-                        Construction Request
-                    </a>
-                    <div className="collapse" id="construction">
-                        <ul className="nav flex-column ms-4">
-                            <li><Link to="/manage/consultation" className="nav-link text-dark">Consultation</Link></li>
-                            <li><Link to="/manage/design" className="nav-link text-dark">Design</Link></li>
-                            <li><Link to="/manage/construction" className="nav-link text-dark">Construction</Link></li>
-                        </ul>
-                    </div>
+                    <NavLink to="/" className="nav-link text-dark d-flex align-items-center sidebar-link">
+                        <i className="fa-solid fa-house-chimney"></i>
+                    </NavLink>
                 </li>
+                {/* Request */}
                 <li className="nav-item">
-                    <a
-                        className="nav-link text-dark d-flex align-items-center"
-                        data-bs-toggle="collapse"
-                        href="#maintenance"
-                        role="button"
-                        aria-expanded="false"
-                        aria-controls="maintenance">
-
-                        Maintenance Request
-                    </a>
-                    <div className="collapse" id="maintenance">
-                        <ul className="nav flex-column ms-4">
-                            <li><Link to="/manage/Consultation" className="nav-link text-dark">Consultation</Link></li>
-                        </ul>
-                    </div>
+                    <NavLink to="/manage/request" className="nav-link d-flex align-items-center sidebar-link">
+                        <i className="fa-solid fa-bell"></i>
+                    </NavLink>
+                </li>
+                {/* Approve Quotation */}
+                <li className="nav-item">
+                    <NavLink to="/manage/quotations" className="nav-link d-flex align-items-center sidebar-link">
+                        <i className="fa-solid fa-money-bill"></i>
+                    </NavLink>
+                </li>
+                {/* Approve Desing */}
+                <li className="nav-item">
+                    <NavLink to="/manage/designs" className="nav-link  d-flex align-items-center sidebar-link">
+                        <i className="fa-solid fa-pen"></i>
+                    </NavLink>
+                </li>
+                {/* Dashboard */}
+                <li className="nav-item mb-4">
+                    <NavLink to="/manage/dashboard" className="nav-link text-dark align-items-center sidebar-link">
+                        <i className="fa-solid fa-table-list"></i>
+                    </NavLink>
+                </li>
+                <hr className="mb-3" />
+                {/* Logout */}
+                <li className="nav-item">
+                    <NavLink to="/" className="nav-link  d-flex align-items-center sidebar-link">
+                        <i className="fa-solid fa-right-from-bracket"></i>
+                    </NavLink>
                 </li>
             </ul>
+
         </div>
     );
 }
