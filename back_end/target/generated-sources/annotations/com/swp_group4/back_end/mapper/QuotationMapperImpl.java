@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.4 (Oracle Corporation)"
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.4 (Amazon.com Inc.)"
 )
 @Component
 public class QuotationMapperImpl implements QuotationMapper {
@@ -20,9 +20,6 @@ public class QuotationMapperImpl implements QuotationMapper {
         }
 
         quotation.setVolume( request.getVolume() );
-        quotation.setPriceStage1( request.getPriceStage1() );
-        quotation.setPriceStage2( request.getPriceStage2() );
-        quotation.setPriceStage3( request.getPriceStage3() );
         quotation.setPromotionId( request.getPromotionId() );
         quotation.setPackageId( request.getPackageId() );
 

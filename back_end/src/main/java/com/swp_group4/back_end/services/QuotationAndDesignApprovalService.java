@@ -30,10 +30,6 @@ public class QuotationAndDesignApprovalService {
     @Autowired
     QuotationMapper quotationMapper;
     @Autowired
-    DesignRepository designRepository;
-    @Autowired
-    DesignMapper designMapper;
-    @Autowired
     ManageConstructionOrderService manageConstructionOrderService;
     @Autowired
     @Lazy
@@ -47,19 +43,25 @@ public class QuotationAndDesignApprovalService {
     @Autowired
     @Lazy
     ConstructionService constructionService;
-    @Autowired
-    @Lazy
-    DesignService designService;
 
-    public List<QuotationAndDesignReviewResponse<QuotationStatus>> listAllQuotation() {
+    @Autowired
+    DesignRepository designRepository;;
+    @Autowired
+    private DesignMapperImpl designMapperImpl;
+    @Autowired
+    private CustomerRepository customerRepository;
+    @Autowired
+    private ConstructionTasksRepository constructionTasksRepository;
+
+    public List<QuotationAndDesignReviewResponse> listAllQuotation() {
         List<Quotation> quotations = quotationRepository.findByStatus(QuotationStatus.QUOTED);
-        List<QuotationAndDesignReviewResponse<QuotationStatus>> responses = new ArrayList<>();
+        List<QuotationAndDesignReviewResponse> responses = new ArrayList<>();
         for (Quotation quotation : quotations) {
             ConstructionOrder order = manageConstructionOrderService
                     .findConstructOrderByQuotationId(quotation.getQuotationId());
             Customer customer = customerService.findCustomer(order.getCustomerId());
             Packages packages = consultationService.findPackage(quotation.getPackageId());
-            QuotationAndDesignReviewResponse<QuotationStatus> response = QuotationAndDesignReviewResponse.<QuotationStatus>builder()
+            QuotationAndDesignReviewResponse response = QuotationAndDesignReviewResponse.builder()
                     .constructionOrderId(order.getConstructionOrderId())
                     .id(quotation.getQuotationId())
                     .customerName(customer.getFirstname() + " " + customer.getLastname())
@@ -69,33 +71,24 @@ public class QuotationAndDesignApprovalService {
                     .packageType(packages.getPackageType())
                     .volume(quotation.getVolume())
                     .totalPrice(order.getTotal())
-                    .status(QuotationStatus.QUOTED)
                     .build();
             responses.add(response);
         }
         return responses;
     }
 
-    public List<QuotationAndDesignReviewResponse<DesignStatus>> listAllDesign() {
-        List<Design> Designs = designRepository.findByStatus(DesignStatus.DESIGNED);
-        List<QuotationAndDesignReviewResponse<DesignStatus>> responses = new ArrayList<>();
-        for (Design design : Designs) {
-            ConstructionOrder order = manageConstructionOrderService
-                    .findConstructOrderByQuotationId(design.getDesignId());
-            Customer customer =  customerService.findCustomer(order.getCustomerId());
-            Quotation quotation = consultationService.findQuotation(order.getQuotationId());
-            Packages packages = consultationService.findPackage(quotation.getPackageId());
-            QuotationAndDesignReviewResponse<DesignStatus> response = QuotationAndDesignReviewResponse.<DesignStatus>builder()
+    public List<QuotationAndDesignReviewResponse> listAllDesign() {
+        List<Design> designs = designRepository.findByStatus(DesignStatus.DESIGNED);
+        List<QuotationAndDesignReviewResponse> responses = new ArrayList<>();
+        for (Design design : designs) {
+            ConstructionOrder order = constructOrderRepository
+                    .findByDesignId(design.getDesignId()).orElseThrow();
+            Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
+            QuotationAndDesignReviewResponse response = QuotationAndDesignReviewResponse.builder()
                     .constructionOrderId(order.getConstructionOrderId())
                     .id(design.getDesignId())
-                    .customerName(customer.getFirstname() + " " + customer.getLastname())
                     .phone(customer.getPhone())
                     .address(customer.getAddress())
-                    .leaderName(staffService.getStaffName(order.getDesignLeader()))
-                    .packageType(packages.getPackageType())
-                    .volume(quotation.getVolume())
-                    .totalPrice(order.getTotal())
-                    .status(DesignStatus.DESIGNED)
                     .build();
             responses.add(response);
         }
@@ -121,17 +114,20 @@ public class QuotationAndDesignApprovalService {
     }
 
     public ConstructDesignResponse detailDesign(String designId) {
-        Design design = designService.findDesign(designId);
-        ConstructionOrder order = manageConstructionOrderService.findConstructOrderByDesignId(designId);
-        Customer customer = customerService.findCustomer(order.getCustomerId());
+        Design design = designRepository.findById(designId).orElseThrow();
+        ConstructionOrder order = constructOrderRepository.findById(designId).orElseThrow();
+        Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
         ConstructDesignResponse response = ConstructDesignResponse.builder()
                 .constructionOrderId(order.getConstructionOrderId())
                 .customerName(customer.getFirstname() + " " + customer.getLastname())
                 .designName(staffService.getStaffName(order.getDesignLeader()))
                 .customerRequest(order.getCustomerRequest())
+                .url2dDesign(design.getUrl2dDesign())
+                .url3dDesign(design.getUrl3dDesign())
+                .urlFrontDesign(design.getUrlFrontDesign())
+                .urlBackDesign(design.getUrlBackDesign())
                 .build();
-        designMapper.toDesignResponse(design, response);
-        return response;
+               return response;
     }
 
     public ConstructOrderDetailForManagerResponse manageQuotation(ManageReviewRequest request, String quotationId) {
@@ -147,13 +143,13 @@ public class QuotationAndDesignApprovalService {
     }
 
     public ConstructOrderDetailForManagerResponse manageDesign(ManageReviewRequest request, String designId) {
-        Design design = designService.findDesign(designId);
-        ConstructionOrder order = manageConstructionOrderService.findConstructOrderByDesignId(designId);
-        if (request.getStatus().name().equals("APPROVED")) {
+        Design design = designRepository.findById(designId).orElseThrow();
+        ConstructionOrder order = constructOrderRepository.findById(designId).orElseThrow();
+        if(request.getStatus().name().equals("APPROVED")) {
             design.setStatus(DesignStatus.CONFIRMED_DESIGN);
             designRepository.save(design);
             order.setStatus(ConstructionOrderStatus.CONFIRMED_DESIGN);
-            constructOrderRepository.save(order);
+            designRepository.save(design);
         }
         return this.buildConstructOrderDetailForManagerResponse(order);
     }

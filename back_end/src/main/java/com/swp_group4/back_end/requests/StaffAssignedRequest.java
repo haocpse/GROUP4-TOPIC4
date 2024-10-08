@@ -13,8 +13,8 @@ public class StaffAssignedRequest {
 
     String constructionOrderId;
     String consultant;
-    String designLeader;
-    String constructionLeader;
+    String designerLeader;
+    String constructorLeader;
     ConstructionOrderStatus status;
 
 }

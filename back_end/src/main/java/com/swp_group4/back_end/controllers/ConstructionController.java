@@ -30,7 +30,7 @@ public class ConstructionController {
 
     // Hàm để CONSTRUCTOR xem chi tiết task
     // (Construction Order đang ở trạng thái CONFIRMED_DESIGN)
-    @GetMapping("/ownedTasks/{constructionOrderId}")
+        @GetMapping("/ownedTasks/{constructionOrderId}")
     public ApiResponse<ConstructionTasksAndStatusResponse> detailTask(@PathVariable String constructionOrderId) {
         return ApiResponse.<ConstructionTasksAndStatusResponse>builder()
                 .data(constructionService.detailOfConstruct(constructionOrderId))
@@ -46,19 +46,19 @@ public class ConstructionController {
                 .build();
     }
 
-    // Hàm để CONSTRUCTOR gán task cho các staff
-    // (Construction Order đang ở trạng thái CONSTRUCTING)
-    @PostMapping("/ownedTasks/{constructionOrderId}/assignTask")
-    public ApiResponse<AssignConstructionTaskResponse> assignTask(@PathVariable String constructionOrderId, @RequestBody AssignTaskStaffRequest request) {
-        return ApiResponse.<AssignConstructionTaskResponse>builder()
-                .data(constructionService.assignTask(constructionOrderId, request))
-                .build();
-    }
+//    // Hàm để CONSTRUCTOR gán task cho các staff
+//    // (Construction Order đang ở trạng thái CONSTRUCTING)
+//    @PostMapping("/ownedTasks/{constructionOrderId}/assignTask")
+//    public ApiResponse<AssignConstructionTaskResponse> assignTask(@PathVariable String constructionOrderId, @RequestBody AssignTaskStaffRequest request) {
+//        return ApiResponse.<AssignConstructionTaskResponse>builder()
+//                .data(constructionService.assignTask(constructionOrderId, request))
+//                .build();
+//    }
 
     // Hàm để CONSTRUCTOR xác nhận đã hoàn thành task
     // (Construction Order đang ở trạng thái CONSTRUCTING
     // nếu hoàn thành toàn bộ các task trạng thái của Construction Order sẽ chuyển sang CONSTRUCTED)
-    @PostMapping("/ownedTasks/{constructionOrderId}/completeTask")
+    @PutMapping("/ownedTasks/{constructionOrderId}")
     public ApiResponse<CompleteConstructionTaskResponse> completeTask(@PathVariable String constructionOrderId, @RequestBody CompleteConstructTaskRequest request){
         return ApiResponse.<CompleteConstructionTaskResponse>builder()
                 .data(constructionService.completeTask(constructionOrderId, request))

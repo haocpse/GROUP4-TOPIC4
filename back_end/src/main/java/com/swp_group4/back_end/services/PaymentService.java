@@ -1,7 +1,9 @@
 package com.swp_group4.back_end.services;
 
+import com.swp_group4.back_end.entities.Customer;
 import com.swp_group4.back_end.entities.PaymentOrder;
 import com.swp_group4.back_end.enums.PaymentStatus;
+import com.swp_group4.back_end.repositories.CustomerRepository;
 import com.swp_group4.back_end.repositories.PaymentOrderRepository;
 import com.swp_group4.back_end.requests.PaymentRequest;
 import com.swp_group4.back_end.responses.ApiResponse;
@@ -9,8 +11,10 @@ import com.swp_group4.back_end.responses.PaymentResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -19,18 +23,29 @@ public class PaymentService {
 
     @Autowired
     PaymentOrderRepository paymentOrderRepository;
+    @Autowired
+    CustomerRepository customerRepository;
+
+    public List<PaymentOrder> listALl(){
+        var context = SecurityContextHolder.getContext();
+        String accountId = context.getAuthentication().getName();
+        Customer customer = customerRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+        return paymentOrderRepository.findByCustomerId(accountId);
+    }
+
 
     // Xử lý tạo thanh toán
-    public ApiResponse<PaymentResponse> createPayment(PaymentRequest request) {
+    public PaymentResponse createPayment(PaymentRequest request) {
         PaymentOrder paymentOrder = PaymentOrder.builder()
                 .serviceId(request.getServiceId())
-                .date(java.time.ZonedDateTime.now())
+//                .date()
                 .paymentMethods(request.getMethod())
                 .total(request.getTotal())
                 .status(PaymentStatus.PENDING)
                 .build();
 
-        PaymentResponse responseDTO;
+        PaymentResponse responseDTO = new PaymentResponse();
 
         switch (request.getMethod()) {
             case VNPAY:
@@ -40,17 +55,9 @@ public class PaymentService {
                 responseDTO = createMomoPayment(paymentOrder);
                 break;
             default:
-                return ApiResponse.<PaymentResponse>builder()
-                        .code(4000)  // Mã lỗi tuỳ chỉnh
-                        .message("Unsupported payment method")
-                        .build();
         }
 
-        return ApiResponse.<PaymentResponse>builder()
-                .code(1000)  // Mã thành công
-                .message("Payment initiated successfully")
-                .data(responseDTO)
-                .build();
+        return responseDTO;
     }
 
     // Xử lý phản hồi (callback) từ cổng thanh toán

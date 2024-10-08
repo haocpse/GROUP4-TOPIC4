@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class QuotationAndDesignReviewResponse<T> {
+public class QuotationAndDesignReviewResponse {
 
     String constructionOrderId;
     String id;
@@ -19,6 +19,5 @@ public class QuotationAndDesignReviewResponse<T> {
     String packageType;
     double volume;
     double totalPrice;
-    T status;
 
 }
