@@ -44,6 +44,15 @@ public class QuotationAndDesignApprovalService {
     @Lazy
     ConstructionService constructionService;
 
+    @Autowired
+    DesignRepository designRepository;;
+    @Autowired
+    private DesignMapperImpl designMapperImpl;
+    @Autowired
+    private CustomerRepository customerRepository;
+    @Autowired
+    private ConstructionTasksRepository constructionTasksRepository;
+
     public List<QuotationAndDesignReviewResponse> listAllQuotation() {
         List<Quotation> quotations = quotationRepository.findByStatus(QuotationStatus.QUOTED);
         List<QuotationAndDesignReviewResponse> responses = new ArrayList<>();
@@ -68,9 +77,23 @@ public class QuotationAndDesignApprovalService {
         return responses;
     }
 
-//    public List<QuotationAndDesignReviewResponse<DesignStatus>> listAllDesign() {
-//
-//    }
+    public List<QuotationAndDesignReviewResponse> listAllDesign() {
+        List<Design> designs = designRepository.findByStatus(DesignStatus.DESIGNED);
+        List<QuotationAndDesignReviewResponse> responses = new ArrayList<>();
+        for (Design design : designs) {
+            ConstructionOrder order = constructOrderRepository
+                    .findByDesignId(design.getDesignId()).orElseThrow();
+            Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
+            QuotationAndDesignReviewResponse response = QuotationAndDesignReviewResponse.builder()
+                    .constructionOrderId(order.getConstructionOrderId())
+                    .id(design.getDesignId())
+                    .phone(customer.getPhone())
+                    .address(customer.getAddress())
+                    .build();
+            responses.add(response);
+        }
+        return responses;
+    }
 
     public ConstructQuotationResponse detailQuotation(String quotationId) {
         Quotation quotation = consultationService.findQuotation(quotationId);
@@ -90,8 +113,23 @@ public class QuotationAndDesignApprovalService {
         return response;
     }
 
-//    public ConstructDesignResponse detailDesign(String designId) {
-//    }
+    public ConstructDesignResponse detailDesign(String designId) {
+        Design design = designRepository.findById(designId).orElseThrow();
+        ConstructionOrder order = constructOrderRepository.findById(designId).orElseThrow();
+        Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
+        ConstructDesignResponse response = ConstructDesignResponse.builder()
+                .constructionOrderId(order.getConstructionOrderId())
+                .customerName(customer.getFirstname() + " " + customer.getLastname())
+                .designName(staffService.getStaffName(order.getDesignLeader()))
+                .customerRequest(order.getCustomerRequest())
+                .url2dDesign(design.getUrl2dDesign())
+                .url3dDesign(design.getUrl3dDesign())
+                .urlFrontDesign(design.getUrlFrontDesign())
+                .urlBackDesign(design.getUrlBackDesign())
+                .build();
+        designMapperImpl.toDesignResponse(design, response);
+        return response;
+    }
 
     public ConstructOrderDetailForManagerResponse manageQuotation(ManageReviewRequest request, String quotationId) {
         Quotation quotation = consultationService.findQuotation(quotationId);
@@ -105,8 +143,17 @@ public class QuotationAndDesignApprovalService {
         return this.buildConstructOrderDetailForManagerResponse(order);
     }
 
-//    public ConstructOrderDetailForManagerResponse manageDesign(ManageReviewRequest request, String designId) {
-//    }
+    public ConstructOrderDetailForManagerResponse manageDesign(ManageReviewRequest request, String designId) {
+        Design design = designRepository.findById(designId).orElseThrow();
+        ConstructionOrder order = constructOrderRepository.findById(designId).orElseThrow();
+        if(request.getStatus().name().equals("APPROVED")) {
+            design.setStatus(DesignStatus.CONFIRMED_DESIGN);
+            designRepository.save(design);
+            order.setStatus(ConstructionOrderStatus.CONFIRMED_DESIGN);
+            designRepository.save(design);
+        }
+        return this.buildConstructOrderDetailForManagerResponse(order);
+    }
 
     ConstructOrderDetailForManagerResponse buildConstructOrderDetailForManagerResponse(ConstructionOrder order) {
         return ConstructOrderDetailForManagerResponse.builder()

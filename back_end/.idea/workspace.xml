@@ -5,13 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="578a2655-301d-4a04-ab78-bc687f4b6d3b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/responses/PackageResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/PackageService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/controllers/ConsultationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/controllers/ConsultationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/requests/ExportQuotationRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/requests/ExportQuotationRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/requests/StaffAssignedRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/requests/StaffAssignedRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/DesignService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/DesignService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/QuotationAndDesignApprovalService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swp_group4/back_end/services/QuotationAndDesignApprovalService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,8 +81,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-b114ca120d71-intellij.indexing.shared.core-IU-242.21829.142" />
-        <option value="bundled-js-predefined-d6986cc7102b-7c0b70fcd90d-JavaScript-IU-242.21829.142" />
+        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23339.11" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23339.11" />
       </set>
     </attachedChunks>
   </component>
@@ -114,6 +111,9 @@
       <workItem from="1728138479589" duration="9316000" />
       <workItem from="1728269236772" duration="6364000" />
       <workItem from="1728276689556" duration="469000" />
+      <workItem from="1728293663506" duration="69000" />
+      <workItem from="1728311982090" duration="1832000" />
+      <workItem from="1728360186412" duration="205000" />
     </task>
     <servers />
   </component>
