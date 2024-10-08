@@ -46,7 +46,7 @@ const ConsultationPage = () => {
                     </a>
                     <div className="collapse" id="maintenance">
                         <ul className="nav flex-column ms-4">
-                        <li><Link to="/consultation-page/consultant-tasks" className="nav-link text-dark">Task</Link></li>
+                        <li><Link to="/consult/ownedTasks" className="nav-link text-dark">Task</Link></li>
 
                         </ul>
                     </div>
