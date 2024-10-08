@@ -6,7 +6,7 @@ import Contact from "./Components/Contact/Contact";
 import Service from "./Components/Service/Service";
 import MainLayout from "./Components/MainLayout";
 import ApproveDesign from "./Components/ApproveDesign/ApproveDesign";
-import Consultation from "./Components/Consultation/Consultation";
+import Request from "./Components/Consultation/Request";
 import ConstructionProgress from "./Components/ConstructionProgress/ConstructionProgress";
 import ConsultantTasks from "./Components/ConsultantTasks/ConsultantTasks";
 import DesignUpload from "./Components/DesignUpload/DesignUpload";
@@ -50,43 +50,39 @@ function App() {
       element: <MainLayout />,
       children: [
         {
-          path: "consultation",
-          element: <Consultation />,
+          path: "request",
+          element: <Request />,
         },
         {
-          path: "approve-design",
+          path: "designs",
           element: <ApproveDesign />,
         },
         {
-          path: "approve-quotation",
+          path: "quotations",
           element: <ApproveQuotation />,
         },
         {
-          path: "approve-design",
-          element: <ApproveDesign />
-        },
-        {
-          path: "view-design",
+          path: "designs/:designId",
           element: <ViewDesign />
         },
         {
-          path: "view-quotation",
+          path: "quotations/:quotationId",
           element: <ViewQuotation />,
         },
       ],
     },
 
-    
-
     {
       path: "construction-order",
-      element: <ConstructionOrder />, // Trang hiển thị danh sách ConstructionOrderId
+      element: <ConstructionOrder />, 
     },
-    // Route cho ConstructionProgress hiển thị chi tiết dựa trên orderId
     {
-      path: "construction-progress/:constructionOrderId", // Sử dụng orderId từ URL
-      element: <ConstructionProgress />, // Trang hiển thị chi tiết task của constructionOrderId
+      path: "ownedTasks/:constructionOrderId", 
+      element: <ConstructionProgress />, 
     },
+
+
+
     {
       path: "consultation-page", // Sửa lại path thành chữ thường để thống nhất
       element: <ConsultationPage />,

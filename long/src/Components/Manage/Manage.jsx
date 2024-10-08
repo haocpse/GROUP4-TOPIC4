@@ -16,19 +16,19 @@ const Manage = () => {
                 </li>
                 {/* Request */}
                 <li className="nav-item">
-                    <NavLink to="/manage/consultation" className="nav-link d-flex align-items-center sidebar-link">
+                    <NavLink to="/manage/request" className="nav-link d-flex align-items-center sidebar-link">
                         <i className="fa-solid fa-bell"></i>
                     </NavLink>
                 </li>
                 {/* Approve Quotation */}
                 <li className="nav-item">
-                    <NavLink to="/manage/approve-quotation" className="nav-link d-flex align-items-center sidebar-link">
+                    <NavLink to="/manage/quotations" className="nav-link d-flex align-items-center sidebar-link">
                         <i className="fa-solid fa-money-bill"></i>
                     </NavLink>
                 </li>
                 {/* Approve Desing */}
                 <li className="nav-item">
-                    <NavLink to="/manage/approve-design" className="nav-link  d-flex align-items-center sidebar-link">
+                    <NavLink to="/manage/designs" className="nav-link  d-flex align-items-center sidebar-link">
                         <i className="fa-solid fa-pen"></i>
                     </NavLink>
                 </li>

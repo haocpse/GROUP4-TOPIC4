@@ -3,7 +3,7 @@ import './Consultation.module.css';
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 
-const Consultation = () => {
+const Request = () => {
     const [requests, setRequests] = useState([]);
     const [consultantList, setConsultantList] = useState([]);
     const [designerList, setDesignerList] = useState([]);
@@ -62,18 +62,18 @@ const Consultation = () => {
     };
 
     //handle staff assignment
-    const handleAssignStaff = async (constructionOrderId, consultant, designerLeader, constructorLeader, staffName, staffType) => {
+    const handleAssignStaff = async (constructionOrderId, staffId, staffName, staffType) => {
         try {
-            // Xác định trạng thái mới dựa trên loại nhân viên
+            // xac dinh trang thai moi dua tren loai nhan vien
             let newStatus;
             switch (staffType) {
                 case "consultant":
                     newStatus = "consulting";
                     break;
-                case "designer":
+                case "designerLeader":
                     newStatus = "designing";
                     break;
-                case "constructor":
+                case "constructorLeader":
                     newStatus = "constructing";
                     break;
                 default:
@@ -83,9 +83,9 @@ const Consultation = () => {
 
             await axios.put('http://localhost:8080/manager/requests', {
                 constructionOrderId,
-                consultant,
-                designerLeader,
-                constructorLeader,
+                consultant: staffType === 'consultant' ? staffId : null,
+                designerLeader: staffType === 'designerLeader' ? staffId : null,
+                constructorLeader: staffType === 'constructorLeader' ? staffId : null,
                 status: newStatus
             });
             setRequests(prevRequests =>
@@ -94,9 +94,9 @@ const Consultation = () => {
                         ? {
                             ...request,
                             status: newStatus,
-                            consultant: staffType === 'consultant' ? staffName : request.consultant,
-                            designerLeader: staffType === 'designer' ? staffName : request.designerLeader,
-                            constructorLeader: staffType === 'constructor' ? staffName : request.constructorLeader
+                            consultant: staffType === 'consultant' ? staffName : request.assignedConsultant,
+                            designerLeader: staffType === 'designer' ? staffName : request.assignedDesigner,
+                            constructorLeader: staffType === 'constructor' ? staffName : request.assignedConstructor
                         }
                         : request
                 )
@@ -181,7 +181,7 @@ const Consultation = () => {
                                             const selectedStaffId = e.target.value;
                                             const selectedStaff = designerList.find(designerLeader => designerLeader.id === parseInt(selectedStaffId));
                                             if (selectedStaff) {
-                                                handleAssignStaff(request.id, selectedStaff.id, selectedStaff.name, "designer");
+                                                handleAssignStaff(request.id, selectedStaff.id, selectedStaff.name, "designerLeader");
                                             }
                                         }}
                                     >
@@ -207,7 +207,7 @@ const Consultation = () => {
                                             const selectedStaffId = e.target.value;
                                             const selectedStaff = constructorList.find(constructorLeader => constructorLeader.id === parseInt(selectedStaffId));
                                             if (selectedStaff) {
-                                                handleAssignStaff(request.id, selectedStaff.id, selectedStaff.name, "constructor");
+                                                handleAssignStaff(request.id, selectedStaff.id, selectedStaff.name, "constructorLeader");
                                             }
                                         }}
                                     >
@@ -219,19 +219,7 @@ const Consultation = () => {
                                         ))}
                                     </select>
                                 </td>
-                                <td>
-                                    <select
-                                        value={request.status}
-                                        onChange={(e) => handleAssignStaff(request.id, e.target.value)}
-                                        className="form-select"
-                                    >
-                                        {statusOptions.map(status => (
-                                            <option key={status} value={status}>
-                                                {status}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </td>
+                                <td>{request.status}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -241,6 +229,5 @@ const Consultation = () => {
     );
 };
 
-export default Consultation;
-
+export default Request;
 
