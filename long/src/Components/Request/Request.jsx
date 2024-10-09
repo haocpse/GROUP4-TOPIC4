@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import './Consultation.module.css';
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 
@@ -95,8 +94,8 @@ const Request = () => {
                             ...request,
                             status: newStatus,
                             consultant: staffType === 'consultant' ? staffName : request.assignedConsultant,
-                            designerLeader: staffType === 'designer' ? staffName : request.assignedDesigner,
-                            constructorLeader: staffType === 'constructor' ? staffName : request.assignedConstructor
+                            designerLeader: staffType === 'designerLeader' ? staffName : request.assignedDesigner,
+                            constructorLeader: staffType === 'constructorLeader' ? staffName : request.assignedConstructor
                         }
                         : request
                 )
@@ -114,26 +113,31 @@ const Request = () => {
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
             <h2 className="text-center">Admin - Manage Requests</h2>
 
-            {requests.length === 0 ? (
-                <p>Your system has no Request ^^ !</p>
-            ) : (
-                <table className="table table-bordered">
-                    <thead>
+
+            <table className="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">End Date</th>
+                        <th scope="col">Total Price</th>
+                        <th scope="col">Assign Consultant</th>
+                        <th scope="col">Assign Designer</th>
+                        <th scope="col">Assign Constructor</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {requests.length === 0 ? (
                         <tr>
-                            <th scope="col">Customer</th>
-                            <th scope="col">Phone</th>
-                            <th scope="col">Address</th>
-                            <th scope="col">Start Date</th>
-                            <th scope="col">End Date</th>
-                            <th scope="col">Total Price</th>
-                            <th scope="col">Assign Consultant</th>
-                            <th scope="col">Assign Designer</th>
-                            <th scope="col">Assign Constructor</th>
-                            <th scope="col">Status</th>
+                            <td colSpan="10" className="text-center">
+                                Your system has no Request ^^ !
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {requests.map(request => (
+                    ) : (
+                        requests.map(request => (
                             <tr key={request.id}>
                                 <td>{request.customerName}</td>
                                 <td>{request.phone}</td>
@@ -143,7 +147,7 @@ const Request = () => {
                                 <td>{request.totalPrice}</td>
                                 <td>
                                     <button onClick={() => {
-                                        fetchConsultants(); // Lấy danh sách consultant
+                                        fetchConsultants();
                                         setSelectedConsultantId(request.id);
                                     }}>
                                         Assign Consultant
@@ -169,7 +173,7 @@ const Request = () => {
                                 </td>
                                 <td>
                                     <button onClick={() => {
-                                        fetchDesigners(); // Lấy danh sách designer
+                                        fetchDesigners();
                                         setSelectedDesignerId(request.id);
                                     }}>
                                         Assign Designer
@@ -195,7 +199,7 @@ const Request = () => {
                                 </td>
                                 <td>
                                     <button onClick={() => {
-                                        fetchConstructors(); // Lấy danh sách constructor
+                                        fetchConstructors();
                                         setSelectedConstructorId(request.id);
                                     }}>
                                         Assign Constructor
@@ -221,10 +225,10 @@ const Request = () => {
                                 </td>
                                 <td>{request.status}</td>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            )}
+                        ))
+                    )}
+                </tbody>
+            </table>
         </div>
     );
 };

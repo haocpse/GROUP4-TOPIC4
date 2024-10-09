@@ -6,7 +6,7 @@ import Contact from "./Components/Contact/Contact";
 import Service from "./Components/Service/Service";
 import MainLayout from "./Components/MainLayout";
 import ApproveDesign from "./Components/ApproveDesign/ApproveDesign";
-import Request from "./Components/Consultation/Request";
+import Request from "./Components/Request/Request";
 import ConstructionProgress from "./Components/ConstructionProgress/ConstructionProgress";
 import ConsultantTasks from "./Components/ConsultantTasks/ConsultantTasks";
 import DesignUpload from "./Components/DesignUpload/DesignUpload";
