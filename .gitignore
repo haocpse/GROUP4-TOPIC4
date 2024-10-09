@@ -5,13 +5,6 @@ build/
 
 /login
 
-### Backend (Spring Boot - Java) ###
-# Maven/Gradle
-target/
-build/
-
-
-
 # Logs
 *.log
 /logs
@@ -117,7 +110,8 @@ Thumbs.db
 
 # Git-specific files
 .gitignore
+/back_end/.idea
 
-*.java
-*.java
-*.java
+back_end/.idea/dataSources.local.xml
+back_end/.idea/dataSources/ed0cf93e-9f43-410d-9444-67a302ff97c5.xml
+back_end/.idea/workspace.xml
