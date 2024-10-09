@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.ZonedDateTime;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -22,6 +23,5 @@ public class ServiceRequest {
     String phone;
     String address;
     String customerRequest;
-    ZonedDateTime date;
 
 }

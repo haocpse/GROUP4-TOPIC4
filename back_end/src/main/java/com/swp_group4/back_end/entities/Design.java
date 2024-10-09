@@ -1,9 +1,7 @@
 package com.swp_group4.back_end.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.swp_group4.back_end.enums.DesignStatus;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -18,10 +16,11 @@ public class Design {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String designId;
-    String constructionOrderId;
     String url2dDesign;
     String url3dDesign;
     String urlFrontDesign;
     String urlBackDesign;
+    @Enumerated(EnumType.STRING)
+    DesignStatus status;
 
 }

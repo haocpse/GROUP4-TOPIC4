@@ -1,23 +1,15 @@
 package com.swp_group4.back_end.services;
 
-import com.swp_group4.back_end.entities.ConstructionOrder;
-import com.swp_group4.back_end.entities.Customer;
-import com.swp_group4.back_end.entities.Design;
-import com.swp_group4.back_end.entities.Staff;
-import com.swp_group4.back_end.enums.ConstructionOrderStatus;
-import com.swp_group4.back_end.mapper.DesignMapper;
-import com.swp_group4.back_end.repositories.ConstructOrderRepository;
-import com.swp_group4.back_end.repositories.CustomerRepository;
-import com.swp_group4.back_end.repositories.DesignRepository;
-import com.swp_group4.back_end.repositories.StaffRepository;
+import com.swp_group4.back_end.entities.*;
+import com.swp_group4.back_end.enums.DesignStatus;
+import com.swp_group4.back_end.mapper.*;
+import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.requests.UrlDesignRequest;
-import com.swp_group4.back_end.responses.ConstructionOrderInStepResponse;
-import com.swp_group4.back_end.responses.DesignResponse;
-import com.swp_group4.back_end.responses.QuotationResponse;
+import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,60 +19,39 @@ import java.util.List;
 public class DesignService {
 
     @Autowired
-    StaffRepository staffRepository;
-    @Autowired
     ConstructOrderRepository constructOrderRepository;
-    @Autowired
-    CustomerRepository customerRepository;
     @Autowired
     DesignRepository designRepository;
     @Autowired
     DesignMapper designMapper;
+    @Autowired
+    @Lazy
+    StaffService staffService;
+    @Autowired
+    ConstructionOrderMapperImpl constructionOrderMapper;
+    @Autowired
+    @Lazy
+    ManageConstructionOrderService manageConstructionOrderService;
 
-    public List<ConstructionOrderInStepResponse> listOwnedDesignTask() {
-        var context = SecurityContextHolder.getContext();
-        String accountId = context.getAuthentication().getName();
-        Staff staff = staffRepository.findByAccountId(accountId).orElseThrow(
-                ()-> new RuntimeException("ACCOUNT DOES NOT EXIST"));
-        List<ConstructionOrderStatus> statusList = List.of(ConstructionOrderStatus.DESIGNING,
-                                                            ConstructionOrderStatus.DESIGNED);
-        List<ConstructionOrder> orders = constructOrderRepository.findByDesignLeaderAndStatusIn(staff.getStaffId(), statusList);
-        return orders.stream()
-                .map(this::response)
-                .toList();
+
+    public List<ConstructOrderDetailForStaffResponse> listOwnedDesignTask() {
+        return staffService.listOwnedStaffTask();
     }
 
-    private ConstructionOrderInStepResponse response (ConstructionOrder order) {
-        Customer customer = customerRepository.findById(order.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer not found for id: " + order.getCustomerId()));
-        return ConstructionOrderInStepResponse.builder()
-                .constructionOrderId(order.getConstructionOrderId())
-                .customerName(customer.getFirstname() + " " + customer.getLastname())
-                .startDate(order.getStartDate())
-                .phone(customer.getPhone())
-                .address(customer.getAddress())
-                .status(order.getStatus())
-                .build();
+    public ConstructOrderDetailForStaffResponse detailOfOrder(String constructionOrderId) {
+        Staff staff = staffService.identifyStaff();
+        return staffService.detailOfOrder(constructionOrderId, staff.getStaffName());
     }
 
-    public ConstructionOrderInStepResponse detailOfOrder(String constructionOrderId) {
-        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
-                () -> new RuntimeException("Order not found for id: " + constructionOrderId));
-        return this.response(order);
-    }
-
-    public DesignResponse uploadDesign(String constructionOrderId, UrlDesignRequest request) {
-        DesignResponse response = new DesignResponse();
+    public Design uploadDesign(String constructionOrderId, UrlDesignRequest request) {
         Design design = Design.builder()
-                .constructionOrderId(constructionOrderId)
+                .status(DesignStatus.DESIGNED)
                 .build();
-        designMapper.toDesgin(request, design);
-        designRepository.save(design);
-        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(
-                () -> new RuntimeException("Order not found for id: " + constructionOrderId));
-        order.setQuotationId(design.getDesignId());
-        order.setStatus(ConstructionOrderStatus.CONFIRM_DESIGN);
-        constructOrderRepository.save(order);
-        return designMapper.toDesignResponse(design, response);
+        designRepository.save(designMapper.toDesgin(request, design));
+        ConstructionOrder order = manageConstructionOrderService.findConstructOrder(constructionOrderId);
+        constructOrderRepository.save(constructionOrderMapper.toConstructionOrder(design, order));
+        return design;
     }
+
+
 }

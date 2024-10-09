@@ -12,11 +12,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class CreateAccountRequest {
 
-    @Size(min = 8, message = "USERNAME_NOT_VALID_1")
-    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z\\d]+$", message = "USERNAME_NOT_VALID_2")
     String username;
-
-    @Size(min = 8, message = "PASSWORD_NOT_VALID")
     String password;
 
 }
