@@ -1,226 +1,113 @@
-// // Components/CustomerView/CustomerView.js
-
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-// import "./CustomerView.css"; // Import CSS file for styling
-
-// const CustomerView = () => {
-//   const [consultantTasks, setConsultantTasks] = useState([]); // State to store tasks from consultants
-//   const [designTasks, setDesignTasks] = useState([]); // State to store tasks from design
-//   const [loading, setLoading] = useState(true); // Loading state
-//   const [error, setError] = useState(""); // Error state
-//   const customerId = "123"; // Replace with the actual customer ID
-
-//   // Fetch tasks assigned to the customer
-//   useEffect(() => {
-//     const fetchTasks = async () => {
-//       try {
-//         // Fetch consultant tasks
-//         const consultantResponse = await axios.get(
-//           `http://localhost:8080/customer/${customerId}/consultant-tasks`
-//         );
-//         setConsultantTasks(consultantResponse.data); // Set consultant tasks
-
-//         // Fetch design tasks
-//         const designResponse = await axios.get(
-//           `http://localhost:8080/customer/${customerId}/design-tasks`
-//         );
-//         setDesignTasks(designResponse.data); // Set design tasks
-//       } catch (error) {
-//         console.error("Error fetching tasks:", error);
-//         setError("Unable to fetch tasks. Please try again later."); // Set error message
-//       } finally {
-//         setLoading(false); // Set loading to false after fetching
-//       }
-//     };
-
-//     fetchTasks();
-//   }, [customerId]);
-
-//   return (
-//     <div className="customer-view">
-//       <h2>My Construction Progress</h2>
-//       {loading ? (
-//         <p>Loading tasks...</p> // Loading message
-//       ) : error ? (
-//         <p>{error}</p> // Error message
-//       ) : (
-//         <>
-//           <h3>Consultant Tasks</h3>
-//           {consultantTasks.length > 0 ? (
-//             <table>
-//               <thead>
-//                 <tr>
-//                   <th>Task Name</th>
-//                   <th>Status</th>
-//                   <th>Assigned Staff</th>
-//                   <th>Start Date</th> {/* Add Start Date column */}
-//                   <th>End Date</th> {/* Add End Date column */}
-//                 </tr>
-//               </thead>
-//               <tbody>
-//                 {consultantTasks.map((task) => (
-//                   <tr key={task.id}>
-//                     <td>{task.taskName}</td>
-//                     <td>{task.status}</td>
-//                     <td>
-//                       {task.assignedStaff
-//                         ? task.assignedStaff.name
-//                         : "Not Assigned"}
-//                     </td>
-//                     <td>{new Date(task.startDate).toLocaleDateString()}</td>{" "}
-//                     {/* Add Start Date data */}
-//                     <td>{new Date(task.endDate).toLocaleDateString()}</td>{" "}
-//                     {/* Add End Date data */}
-//                   </tr>
-//                 ))}
-//               </tbody>
-//             </table>
-//           ) : (
-//             <p>No consultant tasks found.</p>
-//           )}
-
-//           <h3>Design Tasks</h3>
-//           {designTasks.length > 0 ? (
-//             <table>
-//               <thead>
-//                 <tr>
-//                   <th>Task Name</th>
-//                   <th>Status</th>
-//                   <th>Assigned Staff</th>
-//                   <th>Start Date</th> {/* Add Start Date column */}
-//                   <th>End Date</th> {/* Add End Date column */}
-//                 </tr>
-//               </thead>
-//               <tbody>
-//                 {designTasks.map((task) => (
-//                   <tr key={task.id}>
-//                     <td>{task.taskName}</td>
-//                     <td>{task.status}</td>
-//                     <td>
-//                       {task.assignedStaff
-//                         ? task.assignedStaff.name
-//                         : "Not Assigned"}
-//                     </td>
-//                     <td>{new Date(task.startDate).toLocaleDateString()}</td>{" "}
-//                     {/* Add Start Date data */}
-//                     <td>{new Date(task.endDate).toLocaleDateString()}</td>{" "}
-//                     {/* Add End Date data */}
-//                   </tr>
-//                 ))}
-//               </tbody>
-//             </table>
-//           ) : (
-//             <p>No design tasks found.</p>
-//           )}
-//         </>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default CustomerView;
-
 import React, { useEffect, useState } from "react";
-import "./CustomerView.css"; // Import CSS file for styling
-import Navbar from "../Navbar/Navbar";
+import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap is imported
 
-const CustomerView = () => {
-  const [customerInfo, setCustomerInfo] = useState({
-    customerName: "Tú Đặng",
-    phone: "0707804907",
-    address: "1052 Quang Trung, quận Gò Vấp, TPHCM",
-    request: "Thêm sân vườn",
-  });
+const CustomerView = ({ customerId }) => {
+  const [customerOrders, setCustomerOrders] = useState([]); // Lưu trữ yêu cầu xây dựng của khách hàng
+  const [loadingOrders, setLoadingOrders] = useState(true); // Trạng thái đang tải yêu cầu
+  const [customerInfo, setCustomerInfo] = useState({}); // Thông tin khách hàng
+  const [feedbackMessage, setFeedbackMessage] = useState(""); // Tin nhắn phản hồi
 
-  const [tasks, setTasks] = useState([]); // To store tasks related to customer's construction project
-
-  useEffect(() => {
-    // Mock tasks data
-    const mockTasks = [
-      {
-        taskName: "Thiết kế sân vườn",
-        status: "Đang tiến hành",
-        assignedStaff: { name: "Nguyễn Văn A" },
-      },
-      {
-        taskName: "Lắp đặt hàng rào",
-        status: "Chưa bắt đầu",
-        assignedStaff: { name: "Trần Thị B" },
-      },
-      {
-        taskName: "Cung cấp vật liệu",
-        status: "Đã hoàn thành",
-        assignedStaff: { name: "Lê Văn C" },
-      },
-    ];
-
-    setTasks(mockTasks);
-  }, []);
-
-  // Function to handle status change
-  const handleStatusChange = (index, newStatus) => {
-    const updatedTasks = tasks.map((task, i) =>
-      i === index ? { ...task, status: newStatus } : task
-    );
-    setTasks(updatedTasks);
+  // Hàm fetch để lấy dữ liệu của khách hàng từ API
+  const fetchCustomerOrders = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/customer/construction-progress/${customerId}`
+      ); // Gọi API lấy dữ liệu
+      setCustomerOrders(response.data.orders); // Lưu dữ liệu yêu cầu xây dựng vào state
+      setCustomerInfo(response.data.customer); // Lưu thông tin khách hàng vào state
+    } catch (error) {
+      console.error("Lỗi khi lấy dữ liệu khách hàng:", error);
+      setFeedbackMessage("Lỗi khi tải dữ liệu khách hàng.");
+    } finally {
+      setLoadingOrders(false); // Đặt trạng thái không còn tải
+    }
   };
 
-  return (
-    <div className="customer-view">
-      <Navbar />
-      <h2>Thông Tin Khách Hàng</h2>
-      <p>
-        <strong>Tên:</strong> {customerInfo.customerName}
-      </p>
-      <p>
-        <strong>Điện thoại:</strong> {customerInfo.phone}
-      </p>
-      <p>
-        <strong>Địa chỉ:</strong> {customerInfo.address}
-      </p>
-      <p>
-        <strong>Yêu cầu:</strong> {customerInfo.request}
-      </p>
+  // Sử dụng useEffect để gọi hàm fetchCustomerOrders khi component được mount
+  useEffect(() => {
+    fetchCustomerOrders(); // Gọi hàm fetch dữ liệu khách hàng
+  }, [customerId]);
 
-      <h2>Tiến Trình Xây Dựng</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Tên Nhiệm Vụ</th>
-            <th>Trạng Thái</th>
-            <th>Nhân Viên Giao Nhiệm Vụ</th>
-            <th>Thay Đổi Trạng Thái</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tasks.length > 0 ? (
-            tasks.map((task, index) => (
-              <tr key={index}>
-                <td>{task.taskName}</td>
-                <td>{task.status}</td>
-                <td>{task.assignedStaff.name}</td>
-                <td>
-                  <select
-                    value={task.status}
-                    onChange={(e) => handleStatusChange(index, e.target.value)}
-                  >
-                    <option value="Chưa bắt đầu">Chưa bắt đầu</option>
-                    <option value="Đang tiến hành">Đang tiến hành</option>
-                    <option value="Đã hoàn thành">Đã hoàn thành</option>
-                  </select>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="4">
-                Không tìm thấy nhiệm vụ nào cho dự án của bạn.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+  return (
+    <div className="container mt-4">
+      {/* Display feedback messages */}
+      {feedbackMessage && (
+        <div className="alert alert-danger" role="alert">
+          {feedbackMessage}
+        </div>
+      )}
+
+      <div className="row">
+        {/* Left-side Customer Information */}
+        <div className="col-md-4">
+          <div className="card mb-4">
+            <div className="card-header">
+              <h5>Thông tin khách hàng</h5>
+            </div>
+            <div className="card-body">
+              {loadingOrders ? (
+                <p>Đang tải thông tin khách hàng...</p>
+              ) : (
+                <div>
+                  <p>
+                    <strong>Tên khách hàng:</strong>{" "}
+                    {customerInfo.customerName || "N/A"}
+                  </p>
+                  <p>
+                    <strong>Số điện thoại:</strong>{" "}
+                    {customerInfo.phone || "N/A"}
+                  </p>
+                  <p>
+                    <strong>Địa chỉ:</strong> {customerInfo.address || "N/A"}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Right-side Construction Progress Table */}
+        <div className="col-md-8">
+          <div className="card">
+            <div className="card-header">
+              <h5>Tiến độ xây dựng</h5>
+            </div>
+            <div className="card-body">
+              {loadingOrders ? (
+                <p>Đang tải dữ liệu xây dựng của bạn...</p>
+              ) : customerOrders.length > 0 ? (
+                <table className="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Construction ID</th>
+                      <th>Request</th>
+                      <th>Start Date</th>
+                      <th>Staff Name</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {customerOrders.map((order) => (
+                      <tr key={order.id}>
+                        <td>{order.id}</td>
+                        <td>{order.request}</td>
+                        <td>
+                          {new Date(order.startDate).toLocaleDateString()}
+                        </td>
+                        <td>{order.staffName || "Chưa gán"}</td>
+                        <td>{order.status}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p>Không có dữ liệu xây dựng nào cho khách hàng.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
