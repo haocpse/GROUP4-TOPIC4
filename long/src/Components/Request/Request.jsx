@@ -108,12 +108,44 @@ const Request = () => {
         }
     };
 
+    //handle status change
+    const handleStatusChange = async (statusTab) => {
+        try {
+            const respone = await axios.get(`http://localhost:8080/manager/requests/${statusTab}`);
+            setRequests(respone.data)
+        } catch (error) {
+            console.error('Error fetching Status:', error);
+            toast.error('Failed to load Status. ^^');
+        }
+
+    }
+
     return (
         <div className="container mt-4">
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
             <h2 className="text-center">Admin - Manage Requests</h2>
-
-
+            <div>
+                <nav className="nav justify-content-center mb-2">
+                    <div className="nav-item">
+                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("all")}>All</button>
+                    </div>
+                    <div className="nav-item">
+                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("requested")}>Requested</button>
+                    </div>
+                    <div className="nav-item">
+                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("consulting")}>Consulting</button>
+                    </div>
+                    <div className="nav-item">
+                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("designing")}>Designing</button>
+                    </div>
+                    <div className="nav-item">
+                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("constructing")}>Constructing</button>
+                    </div>
+                    <div className="nav-item">
+                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("completed")}>Complete</button>
+                    </div>
+                </nav>
+            </div>
             <table className="table table-bordered">
                 <thead>
                     <tr>
