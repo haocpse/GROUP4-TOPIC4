@@ -9,9 +9,10 @@ import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -25,22 +26,23 @@ public class DesignService {
     @Autowired
     DesignMapper designMapper;
     @Autowired
-    @Lazy
-    StaffService staffService;
-    @Autowired
     ConstructionOrderMapperImpl constructionOrderMapper;
     @Autowired
-    @Lazy
-    ManageConstructionOrderService manageConstructionOrderService;
+    StaffRepository staffRepository;
+    @Autowired
+    CustomerRepository customerRepository;
 
 
     public List<ConstructOrderDetailForStaffResponse> listOwnedDesignTask() {
-        return staffService.listOwnedStaffTask();
-    }
-
-    public ConstructOrderDetailForStaffResponse detailOfOrder(String constructionOrderId) {
-        Staff staff = staffService.identifyStaff();
-        return staffService.detailOfOrder(constructionOrderId, staff.getStaffName());
+        List<ConstructOrderDetailForStaffResponse> responses = new ArrayList<>();
+        Staff staff = this.identifyStaff();
+        List<ConstructionOrder> orders = constructOrderRepository.findByConsultant(staff.getStaffId());
+        for (ConstructionOrder order : orders) {
+            ConstructOrderDetailForStaffResponse response = this.detailOfOrder(order.getConstructionOrderId());
+            response.setStaffName(staff.getStaffName());
+            responses.add(response);
+        }
+        return responses;
     }
 
     public Design uploadDesign(String constructionOrderId, UrlDesignRequest request) {
@@ -48,10 +50,38 @@ public class DesignService {
                 .status(DesignStatus.DESIGNED)
                 .build();
         designRepository.save(designMapper.toDesgin(request, design));
-        ConstructionOrder order = manageConstructionOrderService.findConstructOrder(constructionOrderId);
+        ConstructionOrder order = this.findOrderById(constructionOrderId);
         constructOrderRepository.save(constructionOrderMapper.toConstructionOrder(design, order));
         return design;
     }
 
+    public ConstructOrderDetailForStaffResponse detailOfOrder(String constructionOrderId) {
+        ConstructionOrder order = this.findOrderById(constructionOrderId);
+        Customer customer = this.findCustomerById(order.getCustomerId());
+        return ConstructOrderDetailForStaffResponse.builder()
+                .constructOrderId(order.getConstructionOrderId())
+                .customerName(customer.getFirstname() + " " + customer.getLastname())
+                .phone(customer.getPhone())
+                .address(customer.getAddress())
+                .customerRequest(order.getCustomerRequest())
+                .build();
+    }
+
+    Staff identifyStaff() {
+        var context = SecurityContextHolder.getContext();
+        String accountId = context.getAuthentication().getName();
+        return staffRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new RuntimeException("Error"));
+    }
+
+    ConstructionOrder findOrderById(String orderId){
+        return constructOrderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+    }
+
+    Customer findCustomerById(String customerId){
+        return customerRepository.findById(customerId)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+    }
 
 }
