@@ -109,8 +109,8 @@ const Contact = () => {
                                         required
                                     >
                                         <option value="">-- Choose a Service -- </option>
-                                        <option value="maintenance">Maintenance</option>
-                                        <option value="build-koi-pond">Build Koi Pond</option>
+                                        <option value="MAINTENANCE_SERVICE">Maintenance</option>
+                                        <option value="CONSTRUCTION_SERVICE">Build Koi Pond</option>
                                     </select>
                                 </div>
                                 <div className="form-group mb-6">
