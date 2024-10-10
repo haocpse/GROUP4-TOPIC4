@@ -5,6 +5,7 @@ import SignUp from "./Components/SignUp/SignUp";
 import Contact from "./Components/Contact/Contact";
 import Service from "./Components/Service/Service";
 import MainLayout from "./Components/MainLayout";
+import Construction from "./Components/Construction/Construction";
 import ApproveDesign from "./Components/ApproveDesign/ApproveDesign";
 import Request from "./Components/Request/Request";
 import ConstructionProgress from "./Components/ConstructionProgress/ConstructionProgress";
@@ -50,33 +51,45 @@ function App() {
       element: <MainLayout />,
       children: [
         {
-          path: "request",
-          element: <Request />,
+          path: "consultation",
+          element: <Consultation />,
         },
         {
-          path: "designs",
+          path: "approve-design",
           element: <ApproveDesign />,
         },
         {
-          path: "quotations",
+          path: "approve-quotation",
           element: <ApproveQuotation />,
         },
         {
+          path: "approve-design",
+          element: <ApproveDesign/>
+        },
+        {
+          path:"view-design",
+          element:<ViewDesign/>
           path: "designs/:designId",
           element: <ViewDesign />,
         },
         {
-          path: "quotations/:quotationId",
+          path: "view-quotation",
           element: <ViewQuotation />,
         },
       ],
     },
 
+    
+
     {
       path: "construction-order",
+      element: <ConstructionOrder />, // Trang hiển thị danh sách ConstructionOrderId
       element: <ConstructionOrder />,
     },
+    // Route cho ConstructionProgress hiển thị chi tiết dựa trên orderId
     {
+      path: "construction-progress/:constructionOrderId", // Sử dụng orderId từ URL
+      element: <ConstructionProgress />, // Trang hiển thị chi tiết task của constructionOrderId
       path: "ownedTasks/:constructionOrderId",
       element: <ConstructionProgress />,
     },
@@ -102,11 +115,16 @@ function App() {
       path: "view-payment", // Sửa path này thành list-quotation thay vì 'list quotation'
       element: <ViewPayment />,
     },
+    
+ 
+    
     {
       path: "consult/ownedTasks/:constructionOrderId",
       element: <QuotationOrder />,
     },
+    
     {
+      path:"customer-quotation",
       path: "customrer-quotation",
       element: <CustomerQuotationList />,
     },

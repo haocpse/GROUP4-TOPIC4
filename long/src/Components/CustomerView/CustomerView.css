@@ -1,0 +1,11 @@
+.quotation-link,
+.design-link {
+  color: black; /* Màu chữ bình thường */
+  text-decoration: none; /* Bỏ gạch chân */
+}
+
+.quotation-link:hover,
+.design-link:hover {
+  color: #ff5906; /* Màu chữ khi hover (màu sáng hơn) */
+  text-decoration: solid; /* Gạch chân khi hover */
+}
