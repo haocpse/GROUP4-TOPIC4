@@ -43,7 +43,7 @@ const Login = () => {
                     sessionStorage.setItem('token', response.data.token);  // Lưu vào sessionStorage nếu không nhớ
                 }
 
-                navigate('/'); // chuyen den trang home
+                navigate('/main'); // chuyen den trang home
             }
 
         } catch (err) {
