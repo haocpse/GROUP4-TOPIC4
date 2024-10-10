@@ -54,7 +54,7 @@ const QuotationOrder = () => {
     const fetchQuotationOrder = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/consult/ownedTasks /${constructionOrderId}`
+          `http://localhost:8080/consult/ownedTasks/${constructionOrderId}`
         ); // Chỉnh URL phù hợp với API thực tế của bạn
         setQuotation(response.data);
         setLoading(false);

@@ -51,8 +51,8 @@ function App() {
       element: <MainLayout />,
       children: [
         {
-          path: "consultation",
-          element: <Consultation />,
+          path: "request",
+          element: <Request />,
         },
         {
           path: "approve-design",
@@ -68,7 +68,7 @@ function App() {
         },
         {
           path:"view-design",
-          element:<ViewDesign/>
+          element:<ViewDesign/>,
           path: "designs/:designId",
           element: <ViewDesign />,
         },
@@ -84,7 +84,7 @@ function App() {
     {
       path: "construction-order",
       element: <ConstructionOrder />, // Trang hiển thị danh sách ConstructionOrderId
-      element: <ConstructionOrder />,
+      
     },
     // Route cho ConstructionProgress hiển thị chi tiết dựa trên orderId
     {
@@ -124,8 +124,7 @@ function App() {
     },
     
     {
-      path:"customer-quotation",
-      path: "customrer-quotation",
+      path:"customer-quotation/:QuotationId",
       element: <CustomerQuotationList />,
     },
     {
