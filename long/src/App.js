@@ -6,7 +6,7 @@ import Contact from "./Components/Contact/Contact";
 import Service from "./Components/Service/Service";
 import MainLayout from "./Components/MainLayout";
 import ApproveDesign from "./Components/ApproveDesign/ApproveDesign";
-import Request from "./Components/Consultation/Request";
+import Request from "./Components/Request/Request";
 import ConstructionProgress from "./Components/ConstructionProgress/ConstructionProgress";
 import ConsultantTasks from "./Components/ConsultantTasks/ConsultantTasks";
 import DesignUpload from "./Components/DesignUpload/DesignUpload";
@@ -63,7 +63,7 @@ function App() {
         },
         {
           path: "designs/:designId",
-          element: <ViewDesign />
+          element: <ViewDesign />,
         },
         {
           path: "quotations/:quotationId",
@@ -74,20 +74,18 @@ function App() {
 
     {
       path: "construction-order",
-      element: <ConstructionOrder />, 
+      element: <ConstructionOrder />,
     },
     {
-      path: "ownedTasks/:constructionOrderId", 
-      element: <ConstructionProgress />, 
+      path: "ownedTasks/:constructionOrderId",
+      element: <ConstructionProgress />,
     },
-
-
 
     {
       path: "consultation-page", // Sửa lại path thành chữ thường để thống nhất
       element: <ConsultationPage />,
     },
-    
+
     {
       path: "consult/ownedTasks",
       element: <ConsultantTasks />,
@@ -109,16 +107,16 @@ function App() {
       element: <QuotationOrder />,
     },
     {
-      path:"customrer-quotation",
+      path: "customrer-quotation",
       element: <CustomerQuotationList />,
     },
     {
-      path: "customer-view", // Add a route for CustomerView
+      path: "customer-view",
       element: <CustomerView />,
     },
 
     {
-      path: "designer-tasks", // Route cho Customer
+      path: "designer-tasks",
       element: <DesignerTasks />,
     },
     {
