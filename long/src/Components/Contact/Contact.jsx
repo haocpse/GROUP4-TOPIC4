@@ -6,31 +6,14 @@ import logo from '../Assests/logo-navbar.png'
 import axios from 'axios';
 
 const Contact = () => {
-    const [formData, setFormData] = useState({ // luu thong tin lien he cua khach hang
-        service: '',
-        firstName: '',
-        lastName: '',
-        address: '',
-        phone: '',
-        customerRequest: ''
-    });
-
-    const [file, setFile] = useState(null);
+    const [service, setService] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [address, setAddress] = useState('');
+    const [phone, setPhone] = useState('');
+    const [customerRequest, setCustomerRequest] = useState('');
     const [submitted, setSubmitted] = useState(false);
     const [error, setError] = useState('');
-
-    // handle gia tri ng dung nhap vao form
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setFormData(prev => ({ ...prev, [name]: value })); //prev la gia tri ban dau, ..prev la sao chep gia tri hien tai
-        // [name]: value cap nhat gia tri cho truong tuong ung (email, name) dua vao thuoc tinh name
-    };
-
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        setFile(file);
-    };
-
 
 
     const handleSubmit = async (event) => {
@@ -38,24 +21,21 @@ const Contact = () => {
         setError('');
         setSubmitted(false);
 
-        console.log('form: ', formData);
-        console.log('file:', file); // kt file anh
-
-        // tao FormData de gui du lieu va file cho backend
-
-        const dataToSend = new FormData();
-        dataToSend.append('service', formData.service);
-        dataToSend.append('firstName', formData.firstName);
-        dataToSend.append('lastName', formData.lastName);
-        dataToSend.append('address', formData.address); // service, firstname, lastname, address, contactNumber, customRequest
-        dataToSend.append('phone', formData.phone);
-        dataToSend.append('customerRequest', formData.customerRequest);
-        if (file) {
-            dataToSend.append('file', file);
+        const phoneRegex = /^[0-9]{10}$/;
+        if (!phoneRegex.test(phone)) {
+            setError('Invalid phone number. Please enter a 10-digit number.');
+            return;
         }
 
         try {
-            const response = await axios.post('http://localhost:8080/contactUs', dataToSend);
+            const response = await axios.post('http://localhost:8080/contactUs', {
+                service: service,
+                firstName: firstName,
+                lastName: lastName,
+                address: address,
+                phone: phone,
+                customerRequest: customerRequest
+            });
             console.log(response.data);
 
             if (response.status === 200) {
@@ -63,24 +43,19 @@ const Contact = () => {
             }
 
         } catch (error) {
-            setError('FAIL, please try again !!');
+            setError('FAIL, please try again !!',error);
             console.error(error);
         }
 
     };
-
     return (
         <>
-            {/* Navbar ở đầu trang */}
             <Navbar />
-
             <div className="container mb-5">
                 <h1 className="text-center my-4" style={{ color: 'red' }}>Contact us</h1>
                 <div className="row">
                     <div className="col-md-6">
-                        {/* check xem la form dc submit hong */}
                         {submitted ? (
-                            // SUCCESS !!!
                             <div className="notification alert-success">
                                 <div className="success-icon">
                                     <i className="fa-solid fa-check"></i>
@@ -89,23 +64,21 @@ const Contact = () => {
                                     SUBMIT SUCCESSFULLY !
                                 </div>
                             </div>
-
-
-                        ) : ( // FAIL !
-                            <form onSubmit={handleSubmit} className="bg-light p-4 rounded shadow-lg" >
+                        ) : (
+                            <form onSubmit={handleSubmit} className="bg-light p-4 rounded shadow-lg">
                                 {error && <div className="notification-error alert-danger">{error}</div>}
+
                                 <div className="text-center label-upload">
                                     <label> Contact Form </label>
                                 </div>
 
                                 <div className="form-group mb-6">
-
                                     <label>Select Service</label>
                                     <select
                                         name="service"
                                         className="form-control"
-                                        value={formData.service}
-                                        onChange={handleChange}
+                                        value={service}
+                                        onChange={(e) => setService(e.target.value)}
                                         required
                                     >
                                         <option value="">-- Choose a Service -- </option>
@@ -113,28 +86,41 @@ const Contact = () => {
                                         <option value="CONSTRUCTION_SERVICE">Build Koi Pond</option>
                                     </select>
                                 </div>
+
                                 <div className="form-group mb-6">
                                     <label>First Name</label>
-                                    <input type="text" className="form-control" name="firstName"
-                                        value={formData.firstName}
-                                        onChange={handleChange}
-                                        required />
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        name="firstName"
+                                        value={firstName}
+                                        onChange={(e) => setFirstName(e.target.value)}
+                                        required
+                                    />
                                 </div>
 
                                 <div className="form-group mb-6">
                                     <label>Last Name</label>
-                                    <input type="text" className="form-control" name="lastName"
-                                        value={formData.lastName}
-                                        onChange={handleChange}
-                                        required />
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        name="lastName"
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
+                                        required
+                                    />
                                 </div>
 
                                 <div className="form-group mb-6">
                                     <label>Address</label>
-                                    <input type="text" className="form-control" name="address"
-                                        value={formData.address}
-                                        onChange={handleChange}
-                                        required />
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        name="address"
+                                        value={address}
+                                        onChange={(e) => setAddress(e.target.value)}
+                                        required
+                                    />
                                 </div>
 
                                 <div className="form-group mb-6">
@@ -143,8 +129,8 @@ const Contact = () => {
                                         type="text"
                                         className="form-control"
                                         name="phone"
-                                        value={formData.phone}
-                                        onChange={handleChange}
+                                        value={phone}
+                                        onChange={(e) => setPhone(e.target.value)}
                                         required
                                     />
                                 </div>
@@ -155,42 +141,25 @@ const Contact = () => {
                                         className="form-control"
                                         name="customerRequest"
                                         rows="4"
-                                        value={formData.customerRequest}
-                                        onChange={handleChange}
+                                        value={customerRequest}
+                                        onChange={(e) => setCustomerRequest(e.target.value)}
                                         required
                                     ></textarea>
                                 </div>
 
-                                <button type="submit" className="btn btn-danger py-3 w-100 fw-boild py-1 mt-3">
+                                <button type="submit" className="btn btn-danger py-3 w-100 fw-bold py-1 mt-3">
                                     Submit request
                                 </button>
                             </form>
                         )}
                     </div>
-
-                    {!submitted && ( // Chỉ hiển thị form upload nếu chưa gửi
-                        <div className="col-md-6 bg-light p-4 shadow-lg">
-                            <div className="form-group mb-6 text-center ">
-                                <label className="label-upload">Upload Image of Your Idea</label>
-                                <input
-                                    type="file"
-                                    name='file'
-                                    className="form-control input-upload"
-                                    onChange={handleFileChange}
-                                    accept="image/*"
-                                />
-                                <img className="logo-contact" src={logo} alt="" />
-                            </div>
-                        </div>
-                    )}
-                </div >
+                </div>
             </div>
-
-            {/* Footer ở cuối trang */}
             <Footer />
         </>
     );
-
 };
+
+
 
 export default Contact;
