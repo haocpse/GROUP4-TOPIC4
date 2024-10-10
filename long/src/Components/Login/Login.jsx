@@ -26,7 +26,7 @@ const Login = () => {
         try {
             // send post login
             const response = await axios.post('http://localhost:8080/login', {
-                account: account,
+                username: account,
                 password: password
             });
 
@@ -43,7 +43,7 @@ const Login = () => {
                     sessionStorage.setItem('token', response.data.token);  // Lưu vào sessionStorage nếu không nhớ
                 }
 
-                navigate('/'); // chuyen den trang home
+                navigate('/main'); // chuyen den trang home
             }
 
         } catch (err) {

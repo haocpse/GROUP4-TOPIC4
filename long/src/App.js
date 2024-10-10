@@ -7,6 +7,7 @@ import Service from "./Components/Service/Service";
 import MainLayout from "./Components/MainLayout";
 import Construction from "./Components/Construction/Construction";
 import ApproveDesign from "./Components/ApproveDesign/ApproveDesign";
+import Request from "./Components/Request/Request";
 import ConstructionProgress from "./Components/ConstructionProgress/ConstructionProgress";
 import ConsultantTasks from "./Components/ConsultantTasks/ConsultantTasks";
 import DesignUpload from "./Components/DesignUpload/DesignUpload";
@@ -68,6 +69,8 @@ function App() {
         {
           path:"view-design",
           element:<ViewDesign/>
+          path: "designs/:designId",
+          element: <ViewDesign />,
         },
         {
           path: "view-quotation",
@@ -81,17 +84,21 @@ function App() {
     {
       path: "construction-order",
       element: <ConstructionOrder />, // Trang hiển thị danh sách ConstructionOrderId
+      element: <ConstructionOrder />,
     },
     // Route cho ConstructionProgress hiển thị chi tiết dựa trên orderId
     {
       path: "construction-progress/:constructionOrderId", // Sử dụng orderId từ URL
       element: <ConstructionProgress />, // Trang hiển thị chi tiết task của constructionOrderId
+      path: "ownedTasks/:constructionOrderId",
+      element: <ConstructionProgress />,
     },
+
     {
       path: "consultation-page", // Sửa lại path thành chữ thường để thống nhất
       element: <ConsultationPage />,
     },
-    
+
     {
       path: "consult/ownedTasks",
       element: <ConsultantTasks />,
@@ -118,15 +125,16 @@ function App() {
     
     {
       path:"customer-quotation",
+      path: "customrer-quotation",
       element: <CustomerQuotationList />,
     },
     {
-      path: "customer-view", // Add a route for CustomerView
+      path: "customer-view",
       element: <CustomerView />,
     },
 
     {
-      path: "designer-tasks", // Route cho Customer
+      path: "designer-tasks",
       element: <DesignerTasks />,
     },
     {

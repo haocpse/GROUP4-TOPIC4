@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // Import useParams to get URL parameter
-import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS
-// import "./DesignUpload.css"; // Optional: Keep any custom styles you have
+import React, { useState } from "react";
+import { useParams, useLocation } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "../Navbar/Navbar";
 
 const DesignUpload = () => {
   const { constructionOrderId } = useParams(); // Get the constructionOrderId from the URL
+  const location = useLocation();
+  const orderDetails = location.state || {}; // Use an empty object as default
+
   const [customerInfo, setCustomerInfo] = useState({
-    customerName: "",
-    phone: "",
-    address: "",
-    request: "", // Added request field
+    customerName: orderDetails.customerName || "",
+    phone: orderDetails.phone || "",
+    address: orderDetails.address || "",
+    request: orderDetails.customerRequest || "",
+    startDate: orderDetails.startDate || "",
+    staffName: orderDetails.staffName || "",
   });
 
   const [images, setImages] = useState({
@@ -19,29 +23,6 @@ const DesignUpload = () => {
     frontView: null,
     rearView: null,
   });
-
-  // Fetch customer data from the backend (replace with your API call)
-  useEffect(() => {
-    const fetchCustomerInfo = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:8080/customers/${constructionOrderId}`
-        );
-        const data = await response.json();
-
-        setCustomerInfo({
-          customerName: data.customerName,
-          phone: data.phone,
-          address: data.address,
-          request: data.request,
-        });
-      } catch (error) {
-        console.error("Error fetching customer data:", error);
-      }
-    };
-
-    fetchCustomerInfo();
-  }, [constructionOrderId]);
 
   const handleImageChange = (e) => {
     const { name, files } = e.target;
@@ -53,8 +34,8 @@ const DesignUpload = () => {
 
     // Create form data to send
     const formData = new FormData();
-    formData.append("url2dDesgin", images.image2D);
-    formData.append("url3dDesgin", images.image3D);
+    formData.append("url2dDesign", images.image2D);
+    formData.append("url3dDesign", images.image3D);
     formData.append("urlFrontDesign", images.frontView);
     formData.append("urlBackDesign", images.rearView);
 
@@ -69,10 +50,8 @@ const DesignUpload = () => {
       );
 
       if (response.ok) {
-        // Handle successful upload (e.g., show success message or redirect)
         alert("Design uploaded successfully!");
       } else {
-        // Handle error response
         console.error("Error uploading design");
       }
     } catch (error) {
@@ -95,6 +74,13 @@ const DesignUpload = () => {
             </div>
             <div className="mb-3">
               <strong>Address:</strong> {customerInfo.address}
+            </div>
+            <div className="mb-3">
+              <strong>Start Date:</strong>{" "}
+              {new Date(customerInfo.startDate).toLocaleDateString()}
+            </div>
+            <div className="mb-3">
+              <strong>Staff Name:</strong> {customerInfo.staffName}
             </div>
 
             {/* Request Section */}

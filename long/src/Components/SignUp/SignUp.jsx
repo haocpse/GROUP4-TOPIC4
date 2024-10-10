@@ -26,7 +26,7 @@ const SignUp = () => {
         try {
             // send req den backend
             const response = await axios.post('http://localhost:8080/signup', {
-                account: account, // dinh dang du lieu thanh object de gui cho backend ne` ^^
+                username: account, // dinh dang du lieu thanh object de gui cho backend ne` ^^
                 password: password,
             }
             );
