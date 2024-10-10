@@ -11,7 +11,7 @@ const CustomerQuotationList = () => {
 
     const fetchCustomerQuotations = async () => {
         try {
-            const response = await axios.get(`/api/customers/${customerId}/quotations`);
+            const response = await axios.get(`https://localhost:8080/myInfo/orders`);
             setQuotations(response.data);
         } catch (error) {
             console.error("Failed to fetch customer quotations:", error);

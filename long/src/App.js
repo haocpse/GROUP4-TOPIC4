@@ -5,8 +5,8 @@ import SignUp from "./Components/SignUp/SignUp";
 import Contact from "./Components/Contact/Contact";
 import Service from "./Components/Service/Service";
 import MainLayout from "./Components/MainLayout";
+import Construction from "./Components/Construction/Construction";
 import ApproveDesign from "./Components/ApproveDesign/ApproveDesign";
-import Request from "./Components/Consultation/Request";
 import ConstructionProgress from "./Components/ConstructionProgress/ConstructionProgress";
 import ConsultantTasks from "./Components/ConsultantTasks/ConsultantTasks";
 import DesignUpload from "./Components/DesignUpload/DesignUpload";
@@ -50,39 +50,43 @@ function App() {
       element: <MainLayout />,
       children: [
         {
-          path: "request",
-          element: <Request />,
+          path: "consultation",
+          element: <Consultation />,
         },
         {
-          path: "designs",
+          path: "approve-design",
           element: <ApproveDesign />,
         },
         {
-          path: "quotations",
+          path: "approve-quotation",
           element: <ApproveQuotation />,
         },
         {
-          path: "designs/:designId",
-          element: <ViewDesign />
+          path: "approve-design",
+          element: <ApproveDesign/>
         },
         {
-          path: "quotations/:quotationId",
+          path:"view-design",
+          element:<ViewDesign/>
+        },
+        {
+          path: "view-quotation",
           element: <ViewQuotation />,
         },
       ],
     },
 
+    
+
     {
       path: "construction-order",
-      element: <ConstructionOrder />, 
+      element: <ConstructionOrder />, // Trang hiển thị danh sách ConstructionOrderId
     },
+    // Route cho ConstructionProgress hiển thị chi tiết dựa trên orderId
     {
-      path: "ownedTasks/:constructionOrderId", 
-      element: <ConstructionProgress />, 
+      path: "construction-progress/:constructionOrderId", // Sử dụng orderId từ URL
+      element: <ConstructionProgress />, // Trang hiển thị chi tiết task của constructionOrderId
     },
-
-
-
     {
       path: "consultation-page", // Sửa lại path thành chữ thường để thống nhất
       element: <ConsultationPage />,
@@ -104,12 +108,16 @@ function App() {
       path: "view-payment", // Sửa path này thành list-quotation thay vì 'list quotation'
       element: <ViewPayment />,
     },
+    
+ 
+    
     {
       path: "consult/ownedTasks/:constructionOrderId",
       element: <QuotationOrder />,
     },
+    
     {
-      path:"customrer-quotation",
+      path:"customer-quotation",
       element: <CustomerQuotationList />,
     },
     {

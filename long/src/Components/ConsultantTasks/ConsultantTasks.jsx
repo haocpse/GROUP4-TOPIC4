@@ -3,20 +3,20 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "./ConsultantTasks.css"; // Import CSS file for custom styling
+import "./ConsultantTasks.css";
 
 const ConsultantTasks = () => {
   const [tasks, setTasks] = useState([]);
+  const [filteredTasks, setFilteredTasks] = useState([]);
+  const [statusFilter, setStatusFilter] = useState("All");
   const navigate = useNavigate();
 
-  // Fetch tasks assigned to the consultant
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8080/consult/ownedTasks"
-        );
+        const response = await axios.get("http://localhost:8080/consult/ownedTasks");
         setTasks(response.data);
+        setFilteredTasks(response.data); // Initialize with full data set
       } catch (error) {
         console.error("Error fetching tasks:", error);
       }
@@ -25,7 +25,29 @@ const ConsultantTasks = () => {
     fetchTasks();
   }, []);
 
-  // Handle view quotation for specific constructionOrderId
+  const handleSort = (field, order) => {
+    const sortedTasks = [...filteredTasks].sort((a, b) => {
+      if (field === "startDate") {
+        return order === "asc"
+          ? new Date(a.startDate) - new Date(b.startDate)
+          : new Date(b.startDate) - new Date(a.startDate);
+      }
+      if (order === "asc") {
+        return a[field].localeCompare(b[field]);
+      } else {
+        return b[field].localeCompare(a[field]);
+      }
+    });
+    setFilteredTasks(sortedTasks);
+  };
+
+  const handleStatusFilter = (status) => {
+    setStatusFilter(status);
+    setFilteredTasks(
+      status === "All" ? tasks : tasks.filter(task => task.status === status)
+    );
+  };
+
   const handleViewQuotation = (constructionOrderId) => {
     navigate(`/quotation-order/${constructionOrderId}`);
   };
@@ -33,6 +55,50 @@ const ConsultantTasks = () => {
   return (
     <div className="consultant-tasks container mt-4">
       <h1 className="text-center mb-4" style={{ color: 'blue' }}>Consultant Tasks</h1>
+
+      <div className="row mb-3">
+        <div className="col">
+          <button
+            className="btn btn-outline-primary mr-2"
+            onClick={() => handleSort("customerName", "asc")}
+          >
+            Sort by Name (A-Z)
+          </button>
+          <button
+            className="btn btn-outline-primary mr-2"
+            onClick={() => handleSort("customerName", "desc")}
+          >
+            Sort by Name (Z-A)
+          </button>
+        </div>
+        <div className="col">
+          <button
+            className="btn btn-outline-primary mr-2"
+            onClick={() => handleSort("startDate", "desc")}
+          >
+            Sort by Latest Date
+          </button>
+          <button
+            className="btn btn-outline-primary"
+            onClick={() => handleSort("startDate", "asc")}
+          >
+            Sort by Earliest Date
+          </button>
+        </div>
+        <div className="col">
+          <select
+            className="form-select"
+            value={statusFilter}
+            onChange={(e) => handleStatusFilter(e.target.value)}
+          >
+            <option value="All">All Status</option>
+            <option value="Consulting">Consulting</option>
+            <option value="Completed">Completed</option>
+            <option value="Pending">Pending</option>
+          </select>
+        </div>
+      </div>
+
       <table className="table table-bordered mt-4">
         <thead className="thead-light">
           <tr>
@@ -46,8 +112,8 @@ const ConsultantTasks = () => {
           </tr>
         </thead>
         <tbody>
-          {tasks.length > 0 ? (
-            tasks.map((task) => (
+          {filteredTasks.length > 0 ? (
+            filteredTasks.map((task) => (
               <tr key={task.constructionOrderId}>
                 <td>{task.constructionOrderId}</td>
                 <td>{task.customerName}</td>
