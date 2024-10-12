@@ -98,6 +98,10 @@ function App() {
       path: "consultation-page", // Sửa lại path thành chữ thường để thống nhất
       element: <ConsultationPage />,
     },
+    {
+      path:"Quotation-Page",
+      element:<QuotationPage/>
+    },
 
     {
       path: "consult/ownedTasks",
