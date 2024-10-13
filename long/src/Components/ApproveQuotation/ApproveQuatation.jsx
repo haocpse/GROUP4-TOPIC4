@@ -29,19 +29,18 @@ const ApproveQuotation = () => {
     return (
         <>
             <ToastContainer position="top-right" autoClose={5000} />
-            <div className="container mt-4">
+            <div className="container-fuild mt-4">
                 <h2 className="text-center" style={{ color: 'black' }}>Approve Quotes</h2>
                 <table className="table table-bordered mt-4">
                     <thead>
                         <tr>
-                            <th>Order ID</th>
-                            <th>Quotation ID</th>
-                            <th>Customer Name</th>
-                            <th>Package Type</th>
-                            <th>Volume</th>
-                            <th>Total Price</th>
-                            <th>View Details</th>
-                            <th>Actions</th>
+                            <th scope="col" className="text-center">Order ID</th>
+                            <th scope="col" className="text-center">Quotation ID</th>
+                            <th scope="col" className="text-center">Customer Name</th>
+                            <th scope="col" className="text-center">Package Type</th>
+                            <th scope="col" className="text-center">Volume</th>
+                            <th scope="col" className="text-center">Total Price</th>
+                            <th scope="col" className="text-center">View Details</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,13 +50,13 @@ const ApproveQuotation = () => {
                             </tr>
                         ) : (
                             quotes.map(quote => (
-                                <tr key={quote.quotationId}>
-                                    <td>{quote.constructionOrderId}</td>
-                                    <td>{quote.id}</td>
-                                    <td>{quote.customerName}</td>
-                                    <td>{quote.packageType}</td>
-                                    <td>{quote.volume}</td>
-                                    <td>{quote.totalPrice}</td>
+                                <tr key={quote.id}>
+                                    <td className="text-center align-content-center">{quote.constructionOrderId}</td>
+                                    <td className="text-center align-content-center">{quote.id}</td>
+                                    <td className="text-center align-content-center">{quote.customerName}</td>
+                                    <td className="text-center align-content-center">{quote.packageType}</td>
+                                    <td className="text-center align-content-center">{quote.volume}</td>
+                                    <td className="text-center align-content-center">{quote.totalPrice.toLocaleString()}</td>
                                     <td>
                                         <button
                                             className="btn btn-primary"
