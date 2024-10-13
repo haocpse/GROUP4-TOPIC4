@@ -1,0 +1,46 @@
+.quotationOrderContainer {
+    max-width: 900px; /* Set a max width for the container */
+    margin: auto; /* Center the container */
+  }
+  
+  .card {
+    border-radius: 10px; /* Rounded corners for the card */
+  }
+  
+  .card-header {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white; /* Text color for the header */
+    border-top-left-radius: 10px; /* Rounded corners for the header */
+    border-top-right-radius: 10px;
+  }
+  
+  .card-body {
+    padding: 20px; /* Padding inside the card body */
+  }
+  
+  .mb-3 {
+    margin-bottom: 1rem; /* Consistent spacing for bottom margins */
+  }
+  
+  h2 {
+    margin-bottom: 1.5rem; /* Spacing below the heading */
+  }
+  
+  .btn {
+    width: 100%; /* Full-width button */
+    padding: 10px; /* Padding for the button */
+  }
+  
+  .border {
+    border: 1px solid #dee2e6; /* Light border for sections */
+    border-radius: 5px; /* Rounded corners for bordered sections */
+    padding: 10px; /* Padding inside bordered sections */
+  }
+  .imagePreview {
+    max-width: 100%; /* Responsive width */
+    height: auto; /* Maintain aspect ratio */
+    margin-top: 10px; /* Space above the preview */
+    border: 1px solid #dee2e6; /* Light border for the preview */
+    border-radius: 5px; /* Rounded corners for the preview */
+  }
+  
