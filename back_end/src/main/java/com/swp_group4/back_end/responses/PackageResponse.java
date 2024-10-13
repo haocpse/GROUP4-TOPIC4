@@ -16,5 +16,5 @@ import java.util.List;
 public class PackageResponse {
 
     List<Packages> packagesList;
-    List<PackagePrice> packagePriceList;
+    List<PackageConstruction> packageConstructions;
 }

@@ -18,8 +18,8 @@ public class ServiceRequest {
 
     @Enumerated(EnumType.STRING)
     Service service;
-    String firstname;
-    String lastname;
+    String firstName;
+    String lastName;
     String phone;
     String address;
     String customerRequest;

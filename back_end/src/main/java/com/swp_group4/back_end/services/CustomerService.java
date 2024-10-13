@@ -36,26 +36,26 @@ public class CustomerService {
                 .build());
     }
 
-    public CustomerResponse getOwnedInfo(){
-        Customer customer = this.identifyCustomer();
-        CustomerResponse response = new CustomerResponse();
-        return customerMapper.customerToResponse(customer, response);
-    }
+//    public CustomerResponse getOwnedInfo(){
+//        Customer customer = this.identifyCustomer();
+//        CustomerResponse response = new CustomerResponse();
+//        return customerMapper.customerToResponse(customer, response);
+//    }
 
-    public CustomerResponse updateOwnedInfo(UpdateInfoRequest request) {
-        Customer customer = this.identifyCustomer();
-        customerMapper.updateInfoToCustomer(request, customer);
-        customerRepository.save(customer);
-        CustomerResponse response = new CustomerResponse();
-        return customerMapper.customerToResponse(customer, response);
-    }
+//    public CustomerResponse updateOwnedInfo(UpdateInfoRequest request) {
+//        Customer customer = this.identifyCustomer();
+//        customerMapper.updateInfoToCustomer(request, customer);
+//        customerRepository.save(customer);
+//        CustomerResponse response = new CustomerResponse();
+//        return customerMapper.customerToResponse(customer, response);
+//    }
 
     public ServiceResponse<?> contactUs(ServiceRequest serviceRequest) {
-        Customer customer = this.identifyCustomer();
-        customerMapper.serviceRequestToCustomer(serviceRequest, customer);
-        customerRepository.save(customer);
+//        Customer customer = this.identifyCustomer();
+//        customerMapper.serviceRequestToCustomer(serviceRequest, customer);
+//        customerRepository.save(customer);
         if (serviceRequest.getService().name().equals("CONSTRUCTION_SERVICE")) {
-            ConstructionOrder constructionOrder = manageConstructionOrderService.createOrder(serviceRequest, customer);
+            ConstructionOrder constructionOrder = manageConstructionOrderService.createOrder(serviceRequest);
             return manageConstructionOrderService.contactUsForConstruction(serviceRequest, constructionOrder);
         }
 //        if (serviceRequest.getService().name().equals("MAINTENANCE_SERVICE")) {
@@ -64,16 +64,11 @@ public class CustomerService {
        return null;
     }
 
-    Customer identifyCustomer() {
-        var context = SecurityContextHolder.getContext();
-        String accountId = context.getAuthentication().getName();
-        return customerRepository.findByAccountId(accountId)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
-    }
-
-    Customer findCustomer(String customerId) {
-        return customerRepository.findById(customerId)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
-    }
+//    Customer identifyCustomer() {
+//        var context = SecurityContextHolder.getContext();
+//        String accountId = context.getAuthentication().getName();
+//        return customerRepository.findByAccountId(accountId)
+//                .orElseThrow(() -> new RuntimeException("Customer not found"));
+//    }
 
 }

@@ -18,11 +18,12 @@ public class ConstructOrderDetailForManagerResponse {
     String phone;
     String address;
     double totalPrice;
+    String packageType;
     Date startDate;
     Date endDate;
-    String consultantName;
-    String designLeaderName;
-    String constructorLeaderName;
-    ConstructionOrderStatus orderStatus;
+    String consultantId;
+    String designerLeaderId;
+    String constructorLeaderId;
+    ConstructionOrderStatus status;
 
 }

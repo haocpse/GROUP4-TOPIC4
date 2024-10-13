@@ -27,20 +27,20 @@ public class CustomerController {
     }
 
     // Hàm để Customer xem thông tin cá nhân
-    @GetMapping("/ownedInfo")
-    public ApiResponse<CustomerResponse> getOwnedInfo() {
-        return ApiResponse.<CustomerResponse>builder()
-                .data(customerService.getOwnedInfo())
-                .build();
-    }
+//    @GetMapping("/ownedInfo")
+//    public ApiResponse<CustomerResponse> getOwnedInfo() {
+//        return ApiResponse.<CustomerResponse>builder()
+//                .data(customerService.getOwnedInfo())
+//                .build();
+//    }
 
     // Hàm để Customer thay đổi thông tin cá nhân
-    @PutMapping("/ownedInfo/update")
-    public ApiResponse<CustomerResponse> updateOwnedInfo(@RequestBody UpdateInfoRequest request) {
-        return ApiResponse.<CustomerResponse>builder()
-                .data(customerService.updateOwnedInfo(request))
-                .build();
-    }
+//    @PutMapping("/ownedInfo/update")
+//    public ApiResponse<CustomerResponse> updateOwnedInfo(@RequestBody UpdateInfoRequest request) {
+//        return ApiResponse.<CustomerResponse>builder()
+//                .data(customerService.updateOwnedInfo(request))
+//                .build();
+//    }
 
 
 }

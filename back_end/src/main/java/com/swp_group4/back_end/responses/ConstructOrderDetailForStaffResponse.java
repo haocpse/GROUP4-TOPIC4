@@ -1,5 +1,7 @@
 package com.swp_group4.back_end.responses;
 
+import com.swp_group4.back_end.enums.ConstructionOrderStatus;
+import com.swp_group4.back_end.enums.QuotationStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,11 +12,12 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class ConstructOrderDetailForStaffResponse {
 
-    String constructOrderId;
+    String constructionOrderId;
     String customerName;
     String staffName;
     String phone;
     String address;
     String customerRequest;
+    ConstructionOrderStatus status;
 
 }

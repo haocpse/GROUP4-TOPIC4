@@ -64,6 +64,10 @@ public class AccountService {
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.CUSTOMER)
+//                .role(Role.CONSULTANT)
+//                .role(Role.DESIGNER)
+//                .role(Role.CONSTRUCTOR)
+//                .role(Role.MANAGER)
                 .build();
         accountRepository.save(acc);
         customerService.createCustomer(acc.getAccountId(), acc.getUsername());

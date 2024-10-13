@@ -50,29 +50,29 @@ public class QuotationAndDesignApprovalController {
 
     // Hàm để MANAGER xem toàn bộ các design trên hệ thống đang chờ phê duyệt
     // (Construction Order đang ở trạng thái DESIGNED)
-//    @GetMapping("/designs")
-//    public ApiResponse<List<QuotationAndDesignReviewResponse<DesignStatus>>> listAllDesign(){
-//        return ApiResponse.<List<QuotationAndDesignReviewResponse<DesignStatus>>>builder()
-//                .data(quotationAndDesignApprovalService.listAllDesign())
-//                .build();
-//    }
-//
-//    // Hàm để MANAGER xem chi tiết 1 design
-//    // (Construction Order đang ở trạng thái DESIGNED)
-//    @GetMapping("/designs/{designId}")
-//    public ApiResponse<ConstructDesignResponse> getDesign(@PathVariable String designId){
-//        return ApiResponse.<ConstructDesignResponse>builder()
-//                .data(quotationAndDesignApprovalService.detailDesign(designId))
-//                .build();
-//    }
+    @GetMapping("/designs")
+    public ApiResponse<List<QuotationAndDesignReviewResponse>> listAllDesign(){
+        return ApiResponse.<List<QuotationAndDesignReviewResponse>>builder()
+                .data(quotationAndDesignApprovalService.listAllDesign())
+                .build();
+    }
 
-//    // Hàm để MANAGER quyết định APPROVE hay không
-//    // (Nếu APPROVE Construction Order chuyển sang trạng thái CONFIRMED_DESIGN)
-//    @PostMapping("/designs/{designId}")
-//    public ApiResponse<ConstructOrderDetailForManagerResponse> approveDesign(@RequestBody ManageReviewRequest request, @PathVariable String designId){
-//        return ApiResponse.<ConstructOrderDetailForManagerResponse>builder()
-//                .data(quotationAndDesignApprovalService.manageDesign(request, designId))
-//                .build();
-//    }
+    // Hàm để MANAGER xem chi tiết 1 design
+    // (Construction Order đang ở trạng thái DESIGNED)
+    @GetMapping("/designs/{designId}")
+    public ApiResponse<ConstructDesignResponse> getDesign(@PathVariable String designId){
+        return ApiResponse.<ConstructDesignResponse>builder()
+                .data(quotationAndDesignApprovalService.detailDesign(designId))
+                .build();
+    }
+
+    // Hàm để MANAGER quyết định APPROVE hay không
+    // (Nếu APPROVE Construction Order chuyển sang trạng thái CONFIRMED_DESIGN)
+    @PostMapping("/designs/{designId}")
+    public ApiResponse<ConstructOrderDetailForManagerResponse> approveDesign(@RequestBody ManageReviewRequest request, @PathVariable String designId){
+        return ApiResponse.<ConstructOrderDetailForManagerResponse>builder()
+                .data(quotationAndDesignApprovalService.manageDesign(request, designId))
+                .build();
+    }
 
 }
