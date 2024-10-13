@@ -30,7 +30,7 @@ public class AccountController {
     }
 
     // Gọi hàm đăng ký (URL: localhost:8080/register)
-    @PostMapping("/register")
+    @PostMapping("/signup")
     public ApiResponse<Account> register(@RequestBody @Valid CreateAccountRequest request) {
         return ApiResponse.<Account>builder()
                 .data(accountService.register(request))
