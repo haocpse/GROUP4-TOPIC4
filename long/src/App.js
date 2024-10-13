@@ -5,7 +5,6 @@ import SignUp from "./Components/SignUp/SignUp";
 import Contact from "./Components/Contact/Contact";
 import Service from "./Components/Service/Service";
 import MainLayout from "./Components/MainLayout";
-import Construction from "./Components/Construction/Construction";
 import ApproveDesign from "./Components/ApproveDesign/ApproveDesign";
 import Request from "./Components/Request/Request";
 import ConstructionProgress from "./Components/ConstructionProgress/ConstructionProgress";
@@ -13,7 +12,6 @@ import ConsultantTasks from "./Components/ConsultantTasks/ConsultantTasks";
 import DesignUpload from "./Components/DesignUpload/DesignUpload";
 import ConstructionOrder from "./Components/ConstructionProgress/ConstructionOrder";
 import QuotationOrder from "./Components/QuotationOrder/QuotationOrder";
-import QuotationPage from "./Components/QuotationOrder/QuotationPage";
 import ApproveQuotation from "./Components/ApproveQuotation/ApproveQuatation";
 import ViewQuotation from "./Components/ApproveQuotation/ViewQuotation";
 import ConsultationPage from "./Components/ConsultationPage/ConsultationPage";
@@ -24,11 +22,13 @@ import ViewPayment from "./Components/ListQuotation/ViewPayment";
 import DesignerTasks from "./Components/DesignerTasks/DesignerTasks";
 import CustomerView from "./Components/CustomerView/CustomerView";
 import CustomerQuotationList from "./Components/CustomerView/CustomerQuotationList";
+import ViewQuotationAfterCreate from "./Components/QuotationOrder/ViewQuotationAfterCreate";
+import Main from "./Components/Main/Main";
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Login />,
+      element: <Main />,
     },
     {
       path: "login",
@@ -51,46 +51,34 @@ function App() {
       element: <MainLayout />,
       children: [
         {
-          path: "consultation",
-          element: <Consultation />,
+          path: "request",
+          element: <Request />,
         },
         {
-          path: "approve-design",
+          path: "designs",
           element: <ApproveDesign />,
         },
         {
-          path: "approve-quotation",
+          path: "quotations",
           element: <ApproveQuotation />,
         },
         {
-          path: "approve-design",
-          element: <ApproveDesign/>
-        },
-        {
-          path:"view-design",
-          element:<ViewDesign/>
-          path: "designs/:designId",
+          path: "designs/:id",
           element: <ViewDesign />,
         },
         {
-          path: "view-quotation",
+          path: "quotations/:id",
           element: <ViewQuotation />,
         },
       ],
     },
 
-    
-
     {
-      path: "construction-order",
-      element: <ConstructionOrder />, // Trang hiển thị danh sách ConstructionOrderId
+      path: "construct/ownedTasks",
       element: <ConstructionOrder />,
     },
-    // Route cho ConstructionProgress hiển thị chi tiết dựa trên orderId
     {
-      path: "construction-progress/:constructionOrderId", // Sử dụng orderId từ URL
-      element: <ConstructionProgress />, // Trang hiển thị chi tiết task của constructionOrderId
-      path: "ownedTasks/:constructionOrderId",
+      path: "construct/ownedTasks/:constructionOrderId",
       element: <ConstructionProgress />,
     },
 
@@ -115,16 +103,15 @@ function App() {
       path: "view-payment", // Sửa path này thành list-quotation thay vì 'list quotation'
       element: <ViewPayment />,
     },
-    
- 
-    
     {
       path: "consult/ownedTasks/:constructionOrderId",
       element: <QuotationOrder />,
     },
-    
     {
-      path:"customer-quotation",
+      path: "consult/ownedTasks/:constructionOrderId/quotation",
+      element: <ViewQuotationAfterCreate />,
+    },
+    {
       path: "customrer-quotation",
       element: <CustomerQuotationList />,
     },
@@ -134,16 +121,16 @@ function App() {
     },
 
     {
-      path: "designer-tasks",
+      path: "design/ownedTasks",
       element: <DesignerTasks />,
     },
     {
-      path: "designer-tasks/design-upload", // Add the route for DesignUpload
+      path: "design/ownedTasks/:constructionOrderId", // Add the route for DesignUpload
       element: <DesignUpload />,
     },
   ]);
 
+
   return <RouterProvider router={router} />;
 }
-
 export default App;

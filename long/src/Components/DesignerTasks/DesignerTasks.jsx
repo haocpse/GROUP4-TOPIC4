@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./DesignerTasks.css";
-import Navbar from "../Navbar/Navbar";
 import axios from "axios";
 
 const DesignerTasks = () => {
@@ -12,8 +11,8 @@ const DesignerTasks = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await axios.get("YOUR_API_URL_HERE"); // Replace with your API URL
-        setTasks(response.data); // Assuming the API returns the tasks in the data property
+        const response = await axios.get("http://localhost:8080/design/ownedTasks"); // Replace with your API URL
+        setTasks(response.data.data); // Assuming the API returns the tasks in the data property
       } catch (error) {
         console.error("Error fetching tasks:", error);
       }
@@ -22,26 +21,16 @@ const DesignerTasks = () => {
     fetchTasks();
   }, []);
 
-  const handleUploadClick = async (constructionOrderId) => {
-    // Fetch order details and then navigate to DesignUpload
-    try {
-      const response = await axios.get(
-        `http://localhost:8080/design/ownedTasks/${constructionOrderId}`
-      );
-      const orderDetails = response.data;
+  const handleUploadDesign = (constructionOrderId) => {
+      navigate(`/design/ownedTasks/${constructionOrderId}`); 
+  };
 
-      // Navigate to DesignUpload with order details passed as state
-      navigate(`/designer-tasks/design-upload/${constructionOrderId}`, {
-        state: orderDetails,
-      });
-    } catch (error) {
-      console.error("Error fetching order details:", error);
-    }
+  const handleViewDesign = (constructionOrderId) => {
+    navigate(`/design/ownedTasks/${constructionOrderId}/design`);
   };
 
   return (
     <>
-      <Navbar />
       <div className="container mt-5">
         <h1 className="text-center text-primary">Designer Tasks</h1>
         <table className="table table-striped">
@@ -49,12 +38,10 @@ const DesignerTasks = () => {
             <tr>
               <th>Construction Order ID</th>
               <th>Customer Name</th>
-              <th>Start Date</th>
-              <th>Staff Name</th>
               <th>Phone</th>
               <th>Address</th>
-              <th>Customer Request</th>
-              <th>Upload</th>
+              <th>Status</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -63,20 +50,20 @@ const DesignerTasks = () => {
                 <tr key={task.constructionOrderId}>
                   <td>{task.constructionOrderId}</td>
                   <td>{task.customerName}</td>
-                  <td>{new Date(task.startDate).toLocaleDateString()}</td>
-                  <td>{task.staffName}</td>
                   <td>{task.phone}</td>
                   <td>{task.address}</td>
-                  <td>{task.customerRequest}</td>
+                  <td>{task.status}</td>
                   <td>
-                    <button
-                      className="btn btn-primary"
-                      onClick={() =>
-                        handleUploadClick(task.constructionOrderId)
-                      }
-                    >
-                      Upload
-                    </button>
+                  <button
+                    className="btn btn-primary"
+                    onClick={
+                      task.status === 'DESIGNING'
+                        ? () => handleUploadDesign(task.constructionOrderId)
+                        : () => handleViewDesign(task.constructionOrderId)
+                    }
+                  >
+                    {task.status === 'DESIGNING' ? 'Upload Design' : 'View Design'}
+                  </button>
                   </td>
                 </tr>
               ))

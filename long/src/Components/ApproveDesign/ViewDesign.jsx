@@ -1,17 +1,29 @@
 import axios from "axios";
-import React from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 const ViewDesign = () => {
-    const location = useLocation();
+
     const navigate = useNavigate();
-    const { designId } = useParams();
-    const { design } = location.state;
+    const { id } = useParams();
+    const [designDetail, setDesignDetail] = useState([]);
     // xu ly approve
+
+    useEffect(() => {
+        const fetchDesginDetail = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/manage/designs/${id}`)
+                setDesignDetail(response.data.data)
+                console.log(designDetail)
+            } catch { }
+        }
+        fetchDesginDetail();
+    }, [])
+
 
     const handleApproval = async (status) => {
         try {
-            await axios.post(`http://localhost:8080/manage/designs/${designId}`, {
+            await axios.post(`http://localhost:8080/manage/designs/${id}`, {
                 status: status
             });
             toast.success(`Design ${status} successfully!`);
@@ -19,12 +31,12 @@ const ViewDesign = () => {
         } catch (error) {
             console.error("Error approving/rejecting design", error);
             toast.error(`Fail to update status!^^ ${error.response ? error.response.data.message : ''}`);
-            
+
         }
 
     };
     const confirmApproval = (status) => {
-        const action = status ? "approve" : "reject";
+        const action = status ? "APPROVED" : "REJECTED";
         const confirmed = window.confirm(`Are you sure to want to ${action} this design?`);
         if (confirmed) {
             handleApproval(status);
@@ -36,10 +48,10 @@ const ViewDesign = () => {
             <h2 className="text-center" style={{ color: 'black' }}>Design Details</h2>
             <div className="card">
                 <div className="card-body">
-                    <h5 className="card-title">Design ID: {design.designId}</h5>
-                    <p className="card-text"><strong>Customer Name:</strong> {design.customerName}</p>
-                    <p className="card-text"><strong>Design ID:</strong> {design.designId}</p>
-                    <p className="card-text"><strong>Customer Request:</strong> {design.customerRequrest}</p>
+                    <h5 className="card-title">Design ID: {designDetail.designId}</h5>
+                    <p className="card-text"><strong>Customer Name:</strong> {designDetail.customerName}</p>
+                    <p className="card-text"><strong>Design ID:</strong> {designDetail.designId}</p>
+                    <p className="card-text"><strong>Customer Request:</strong> {designDetail.customerRequrest}</p>
 
 
                     <div className="img-desgin">
@@ -47,7 +59,7 @@ const ViewDesign = () => {
                         <div className="row text-center">
                             <div className="col-md-3 mb-3">
                                 <img
-                                    src={design.url2dDesgin || 'default-image.png'}
+                                    src={designDetail.url2dDesgin}
                                     alt="2D Design"
                                     className="img-fluid img-thumbnail"
                                     style={{ maxWidth: '100%', height: 'auto', maxHeight: '200px' }}
@@ -56,7 +68,7 @@ const ViewDesign = () => {
                             </div>
                             <div className="col-md-3 mb-3">
                                 <img
-                                    src={design.url3dDesgin || 'default-image.png'}
+                                    src={designDetail.url3dDesgin}
                                     alt="3D Design"
                                     className="img-fluid img-thumbnail"
                                     style={{ maxWidth: '100%', height: 'auto', maxHeight: '200px' }}
@@ -65,7 +77,7 @@ const ViewDesign = () => {
                             </div>
                             <div className="col-md-3 mb-3">
                                 <img
-                                    src={design.urlFrontDesign || 'default-image.png'}
+                                    src={designDetail.urlFrontDesign}
                                     alt="Front Design"
                                     className="img-fluid img-thumbnail"
                                     style={{ maxWidth: '100%', height: 'auto', maxHeight: '200px' }}
@@ -74,7 +86,7 @@ const ViewDesign = () => {
                             </div>
                             <div className="col-md-3 mb-3">
                                 <img
-                                    src={design.urlBackDesign || 'default-image.png'}
+                                    src={designDetail.urlBackDesign}
                                     alt="Back Design"
                                     className="img-fluid img-thumbnail"
                                     style={{ maxWidth: '100%', height: 'auto', maxHeight: '200px' }}
@@ -85,13 +97,13 @@ const ViewDesign = () => {
                     </div>
                     <button
                         className="btn btn-success me-2"
-                        onClick={() => confirmApproval("approve")}
+                        onClick={() => confirmApproval("APPROVED")}
                     >
                         Approve
                     </button>
                     <button
                         className="btn btn-danger me-2"
-                        onClick={() => confirmApproval("reject")}
+                        onClick={() => confirmApproval("REJECTED")}
                     >
                         Reject
                     </button>
@@ -111,6 +123,8 @@ export default ViewDesign;
 //     const location = useLocation();
 //     const navigate = useNavigate();
 //     const { designId } = useParams();
+//     const { design } = location.state;
+
 
 //     // Dữ liệu giả để thử nghiệm
 //     const mockDesign = {
@@ -118,13 +132,13 @@ export default ViewDesign;
 //         customerName: "Alice",
 //         description: "A beautiful house design.",
 //         status: "Pending",
-//         url2dDesgin: "hocakoi.jpg",  // Thay đổi thành URL hợp lệ
+//         url2dDesgin: "https://hoanghamobile.com/tin-tuc/wp-content/webp-express/webp-images/uploads/2023/07/hinh-dep.jpg.webp",  // Thay đổi thành URL hợp lệ
 //         url3dDesgin: "hocakoi.jpg",  // Thay đổi thành URL hợp lệ
 //         urlFrontDesign: "hocakoi.jpg",  // Thay đổi thành URL hợp lệ
 //         urlBackDesign: "hocakoi.jpg"  // Thay đổi thành URL hợp lệ
 //     };
 
-//     const design = location.state ? location.state.design : mockDesign;
+//     // const design =  mockDesign;
 
 //     // In ra URL để kiểm tra
 //     console.log(design.url2dDesgin, design.url3dDesgin, design.urlFrontDesign, design.urlBackDesign);
@@ -156,8 +170,9 @@ export default ViewDesign;
 //                         <h6>Design Images:</h6>
 //                         <div className="row text-center">
 //                             <div className="col-md-3 mb-3">
+//                                 {console.log(design)}
 //                                 <img
-//                                     src={ design.url2dDesgin || 'default-image.png'}
+//                                     src={ design.url2dDesgin }
 //                                     alt="2D Design"
 //                                     className="img-fluid img-thumbnail"
 //                                     style={{ maxWidth: '100%', height: 'auto', maxHeight: '200px' }}
@@ -166,7 +181,7 @@ export default ViewDesign;
 //                             </div>
 //                             <div className="col-md-3 mb-3">
 //                                 <img
-//                                     src={design.url3dDesgin || 'default-image.png'}
+//                                     src={''}
 //                                     alt="3D Design"
 //                                     className="img-fluid img-thumbnail"
 //                                     style={{ maxWidth: '100%', height: 'auto', maxHeight: '200px' }}

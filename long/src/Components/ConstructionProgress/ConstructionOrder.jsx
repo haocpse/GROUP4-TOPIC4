@@ -7,23 +7,24 @@ const ConstructionOrder = () => {
 
     const [constructionOrders, setConstructionOrders] = useState([]);
     const navigate = useNavigate();
+    useEffect(() => {
+        const fetchOrder = async () => {
 
-    const fetchOrder = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/construct/ownedTasks');
+                setConstructionOrders(response.data.data);
+            } catch (error) {
+                console.error('Fail fetch order list! ^^', error);
 
-        try {
-            const response = await axios.get('http://localhost:8080/construction-orders');
-            setConstructionOrders(response.data);
-        } catch (error) {
-            console.error('Fail fetch order list! ^^', error);
-
-            toast.error('Failed to load construction orders! ^^');
-        }
-    };
+                toast.error('Failed to load construction orders! ^^');
+            }
+        }; fetchOrder();
+    }, []);
 
     const handleStatusChange = async (constructionOrderId, newStatus) => {
         try {
             // gửi yêu cầu cập nhật trạng thái tới backend ^^
-            await axios.post(`http://localhost:8080/construction-orders/${constructionOrderId}/update-status`, {
+            await axios.post(`http://localhost:8080/construct/ownedTasks/${constructionOrderId}`, {
                 status: newStatus
             });
 
@@ -39,12 +40,10 @@ const ConstructionOrder = () => {
         }
     };
 
-    useEffect(() => {
-        fetchOrder();
-    }, []);
+
 
     const handleViewDetails = (constructionOrderId) => {
-        navigate(`/ownedTasks/${constructionOrderId}`);
+        navigate(`${constructionOrderId}`);
     }
 
 
