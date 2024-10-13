@@ -15,7 +15,7 @@ const ViewQuotationAfterCreate = () => {
         }
 
         fetcInfoQuotaion()
-    },[]);
+    }, []);
 
     return (
         <div className={`${styles.quotationOrderContainer} container mt-5`}>
