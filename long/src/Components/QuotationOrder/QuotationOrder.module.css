@@ -98,6 +98,11 @@
   margin-bottom: 20px;
   color: #333;
 }
+.bgRed {
+  background-color: red !important;
+}
+
+
 
 .quotationPage p {
   font-size: 1.2rem;
