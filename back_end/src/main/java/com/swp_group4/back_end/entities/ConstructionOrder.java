@@ -26,9 +26,9 @@ public class ConstructionOrder {
     Date endDate;
     String quotationId;
     String designId;
-    String consultant;
-    String designLeader;
-    String constructionLeader;
+    String consultantId;
+    String designerLeaderId;
+    String constructorLeaderId;
     @Enumerated(EnumType.STRING)
     ConstructionOrderStatus status;
 

@@ -46,6 +46,7 @@ public class QuotationAndDesignApprovalService {
         List<Quotation> quotations = quotationRepository.findByStatus(QuotationStatus.QUOTED);
         List<QuotationAndDesignReviewResponse> responses = new ArrayList<>();
         for (Quotation quotation : quotations) {
+
             ConstructionOrder order = this.findOrderByQuotationId(quotation.getQuotationId());
             Customer customer = this.findCustomerById(order.getCustomerId());
             Packages packages = this.findPackageById(quotation.getPackageId());
@@ -55,7 +56,7 @@ public class QuotationAndDesignApprovalService {
                     .customerName(customer.getFirstname() + " " + customer.getLastname())
                     .phone(customer.getPhone())
                     .address(customer.getAddress())
-                    .leaderName(this.getStaffName(order.getConsultant()))
+                    .leaderName(this.getStaffName(order.getConsultantId()))
                     .packageType(packages.getPackageType())
                     .volume(quotation.getVolume())
                     .totalPrice(order.getTotal())
@@ -75,6 +76,7 @@ public class QuotationAndDesignApprovalService {
             QuotationAndDesignReviewResponse response = QuotationAndDesignReviewResponse.builder()
                     .constructionOrderId(order.getConstructionOrderId())
                     .id(design.getDesignId())
+                    .customerName(customer.getFirstname() + " " + customer.getLastname())
                     .phone(customer.getPhone())
                     .address(customer.getAddress())
                     .build();
@@ -85,13 +87,13 @@ public class QuotationAndDesignApprovalService {
 
     public ConstructQuotationResponse detailQuotation(String quotationId) {
         Quotation quotation = this.findQuotationById(quotationId);
-        ConstructionOrder order = this.findOrderById(quotationId);
+        ConstructionOrder order = this.findOrderByQuotationId(quotationId);
         Customer customer = this.findCustomerById(order.getCustomerId());
         List<ConstructionTasks> tasks = this.findConstructionTasks(order.getConstructionOrderId());
         ConstructQuotationResponse response = ConstructQuotationResponse.builder()
                 .constructOrderId(order.getConstructionOrderId())
                 .customerName(customer.getFirstname() + " " + customer.getLastname())
-                .consultantName(this.getStaffName(order.getConsultant()))
+                .consultantName(this.getStaffName(order.getConsultantId()))
                 .packageType(this.findPackageById(quotation.getPackageId()).getPackageType())
                 .content(this.contentTasks(tasks))
                 .totalPrice(order.getTotal())
@@ -102,13 +104,14 @@ public class QuotationAndDesignApprovalService {
     }
 
     public ConstructDesignResponse detailDesign(String designId) {
+        log.info(designId);
         Design design = designRepository.findById(designId).orElseThrow();
-        ConstructionOrder order = constructOrderRepository.findById(designId).orElseThrow();
+        ConstructionOrder order = constructOrderRepository.findByDesignId(designId).orElseThrow();
         Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
         return ConstructDesignResponse.builder()
                 .constructionOrderId(order.getConstructionOrderId())
                 .customerName(customer.getFirstname() + " " + customer.getLastname())
-                .designName(this.getStaffName(order.getDesignLeader()))
+                .designName(this.getStaffName(order.getDesignerLeaderId()))
                 .customerRequest(order.getCustomerRequest())
                 .url2dDesign(design.getUrl2dDesign())
                 .url3dDesign(design.getUrl3dDesign())
@@ -119,7 +122,7 @@ public class QuotationAndDesignApprovalService {
 
     public ConstructOrderDetailForManagerResponse manageQuotation(ManageReviewRequest request, String quotationId) {
         Quotation quotation = this.findQuotationById(quotationId);
-        ConstructionOrder order = this.findOrderById(quotationId);
+        ConstructionOrder order = this.findOrderByQuotationId(quotationId);
         if (request.getStatus().name().equals("APPROVED")) {
             quotation.setStatus(QuotationStatus.CONFIRMED_QUOTATION);
             quotationRepository.save(quotation);
@@ -131,7 +134,7 @@ public class QuotationAndDesignApprovalService {
 
     public ConstructOrderDetailForManagerResponse manageDesign(ManageReviewRequest request, String designId) {
         Design design = designRepository.findById(designId).orElseThrow();
-        ConstructionOrder order = constructOrderRepository.findById(designId).orElseThrow();
+        ConstructionOrder order = constructOrderRepository.findByDesignId(designId).orElseThrow();
         if(request.getStatus().name().equals("APPROVED")) {
             design.setStatus(DesignStatus.CONFIRMED_DESIGN);
             designRepository.save(design);
@@ -144,7 +147,7 @@ public class QuotationAndDesignApprovalService {
     ConstructOrderDetailForManagerResponse buildConstructOrderDetailForManagerResponse(ConstructionOrder order) {
         return ConstructOrderDetailForManagerResponse.builder()
                 .orderId(order.getConstructionOrderId())
-                .orderStatus(order.getStatus())
+                .status(order.getStatus())
                 .build();
     }
 
@@ -177,7 +180,7 @@ public class QuotationAndDesignApprovalService {
 
     ConstructionOrder findOrderByQuotationId(String quotationId){
         return constructOrderRepository.findByQuotationId(quotationId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+             ;
     }
 
     Customer findCustomerById(String customerId){

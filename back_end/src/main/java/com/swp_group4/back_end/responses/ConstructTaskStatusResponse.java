@@ -12,7 +12,9 @@ import lombok.experimental.FieldDefaults;
 public class ConstructTaskStatusResponse {
 
     String packageConstructionId;
+    String taskId;
     String content;
+    String staffId;
     ConstructStatus status;
 
 }
