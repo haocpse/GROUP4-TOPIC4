@@ -79,10 +79,10 @@ const ViewQuotation = () => {
                                 <td>{quotation.customerName}</td>
                                 <td>{quotation.packageType}</td>
                                 <td>{quotation.volume}</td>
-                                <td>{quotation.priceStage1}</td>
-                                <td>{quotation.priceStage2}</td>
-                                <td>{quotation.priceStage3}</td>
-                                <td>{quotation.totalPrice}</td>
+                                <td>{quotation.priceStage1.toLocaleString()}</td>
+                                <td>{quotation.priceStage2.toLocaleString()}</td>
+                                <td>{quotation.priceStage3.toLocaleString()}</td>
+                                <td>{quotation.totalPrice.toLocaleString()}</td>
                                 <td>{quotation.customerRequest}</td>
 
                             </tr>
@@ -91,7 +91,7 @@ const ViewQuotation = () => {
 
                     <h3 className="mt-4">Content:</h3>
                     <ul className="list-group">
-                        {quotation.content.map((item, index) => (
+                        {quotation.content && quotation.content.map((item, index) => (
                             <li key={index} className="list-group-item">{item}</li>
                         ))}
                     </ul>
