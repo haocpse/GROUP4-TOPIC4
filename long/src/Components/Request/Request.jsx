@@ -68,6 +68,14 @@ const Request = () => {
         fetchConstructors()
     }, []);
 
+    const formatDate = (dateString) => {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
 
     //handle staff assignment
     const handleAssignStaff = async (constructionOrderId, staffType, staffId) => {
@@ -119,9 +127,24 @@ const Request = () => {
     //     }
 
     // }
+    // Định nghĩa icon dựa theo status
+    const getStatusIcon = (status) => {
+        switch (status) {
+            case "CONSULTING":
+                return { icon: <i className="fas fa-comments" title="Consulting" style={{ marginRight: '5px' }}></i>, className: "text-primary" };
+            case "DESIGNING":
+                return { icon: <i className="fa-solid fa-pen" title="Designing" style={{ marginRight: '5px' }}></i>, className: "text-success" };
+            case "CONSTRUCTING":
+                return { icon: <i className="fa-solid fa-wrench" title="Constructing" style={{ marginRight: '5px' }}></i>, className: "text-warning" };
+            case "REQUESTED":
+            default:
+                return { icon: <i className="fas fa-info-circle" title="Requested" style={{ marginRight: '5px' }}></i>, className: "text-secondary" };
+        }
+    };
+
 
     return (
-        <div className="container mt-4">
+        <div className="container-fuild mt-4">
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
             <h2 className="text-center">Manage Requests</h2>
             {/* <div>
@@ -146,19 +169,19 @@ const Request = () => {
                     </div>
                 </nav>
             </div> */}
-            <table className="table table-bordered">
+            <table className="table table-bordered ">
                 <thead>
                     <tr>
-                        <th scope="col">Customer</th>
-                        <th scope="col">Phone</th>
-                        <th scope="col">Address</th>
-                        <th scope="col">Start Date</th>
-                        <th scope="col">End Date</th>
-                        <th scope="col">Total Price</th>
-                        <th scope="col">Consultant</th>
-                        <th scope="col">Designer</th>
-                        <th scope="col">Constructor</th>
-                        <th scope="col">Status</th>
+                        <th scope="col" className="text-center">Customer</th>
+                        <th scope="col" className="text-center">Phone</th>
+                        <th scope="col" className="text-center">Address</th>
+                        <th scope="col" className="text-center">Start Date</th>
+                        <th scope="col" className="text-center">End Date</th>
+                        <th scope="col" className="text-center">Total Price</th>
+                        <th scope="col" className="text-center">Consultant</th>
+                        <th scope="col" className="text-center">Designer</th>
+                        <th scope="col" className="text-center">Constructor</th>
+                        <th scope="col" className="text-center">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -166,17 +189,17 @@ const Request = () => {
                         <tr>
                             <td colSpan="10" className="text-center">
                                 Your system has no Request ^^ !
-                            </td>
+                            </td>F
                         </tr>
                     ) : (
                         requests.map(request => (
-                            <tr key={request.orderId}>
-                                <td>{request.customerName}</td>
-                                <td>{request.phone}</td>
-                                <td>{request.address}</td>
-                                <td>{request.startDate}</td>
-                                <td>{request.endDate}</td>
-                                <td>{request.totalPrice}</td>
+                            <tr key={request.orderId} className="text-center align-item-center align-content-center">
+                                <td className="text-center align-content-center col-1">  <i className="fas fa-user" style={{ marginRight: '5px' }} />{request.customerName}</td>
+                                <td className="text-center align-content-center">{request.phone}</td>
+                                <td className="text-center align-content-center col-2">{request.address}</td>
+                                <td className="text-center align-content-center">{formatDate(request.startDate)}</td>
+                                <td className="text-center align-content-center">{formatDate(request.endDate)}</td>
+                                <td className="text-center align-content-center">{request.totalPrice.toLocaleString()}</td>
                                 <td>
                                     <select
                                         className="form-select mt-2"
@@ -228,7 +251,10 @@ const Request = () => {
                                         ))}
                                     </select>
                                 </td>
-                                <td>{request.status}</td>
+                                <td className={`text-center align-content-center col-2 ${getStatusIcon(request.status).className}`}>
+                                    {getStatusIcon(request.status).icon} {request.status}
+                                </td>
+
                             </tr>
                         ))
                     )}
