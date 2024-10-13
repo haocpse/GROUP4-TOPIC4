@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -41,9 +42,12 @@ public class DesignController {
     // Hàm để DESIGNER upload các ảnh design
     // (Construction Order đang ở trạng thái DESIGNED)
     @PostMapping("/ownedTasks/{constructionOrderId}")
-    public ApiResponse<Design> exportQuotation(@PathVariable String constructionOrderId, @RequestBody UrlDesignRequest request) {
+    public ApiResponse<Design> uploadDesign(@PathVariable String constructionOrderId, @RequestParam("image2D") MultipartFile image2D,
+                                                                                      @RequestParam("image3D") MultipartFile image3D,
+                                                                                      @RequestParam("frontView") MultipartFile frontView,
+                                                                                      @RequestParam("rearView") MultipartFile rearView) {
         return ApiResponse.<Design>builder()
-                .data(designService.uploadDesign(constructionOrderId, request))
+                .data(designService.saveDesign(constructionOrderId,image2D, image3D, frontView, rearView))
                 .build();
     }
 

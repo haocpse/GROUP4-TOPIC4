@@ -14,8 +14,9 @@ import java.util.List;
 public class ExportQuotationRequest {
 
     String packageId;
-    List<String> packageConstructionId;
-    double volume;
+    double length;
+    double height;
+    double width;
     String customerRequest;
     Date startDate;
     Date endDate;

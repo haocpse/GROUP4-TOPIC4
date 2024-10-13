@@ -33,11 +33,15 @@ public class ConstructionService {
     StaffMapper staffMapper;
     @Autowired
     CustomerRepository customerRepository;
+    @Autowired
+    ConstructionTaskStaffRepository constructionTaskStaffRepository;
 
     public List<ConstructOrderDetailForStaffResponse> listOwnedConstructTask() {
         List<ConstructOrderDetailForStaffResponse> responses = new ArrayList<>();
-        Staff staff = this.identifyStaff();
-        List<ConstructionOrder> orders = constructOrderRepository.findByConsultant(staff.getStaffId());
+        String staffId = "bc690fff-8729-11ef-bf00-c85acfa9b517";
+        Staff staff = staffRepository.findById(staffId).orElseThrow();
+//        Staff staff = this.identifyStaff();
+        List<ConstructionOrder> orders = constructOrderRepository.findByConstructorLeaderId(staffId);
         for (ConstructionOrder order : orders) {
             ConstructOrderDetailForStaffResponse response = this.detailOfOrder(order.getConstructionOrderId());
             response.setStaffName(staff.getStaffName());
@@ -49,6 +53,7 @@ public class ConstructionService {
     public ConstructionTasksAndStatusResponse detailOfConstruct(String constructionOrderId) {
         List<ConstructionTasks> constructionTasksList = this.findConstructionTasks(constructionOrderId);
         ConstructionOrder order = this.findOrderById(constructionOrderId);
+
         Customer customer = this.findCustomerById(order.getCustomerId());
         return ConstructionTasksAndStatusResponse.builder()
                 .constructionOrderId(constructionOrderId)
@@ -61,8 +66,14 @@ public class ConstructionService {
         return this.listStaffHasNoRole();
     }
 
-//    public AssignConstructionTaskResponse assignTask(String constructionOrderId, AssignTaskStaffRequest request) {
-//    }
+    public AssignConstructionTaskResponse assignTask(String constructionOrderId, AssignTaskStaffRequest request) {
+        String staffName = staffRepository.findById(request.getStaffId()).orElseThrow().getStaffName();
+        constructionTaskStaffRepository.save(constructionTaskStaff(request, staffName));
+        return AssignConstructionTaskResponse.builder()
+                .taskId(request.getTaskId())
+                .staffName(staffName)
+                .build();
+    }
 
     public CompleteConstructionTaskResponse completeTask(String constructionOrderId, CompleteConstructTaskRequest request) {
         ConstructionTasks task = constructionTasksRepository
@@ -88,7 +99,7 @@ public class ConstructionService {
         ConstructionOrder order = this.findOrderById(constructionOrderId);
         Customer customer = this.findCustomerById(order.getCustomerId());
         return ConstructOrderDetailForStaffResponse.builder()
-                .constructOrderId(order.getConstructionOrderId())
+                .constructionOrderId(order.getConstructionOrderId())
                 .customerName(customer.getFirstname() + " " + customer.getLastname())
                 .phone(customer.getPhone())
                 .address(customer.getAddress())
@@ -109,12 +120,21 @@ public class ConstructionService {
     List<ConstructTaskStatusResponse> constructTaskStatusResponseList(List<ConstructionTasks> constructionTasksList) {
         List<ConstructTaskStatusResponse> constructTaskStatusResponseList = new ArrayList<>();
         for (ConstructionTasks constructionTask : constructionTasksList) {
+
+             ConstructionTaskStaff taskStaff = constructionTaskStaffRepository.findById(constructionTask.getTaskId())
+                    .orElse(null);
             PackageConstruction packageConstruction = this.findPackageConstruction(constructionTask.getPackageConstructionId());
             ConstructTaskStatusResponse statusResponse = ConstructTaskStatusResponse.builder()
                     .packageConstructionId(constructionTask.getPackageConstructionId())
+                    .taskId(constructionTask.getTaskId())
                     .content(packageConstruction.getContent())
                     .status(constructionTask.getStatus())
                     .build();
+            if (taskStaff != null) {
+                statusResponse.setStaffId(taskStaff.getStaffId());
+            } else {
+                statusResponse.setStaffId("");
+            }
             constructTaskStatusResponseList.add(statusResponse);
         }
         return constructTaskStatusResponseList;
@@ -148,17 +168,12 @@ public class ConstructionService {
         return responseList;
     }
 
-
-
-//    ConstructionTaskStaff constructionTaskStaff(AssignTaskStaffRequest request, String staffName){
-//        ConstructionTaskStaffKey key = ConstructionTaskStaffKey.builder()
-//                .staffId(request.getStaffId())
-//                .taskId(request.getTaskId())
-//                .build();
-//        return ConstructionTaskStaff.builder()
-//                .id(key)
-//                .staffName(staffName)
-//                .build();
-//    }
+    ConstructionTaskStaff constructionTaskStaff(AssignTaskStaffRequest request, String staffName){
+        return ConstructionTaskStaff.builder()
+                .taskId(request.getTaskId())
+                .staffId(request.getStaffId())
+                .staffName(staffName)
+                .build();
+    }
 
 }

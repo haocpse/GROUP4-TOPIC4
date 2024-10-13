@@ -2,6 +2,7 @@ package com.swp_group4.back_end.entities;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -13,8 +14,9 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class ConstructionTaskStaff {
 
-    @EmbeddedId
-    ConstructionTaskStaffKey id;
+    @Id
+    String taskId;
+    String staffId;
     String staffName;
 
 }

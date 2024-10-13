@@ -16,7 +16,6 @@ public interface ConstructionOrderMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "constructionOrderId", target = "orderId")
-    @Mapping(source = "status", target = "orderStatus")
     @Mapping(source = "total", target = "totalPrice")
     ConstructOrderDetailForManagerResponse toDetailForManager(ConstructionOrder order, @MappingTarget ConstructOrderDetailForManagerResponse detail);
 

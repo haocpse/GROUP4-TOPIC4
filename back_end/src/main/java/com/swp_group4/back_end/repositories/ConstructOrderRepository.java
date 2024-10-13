@@ -11,10 +11,10 @@ import java.util.Optional;
 @Repository
 public interface ConstructOrderRepository extends JpaRepository<ConstructionOrder, String> {
 
-    Optional<ConstructionOrder> findByQuotationId(String quotationId);
+    ConstructionOrder findByQuotationId(String quotationId);
     Optional<ConstructionOrder> findByDesignId(String designId);
-    List<ConstructionOrder> findByConsultant(String consultant);
-    List<ConstructionOrder> findByDesignLeader(String designLeader);
-    List<ConstructionOrder> findByConstructionLeader(String constructionLeader);
+    List<ConstructionOrder> findByConsultantId(String consultant);
+    List<ConstructionOrder> findByDesignerLeaderId(String designLeader);
+    List<ConstructionOrder> findByConstructorLeaderId(String constructionLeader);
 
 }

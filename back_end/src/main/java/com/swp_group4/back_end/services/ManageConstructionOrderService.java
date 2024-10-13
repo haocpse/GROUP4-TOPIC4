@@ -3,9 +3,7 @@ package com.swp_group4.back_end.services;
 import com.swp_group4.back_end.entities.*;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.mapper.*;
-import com.swp_group4.back_end.repositories.ConstructOrderRepository;
-import com.swp_group4.back_end.repositories.CustomerRepository;
-import com.swp_group4.back_end.repositories.StaffRepository;
+import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.requests.*;
 import com.swp_group4.back_end.responses.*;
 import lombok.AccessLevel;
@@ -32,8 +30,19 @@ public class ManageConstructionOrderService {
     CustomerRepository customerRepository;
     @Autowired
     StaffRepository staffRepository;
+    @Autowired
+    PackageRepository packageRepository;
+    @Autowired
+    private QuotationRepository quotationRepository;
 
-    public ConstructionOrder createOrder(ServiceRequest request, Customer customer) {
+    public ConstructionOrder createOrder(ServiceRequest request) {
+        Customer customer = Customer.builder()
+                .firstname(request.getFirstName())
+                .lastname(request.getLastName())
+                .address(request.getAddress())
+                .phone(request.getPhone())
+                .build();
+        customerRepository.save(customer);
         ConstructionOrder constructionOrder = ConstructionOrder.builder()
                 .customerId(customer.getCustomerId())
                 .customerRequest(request.getCustomerRequest())
@@ -48,6 +57,12 @@ public class ManageConstructionOrderService {
         for (ConstructionOrder constructionOrder : constructionOrders) {
             Customer customer = this.findCustomerById(constructionOrder.getCustomerId());
             ConstructOrderDetailForManagerResponse response = this.buildConstructOrderDetailForManagerResponse(constructionOrder, customer);
+            if (constructionOrder.getQuotationId() != null){
+                String type = packageRepository.findById(quotationRepository.findById(constructionOrder.getQuotationId())
+                                .orElseThrow().getPackageId())
+                        .orElseThrow().getPackageType();
+                response.setPackageType(type);
+            }
             responses.add(response);
         }
         return responses;
@@ -61,14 +76,11 @@ public class ManageConstructionOrderService {
     }
 
     ConstructOrderDetailForManagerResponse buildConstructOrderDetailForManagerResponse(ConstructionOrder order, Customer customer) {
-        String consultantName = getStaffName(order.getConsultant());
-        String designLeaderName = getStaffName(order.getDesignLeader());
-        String constructorLeaderName = getStaffName(order.getConstructionLeader());
         ConstructOrderDetailForManagerResponse response = ConstructOrderDetailForManagerResponse.builder()
                 .customerName(customer.getFirstname() + " " + customer.getLastname())
-                .consultantName(consultantName)
-                .designLeaderName(designLeaderName)
-                .constructorLeaderName(constructorLeaderName)
+                .consultantId(order.getConsultantId())
+                .designerLeaderId(order.getDesignerLeaderId())
+                .constructorLeaderId(order.getConstructorLeaderId())
                 .build();
         constructionOrderMapper.toDetailForManager(order, response);
         customerMapper.toDetailForManager(customer, response);
