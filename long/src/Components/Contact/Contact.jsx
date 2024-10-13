@@ -7,15 +7,16 @@ import axios from 'axios';
 
 const Contact = () => {
     const [formData, setFormData] = useState({ // luu thong tin lien he cua khach hang
-        service: '',
-        firstName: '',
-        lastName: '',
-        address: '',
-        phone: '',
-        customerRequest: ''
     });
 
-    const [file, setFile] = useState(null);
+    const [service, setService] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [address, setAddress] = useState('');
+    const [phone, setPhone] = useState('');
+    const [customerRequest, setCustomerRequest] = useState('');
+
+    // const [file, setFile] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [error, setError] = useState('');
 
@@ -26,10 +27,10 @@ const Contact = () => {
         // [name]: value cap nhat gia tri cho truong tuong ung (email, name) dua vao thuoc tinh name
     };
 
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        setFile(file);
-    };
+    // const handleFileChange = (event) => {
+    //     const file = event.target.files[0];
+    //     setFile(file);
+    // };
 
 
 
@@ -39,23 +40,30 @@ const Contact = () => {
         setSubmitted(false);
 
         console.log('form: ', formData);
-        console.log('file:', file); // kt file anh
+        // console.log('file:', file); // kt file anh
 
         // tao FormData de gui du lieu va file cho backend
 
-        const dataToSend = new FormData();
-        dataToSend.append('service', formData.service);
-        dataToSend.append('firstName', formData.firstName);
-        dataToSend.append('lastName', formData.lastName);
-        dataToSend.append('address', formData.address); // service, firstname, lastname, address, contactNumber, customRequest
-        dataToSend.append('phone', formData.phone);
-        dataToSend.append('customerRequest', formData.customerRequest);
-        if (file) {
-            dataToSend.append('file', file);
-        }
+        // const dataToSend = new FormData();
+        // dataToSend.append('service', formData.service);
+        // dataToSend.append('firstName', formData.firstName);
+        // dataToSend.append('lastName', formData.lastName);
+        // dataToSend.append('address', formData.address); // service, firstname, lastname, address, contactNumber, customRequest
+        // dataToSend.append('phone', formData.phone);
+        // dataToSend.append('customerRequest', formData.customerRequest);
+        // if (file) {
+        //     dataToSend.append('file', file);
+        // }
 
         try {
-            const response = await axios.post('http://localhost:8080/contactUs', dataToSend);
+            const response = await axios.post('http://localhost:8080/contactUs', {
+                service : service,
+                firstName : firstName,
+                lastName : lastName,
+                address : address,
+                phone : phone,
+                customerRequest : customerRequest
+            });
             console.log(response.data);
 
             if (response.status === 200) {
@@ -104,8 +112,8 @@ const Contact = () => {
                                     <select
                                         name="service"
                                         className="form-control"
-                                        value={formData.service}
-                                        onChange={handleChange}
+                                        value ={service}
+                                        onChange={(event) => setService(event.target.value)}
                                         required
                                     >
                                         <option value="">-- Choose a Service -- </option>
@@ -116,24 +124,24 @@ const Contact = () => {
                                 <div className="form-group mb-6">
                                     <label>First Name</label>
                                     <input type="text" className="form-control" name="firstName"
-                                        value={formData.firstName}
-                                        onChange={handleChange}
+                                        value={firstName}
+                                        onChange={(event) => setFirstName(event.target.value)}
                                         required />
                                 </div>
 
                                 <div className="form-group mb-6">
                                     <label>Last Name</label>
                                     <input type="text" className="form-control" name="lastName"
-                                        value={formData.lastName}
-                                        onChange={handleChange}
+                                        value={lastName}
+                                        onChange={(event) => setLastName(event.target.value)}
                                         required />
                                 </div>
 
                                 <div className="form-group mb-6">
                                     <label>Address</label>
                                     <input type="text" className="form-control" name="address"
-                                        value={formData.address}
-                                        onChange={handleChange}
+                                        value={address}
+                                        onChange={(event) => setAddress(event.target.value)}
                                         required />
                                 </div>
 
@@ -143,8 +151,8 @@ const Contact = () => {
                                         type="text"
                                         className="form-control"
                                         name="phone"
-                                        value={formData.phone}
-                                        onChange={handleChange}
+                                        value={phone}
+                                        onChange={(event) => setPhone(event.target.value)}
                                         required
                                     />
                                 </div>
@@ -155,8 +163,8 @@ const Contact = () => {
                                         className="form-control"
                                         name="customerRequest"
                                         rows="4"
-                                        value={formData.customerRequest}
-                                        onChange={handleChange}
+                                        value={customerRequest}
+                                        onChange={(event) => setCustomerRequest(event.target.value)}
                                         required
                                     ></textarea>
                                 </div>
@@ -168,7 +176,7 @@ const Contact = () => {
                         )}
                     </div>
 
-                    {!submitted && ( // Chỉ hiển thị form upload nếu chưa gửi
+                    {/* {!submitted && ( // Chỉ hiển thị form upload nếu chưa gửi
                         <div className="col-md-6 bg-light p-4 shadow-lg">
                             <div className="form-group mb-6 text-center ">
                                 <label className="label-upload">Upload Image of Your Idea</label>
@@ -182,7 +190,7 @@ const Contact = () => {
                                 <img className="logo-contact" src={logo} alt="" />
                             </div>
                         </div>
-                    )}
+                    )} */}
                 </div >
             </div>
 

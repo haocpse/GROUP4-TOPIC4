@@ -32,19 +32,19 @@ const Login = () => {
 
             console.log(response.data); // để truy cập vào nội dung mà API trả về
 
-            if (response.data.token) {
-                alert('LOGIN SUCCESSFULLY')
+            // if (response.data.token) {
+            //     alert('LOGIN SUCCESSFULLY')
 
 
-                // neu thanh cong thi luu token vao local storage
-                if (rememberMe) {
-                    localStorage.setItem('token', response.data.token); //  Lưu vào localStorage nếu "Remember Me"
-                } else {
-                    sessionStorage.setItem('token', response.data.token);  // Lưu vào sessionStorage nếu không nhớ
-                }
+            //     // neu thanh cong thi luu token vao local storage
+            //     if (rememberMe) {
+            //         localStorage.setItem('token', response.data.token); //  Lưu vào localStorage nếu "Remember Me"
+            //     } else {
+            //         sessionStorage.setItem('token', response.data.token);  // Lưu vào sessionStorage nếu không nhớ
+            //     }
 
                 navigate('/main'); // chuyen den trang home
-            }
+            // }
 
         } catch (err) {
             if (err.response) {

@@ -1,0 +1,41 @@
+body {
+    font-family: 'Roboto', sans-serif;
+}
+.working-process-section {
+    background-color: #f9f9f9;
+}
+
+.text-gray {
+    color: #BDBDBD;
+}
+
+.step-box {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.step-number {
+    background: linear-gradient(45deg, #f54d70, #ff7676);
+    border-radius: 50%;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    width: 75px;  /* Đảm bảo chiều rộng cố định */
+    height: 75px; /* Đảm bảo chiều cao cố định */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+    flex-shrink: 0; /* Đảm bảo không bị dẹp */
+}
+
+.step-content h5 {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.step-content p {
+    margin: 0;
+    color: #555;
+}

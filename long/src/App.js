@@ -12,7 +12,6 @@ import ConsultantTasks from "./Components/ConsultantTasks/ConsultantTasks";
 import DesignUpload from "./Components/DesignUpload/DesignUpload";
 import ConstructionOrder from "./Components/ConstructionProgress/ConstructionOrder";
 import QuotationOrder from "./Components/QuotationOrder/QuotationOrder";
-import QuotationPage from "./Components/QuotationOrder/QuotationPage";
 import ApproveQuotation from "./Components/ApproveQuotation/ApproveQuatation";
 import ViewQuotation from "./Components/ApproveQuotation/ViewQuotation";
 import ConsultationPage from "./Components/ConsultationPage/ConsultationPage";
@@ -23,11 +22,13 @@ import ViewPayment from "./Components/ListQuotation/ViewPayment";
 import DesignerTasks from "./Components/DesignerTasks/DesignerTasks";
 import CustomerView from "./Components/CustomerView/CustomerView";
 import CustomerQuotationList from "./Components/CustomerView/CustomerQuotationList";
+import ViewQuotationAfterCreate from "./Components/QuotationOrder/ViewQuotationAfterCreate";
+import Main from "./Components/Main/Main";
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Login />,
+      element: <Main />,
     },
     {
       path: "login",
@@ -62,22 +63,22 @@ function App() {
           element: <ApproveQuotation />,
         },
         {
-          path: "designs/:designId",
+          path: "designs/:id",
           element: <ViewDesign />,
         },
         {
-          path: "quotations/:quotationId",
+          path: "quotations/:id",
           element: <ViewQuotation />,
         },
       ],
     },
 
     {
-      path: "construction-order",
+      path: "construct/ownedTasks",
       element: <ConstructionOrder />,
     },
     {
-      path: "ownedTasks/:constructionOrderId",
+      path: "construct/ownedTasks/:constructionOrderId",
       element: <ConstructionProgress />,
     },
 
@@ -107,6 +108,10 @@ function App() {
       element: <QuotationOrder />,
     },
     {
+      path: "consult/ownedTasks/:constructionOrderId/quotation",
+      element: <ViewQuotationAfterCreate />,
+    },
+    {
       path: "customrer-quotation",
       element: <CustomerQuotationList />,
     },
@@ -116,16 +121,16 @@ function App() {
     },
 
     {
-      path: "designer-tasks",
+      path: "design/ownedTasks",
       element: <DesignerTasks />,
     },
     {
-      path: "designer-tasks/design-upload", // Add the route for DesignUpload
+      path: "design/ownedTasks/:constructionOrderId", // Add the route for DesignUpload
       element: <DesignUpload />,
     },
   ]);
 
+
   return <RouterProvider router={router} />;
 }
-
 export default App;

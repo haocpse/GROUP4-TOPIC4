@@ -1,54 +1,43 @@
-import React, { useState } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "../Navbar/Navbar";
 
 const DesignUpload = () => {
-  const { constructionOrderId } = useParams(); // Get the constructionOrderId from the URL
-  const location = useLocation();
-  const orderDetails = location.state || {}; // Use an empty object as default
+  const [designDetail, setDesignDetail] = useState({})
+  const { constructionOrderId } = useParams();
+  const [image2D, setImage2D] = useState(null);
+  const [image3D, setImage3D] = useState(null);
+  const [frontView, setFrontView] = useState(null);
+  const [rearView, setRearView] = useState(null);
 
-  const [customerInfo, setCustomerInfo] = useState({
-    customerName: orderDetails.customerName || "",
-    phone: orderDetails.phone || "",
-    address: orderDetails.address || "",
-    request: orderDetails.customerRequest || "",
-    startDate: orderDetails.startDate || "",
-    staffName: orderDetails.staffName || "",
-  });
-
-  const [images, setImages] = useState({
-    image2D: null,
-    image3D: null,
-    frontView: null,
-    rearView: null,
-  });
-
-  const handleImageChange = (e) => {
-    const { name, files } = e.target;
-    setImages((prev) => ({ ...prev, [name]: files[0] }));
+  const handleFileChange = (e, setter) => {
+    setter(e.target.files[0]);  // Store the selected file
   };
+
+  useEffect(() => {
+    const fetchDesign = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/design/ownedTasks/${constructionOrderId}`);
+        setDesignDetail(response.data.data);
+      } catch (error) {
+        console.error("Error fetching quotation order:", error);
+      }
+    };
+    fetchDesign()
+  }, [constructionOrderId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Create form data to send
-    const formData = new FormData();
-    formData.append("url2dDesign", images.image2D);
-    formData.append("url3dDesign", images.image3D);
-    formData.append("urlFrontDesign", images.frontView);
-    formData.append("urlBackDesign", images.rearView);
-
     try {
       // Make the API call to upload the design images
-      const response = await fetch(
-        `http://localhost:8080/design/ownedTasks/${constructionOrderId}`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
+      const formData = new FormData();
+      formData.append('image2D', image2D);
+      formData.append('image3D', image3D);
+      formData.append('frontView', frontView);
+      formData.append('rearView', rearView);
+      const response = await axios.post(`http://localhost:8080/design/ownedTasks/${constructionOrderId}`, formData);
       if (response.ok) {
         alert("Design uploaded successfully!");
       } else {
@@ -61,88 +50,68 @@ const DesignUpload = () => {
 
   return (
     <>
-      <Navbar />
       <div className="container mt-5">
         <div className="row">
           <div className="col-md-5">
             <h2 className="mb-4">Customer Information</h2>
             <div className="mb-3">
-              <strong>Name:</strong> {customerInfo.customerName}
+              <strong>Name:</strong> {designDetail.customerName}
             </div>
             <div className="mb-3">
-              <strong>Phone:</strong> {customerInfo.phone}
+              <strong>Phone:</strong> {designDetail.phone}
             </div>
             <div className="mb-3">
-              <strong>Address:</strong> {customerInfo.address}
+              <strong>Address:</strong> {designDetail.address}
             </div>
             <div className="mb-3">
-              <strong>Start Date:</strong>{" "}
-              {new Date(customerInfo.startDate).toLocaleDateString()}
+              <strong>Staff:</strong> {designDetail.staffName}
             </div>
-            <div className="mb-3">
-              <strong>Staff Name:</strong> {customerInfo.staffName}
-            </div>
-
             {/* Request Section */}
-            <h3 className="mt-4">Customer Request</h3>
-            <textarea
-              className="form-control"
-              name="request"
-              rows="4"
-              placeholder="Enter customer request..."
-              value={customerInfo.request}
-              onChange={(e) =>
-                setCustomerInfo({ ...customerInfo, request: e.target.value })
-              }
-            />
+            <div className="col-md-12">
+              <p><strong>Request: </strong> <br /> {designDetail.customerRequest}</p>
+            </div>
           </div>
 
           <div className="col-md-7">
             <h2 className="mb-4">Upload Design Files</h2>
             <form onSubmit={handleSubmit}>
-              <div className="mb-3">
-                <label>2D Design Image:</label>
+              <div className="mb-12">
+                <label>Image 2D:</label>
                 <input
-                  type="file"
-                  name="image2D"
                   className="form-control"
+                  type="file"
                   accept="image/*"
-                  onChange={handleImageChange}
+                  onChange={(e) => handleFileChange(e, setImage2D)}
                 />
               </div>
-              <div className="mb-3">
-                <label>3D Design Image:</label>
+              <div className="mb-12">
+                <label>Image 3D:</label>
                 <input
-                  type="file"
-                  name="image3D"
                   className="form-control"
+                  type="file"
                   accept="image/*"
-                  onChange={handleImageChange}
+                  onChange={(e) => handleFileChange(e, setImage3D)}
                 />
               </div>
-              <div className="mb-3">
-                <label>Front View Image:</label>
+              <div className="mb-12">
+                <label>Front View:</label>
                 <input
-                  type="file"
-                  name="frontView"
                   className="form-control"
+                  type="file"
                   accept="image/*"
-                  onChange={handleImageChange}
+                  onChange={(e) => handleFileChange(e, setFrontView)}
                 />
               </div>
-              <div className="mb-3">
-                <label>Rear View Image:</label>
+              <div className="mb-12">
+                <label>Rear View:</label>
                 <input
-                  type="file"
-                  name="rearView"
                   className="form-control"
+                  type="file"
                   accept="image/*"
-                  onChange={handleImageChange}
+                  onChange={(e) => handleFileChange(e, setRearView)}
                 />
               </div>
-              <button type="submit" className="btn btn-primary">
-                Submit Design
-              </button>
+              <button type="submit" className="btn btn-primary">Upload</button>
             </form>
           </div>
         </div>

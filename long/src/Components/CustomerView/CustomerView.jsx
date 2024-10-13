@@ -1,115 +1,98 @@
+// // Components/CustomerView/CustomerView.js
+
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap is imported
+import { Link } from "react-router-dom";
+import "./CustomerView.css"; // Import CSS file for styling
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-const CustomerView = ({ customerId }) => {
-  const [customerOrders, setCustomerOrders] = useState([]); // Lưu trữ yêu cầu xây dựng của khách hàng
-  const [loadingOrders, setLoadingOrders] = useState(true); // Trạng thái đang tải yêu cầu
-  const [customerInfo, setCustomerInfo] = useState({}); // Thông tin khách hàng
-  const [feedbackMessage, setFeedbackMessage] = useState(""); // Tin nhắn phản hồi
+const CustomerView = () => {
+  const [orders, setOrders] = useState([]); // State to store orders
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(""); // Error state
 
-  // Hàm fetch để lấy dữ liệu của khách hàng từ API
-  const fetchCustomerOrders = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8080/customer/construction-progress/${customerId}`
-      ); // Gọi API lấy dữ liệu
-      setCustomerOrders(response.data.orders); // Lưu dữ liệu yêu cầu xây dựng vào state
-      setCustomerInfo(response.data.customer); // Lưu thông tin khách hàng vào state
-    } catch (error) {
-      console.error("Lỗi khi lấy dữ liệu khách hàng:", error);
-      setFeedbackMessage("Lỗi khi tải dữ liệu khách hàng.");
-    } finally {
-      setLoadingOrders(false); // Đặt trạng thái không còn tải
-    }
-  };
-
-  // Sử dụng useEffect để gọi hàm fetchCustomerOrders khi component được mount
+  // Fetch data from API
   useEffect(() => {
-    fetchCustomerOrders(); // Gọi hàm fetch dữ liệu khách hàng
-  }, [customerId]);
+    const fetchOrders = async () => {
+      try {
+        // Fetch data from the API
+        const response = await fetch("http://localhost:8080/myInfo/orders");
+        if (!response.ok) {
+          throw new Error("Failed to fetch orders");
+        }
+        const data = await response.json();
+        setOrders(data); // Set the orders data
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+        setError("Unable to fetch orders. Please try again later."); // Set error message
+      } finally {
+        setLoading(false); // Set loading to false after fetching
+      }
+    };
+
+    fetchOrders();
+  }, []);
 
   return (
-    <div className="container mt-4">
-      {/* Display feedback messages */}
-      {feedbackMessage && (
-        <div className="alert alert-danger" role="alert">
-          {feedbackMessage}
-        </div>
+    <div className="container customer-view mt-4">
+      <h2 className="text-center">My Construction Progress</h2>
+      {loading ? (
+        <p className="text-center">Loading orders...</p>
+      ) : error ? (
+        <p className="text-center text-danger">{error}</p>
+      ) : (
+        <>
+          <h3 className="mt-4">Orders</h3>
+          {orders.length > 0 ? (
+            <table className="table table-bordered mt-3">
+              <thead className="thead-light">
+                <tr>
+                  <th>Order ID</th>
+                  <th>Quotation</th>
+                  <th>Design</th>
+                  <th>Package Type</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map((order) => (
+                  <tr key={order.orderId}>
+                    <td>{order.orderId}</td>
+                    <td>
+                      <Link 
+                        to={`/customer-quotation/${order.Quotation}`} 
+                        className="quotation-link"
+                      >
+                        {order.Quotation}
+                      </Link>
+                    </td>
+                    <td>
+                      <Link 
+                        to={`/design/${order.Design}`} 
+                        className="design-link"
+                      >
+                        {order.Design}
+                      </Link>
+                    </td>
+                    <td>{order.packageType}</td>
+                    <td>{new Date(order.startDate).toLocaleDateString()}</td>
+                    <td>{new Date(order.endDate).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p className="text-center">No orders found.</p>
+          )}
+        </>
       )}
-
-      <div className="row">
-        {/* Left-side Customer Information */}
-        <div className="col-md-4">
-          <div className="card mb-4">
-            <div className="card-header">
-              <h5>Thông tin khách hàng</h5>
-            </div>
-            <div className="card-body">
-              {loadingOrders ? (
-                <p>Đang tải thông tin khách hàng...</p>
-              ) : (
-                <div>
-                  <p>
-                    <strong>Tên khách hàng:</strong>{" "}
-                    {customerInfo.customerName || "N/A"}
-                  </p>
-                  <p>
-                    <strong>Số điện thoại:</strong>{" "}
-                    {customerInfo.phone || "N/A"}
-                  </p>
-                  <p>
-                    <strong>Địa chỉ:</strong> {customerInfo.address || "N/A"}
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Right-side Construction Progress Table */}
-        <div className="col-md-8">
-          <div className="card">
-            <div className="card-header">
-              <h5>Tiến độ xây dựng</h5>
-            </div>
-            <div className="card-body">
-              {loadingOrders ? (
-                <p>Đang tải dữ liệu xây dựng của bạn...</p>
-              ) : customerOrders.length > 0 ? (
-                <table className="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>Construction ID</th>
-                      <th>Request</th>
-                      <th>Start Date</th>
-                      <th>Staff Name</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {customerOrders.map((order) => (
-                      <tr key={order.id}>
-                        <td>{order.id}</td>
-                        <td>{order.request}</td>
-                        <td>
-                          {new Date(order.startDate).toLocaleDateString()}
-                        </td>
-                        <td>{order.staffName || "Chưa gán"}</td>
-                        <td>{order.status}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <p>Không có dữ liệu xây dựng nào cho khách hàng.</p>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
 
 export default CustomerView;
+
+
+
+
+
