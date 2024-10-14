@@ -87,7 +87,7 @@ public class DesignService {
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
     }
 
-    public Design saveDesign(String constructionOrderId, MultipartFile image2D, MultipartFile image3D, MultipartFile frontView, MultipartFile rearView) {
+    public Design saveDesign(String constructionOrderId, MultipartFile image2D, MultipartFile image3D, MultipartFile frontView) {
         Design design = Design.builder()
                 .status(DesignStatus.DESIGNED)
                 .build();
@@ -102,9 +102,6 @@ public class DesignService {
         }
         if (!frontView.isEmpty()) {
             design.setUrlFrontDesign(baseUrl + saveImage(frontView, constructionOrderId));
-        }
-        if (!rearView.isEmpty()) {
-            design.setUrlBackDesign(baseUrl + saveImage(rearView, constructionOrderId));
         }
 
         // Save the design and update the order status

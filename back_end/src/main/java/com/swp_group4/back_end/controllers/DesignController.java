@@ -44,10 +44,10 @@ public class DesignController {
     @PostMapping("/ownedTasks/{constructionOrderId}")
     public ApiResponse<Design> uploadDesign(@PathVariable String constructionOrderId, @RequestParam("image2D") MultipartFile image2D,
                                                                                       @RequestParam("image3D") MultipartFile image3D,
-                                                                                      @RequestParam("frontView") MultipartFile frontView,
-                                                                                      @RequestParam("rearView") MultipartFile rearView) {
+                                                                                      @RequestParam("frontView") MultipartFile frontView ) {
+//                                                                                      @RequestParam("rearView") MultipartFile rearView) {
         return ApiResponse.<Design>builder()
-                .data(designService.saveDesign(constructionOrderId,image2D, image3D, frontView, rearView))
+                .data(designService.saveDesign(constructionOrderId,image2D, image3D, frontView))
                 .build();
     }
 
