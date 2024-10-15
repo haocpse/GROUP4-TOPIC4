@@ -23,18 +23,14 @@ public class PackageController {
         return packageService.getAllPackage();
     }
 
-    @PostMapping()
-    public ApiResponse<?> createPackage(@RequestBody PackageCreateRequest request) {
-        return ApiResponse.builder()
-                .data(packageService.createPackage(request))
-                .build();
+    @PostMapping
+    public Packages createPackage(@RequestBody PackageCreateRequest request) {
+        return packageService.createPackage(request);
     }
 
     @PutMapping("/{packageId}")
-    public ApiResponse<?> updatePackage(@PathVariable String packageId, @RequestBody PackageCreateRequest request) {
-        return ApiResponse.builder()
-                .data(packageService.updatePackage(packageId, request))
-                .build();
+    public Packages updatePackage(@PathVariable String packageId, @RequestBody PackageCreateRequest request) {
+        return packageService.updatePackage(packageId, request);
     }
 
     @DeleteMapping("/{packageId}")
