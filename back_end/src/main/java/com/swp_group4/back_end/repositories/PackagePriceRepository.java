@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface PackagePriceRepository extends JpaRepository<PackagePrice, String> {
 
     PackagePrice findFirstByPackageIdAndMinVolumeLessThanEqualAndMaxVolumeGreaterThanEqual(String packageId, double minVolume, double maxVolume);
-
+    List<PackagePrice> findPackagePriceByPackageId(String packageId);
 }
