@@ -42,10 +42,7 @@ public class ConsultationService {
 
     public List<ConstructOrderDetailForStaffResponse> listOwnedConsultTask() {
         List<ConstructOrderDetailForStaffResponse> responses = new ArrayList<>();
-        String id = "bc68fbf7-8729-11ef-bf00-c85acfa9b517";
-        Staff staff = staffRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Staff not found"));
-//        Staff staff = this.identifyStaff();
+        Staff staff = this.identifyStaff();
         List<ConstructionOrder> orders = constructOrderRepository.findByConsultantId(staff.getStaffId());
         for (ConstructionOrder order : orders) {
             ConstructOrderDetailForStaffResponse response = this.detailOfOrder(order.getConstructionOrderId());
@@ -142,9 +139,11 @@ public class ConsultationService {
     public ConstructOrderDetailForStaffResponse detailOfOrder(String constructionOrderId) {
         ConstructionOrder order = this.findOrderById(constructionOrderId);
         Customer customer = this.findCustomerById(order.getCustomerId());
+        Staff staff = staffRepository.findById(order.getConsultantId()).orElseThrow(() -> new RuntimeException("Staff not found"));
         return ConstructOrderDetailForStaffResponse.builder()
                 .constructionOrderId(order.getConstructionOrderId())
-                .customerName(customer.getFirstname() + " " + customer.getLastname())
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
+                .staffName(staff.getStaffName())
                 .phone(customer.getPhone())
                 .address(customer.getAddress())
                 .customerRequest(order.getCustomerRequest())
@@ -169,7 +168,7 @@ public class ConsultationService {
         Customer customer = this.findCustomerById(order.getCustomerId());
         Packages packages = this.findPackage(quotation.getPackageId());
         ConstructQuotationResponse response = ConstructQuotationResponse.builder()
-                .customerName(customer.getFirstname() + " " + customer.getLastname())
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .consultantName(this.getStaffName(order.getConsultantId()))
                 .customerRequest(order.getCustomerRequest())
                 .packageType(packages.getPackageType())

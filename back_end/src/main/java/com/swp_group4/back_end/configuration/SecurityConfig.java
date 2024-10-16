@@ -3,6 +3,7 @@ package com.swp_group4.back_end.configuration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,29 +27,23 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-//    private final String[] PUBLIC_ENDPOINTS = {
-//            "/users", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh"
-//    };
+    private final String[] PUBLIC_ENDPOINTS = {
+            "/", "/login", "/signup", "/staff","/contact",
+    };
 
-    @Value("${jwt.SIGNER_KEY")
+    @Value("${jwt.SIGNER_KEY}")
     String SIGNER_KEY;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-//        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
-//                .permitAll()
-//                .anyRequest()
-//                .authenticated());
-
         httpSecurity.authorizeHttpRequests(request -> request
-                .anyRequest()
-                .permitAll());
-
+                .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                .anyRequest().authenticated());
         httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
             .decoder(jwtDecoder())
             .jwtAuthenticationConverter(jwtAuthenticationConverter())));
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
-
+        httpSecurity.addFilterBefore(corsFilter(), CorsFilter.class);
         return httpSecurity.build();
     }
 
@@ -56,7 +51,7 @@ public class SecurityConfig {
     public CorsFilter corsFilter(){
         CorsConfiguration corsConfiguration = new CorsConfiguration();
 
-        corsConfiguration.addAllowedOrigin("*");
+        corsConfiguration.addAllowedOrigin("http://localhost:3000");
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.addAllowedHeader("*");
 

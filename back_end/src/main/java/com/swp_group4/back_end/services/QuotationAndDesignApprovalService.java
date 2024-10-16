@@ -53,7 +53,7 @@ public class QuotationAndDesignApprovalService {
             QuotationAndDesignReviewResponse response = QuotationAndDesignReviewResponse.builder()
                     .constructionOrderId(order.getConstructionOrderId())
                     .id(quotation.getQuotationId())
-                    .customerName(customer.getFirstname() + " " + customer.getLastname())
+                    .customerName(customer.getFirstName() + " " + customer.getLastName())
                     .phone(customer.getPhone())
                     .address(customer.getAddress())
                     .leaderName(this.getStaffName(order.getConsultantId()))
@@ -76,7 +76,7 @@ public class QuotationAndDesignApprovalService {
             QuotationAndDesignReviewResponse response = QuotationAndDesignReviewResponse.builder()
                     .constructionOrderId(order.getConstructionOrderId())
                     .id(design.getDesignId())
-                    .customerName(customer.getFirstname() + " " + customer.getLastname())
+                    .customerName(customer.getFirstName() + " " + customer.getLastName())
                     .phone(customer.getPhone())
                     .address(customer.getAddress())
                     .build();
@@ -92,7 +92,7 @@ public class QuotationAndDesignApprovalService {
         List<ConstructionTasks> tasks = this.findConstructionTasks(order.getConstructionOrderId());
         ConstructQuotationResponse response = ConstructQuotationResponse.builder()
                 .constructOrderId(order.getConstructionOrderId())
-                .customerName(customer.getFirstname() + " " + customer.getLastname())
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .consultantName(this.getStaffName(order.getConsultantId()))
                 .packageType(this.findPackageById(quotation.getPackageId()).getPackageType())
                 .content(this.contentTasks(tasks))
@@ -110,7 +110,7 @@ public class QuotationAndDesignApprovalService {
         Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
         return ConstructDesignResponse.builder()
                 .constructionOrderId(order.getConstructionOrderId())
-                .customerName(customer.getFirstname() + " " + customer.getLastname())
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .designName(this.getStaffName(order.getDesignerLeaderId()))
                 .customerRequest(order.getCustomerRequest())
                 .url2dDesign(design.getUrl2dDesign())

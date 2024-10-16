@@ -57,7 +57,7 @@ public class ConstructionService {
         Customer customer = this.findCustomerById(order.getCustomerId());
         return ConstructionTasksAndStatusResponse.builder()
                 .constructionOrderId(constructionOrderId)
-                .customerName(customer.getFirstname() + " " + customer.getLastname())
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .constructTaskStatusResponses(this.constructTaskStatusResponseList(constructionTasksList))
                 .build();
     }
@@ -100,7 +100,7 @@ public class ConstructionService {
         Customer customer = this.findCustomerById(order.getCustomerId());
         return ConstructOrderDetailForStaffResponse.builder()
                 .constructionOrderId(order.getConstructionOrderId())
-                .customerName(customer.getFirstname() + " " + customer.getLastname())
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .phone(customer.getPhone())
                 .address(customer.getAddress())
                 .customerRequest(order.getCustomerRequest())
