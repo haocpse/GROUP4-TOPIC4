@@ -100,6 +100,7 @@ public class ConsultationService {
 
     ConstructionOrder saveConstructionOrder(ConstructionOrder order, Quotation quotation ,ExportQuotationRequest request ,double totalPrice) {
         order.setQuotationId(quotation.getQuotationId());
+        order.setCustomerRequest(request.getCustomerRequest());
         order.setTotal(totalPrice);
         order.setStartDate(request.getStartDate());
         order.setEndDate(request.getEndDate());

@@ -9,15 +9,13 @@ import com.swp_group4.back_end.repositories.PackageRepository;
 import com.swp_group4.back_end.requests.PackageConstructionRequest;
 import com.swp_group4.back_end.requests.PackageCreateRequest;
 import com.swp_group4.back_end.requests.PackagePriceRequest;
-import com.swp_group4.back_end.responses.ApiResponse;
-import com.swp_group4.back_end.responses.PackageResponse;
+import com.swp_group4.back_end.responses.QuotationPackageResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,10 +33,10 @@ public class PackageService {
     @Autowired
     PackagePriceRepository packagePriceRepository;
 
-    public PackageResponse detailPackage(String constructionOrderId) {
+    public QuotationPackageResponse detailPackage(String constructionOrderId) {
         List<Packages> packagesList = packageRepository.findAll();
         List<PackageConstruction> packageConstructions = packageConstructionRepository.findAll();
-        return PackageResponse.builder()
+        return QuotationPackageResponse.builder()
                 .packagesList(packagesList)
                 .packageConstructions(packageConstructions)
                 .build();
