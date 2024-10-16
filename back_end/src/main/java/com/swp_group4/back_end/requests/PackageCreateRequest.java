@@ -13,7 +13,7 @@ import java.util.List;
 public class PackageCreateRequest {
     String packageType;
     List<PackagePriceRequest> packagePrices;
-    List<PackageConstructionRequest> packageConstructions;
+//    List<PackageConstructionRequest> packageConstructions;
 
 }
 

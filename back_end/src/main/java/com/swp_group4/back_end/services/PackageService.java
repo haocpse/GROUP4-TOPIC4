@@ -14,6 +14,7 @@ import com.swp_group4.back_end.responses.PackageResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.internal.constraintvalidators.bv.time.past.PastValidatorForCalendar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,13 +35,13 @@ public class PackageService {
     PackageConstructionRepository packageConstructionRepository;
     @Autowired
     PackagePriceRepository packagePriceRepository;
+    @Autowired
+    private PastValidatorForCalendar pastValidatorForCalendar;
 
-    public PackageResponse detailPackage(String constructionOrderId) {
+    public PackageResponse getAllPackage() {
         List<Packages> packagesList = packageRepository.findAll();
-        List<PackageConstruction> packageConstructions = packageConstructionRepository.findAll();
         return PackageResponse.builder()
                 .packagesList(packagesList)
-                .packageConstructions(packageConstructions)
                 .build();
     }
 
@@ -49,7 +50,7 @@ public class PackageService {
                 .packageType(request.getPackageType())
                 .build();
 
-        for (PackagePriceRequest priceRequest : request.getPackagePrices()){
+        for (PackagePriceRequest priceRequest : request.getPackagePrices()) {
             PackagePrice packagePrice = PackagePrice.builder()
                     .packageId(packages.getPackageId())
                     .minVolume(priceRequest.getMinVolume())
@@ -59,14 +60,15 @@ public class PackageService {
             packagePriceRepository.save(packagePrice);
         }
 
-        for (PackageConstructionRequest constructionRequest : request.getPackageConstructions()) {
-            PackageConstruction packageConstruction = PackageConstruction.builder()
-                    .packageId(packages.getPackageId())
-                    .content(constructionRequest.getContent())
-                    .build();
-            packageConstructionRepository.save(packageConstruction);
-        }
-        return packageRepository.save(packages);
+//        for (PackageConstructionRequest constructionRequest : request.getPackageConstructions()) {
+//            PackageConstruction packageConstruction = PackageConstruction.builder()
+//                    .packageId(packages.getPackageId())
+//                    .content(constructionRequest.getContent())
+//                    .build();
+//            packageConstructionRepository.save(packageConstruction);
+//        }
+        packageRepository.save(packages);
+        return packages;
     }
 
     public Packages updatePackage(String packageId, PackageCreateRequest request) {
@@ -107,31 +109,31 @@ public class PackageService {
                     .collect(Collectors.toList());
             packagePriceRepository.deleteAll(pricesToDelete);
 
-            List<PackageConstruction> existingConstructions = packageConstructionRepository.findByPackageId(packageId);
-            List<PackageConstructionRequest> incomingConstructions = request.getPackageConstructions();
-
-            for (PackageConstructionRequest constructionRequest : incomingConstructions) {
-                Optional<PackageConstruction> existingConstructionOpt = existingConstructions.stream()
-                        .filter(c -> c.getContent().equals(constructionRequest.getContent()))
-                        .findFirst();
-
-                if (existingConstructionOpt.isPresent()) {
-                    PackageConstruction existingConstruction = existingConstructionOpt.get();
-                    packageConstructionRepository.save(existingConstruction);
-                } else {
-                    PackageConstruction newConstruction = PackageConstruction.builder()
-                            .packageId(packageId)
-                            .content(constructionRequest.getContent())
-                            .build();
-                    packageConstructionRepository.save(newConstruction);
-                }
-            }
-
-            List<PackageConstruction> constructionsToDelete = existingConstructions.stream()
-                    .filter(c -> incomingConstructions.stream().noneMatch(
-                            consReq -> consReq.getContent().equals(c.getContent())))
-                    .collect(Collectors.toList());
-            packageConstructionRepository.deleteAll(constructionsToDelete);
+//            List<PackageConstruction> existingConstructions = packageConstructionRepository.findByPackageId(packageId);
+//            List<PackageConstructionRequest> incomingConstructions = request.getPackageConstructions();
+//
+//            for (PackageConstructionRequest constructionRequest : incomingConstructions) {
+//                Optional<PackageConstruction> existingConstructionOpt = existingConstructions.stream()
+//                        .filter(c -> c.getContent().equals(constructionRequest.getContent()))
+//                        .findFirst();
+//
+//                if (existingConstructionOpt.isPresent()) {
+//                    PackageConstruction existingConstruction = existingConstructionOpt.get();
+//                    packageConstructionRepository.save(existingConstruction);
+//                } else {
+//                    PackageConstruction newConstruction = PackageConstruction.builder()
+//                            .packageId(packageId)
+//                            .content(constructionRequest.getContent())
+//                            .build();
+//                    packageConstructionRepository.save(newConstruction);
+//                }
+//            }
+//
+//            List<PackageConstruction> constructionsToDelete = existingConstructions.stream()
+//                    .filter(c -> incomingConstructions.stream().noneMatch(
+//                            consReq -> consReq.getContent().equals(c.getContent())))
+//                    .collect(Collectors.toList());
+//            packageConstructionRepository.deleteAll(constructionsToDelete);
 
             return packages;
         } else {
@@ -139,15 +141,16 @@ public class PackageService {
         }
     }
 
-    public List<Packages> getAllPackage(){
-        return packageRepository.findAll();
-    }
+//    public Packages deletePackage(String packageId) {
+//        packageRepository.deleteById(packageId);
+//    }
 
-    public Optional<Packages> getPackagesById(String id){
-        return packageRepository.findById(id);
-    }
-
-    public void deletePackage(String id){
-        packageRepository.deleteById(id);
+    public PackageResponse detailPackage(String constructionOrderId) {
+        List<Packages> packagesList = packageRepository.findAll();
+        List<PackageConstruction> packageConstructions = packageConstructionRepository.findAll();
+        return PackageResponse.builder()
+                .packagesList(packagesList)
+                .packageConstructions(packageConstructions)
+                .build();
     }
 }
