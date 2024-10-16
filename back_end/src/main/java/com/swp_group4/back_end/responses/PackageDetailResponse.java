@@ -15,4 +15,5 @@ import java.util.List;
 public class PackageDetailResponse {
 
     List<Packages> packagesList;
+    List<PackageConstruction> packageConstructionList;
 }

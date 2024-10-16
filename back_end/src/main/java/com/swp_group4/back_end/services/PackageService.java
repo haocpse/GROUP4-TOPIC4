@@ -45,14 +45,6 @@ public class PackageService {
                 .build();
     }
 
-    public PackageDetailResponse detailPackage(String constructionOrderId) {
-        List<Packages> packagesList = packageRepository.findAll();
-        List<PackageConstruction> packageConstructions = packageConstructionRepository.findAll();
-        return PackageDetailResponse.builder()
-
-                .packagesList(packagesList)
-                .build();
-    }
 
     public Packages createPackage(PackageCreateRequest request) {
         Packages packages = Packages.builder()
@@ -154,12 +146,12 @@ public class PackageService {
 //        packageRepository.deleteById(packageId);
 //    }
 
-    public PackageResponse detailPackage(String constructionOrderId) {
+    public PackageDetailResponse detailPackage(String constructionOrderId) {
         List<Packages> packagesList = packageRepository.findAll();
         List<PackageConstruction> packageConstructions = packageConstructionRepository.findAll();
-        return PackageResponse.builder()
+        return PackageDetailResponse.builder()
                 .packagesList(packagesList)
-                .packageConstructions(packageConstructions)
+                .packageConstructionList(packageConstructions)
                 .build();
     }
 }
