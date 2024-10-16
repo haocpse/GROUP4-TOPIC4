@@ -34,8 +34,6 @@ public class PackageService {
     PackageConstructionRepository packageConstructionRepository;
     @Autowired
     PackagePriceRepository packagePriceRepository;
-    @Autowired
-    private PastValidatorForCalendar pastValidatorForCalendar;
 
 
     public PackageResponse getAllPackage() {
@@ -142,9 +140,14 @@ public class PackageService {
         }
     }
 
-//    public Packages deletePackage(String packageId) {
-//        packageRepository.deleteById(packageId);
-//    }
+    public Packages deletePackage(String packageId) {
+        Packages packageToDelete = packageRepository.findById(packageId)
+                .orElseThrow(() -> new RuntimeException("Package not found with id: " + packageId));
+        List<PackagePrice> packagePricesToDelete = packagePriceRepository.findPackagePriceByPackageId(packageId);
+        packagePriceRepository.deleteAll(packagePricesToDelete);
+        packageRepository.deleteById(packageId);
+        return packageToDelete;
+    }
 
     public PackageDetailResponse detailPackage(String constructionOrderId) {
         List<Packages> packagesList = packageRepository.findAll();

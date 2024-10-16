@@ -38,10 +38,10 @@ public class PackageController {
                 .build();
     }
 
-//    @DeleteMapping("/{packageId}")
-//    public ApiResponse<Packages> deletePackage(@PathVariable String packageId) {
-//        return ApiResponse.<Packages>builder()
-//                .data(packageService.deletePackage(packageId))
-//                .build();
-//    }
+    @DeleteMapping("/{packageId}")
+    public ApiResponse<Packages> deletePackage(@PathVariable String packageId) {
+        return ApiResponse.<Packages>builder()
+                .data(packageService.deletePackage(packageId))
+                .build();
+    }
 }
