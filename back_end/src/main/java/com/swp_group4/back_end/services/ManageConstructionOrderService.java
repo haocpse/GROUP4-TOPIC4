@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,23 +34,7 @@ public class ManageConstructionOrderService {
     @Autowired
     PackageRepository packageRepository;
     @Autowired
-    private QuotationRepository quotationRepository;
-
-    public ConstructionOrder createOrder(ServiceRequest request) {
-        Customer customer = Customer.builder()
-                .firstname(request.getFirstName())
-                .lastname(request.getLastName())
-                .address(request.getAddress())
-                .phone(request.getPhone())
-                .build();
-        customerRepository.save(customer);
-        ConstructionOrder constructionOrder = ConstructionOrder.builder()
-                .customerId(customer.getCustomerId())
-                .customerRequest(request.getCustomerRequest())
-                .status(ConstructionOrderStatus.REQUESTED)
-                .build();
-        return constructOrderRepository.save(constructionOrder);
-    }
+    QuotationRepository quotationRepository;
 
     public List<ConstructOrderDetailForManagerResponse> listAllOrder() {
         List<ConstructOrderDetailForManagerResponse> responses = new ArrayList<>();
@@ -77,7 +62,7 @@ public class ManageConstructionOrderService {
 
     ConstructOrderDetailForManagerResponse buildConstructOrderDetailForManagerResponse(ConstructionOrder order, Customer customer) {
         ConstructOrderDetailForManagerResponse response = ConstructOrderDetailForManagerResponse.builder()
-                .customerName(customer.getFirstname() + " " + customer.getLastname())
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .consultantId(order.getConsultantId())
                 .designerLeaderId(order.getDesignerLeaderId())
                 .constructorLeaderId(order.getConstructorLeaderId())

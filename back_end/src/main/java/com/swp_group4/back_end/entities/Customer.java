@@ -18,8 +18,8 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String customerId;
-    String firstname;
-    String lastname;
+    String firstName;
+    String lastName;
     String phone;
     String address;
     String accountId;

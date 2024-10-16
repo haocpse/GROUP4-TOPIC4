@@ -1,6 +1,7 @@
 package com.swp_group4.back_end.controllers;
 
 import com.swp_group4.back_end.entities.Account;
+import com.swp_group4.back_end.requests.CreateAccountForStaffRequest;
 import com.swp_group4.back_end.requests.CreateAccountRequest;
 import com.swp_group4.back_end.requests.LoginRequest;
 import com.swp_group4.back_end.responses.ApiResponse;
@@ -36,6 +37,14 @@ public class AccountController {
                 .data(accountService.register(request))
                 .build();
     }
+
+    @PostMapping("/staff")
+    public ApiResponse<Account> register(@RequestBody @Valid CreateAccountForStaffRequest request) {
+        return ApiResponse.<Account>builder()
+                .data(accountService.createStaff(request))
+                .build();
+    }
+
 
     // Gọi hàm đăng xuất (URL: localhost:8080/logout)
 //    @PostMapping("/logout")

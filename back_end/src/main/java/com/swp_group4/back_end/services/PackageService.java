@@ -9,8 +9,7 @@ import com.swp_group4.back_end.repositories.PackageRepository;
 import com.swp_group4.back_end.requests.PackageConstructionRequest;
 import com.swp_group4.back_end.requests.PackageCreateRequest;
 import com.swp_group4.back_end.requests.PackagePriceRequest;
-import com.swp_group4.back_end.responses.ApiResponse;
-import com.swp_group4.back_end.responses.PackageResponse;
+import com.swp_group4.back_end.responses.PackageDetailResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,6 @@ import org.hibernate.validator.internal.constraintvalidators.bv.time.past.PastVa
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,9 +36,16 @@ public class PackageService {
     @Autowired
     private PastValidatorForCalendar pastValidatorForCalendar;
 
+
     public PackageResponse getAllPackage() {
         List<Packages> packagesList = packageRepository.findAll();
         return PackageResponse.builder()
+
+    public PackageDetailResponse detailPackage(String constructionOrderId) {
+        List<Packages> packagesList = packageRepository.findAll();
+        List<PackageConstruction> packageConstructions = packageConstructionRepository.findAll();
+        return PackageDetailResponse.builder()
+
                 .packagesList(packagesList)
                 .build();
     }

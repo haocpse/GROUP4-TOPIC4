@@ -1,6 +1,7 @@
 package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.*;
+import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.mapper.CustomerMapper;
 import com.swp_group4.back_end.mapper.QuotationMapper;
 import com.swp_group4.back_end.repositories.*;
@@ -11,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -48,8 +50,28 @@ public class CustomerService {
     public void createCustomer(String accountId, String firstname) {
         customerRepository.save(Customer.builder()
                 .accountId(accountId)
-                .firstname(firstname)
+                .firstName(firstname)
                 .build());
+    }
+
+    public ServiceResponse<?> contactUs(ServiceRequest serviceRequest) {
+        var context = SecurityContextHolder.getContext();
+        String id = context.getAuthentication().getName();
+        Customer customer = customerRepository.findByAccountId(id).orElseThrow();
+        customerMapper.serviceRequestToCustomer(serviceRequest, customer);
+        customerRepository.save(customer);
+        if (serviceRequest.getService().name().equals("CONSTRUCTION_SERVICE")) {
+            ConstructionOrder order = ConstructionOrder.builder()
+                    .customerId(customer.getCustomerId())
+                    .customerRequest(serviceRequest.getCustomerRequest())
+                    .status(ConstructionOrderStatus.REQUESTED)
+                    .build();
+            constructOrderRepository.save(order);
+        }
+//        if (serviceRequest.getService().name().equals("MAINTENANCE_SERVICE")) {
+//          return contactUsForMaintenance(serviceRequest);
+//        }
+        return null;
     }
 
 //    public CustomerResponse getOwnedInfo(){
@@ -66,28 +88,18 @@ public class CustomerService {
 //        return customerMapper.customerToResponse(customer, response);
 //    }
 
-    public ServiceResponse<?> contactUs(ServiceRequest serviceRequest) {
-//        Customer customer = this.identifyCustomer();
-//        customerMapper.serviceRequestToCustomer(serviceRequest, customer);
-//        customerRepository.save(customer);
-        if (serviceRequest.getService().name().equals("CONSTRUCTION_SERVICE")) {
-            ConstructionOrder constructionOrder = manageConstructionOrderService.createOrder(serviceRequest);
-            return manageConstructionOrderService.contactUsForConstruction(serviceRequest, constructionOrder);
-        }
-//        if (serviceRequest.getService().name().equals("MAINTENANCE_SERVICE")) {
-//          return contactUsForMaintenance(serviceRequest);
-//        }
-       return null;
-    }
-
     public List<ConstructOrderDetailForCustomerResponse> listOrders() {
-        List<ConstructionOrder> orderList = constructOrderRepository.findAll();
+        var context = SecurityContextHolder.getContext();
+        String id = context.getAuthentication().getName();
+        log.info(id);
+        Customer customer = customerRepository.findByAccountId(id).orElseThrow();
+        List<ConstructionOrder> orderList = constructOrderRepository.findByCustomerId(customer.getCustomerId());
         List<ConstructOrderDetailForCustomerResponse> responses = new ArrayList<>();
         for (ConstructionOrder order : orderList) {
             ConstructOrderDetailForCustomerResponse response = ConstructOrderDetailForCustomerResponse.builder()
                     .constructionOrderId(order.getConstructionOrderId())
-                    .customerName(customerRepository.findById(order.getCustomerId()).orElseThrow().getFirstname()
-                            + " " + customerRepository.findById(order.getCustomerId()).orElseThrow().getLastname())
+                    .customerName(customerRepository.findById(order.getCustomerId()).orElseThrow().getFirstName()
+                            + " " + customerRepository.findById(order.getCustomerId()).orElseThrow().getLastName())
                     .quotationId(order.getQuotationId())
                     .designId(order.getDesignId())
                     .startDate(order.getStartDate())
@@ -105,7 +117,7 @@ public class CustomerService {
         Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
         Packages packages = packageRepository.findById(quotation.getPackageId()).orElseThrow();
         ConstructQuotationResponse response = ConstructQuotationResponse.builder()
-                .customerName(customer.getFirstname() + " " + customer.getLastname())
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .consultantName(staffRepository.findById(order.getConsultantId()).orElseThrow().getStaffName())
                 .customerRequest(order.getCustomerRequest())
                 .packageType(packages.getPackageType())
@@ -131,7 +143,7 @@ public class CustomerService {
         Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
         return ConstructDesignResponse.builder()
                 .constructionOrderId(order.getConstructionOrderId())
-                .customerName(customer.getFirstname() + " " + customer.getLastname())
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .designName(staffRepository.findById(order.getDesignerLeaderId()).orElseThrow().getStaffName())
                 .customerRequest(order.getCustomerRequest())
                 .url2dDesign(design.getUrl2dDesign())

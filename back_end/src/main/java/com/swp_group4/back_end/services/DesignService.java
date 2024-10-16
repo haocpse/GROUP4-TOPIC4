@@ -61,7 +61,7 @@ public class DesignService {
         Customer customer = this.findCustomerById(order.getCustomerId());
         return ConstructOrderDetailForStaffResponse.builder()
                 .constructionOrderId(order.getConstructionOrderId())
-                .customerName(customer.getFirstname() + " " + customer.getLastname())
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .phone(customer.getPhone())
                 .address(customer.getAddress())
                 .customerRequest(order.getCustomerRequest())

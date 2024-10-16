@@ -19,7 +19,7 @@ public class CustomerController {
     CustomerService customerService;
 
     // Gọi hàm gửi request từ Customer
-    @PostMapping("/contactUs")
+    @PostMapping("/contact")
     public ApiResponse<ServiceResponse<?>> contactUs(@RequestBody ServiceRequest request) {
         return ApiResponse.<ServiceResponse<?>>builder()
                 .data(customerService.contactUs(request))
