@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class QuotationPackageResponse {
+public class PackageDetailResponse {
 
     List<Packages> packagesList;
     List<PackageConstruction> packageConstructions;

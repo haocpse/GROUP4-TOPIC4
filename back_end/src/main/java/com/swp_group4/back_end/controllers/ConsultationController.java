@@ -5,7 +5,7 @@ import com.swp_group4.back_end.requests.ExportQuotationRequest;
 import com.swp_group4.back_end.responses.ApiResponse;
 import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
 import com.swp_group4.back_end.responses.ConstructQuotationResponse;
-import com.swp_group4.back_end.responses.QuotationPackageResponse;
+import com.swp_group4.back_end.responses.PackageDetailResponse;
 import com.swp_group4.back_end.services.ConsultationService;
 import com.swp_group4.back_end.services.PackageService;
 import lombok.AccessLevel;
@@ -45,8 +45,8 @@ public class ConsultationController {
 
     // Hàm để CONSULTANT xem chi các package và package price
     @GetMapping("/ownedTasks/{constructionOrderId}/packages")
-    public ApiResponse<QuotationPackageResponse> detailPackage(@PathVariable String constructionOrderId) {
-        return ApiResponse.<QuotationPackageResponse>builder()
+    public ApiResponse<PackageDetailResponse> detailPackage(@PathVariable String constructionOrderId) {
+        return ApiResponse.<PackageDetailResponse>builder()
                 .data(packageService.detailPackage(constructionOrderId))
                 .build();
     }

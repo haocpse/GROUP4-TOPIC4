@@ -9,7 +9,7 @@ import com.swp_group4.back_end.repositories.PackageRepository;
 import com.swp_group4.back_end.requests.PackageConstructionRequest;
 import com.swp_group4.back_end.requests.PackageCreateRequest;
 import com.swp_group4.back_end.requests.PackagePriceRequest;
-import com.swp_group4.back_end.responses.QuotationPackageResponse;
+import com.swp_group4.back_end.responses.PackageDetailResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -33,10 +33,10 @@ public class PackageService {
     @Autowired
     PackagePriceRepository packagePriceRepository;
 
-    public QuotationPackageResponse detailPackage(String constructionOrderId) {
+    public PackageDetailResponse detailPackage(String constructionOrderId) {
         List<Packages> packagesList = packageRepository.findAll();
         List<PackageConstruction> packageConstructions = packageConstructionRepository.findAll();
-        return QuotationPackageResponse.builder()
+        return PackageDetailResponse.builder()
                 .packagesList(packagesList)
                 .packageConstructions(packageConstructions)
                 .build();
