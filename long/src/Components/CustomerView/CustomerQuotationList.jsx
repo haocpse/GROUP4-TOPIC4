@@ -53,7 +53,7 @@ const CustomerQuotationList = () => {
                                 <tr key={quotation.id}>
                                     <td>{quotation.id}</td>
                                     <td>{quotation.packageType}</td>
-                                    <td>{quotation.totalPrice.toLocaleString()} VND</td>
+                                    <td>{quotation.totalPrice} VND</td>
                                     <td>
                                         <span
                                             className={`badge ${
