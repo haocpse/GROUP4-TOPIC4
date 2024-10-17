@@ -6,6 +6,7 @@ import com.swp_group4.back_end.entities.Packages;
 import com.swp_group4.back_end.repositories.PackageConstructionRepository;
 import com.swp_group4.back_end.repositories.PackagePriceRepository;
 import com.swp_group4.back_end.repositories.PackageRepository;
+import com.swp_group4.back_end.requests.PackageConstructionCreateRequest;
 import com.swp_group4.back_end.requests.PackageConstructionRequest;
 import com.swp_group4.back_end.requests.PackageCreateRequest;
 import com.swp_group4.back_end.requests.PackagePriceRequest;
@@ -48,7 +49,7 @@ public class PackageService {
         Packages packages = Packages.builder()
                 .packageType(request.getPackageType())
                 .build();
-
+        packageRepository.save(packages);
         for (PackagePriceRequest priceRequest : request.getPackagePrices()) {
             PackagePrice packagePrice = PackagePrice.builder()
                     .packageId(packages.getPackageId())
@@ -66,7 +67,7 @@ public class PackageService {
 //                    .build();
 //            packageConstructionRepository.save(packageConstruction);
 //        }
-        packageRepository.save(packages);
+
         return packages;
     }
 
@@ -156,5 +157,34 @@ public class PackageService {
                 .packagesList(packagesList)
                 .packageConstructionList(packageConstructions)
                 .build();
+    }
+
+    public Packages updateConstructionPackage(String packageId, PackageConstructionCreateRequest request) {
+        List<PackageConstruction> existingConstructions = packageConstructionRepository.findByPackageId(packageId);
+        List<PackageConstructionRequest> incomingConstructions = request.getPackageConstructions();
+        for (PackageConstructionRequest constructionRequest : incomingConstructions) {
+            Optional<PackageConstruction> existingConstructionOpt = existingConstructions.stream()
+                    .filter(c -> c.getContent().equals(constructionRequest.getContent()))
+                    .findFirst();
+
+            if (existingConstructionOpt.isPresent()) {
+                PackageConstruction existingConstruction = existingConstructionOpt.get();
+                packageConstructionRepository.save(existingConstruction);
+            } else {
+                PackageConstruction newConstruction = PackageConstruction.builder()
+                        .packageId(packageId)
+                        .content(constructionRequest.getContent())
+                        .build();
+                packageConstructionRepository.save(newConstruction);
+            }
+        }
+
+        List<PackageConstruction> constructionsToDelete = existingConstructions.stream()
+                .filter(c -> incomingConstructions.stream().noneMatch(
+                        consReq -> consReq.getContent().equals(c.getContent())))
+                .collect(Collectors.toList());
+        packageConstructionRepository.deleteAll(constructionsToDelete);
+        return packageRepository.findById(packageId)
+                .orElseThrow(() -> new RuntimeException("Package not found with id: " + packageId));
     }
 }

@@ -10,9 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class PackageCreateRequest {
+public class PackageConstructionCreateRequest {
     String packageType;
-    List<PackagePriceRequest> packagePrices;
+    List<PackageConstructionRequest> packageConstructions;
 }
-
-
