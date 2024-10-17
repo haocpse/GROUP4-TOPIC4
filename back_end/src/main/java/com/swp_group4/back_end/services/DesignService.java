@@ -44,10 +44,9 @@ public class DesignService {
 
     public List<ConstructOrderDetailForStaffResponse> listOwnedDesignTask() {
         List<ConstructOrderDetailForStaffResponse> responses = new ArrayList<>();
-//        Staff staff = this.identifyStaff();
-        String id = "bc6910eb-8729-11ef-bf00-c85acfa9b517";
-        Staff staff = staffRepository.findById(id).orElseThrow(() -> new RuntimeException("Staff not found"));
-        List<ConstructionOrder> orders = constructOrderRepository.findByDesignerLeaderId(id);
+        Staff staff = this.identifyStaff();
+
+        List<ConstructionOrder> orders = constructOrderRepository.findByDesignerLeaderId(staff.getStaffId());
         for (ConstructionOrder order : orders) {
             ConstructOrderDetailForStaffResponse response = this.detailOfOrder(order.getConstructionOrderId());
             response.setStaffName(staff.getStaffName());
