@@ -23,6 +23,9 @@ import DesignerTasks from "./Components/DesignerTasks/DesignerTasks";
 import CustomerView from "./Components/CustomerView/CustomerView";
 import CustomerQuotationList from "./Components/CustomerView/CustomerQuotationList";
 import ViewQuotationAfterCreate from "./Components/QuotationOrder/ViewQuotationAfterCreate";
+import Package from "./Components/Package/PackageManage";
+import PackagePrice from "./Components/Package/PackagePrice";
+import PackageConstruction from "./Components/Package/PackageConstruction";
 import Main from "./Components/Main/Main";
 function App() {
   const router = createBrowserRouter([
@@ -128,8 +131,21 @@ function App() {
       path: "design/ownedTasks/:constructionOrderId", // Add the route for DesignUpload
       element: <DesignUpload />,
     },
+    {
+      path: "package",
+      element: <Package />, // Route cho Package
+      children: [
+        {
+          path: "package-price", // Route cho Package Price
+          element: <PackagePrice />,
+        },
+        {
+          path: "package-construction", // Route cho Package Construction
+          element: <PackageConstruction />,
+        },
+      ],
+    },
   ]);
-
 
   return <RouterProvider router={router} />;
 }
