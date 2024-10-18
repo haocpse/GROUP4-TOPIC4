@@ -14,7 +14,6 @@ import ConstructionOrder from "./Components/ConstructionProgress/ConstructionOrd
 import QuotationOrder from "./Components/QuotationOrder/QuotationOrder";
 import ApproveQuotation from "./Components/ApproveQuotation/ApproveQuatation";
 import ViewQuotation from "./Components/ApproveQuotation/ViewQuotation";
-import ConsultationPage from "./Components/ConsultationPage/ConsultationPage";
 import ListQuotation from "./Components/ListQuotation/ListQuotation";
 import ViewQuotationInConsultationPage from "./Components/ListQuotation/ViewQuotationInConsultationPage";
 import ViewDesign from "./Components/ApproveDesign/ViewDesign";
@@ -22,10 +21,15 @@ import DesignerTasks from "./Components/DesignerTasks/DesignerTasks";
 import CustomerView from "./Components/CustomerView/CustomerView";
 import CustomerQuotationList from "./Components/CustomerView/CustomerQuotationList";
 import ViewQuotationAfterCreate from "./Components/QuotationOrder/ViewQuotationAfterCreate";
+import MainLayoutConsultant from "./Components/MainLayoutConsultant";
+import Main from "./Components/Main/Main";
+import Navbar from "./Components/Navbar/Navbar";
+import ApproveMaintenanceQuotation from "./Components/ApproveQuotation/ApproveMaintenanceQuotation";
+import ViewMaintenanceQuotation from "./Components/ApproveQuotation/ViewMaintenanceQuotation";
+import MainLayoutDesigner from "./Components/MainLayoutDesigner";
 import Package from "./Components/Package/PackageManage";
 import PackagePrice from "./Components/Package/PackagePrice";
 import PackageConstruction from "./Components/Package/PackageConstruction";
-import Main from "./Components/Main/Main";
 import PaymentMethods from "./Components/ListQuotation/PaymentMethod";
 import PaymentPageCard from "./Components/ListQuotation/PaymentPage-Card";
 import PaymentPageQR from "./Components/ListQuotation/PaymentPage_QR";
@@ -52,6 +56,8 @@ function App() {
       path: "service",
       element: <Service />,
     },
+
+    // MANAGER
     {
       path: "manage",
       element: <MainLayout />,
@@ -61,23 +67,89 @@ function App() {
           element: <Request />,
         },
         {
-          path: "designs",
-          element: <ApproveDesign />,
-        },
-        {
           path: "quotations",
           element: <ApproveQuotation />,
-        },
-        {
-          path: "designs/:id",
-          element: <ViewDesign />,
         },
         {
           path: "quotations/:id",
           element: <ViewQuotation />,
         },
+        {
+          path: "Maintenance-quotations",
+          element: <ApproveMaintenanceQuotation />,
+        },
+        {
+          path: "Maintenance-quotations/:id",
+          element: <ViewMaintenanceQuotation />,
+        },
+
+        {
+          path: "designs",
+          element: <ApproveDesign />,
+        },
+       
+        {
+          path: "designs/:id",
+          element: <ViewDesign />,
+        },
+       
       ],
     },
+
+
+    // CONSULTANT
+    {
+      path: "consult",
+      element: <MainLayoutConsultant />,
+      children: [
+        {
+          path: "ownedTasks",
+          element: <ConsultantTasks />,
+        },
+        {
+          path: "ownedTasks/:constructionOrderId",
+          element: <QuotationOrder />,
+        },
+        {
+          path: "ownedTasks/:constructionOrderId/quotation",
+          element: <ViewQuotationAfterCreate />,
+        },
+        {
+          path: "list-quotation",
+          element: <ListQuotation />,
+        },
+        {
+          path: "view-Quotation",
+          element: <ViewQuotationInConsultationPage />,
+        },
+      ],
+    },
+
+
+
+
+     // DESIGN
+     {
+      path: "design",
+      element: <MainLayoutDesigner />,
+      children: [
+        {
+          path: "ownedTasks",
+          element: <DesignerTasks />,
+        },
+        {
+          path: "ownedTasks/:constructionOrderId",
+          element: <DesignUpload />,
+        },   
+       
+      ],
+    },
+
+
+
+
+
+    // CONSTRUCTOR
 
     {
       path: "construct/ownedTasks",
@@ -88,15 +160,11 @@ function App() {
       element: <ConstructionProgress />,
     },
 
-    {
-      path: "consultation-page", // Sửa lại path thành chữ thường để thống nhất
-      element: <ConsultationPage />,
-    },
 
-    {
-      path: "consult/ownedTasks",
-      element: <ConsultantTasks />,
-    },
+    // {
+    //   path: "view-payment", // Sửa path này thành list-quotation thay vì 'list quotation'
+    //   element: <ViewPayment />,
+    // },
     {
       path: "list-quotation", // Sửa path này thành list-quotation thay vì 'list quotation'
       element: <ListQuotation />,
@@ -121,14 +189,9 @@ function App() {
       path: "payment-QR",
       element :<PaymentPageQR />
     },
-    {
-      path: "consult/ownedTasks/:constructionOrderId",
-      element: <QuotationOrder />,
-    },
-    {
-      path: "consult/ownedTasks/:constructionOrderId/quotation",
-      element: <ViewQuotationAfterCreate />,
-    },
+
+
+    // CUSTOMER
     {
       path: "myInfo/orders",
       element: <CustomerQuotationList />,
@@ -138,13 +201,10 @@ function App() {
       element: <CustomerView />,
     },
 
+
     {
-      path: "design/ownedTasks",
-      element: <DesignerTasks />,
-    },
-    {
-      path: "design/ownedTasks/:constructionOrderId", // Add the route for DesignUpload
-      element: <DesignUpload />,
+      path: "navbar", // Add the route for DesignUpload
+      element: <Navbar />,
     },
     {
       path: "package",
