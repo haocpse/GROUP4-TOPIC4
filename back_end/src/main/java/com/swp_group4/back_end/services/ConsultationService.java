@@ -6,6 +6,7 @@ import com.swp_group4.back_end.mapper.QuotationMapper;
 import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.requests.ExportQuotationRequest;
 import com.swp_group4.back_end.responses.*;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +58,7 @@ public class ConsultationService {
         Staff staff = this.identifyStaff();
         List<ConstructionOrder> orders = constructOrderRepository.findByConsultantIdAndQuotationIdIsNotNull(staff.getStaffId());
         for (ConstructionOrder order : orders) {
-            ConstructOrderDetailForStaffResponse<QuotationStatus> response = this.quotationStatusConstructOrderDetailForStaffResponse(order.getConstructionOrderId());
+            ConstructOrderDetailForStaffResponse<QuotationStatus> response = this.quotationStatusConstructOrderDetailForStaffResponse(order.getQuotationId());
             response.setStaffName(staff.getStaffName());
             response.setStatus(quotationRepository.findById(order.getQuotationId()).orElseThrow().getQuotationStatus());
             responses.add(response);
@@ -144,6 +145,22 @@ public class ConsultationService {
         return quotation;
     }
 
+    Quotation updateQuotation(ExportQuotationRequest request, double totalPrice, double volume, String quotationId) {
+        Quotation quotation = quotationRepository.findById(quotationId).orElseThrow(() -> new RuntimeException("Quotation not found for id: " + quotationId));
+        quotation.setPriceStage1(totalPrice * 0.2);
+        quotation.setPriceStage2(totalPrice * 0.3);
+        quotation.setPriceStage3(totalPrice * 0.5);
+        quotation.setWidth(request.getWidth());
+        quotation.setHeight(request.getHeight());
+        quotation.setLength(request.getLength());
+        quotation.setVolume(volume);
+        quotation.setBatch(QuotationBatch.STAGE_1);
+        quotation.setPaymentStatus(PaymentStatus.PENDING);
+        quotation.setQuotationStatus(QuotationStatus.QUOTED);
+        quotationMapper.toQuotation(request, quotation);
+        return quotation;
+    }
+
     String getStaffName(String staffId) {
         if (staffId != null && !staffId.isEmpty()) {
             return staffRepository.findById(staffId)
@@ -159,12 +176,13 @@ public class ConsultationService {
                 .orElseThrow(() -> new RuntimeException("Error"));
     }
 
-    public ConstructOrderDetailForStaffResponse<QuotationStatus> quotationStatusConstructOrderDetailForStaffResponse(String constructionOrderId) {
-        ConstructionOrder order = this.findOrderById(constructionOrderId);
+    public ConstructOrderDetailForStaffResponse<QuotationStatus> quotationStatusConstructOrderDetailForStaffResponse(String quotationId) {
+        ConstructionOrder order = constructOrderRepository.findByQuotationId(quotationId);
         Customer customer = this.findCustomerById(order.getCustomerId());
         Staff staff = staffRepository.findById(order.getConsultantId()).orElseThrow(() -> new RuntimeException("Staff not found"));
         return ConstructOrderDetailForStaffResponse.<QuotationStatus>builder()
                 .constructionOrderId(order.getConstructionOrderId())
+                .id(quotationId)
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .staffName(staff.getStaffName())
                 .phone(customer.getPhone())
@@ -215,15 +233,39 @@ public class ConsultationService {
         return quotationMapper.toQuotationResponse(quotation, response);
     }
 
-    public Quotation updateQuotation(String constructionOrderId, ExportQuotationRequest request) {
+    @Transactional
+    public Quotation updateQuotation(String quotationId, ExportQuotationRequest request) {
         Packages packages = this.findPackage(request.getPackageId());
         double volume = request.getHeight() * request.getWidth() * request.getLength();
         PackagePrice packagePrice = this.findPackagePrice(packages.getPackageId(), volume, volume);
         double totalPrice = this.totalPrice(volume, packagePrice.getPrice());
-        ConstructionOrder order = this.findOrderById(constructionOrderId);
-        this.saveConstructionTasks(constructionOrderId, request.getPackageId());
-        Quotation quotation =  quotationRepository.save(this.saveQuotation(request, totalPrice, volume));
+        ConstructionOrder order = constructOrderRepository.findByQuotationId(quotationId);
+        constructionTasksRepository.deleteAllByConstructionOrderId(order.getConstructionOrderId());
+        this.saveConstructionTasks(order.getConstructionOrderId(), request.getPackageId());
+        Quotation quotation = quotationRepository.save(this.updateQuotation(request, totalPrice, volume, quotationId));
         constructOrderRepository.save(this.saveConstructionOrder(order, quotation, request, totalPrice));
         return quotation;
+    }
+
+    public ViewRejectedQuotationResponse viewRejectedQuotation(String quotationId) {
+        ConstructionOrder order = constructOrderRepository.findByQuotationId(quotationId);
+        Quotation quotation = quotationRepository.findById(quotationId)
+                .orElseThrow(() -> new RuntimeException("Quotation not found"));
+        Customer customer = this.findCustomerById(order.getCustomerId());
+        Packages packages = this.findPackage(quotation.getPackageId());
+        return ViewRejectedQuotationResponse.builder()
+                .constructionOrderId(order.getConstructionOrderId())
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
+                .address(customer.getAddress())
+                .phone(customer.getPhone())
+                .width(quotation.getWidth())
+                .height(quotation.getHeight())
+                .length(quotation.getLength())
+                .packageId(packages.getPackageId())
+                .consultantName(this.getStaffName(order.getConsultantId()))
+                .customerRequest(order.getCustomerRequest())
+                .startDate(order.getStartDate())
+                .endDate(order.getEndDate())
+                .build();
     }
 }

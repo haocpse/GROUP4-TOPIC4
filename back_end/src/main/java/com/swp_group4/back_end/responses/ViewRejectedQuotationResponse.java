@@ -1,25 +1,28 @@
 package com.swp_group4.back_end.responses;
 
-import com.swp_group4.back_end.entities.Quotation;
-import com.swp_group4.back_end.enums.ConstructionOrderStatus;
-import com.swp_group4.back_end.enums.QuotationStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class ConstructOrderDetailForStaffResponse<T> {
+public class ViewRejectedQuotationResponse {
 
     String constructionOrderId;
-    String id;
     String customerName;
-    String staffName;
-    String phone;
+    String consultantName;
     String address;
+    String phone;
     String customerRequest;
-    T status;
-
+    double length;
+    double height;
+    double width;
+    String packageId;
+    Date startDate;
+    Date endDate;
 }

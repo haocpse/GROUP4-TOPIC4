@@ -150,7 +150,7 @@ public class PackageService {
         return packageToDelete;
     }
 
-    public PackageDetailResponse detailPackage(String constructionOrderId) {
+    public PackageDetailResponse detailPackage() {
         List<Packages> packagesList = packageRepository.findAll();
         List<PackageConstruction> packageConstructions = packageConstructionRepository.findAll();
         return PackageDetailResponse.builder()
