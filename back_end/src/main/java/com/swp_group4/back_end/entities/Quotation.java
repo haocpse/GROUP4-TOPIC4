@@ -24,6 +24,9 @@ public class Quotation {
     QuotationBatch batch;
     @Enumerated(EnumType.STRING)
     PaymentStatus paymentStatus;
+    double length;
+    double width;
+    double height;
     double volume;
     double priceStage1;
     double priceStage2;
@@ -31,6 +34,6 @@ public class Quotation {
     String promotionId;
     String packageId;
     @Enumerated(EnumType.STRING)
-    QuotationStatus status;
+    QuotationStatus quotationStatus;
 
 }

@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface DesignRepository extends JpaRepository<Design, String> {
 
-    List<Design> findByStatus(DesignStatus status);
+    List<Design> findByDesignStatus(DesignStatus status);
 
 }

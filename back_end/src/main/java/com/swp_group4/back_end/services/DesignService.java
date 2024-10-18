@@ -88,7 +88,6 @@ public class DesignService {
 
     public Design saveDesign(String constructionOrderId, MultipartFile image2D, MultipartFile image3D, MultipartFile frontView) {
         Design design = Design.builder()
-                .status(DesignStatus.DESIGNED)
                 .build();
 
         String baseUrl = "http://localhost:8080/images/" + constructionOrderId + "/";
@@ -106,7 +105,6 @@ public class DesignService {
         // Save the design and update the order status
         designRepository.save(design);
         ConstructionOrder order = this.findOrderById(constructionOrderId);
-        order.setStatus(ConstructionOrderStatus.DESIGNED);
         order.setDesignId(design.getDesignId());
         constructOrderRepository.save(order);
 

@@ -43,7 +43,7 @@ public class QuotationAndDesignApprovalService {
     ConstructionTasksRepository constructionTasksRepository;
 
     public List<QuotationAndDesignReviewResponse> listAllQuotation() {
-        List<Quotation> quotations = quotationRepository.findByStatus(QuotationStatus.QUOTED);
+        List<Quotation> quotations = quotationRepository.findByQuotationStatus(QuotationStatus.QUOTED);
         List<QuotationAndDesignReviewResponse> responses = new ArrayList<>();
         for (Quotation quotation : quotations) {
 
@@ -67,7 +67,7 @@ public class QuotationAndDesignApprovalService {
     }
 
     public List<QuotationAndDesignReviewResponse> listAllDesign() {
-        List<Design> designs = designRepository.findByStatus(DesignStatus.DESIGNED);
+        List<Design> designs = designRepository.findByDesignStatus(DesignStatus.DESIGNED);
         List<QuotationAndDesignReviewResponse> responses = new ArrayList<>();
         for (Design design : designs) {
             ConstructionOrder order = constructOrderRepository
@@ -124,10 +124,11 @@ public class QuotationAndDesignApprovalService {
         Quotation quotation = this.findQuotationById(quotationId);
         ConstructionOrder order = this.findOrderByQuotationId(quotationId);
         if (request.getStatus().name().equals("APPROVED")) {
-            quotation.setStatus(QuotationStatus.CONFIRMED_QUOTATION);
+            quotation.setQuotationStatus(QuotationStatus.CONFIRMED);
             quotationRepository.save(quotation);
-            order.setStatus(ConstructionOrderStatus.CONFIRMED_QUOTATION);
-            constructOrderRepository.save(order);
+        } else {
+            quotation.setQuotationStatus(QuotationStatus.REJECTED);
+            quotationRepository.save(quotation);
         }
         return this.buildConstructOrderDetailForManagerResponse(order);
     }
@@ -136,7 +137,7 @@ public class QuotationAndDesignApprovalService {
         Design design = designRepository.findById(designId).orElseThrow();
         ConstructionOrder order = constructOrderRepository.findByDesignId(designId).orElseThrow();
         if(request.getStatus().name().equals("APPROVED")) {
-            design.setStatus(DesignStatus.CONFIRMED_DESIGN);
+            design.setDesignStatus(DesignStatus.CONFIRMED);
             designRepository.save(design);
             order.setStatus(ConstructionOrderStatus.CONFIRMED_DESIGN);
             designRepository.save(design);

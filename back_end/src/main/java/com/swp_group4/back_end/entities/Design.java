@@ -21,6 +21,6 @@ public class Design {
     String urlFrontDesign;
     String urlBackDesign;
     @Enumerated(EnumType.STRING)
-    DesignStatus status;
+    DesignStatus designStatus;
 
 }

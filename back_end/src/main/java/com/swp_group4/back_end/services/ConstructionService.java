@@ -38,10 +38,8 @@ public class ConstructionService {
 
     public List<ConstructOrderDetailForStaffResponse> listOwnedConstructTask() {
         List<ConstructOrderDetailForStaffResponse> responses = new ArrayList<>();
-        String staffId = "bc690fff-8729-11ef-bf00-c85acfa9b517";
-        Staff staff = staffRepository.findById(staffId).orElseThrow();
-//        Staff staff = this.identifyStaff();
-        List<ConstructionOrder> orders = constructOrderRepository.findByConstructorLeaderId(staffId);
+        Staff staff = this.identifyStaff();
+        List<ConstructionOrder> orders = constructOrderRepository.findByConstructorLeaderId(staff.getStaffId());
         for (ConstructionOrder order : orders) {
             ConstructOrderDetailForStaffResponse response = this.detailOfOrder(order.getConstructionOrderId());
             response.setStaffName(staff.getStaffName());
@@ -78,14 +76,16 @@ public class ConstructionService {
     public CompleteConstructionTaskResponse completeTask(String constructionOrderId, CompleteConstructTaskRequest request) {
         ConstructionTasks task = constructionTasksRepository
                 .findByConstructionOrderIdAndTaskId(constructionOrderId, request.getTaskId());
-        task.setStatus(ConstructStatus.DONE);
+        task.setStatus(request.getStatus());
         constructionTasksRepository.save(task);
         List<ConstructStatus> statuses = List.of(ConstructStatus.NOT_YET, ConstructStatus.IN_PROGRESS);
         List<ConstructionTasks> listInCompleteTasks = constructionTasksRepository
                 .findByConstructionOrderIdAndStatusIn(constructionOrderId, statuses);
+        log.info(listInCompleteTasks.toString());
         ConstructionOrder order = this.findOrderById(constructionOrderId);
         if (listInCompleteTasks.isEmpty()) {
                 order.setStatus(ConstructionOrderStatus.CONSTRUCTED);
+                constructOrderRepository.save(order);
         }
         List<ConstructionTasks> listCompleteTasks = constructionTasksRepository
                 .findByStatus(ConstructStatus.DONE);
@@ -104,6 +104,7 @@ public class ConstructionService {
                 .phone(customer.getPhone())
                 .address(customer.getAddress())
                 .customerRequest(order.getCustomerRequest())
+                .status(order.getStatus())
                 .build();
     }
 
