@@ -16,8 +16,11 @@ const Main = () => {
         <div>
             <>
                 <Navbar />
+
                 <section className="project-section text-center p-5 bg-light">
+
                     <div className="container">
+                    
                         <div className="row align-items-center">
                             <div className="col-md-6 text-md-left mb-4 mb-md-0">
                                 <h1 className="mb-4 textMain1" style={{ color: '#BDBDBD', fontSize: '80px', fontWeight: '20' }}>PROJECT</h1>

@@ -1,8 +1,9 @@
-  .sidebar i {
+.sidebar i {
     font-size: 18px;
     color: #fff;
     margin-top: 50px;
   }
+
   .sidebar a {
     color: #fff;
     padding: 10px 15px;
@@ -17,7 +18,7 @@
     transition: transform 0.2s ease-in-out;
   }
 
-  .sidebar-link:hover input {
+  .sidebar-link:hover i {
     transform: scale(1.8);
     color: red;
   }
