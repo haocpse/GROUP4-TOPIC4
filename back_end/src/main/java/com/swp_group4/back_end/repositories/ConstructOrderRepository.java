@@ -15,7 +15,8 @@ public interface ConstructOrderRepository extends JpaRepository<ConstructionOrde
     Optional<ConstructionOrder> findByDesignId(String designId);
     List<ConstructionOrder> findByConsultantIdAndQuotationIdIsNull(String consultant);
     List<ConstructionOrder> findByConsultantIdAndQuotationIdIsNotNull(String consultant);
-    List<ConstructionOrder> findByDesignerLeaderId(String designLeader);
+    List<ConstructionOrder> findByDesignerLeaderIdAndDesignIdIsNull(String designLeader);
+    List<ConstructionOrder> findByDesignerLeaderIdAndDesignIdIsNotNull(String designLeader);
     List<ConstructionOrder> findByConstructorLeaderId(String constructionLeader);
     List<ConstructionOrder> findByCustomerId(String customerId);
 

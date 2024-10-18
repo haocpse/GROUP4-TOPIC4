@@ -138,7 +138,8 @@ public class QuotationAndDesignApprovalService {
         if(request.getStatus().name().equals("APPROVED")) {
             design.setDesignStatus(DesignStatus.CONFIRMED);
             designRepository.save(design);
-            order.setStatus(ConstructionOrderStatus.CONFIRMED_DESIGN);
+        } else {
+            design.setDesignStatus(DesignStatus.REJECTED);
             designRepository.save(design);
         }
         return this.buildConstructOrderDetailForManagerResponse(order);
