@@ -31,16 +31,17 @@ const ApproveDesign = () => {
     return (
         <>
             <ToastContainer position="top-right" autoClose={5000} />
-            <div className="container-fluid mt-4">
+            <div className="container mt-4">
                 <h2 className="text-center" style={{ color: 'black' }}>Approve Designs</h2>
                 <table className="table table-bordered mt-4">
                     <thead>
                         <tr>
-                            <th scope="col" className="text-center">Design ID</th>
-                            <th scope="col" className="text-center">Customer Name</th>
-                            <th scope="col" className="text-center">Phone</th>
-                            <th scope="col" className="text-center">Address</th>
-                            <th scope="col" className="text-center">View Details</th>
+                            <th>Design ID</th>
+                            <th>Customer Name</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th>View Details</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>

@@ -1,31 +1,25 @@
-// // Components/CustomerView/CustomerView.js
-
+// CustomerView.js
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "./CustomerView.css"; // Import CSS file for styling
+import axios from "axios";
+import "./CustomerView.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const CustomerView = () => {
-  const [orders, setOrders] = useState([]); // State to store orders
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(""); // Error state
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  // Fetch data from API
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        // Fetch data from the API
-        const response = await fetch("http://localhost:8080/myInfo/orders");
-        if (!response.ok) {
-          throw new Error("Failed to fetch orders");
-        }
-        const data = await response.json();
-        setOrders(data); // Set the orders data
+        const response = await axios.get("http://localhost:8080/myInfo/orders");
+        setOrders(response.data);
       } catch (error) {
         console.error("Error fetching orders:", error);
-        setError("Unable to fetch orders. Please try again later."); // Set error message
+        setError("Unable to fetch orders. Please try again later.");
       } finally {
-        setLoading(false); // Set loading to false after fetching
+        setLoading(false);
       }
     };
 
@@ -52,31 +46,35 @@ const CustomerView = () => {
                   <th>Package Type</th>
                   <th>Start Date</th>
                   <th>End Date</th>
+                  <th>Checkout</th>
                 </tr>
               </thead>
               <tbody>
                 {orders.map((order) => (
-                  <tr key={order.orderId}>
-                    <td>{order.orderId}</td>
-                    <td>
-                      <Link 
-                        to={`/customer-quotation/${order.Quotation}`} 
-                        className="quotation-link"
-                      >
-                        {order.Quotation}
-                      </Link>
-                    </td>
-                    <td>
-                      <Link 
-                        to={`/design/${order.Design}`} 
-                        className="design-link"
-                      >
-                        {order.Design}
-                      </Link>
-                    </td>
+                  <tr key={order.ConstructionOrderId}>
+                    <td>{order.ConstructionOrderId}</td>
+                    <td>{order.Quotation}</td>
+                    <td>{order.designId}</td>
                     <td>{order.packageType}</td>
-                    <td>{new Date(order.startDate).toLocaleDateString()}</td>
-                    <td>{new Date(order.endDate).toLocaleDateString()}</td>
+                    <td>{order.startDate}</td>
+                    <td>{order.endDate}</td>
+                    <td>
+                      <Link
+                        to={{
+                          pathname: "/checkout",
+                          state: {
+                            OrderId: order.ConstructionOrderId,
+                            Design: order.designId,
+                            PackageType: order.packageType,
+                            StartDate: order.startDate,
+                            EndDate: order.endDate,
+                          },
+                        }}
+                        className="btn btn-primary"
+                      >
+                        Checkout
+                      </Link>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -91,8 +89,3 @@ const CustomerView = () => {
 };
 
 export default CustomerView;
-
-
-
-
-

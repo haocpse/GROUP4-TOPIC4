@@ -14,12 +14,11 @@ const QuotationOrder = () => {
   const [height, setHeight] = useState('');
   const [selectedPackage, setSelectedPackage] = useState('');
   const [items, setItems] = useState([]);
-  const [itemsOfSelectedPackage, setItemsOfSelectedPackage] = useState([])// State để lưu danh sách item từ package
+  const [itemsOfSelectedPackage, setItemsOfSelectedPackage] = useState([]); // State để lưu danh sách item từ package
   const [endDate, setEndDate] = useState('');
   const [startDate, setStartDate] = useState('');
   const [promotionId, setPromotionId] = useState('');
   const [customerRequest, setCustomerRequest] = useState('');
-  const [packageConstructionIds, setPackageConstructionIds] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -49,14 +48,17 @@ const QuotationOrder = () => {
   }, [constructionOrderId]);
 
   const getItems = (packageId) => {
-    setItemsOfSelectedPackage(items.filter(item => item.packageId === packageId));
+    const filteredItems = items.filter(item => item.packageId === packageId);
+    setItemsOfSelectedPackage(filteredItems);
   };
 
   const handlePackageChange = (event) => {
     const packageId = event.target.value;
     setSelectedPackage(packageId);
     if (packageId) {
-      getItems(packageId); // Gọi hàm fetchItems khi package thay đổi
+      getItems(packageId); // Gọi hàm lấy items khi package thay đổi
+    } else {
+      setItemsOfSelectedPackage([]); // Xóa danh sách items nếu không có package nào được chọn
     }
   };
 
@@ -91,13 +93,16 @@ const QuotationOrder = () => {
   return (
     <div className={`${styles.quotationOrderContainer} container mt-5`}>
       <div className="card shadow">
-        <div className="card-header text-center bg-primary text-white">
-          <h2>Quotation Order Details</h2>
-          <p>Order ID: {constructionOrderId}</p>
+      <div className={`card-header text-center ${styles.bgRed} text-white`}>
+      <h2 className="text-center">Quotation</h2>
+      <div className="d-flex justify-content-between">
+            <p><strong>Order ID:</strong> {constructionOrderId}</p>
+            <p><strong>Consultant:</strong> {quotation.staffName}</p>
+          </div>
         </div>
         <div className="card-body">
-          <div className="row mb-3  ">
           <h3>Information customer:</h3>
+          <div className="row mb-3">
             <div className="col-md-6">
               <p><strong>Customer: </strong> {quotation.customerName}</p>
             </div>
@@ -111,8 +116,8 @@ const QuotationOrder = () => {
               <p><strong>Request: </strong> {quotation.customerRequest}</p>
             </div>
           </div>
-          <div className="row mb-3">
           <h3>Quotation:</h3>
+          <div className="row mb-3">
             <div className="col-md-6">
               <label htmlFor="length"><strong>Length:</strong></label>
               <input
@@ -135,36 +140,44 @@ const QuotationOrder = () => {
                 placeholder="Enter width"
               />
             </div>
-            <div className="col-md-6">
-              <label htmlFor="heigth"><strong>Height:</strong></label>
+          </div>
+          <div className="row mb-3">
+            <div className="col-md-12">
+              <label htmlFor="height"><strong>Height:</strong></label>
               <input
                 type="text"
                 className="form-control"
                 id="height"
                 value={height}
                 onChange={(e) => setHeight(e.target.value)}
-                placeholder="Enter heigth"
+                placeholder="Enter height"
               />
             </div>
-            <div className="row mb-3">
-              <div className="col-md-6">
-                <label htmlFor="package"><strong>Package:</strong></label>
-                <select
-                  className="form-control"
-                  id="package"
-                  value={selectedPackage}
-                  onChange={handlePackageChange}
-                >
-                  <option value="">Select Package</option>
-                  {packageOptions.map((pkg) => (
-                    <option key={pkg.packageId} value={pkg.packageId}>
-                      {pkg.packageType}
-                    </option>
-                  ))}
-                </select>
-              </div>
+          </div>
+          <div className="row mb-3">
+            <div className="col-md-12">
+              <label htmlFor="package"><strong>Package:</strong></label>
+              <select
+                className="form-control"
+                id="package"
+                value={selectedPackage}
+                onChange={handlePackageChange}
+              >
+                <option value="">Select Package</option>
+                {packageOptions.map((pkg) => (
+                  <option key={pkg.packageId} value={pkg.packageId}>
+                    {pkg.packageType}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
+          <h3>Construction contents:</h3>
+          {itemsOfSelectedPackage.map((item, index) => (
+            <div key={index}>
+              <label>{item.content}</label>
+            </div>
+          ))}
           <div className="row mb-3">
             <div className="col-md-6">
               <label htmlFor="startDate"><strong>Start Date:</strong></label>
@@ -187,22 +200,15 @@ const QuotationOrder = () => {
               />
             </div>
           </div>
-          {/* Hiển thị danh sách items */}
-          <div>
-            <h3>Construction contents:</h3>
-            {itemsOfSelectedPackage.map((item, index) => (
-              <div key={index}>
-                <label>{item.content}</label>
-              </div>
-            ))}
-          </div>
           <div className="d-flex justify-content-end">
             <button className="btn btn-success" onClick={handleExportQuotation}>Submit Quotation</button>
           </div>
+          </div>
         </div>
       </div>
-    </div>
+
   );
 };
 
 export default QuotationOrder;
+

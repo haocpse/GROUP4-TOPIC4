@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Navbar from "../Navbar/Navbar";
+import styles from './DesignUpload.module.css'; // Thêm các kiểu tùy chỉnh của bạn ở đây
 
 const DesignUpload = () => {
-  const [designDetail, setDesignDetail] = useState({})
+  const [designDetail, setDesignDetail] = useState({});
   const { constructionOrderId } = useParams();
   const [image2D, setImage2D] = useState(null);
   const [image3D, setImage3D] = useState(null);
@@ -13,7 +13,7 @@ const DesignUpload = () => {
   const [rearView, setRearView] = useState(null);
 
   const handleFileChange = (e, setter) => {
-    setter(e.target.files[0]);  // Store the selected file
+    setter(e.target.files[0]);
   };
 
   useEffect(() => {
@@ -22,24 +22,28 @@ const DesignUpload = () => {
         const response = await axios.get(`http://localhost:8080/design/ownedTasks/${constructionOrderId}`);
         setDesignDetail(response.data.data);
       } catch (error) {
-        console.error("Error fetching quotation order:", error);
+        console.error("Error fetching design details:", error);
       }
     };
-    fetchDesign()
+    fetchDesign();
   }, [constructionOrderId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Make the API call to upload the design images
       const formData = new FormData();
       formData.append('image2D', image2D);
       formData.append('image3D', image3D);
       formData.append('frontView', frontView);
       formData.append('rearView', rearView);
       const response = await axios.post(`http://localhost:8080/design/ownedTasks/${constructionOrderId}`, formData);
-      if (response.ok) {
+      if (response.status === 200) {
         alert("Design uploaded successfully!");
+        // Reset the state to show uploaded images
+        setImage2D(null);
+        setImage3D(null);
+        setFrontView(null);
+        setRearView(null);
       } else {
         console.error("Error uploading design");
       }
@@ -49,74 +53,106 @@ const DesignUpload = () => {
   };
 
   return (
-    <>
-      <div className="container mt-5">
-        <div className="row">
-          <div className="col-md-5">
-            <h2 className="mb-4">Customer Information</h2>
-            <div className="mb-3">
-              <strong>Name:</strong> {designDetail.customerName}
+    <div className="container mt-5">
+      <div className="card shadow">
+        <div className="card-header text-center bg-primary text-white">
+          <h2>Customer Information</h2>
+          <p>Order ID: {constructionOrderId}</p>
+        </div>
+        <div className="card-body">
+          <div className="row mb-3 border">
+            <div className="col-md-6">
+              <p><strong>Name:</strong> {designDetail.customerName}</p>
             </div>
-            <div className="mb-3">
-              <strong>Phone:</strong> {designDetail.phone}
+            <div className="col-md-6">
+              <p><strong>Phone:</strong> {designDetail.phone}</p>
             </div>
-            <div className="mb-3">
-              <strong>Address:</strong> {designDetail.address}
-            </div>
-            <div className="mb-3">
-              <strong>Staff:</strong> {designDetail.staffName}
-            </div>
-            {/* Request Section */}
             <div className="col-md-12">
-              <p><strong>Request: </strong> <br /> {designDetail.customerRequest}</p>
+              <p><strong>Address:</strong> {designDetail.address}</p>
+            </div>
+            <div className="col-md-12">
+              <p><strong>Staff:</strong> {designDetail.staffName}</p>
+            </div>
+            <div className="col-md-12">
+              <p><strong>Request:</strong><br /> {designDetail.customerRequest}</p>
             </div>
           </div>
 
-          <div className="col-md-7">
-            <h2 className="mb-4">Upload Design Files</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-12">
-                <label>Image 2D:</label>
-                <input
-                  className="form-control"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFileChange(e, setImage2D)}
-                />
+          <h2 className="mb-4">Uploaded Images</h2>
+          <div className="row mb-4">
+            {image2D && (
+              <div className="col-md-3 text-center">
+                <p>2D View</p>
+                <img src={URL.createObjectURL(image2D)} alt="Image 2D" className="img-fluid mb-2" />
+                
               </div>
-              <div className="mb-12">
-                <label>Image 3D:</label>
-                <input
-                  className="form-control"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFileChange(e, setImage3D)}
-                />
+            )}
+            {image3D && (
+              <div className="col-md-3 text-center">
+                <p>3D View</p>
+                <img src={URL.createObjectURL(image3D)} alt="Image 3D" className="img-fluid mb-2" />
+                
               </div>
-              <div className="mb-12">
-                <label>Front View:</label>
-                <input
-                  className="form-control"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFileChange(e, setFrontView)}
-                />
+            )}
+            {frontView && (
+              <div className="col-md-3 text-center">
+                <p>Front View</p>
+                <img src={URL.createObjectURL(frontView)} alt="Front View" className="img-fluid mb-2" />
+                
               </div>
-              <div className="mb-12">
-                <label>Rear View:</label>
-                <input
-                  className="form-control"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFileChange(e, setRearView)}
-                />
+            )}
+            {rearView && (
+              <div className="col-md-3 text-center">
+                 <p>Rear View</p>
+                <img src={URL.createObjectURL(rearView)} alt="Rear View" className="img-fluid mb-2" />
+               
               </div>
-              <button type="submit" className="btn btn-primary">Upload</button>
-            </form>
+            )}
           </div>
+
+          <h2 className="mb-4">Upload Design Files</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label>Image 2D:</label>
+              <input
+                className="form-control"
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleFileChange(e, setImage2D)}
+              />
+            </div>
+            <div className="mb-3">
+              <label>Image 3D:</label>
+              <input
+                className="form-control"
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleFileChange(e, setImage3D)}
+              />
+            </div>
+            <div className="mb-3">
+              <label>Front View:</label>
+              <input
+                className="form-control"
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleFileChange(e, setFrontView)}
+              />
+            </div>
+            <div className="mb-3">
+              <label>Rear View:</label>
+              <input
+                className="form-control"
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleFileChange(e, setRearView)}
+              />
+            </div>
+            <button type="submit" className="btn btn-primary">Upload</button>
+          </form>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

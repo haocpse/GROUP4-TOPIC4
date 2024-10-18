@@ -17,7 +17,6 @@ import ViewQuotation from "./Components/ApproveQuotation/ViewQuotation";
 import ListQuotation from "./Components/ListQuotation/ListQuotation";
 import ViewQuotationInConsultationPage from "./Components/ListQuotation/ViewQuotationInConsultationPage";
 import ViewDesign from "./Components/ApproveDesign/ViewDesign";
-import ViewPayment from "./Components/ListQuotation/ViewPayment";
 import DesignerTasks from "./Components/DesignerTasks/DesignerTasks";
 import CustomerView from "./Components/CustomerView/CustomerView";
 import CustomerQuotationList from "./Components/CustomerView/CustomerQuotationList";
@@ -28,6 +27,13 @@ import Navbar from "./Components/Navbar/Navbar";
 import ApproveMaintenanceQuotation from "./Components/ApproveQuotation/ApproveMaintenanceQuotation";
 import ViewMaintenanceQuotation from "./Components/ApproveQuotation/ViewMaintenanceQuotation";
 import MainLayoutDesigner from "./Components/MainLayoutDesigner";
+import Package from "./Components/Package/PackageManage";
+import PackagePrice from "./Components/Package/PackagePrice";
+import PackageConstruction from "./Components/Package/PackageConstruction";
+import PaymentMethods from "./Components/ListQuotation/PaymentMethod";
+import PaymentPageCard from "./Components/ListQuotation/PaymentPage-Card";
+import PaymentPageQR from "./Components/ListQuotation/PaymentPage_QR";
+import PaymentInfo from "./Components/ListQuotation/PaymentInfo";
 function App() {
   const router = createBrowserRouter([
     {
@@ -155,15 +161,39 @@ function App() {
     },
 
 
+    // {
+    //   path: "view-payment", // Sửa path này thành list-quotation thay vì 'list quotation'
+    //   element: <ViewPayment />,
+    // },
     {
-      path: "view-payment", // Sửa path này thành list-quotation thay vì 'list quotation'
-      element: <ViewPayment />,
+      path: "list-quotation", // Sửa path này thành list-quotation thay vì 'list quotation'
+      element: <ListQuotation />,
+    },
+    {
+      path: "view-Quotation", // Sửa path này thành list-quotation thay vì 'list quotation'
+      element: <ViewQuotationInConsultationPage />,
+    },
+    {
+      path: "payment-method", // Sửa path này thành list-quotation thay vì 'list quotation'
+      element: <PaymentMethods/>,
+    },
+    {
+      path:"payment-Card",
+      element: <PaymentPageCard/>
+    },
+    {
+      path:"payment-Info",
+      element : <PaymentInfo />
+    },
+    {
+      path: "payment-QR",
+      element :<PaymentPageQR />
     },
 
 
     // CUSTOMER
     {
-      path: "customrer-quotation",
+      path: "myInfo/orders",
       element: <CustomerQuotationList />,
     },
     {
@@ -176,8 +206,21 @@ function App() {
       path: "navbar", // Add the route for DesignUpload
       element: <Navbar />,
     },
+    {
+      path: "package",
+      element: <Package />, // Route cho Package
+      children: [
+        {
+          path: "package-price", // Route cho Package Price
+          element: <PackagePrice />,
+        },
+        {
+          path: "package-construction", // Route cho Package Construction
+          element: <PackageConstruction />,
+        },
+      ],
+    },
   ]);
-
 
   return <RouterProvider router={router} />;
 }
