@@ -30,14 +30,14 @@ const ListQuotation = () => {
     };
 
     const handleViewDetails = (quote) => {
-        navigate('/view-Quotation', { state: { quote } });
+        navigate('/checkout', { state: { quote } });
     };
 
     return (
         <>
             <ToastContainer position="top-right" autoClose={5000} />
             <div className="container mt-4">
-                <h1 className="text-center mt-4" style={{color: 'blue'}}>List Quotation</h1>
+                <h1 className="text-center mt-4" style={{ color: 'blue' }}>List Quotation</h1>
                 <table className="table table-bordered mt-4">
                     <thead>
                         <tr>

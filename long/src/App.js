@@ -18,7 +18,6 @@ import ConsultationPage from "./Components/ConsultationPage/ConsultationPage";
 import ListQuotation from "./Components/ListQuotation/ListQuotation";
 import ViewQuotationInConsultationPage from "./Components/ListQuotation/ViewQuotationInConsultationPage";
 import ViewDesign from "./Components/ApproveDesign/ViewDesign";
-import ViewPayment from "./Components/ListQuotation/ViewPayment";
 import DesignerTasks from "./Components/DesignerTasks/DesignerTasks";
 import CustomerView from "./Components/CustomerView/CustomerView";
 import CustomerQuotationList from "./Components/CustomerView/CustomerQuotationList";
@@ -27,6 +26,10 @@ import Package from "./Components/Package/PackageManage";
 import PackagePrice from "./Components/Package/PackagePrice";
 import PackageConstruction from "./Components/Package/PackageConstruction";
 import Main from "./Components/Main/Main";
+import PaymentMethods from "./Components/ListQuotation/PaymentMethod";
+import PaymentPageCard from "./Components/ListQuotation/PaymentPage-Card";
+import PaymentPageQR from "./Components/ListQuotation/PaymentPage_QR";
+import PaymentInfo from "./Components/ListQuotation/PaymentInfo";
 function App() {
   const router = createBrowserRouter([
     {
@@ -103,8 +106,20 @@ function App() {
       element: <ViewQuotationInConsultationPage />,
     },
     {
-      path: "view-payment", // Sửa path này thành list-quotation thay vì 'list quotation'
-      element: <ViewPayment />,
+      path: "payment-method", // Sửa path này thành list-quotation thay vì 'list quotation'
+      element: <PaymentMethods/>,
+    },
+    {
+      path:"payment-Card",
+      element: <PaymentPageCard/>
+    },
+    {
+      path:"payment-Info",
+      element : <PaymentInfo />
+    },
+    {
+      path: "payment-QR",
+      element :<PaymentPageQR />
     },
     {
       path: "consult/ownedTasks/:constructionOrderId",
@@ -115,7 +130,7 @@ function App() {
       element: <ViewQuotationAfterCreate />,
     },
     {
-      path: "customrer-quotation",
+      path: "myInfo/orders",
       element: <CustomerQuotationList />,
     },
     {
