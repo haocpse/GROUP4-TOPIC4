@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
 import QR from '../Assests/QR_ngan hang.png';
+import Back_icon from '../Assests/Bank_icon.png';
+import mastercard from '../Assests/mastercard-removebg-preview.png';
 const banks = [
     { name: 'Vietcombank', logo: 'https://placehold.co/100x50?text=Vietcombank' },
     { name: 'VietinBank', logo: 'https://placehold.co/100x50?text=VietinBank' },
@@ -53,7 +55,7 @@ const PaymentMethods = () => {
                     style={{ cursor: 'pointer' }}
                 >
                     <div>Thẻ nội địa và tài khoản ngân hàng</div>
-                    <img alt="Bank Icon" src="https://placehold.co/50x50?text=Bank" />
+                    <img src={Back_icon} alt="Logo" className="img-fluid me-2" style={{ width: '50px' }} />
                 </div>
             </div>
 
@@ -96,7 +98,7 @@ const PaymentMethods = () => {
                 <div className="d-flex justify-content-between align-items-center">
                     <div>Thẻ thanh toán quốc tế</div>
                     <div>
-                        <img alt="MasterCard Icon" src="https://placehold.co/50x30?text=MasterCard" className="me-2" />
+                        <img src={mastercard} alt="mastercard" className="me-2" style={{ width: '40px' }} />
                         <img alt="Visa Icon" src="https://placehold.co/50x30?text=Visa" className="me-2" />
                         <img alt="JCB Icon" src="https://placehold.co/50x30?text=JCB" className="me-2" />
                         <img alt="UnionPay Icon" src="https://placehold.co/50x30?text=UnionPay" />

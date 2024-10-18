@@ -24,10 +24,9 @@ import CustomerQuotationList from "./Components/CustomerView/CustomerQuotationLi
 import ViewQuotationAfterCreate from "./Components/QuotationOrder/ViewQuotationAfterCreate";
 import Main from "./Components/Main/Main";
 import PaymentMethods from "./Components/ListQuotation/PaymentMethod";
-import PaymentPage_Card from "./Components/ListQuotation/PaymentPage-Card";
-import PaymentPage_QR from "./Components/ListQuotation/PaymentPage_QR";
 import PaymentPageCard from "./Components/ListQuotation/PaymentPage-Card";
 import PaymentPageQR from "./Components/ListQuotation/PaymentPage_QR";
+import PaymentInfo from "./Components/ListQuotation/PaymentInfo";
 function App() {
   const router = createBrowserRouter([
     {
@@ -104,12 +103,16 @@ function App() {
       element: <ViewQuotationInConsultationPage />,
     },
     {
-      path: "Payment-method", // Sửa path này thành list-quotation thay vì 'list quotation'
+      path: "payment-method", // Sửa path này thành list-quotation thay vì 'list quotation'
       element: <PaymentMethods/>,
     },
     {
       path:"payment-Card",
       element: <PaymentPageCard/>
+    },
+    {
+      path:"payment-Info",
+      element : <PaymentInfo />
     },
     {
       path: "payment-QR",
@@ -124,7 +127,7 @@ function App() {
       element: <ViewQuotationAfterCreate />,
     },
     {
-      path: "customrer-quotation",
+      path: "myInfo/orders",
       element: <CustomerQuotationList />,
     },
     {
