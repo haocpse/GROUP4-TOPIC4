@@ -52,14 +52,14 @@ public class CustomerController {
     }
 
     @PutMapping("/myInfo/orders/{constructionOrderId}/design")
-    public ApiResponse<StatusOfQuotationOrDesign<DesignStatus>> confirmDesign(CustomerConfirmRequest<DesignStatus> request, @PathVariable String constructionOrderId) {
+    public ApiResponse<StatusOfQuotationOrDesign<DesignStatus>> confirmDesign(@RequestBody CustomerConfirmRequest<DesignStatus> request, @PathVariable String constructionOrderId) {
         return ApiResponse.<StatusOfQuotationOrDesign<DesignStatus>>builder()
                 .data(customerService.confirmDesign(request, constructionOrderId))
                 .build();
     }
 
     @PutMapping("/myInfo/orders/{constructionOrderId}/quotation")
-    public ApiResponse<StatusOfQuotationOrDesign<QuotationStatus>> confirmQuotation(CustomerConfirmRequest<QuotationStatus> request, @PathVariable String constructionOrderId) {
+    public ApiResponse<StatusOfQuotationOrDesign<QuotationStatus>> confirmQuotation(@RequestBody CustomerConfirmRequest<QuotationStatus> request, @PathVariable String constructionOrderId) {
         return ApiResponse.<StatusOfQuotationOrDesign<QuotationStatus>>builder()
                 .data(customerService.confirmQuotation(request, constructionOrderId))
                 .build();

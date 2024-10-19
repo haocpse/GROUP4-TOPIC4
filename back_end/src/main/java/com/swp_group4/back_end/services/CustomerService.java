@@ -98,14 +98,24 @@ public class CustomerService {
         List<ConstructionOrder> orderList = constructOrderRepository.findByCustomerId(customer.getCustomerId());
         List<ConstructOrderDetailForCustomerResponse> responses = new ArrayList<>();
         for (ConstructionOrder order : orderList) {
-            Quotation quotation = quotationRepository.findByQuotationIdAndQuotationStatus(order.getQuotationId(), QuotationStatus.CONFIRMED)
-                    .orElseThrow();
-            Design design = designRepository.findByDesignIdAndDesignStatus(order.getDesignId(), DesignStatus.CONFIRMED).orElseThrow();
+
+            String designId = "";
+            String quotationId = "";
+            if (designRepository.findByDesignIdAndDesignStatus(order.getDesignId(), DesignStatus.CONFIRMED).isPresent()) {
+                Design design = designRepository.findByDesignIdAndDesignStatus(order.getDesignId(), DesignStatus.CONFIRMED).orElseThrow();
+                designId = design.getDesignId();
+            }
+            if (quotationRepository.findByQuotationIdAndQuotationStatus(order.getQuotationId(), QuotationStatus.CONFIRMED).isPresent()) {
+                Quotation quotation = quotationRepository.findByQuotationIdAndQuotationStatus(order.getQuotationId(), QuotationStatus.CONFIRMED)
+                        .orElseThrow();
+                quotationId = quotation.getQuotationId();
+            }
+
             ConstructOrderDetailForCustomerResponse response = ConstructOrderDetailForCustomerResponse.builder()
                     .constructionOrderId(order.getConstructionOrderId())
                     .customerName(customer.getFirstName() + " " + customer.getLastName())
-                    .quotationId(quotation.getQuotationId())
-                    .designId(design.getDesignId())
+                    .quotationId(quotationId)
+                    .designId(designId)
                     .startDate(order.getStartDate())
                     .endDate(order.getEndDate())
                     .build();
@@ -121,6 +131,7 @@ public class CustomerService {
         Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
         Packages packages = packageRepository.findById(quotation.getPackageId()).orElseThrow();
         ConstructQuotationResponse response = ConstructQuotationResponse.builder()
+                .constructOrderId(constructionOrderId)
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .consultantName(staffRepository.findById(order.getConsultantId()).orElseThrow().getStaffName())
                 .customerRequest(order.getCustomerRequest())
@@ -147,6 +158,7 @@ public class CustomerService {
         Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
         return ConstructDesignResponse.builder()
                 .constructionOrderId(order.getConstructionOrderId())
+                .designId(design.getDesignId())
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .designName(staffRepository.findById(order.getDesignerLeaderId()).orElseThrow().getStaffName())
                 .customerRequest(order.getCustomerRequest())
