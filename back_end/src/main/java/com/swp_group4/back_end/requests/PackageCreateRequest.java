@@ -1,6 +1,5 @@
-package com.swp_group4.back_end.responses;
+package com.swp_group4.back_end.requests;
 
-import com.swp_group4.back_end.entities.Packages;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,6 +10,9 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class PackageResponse {
-    List<Packages> packagesList;
+public class PackageCreateRequest {
+    String packageType;
+    List<PackagePriceRequest> packagePrices;
 }
+
+

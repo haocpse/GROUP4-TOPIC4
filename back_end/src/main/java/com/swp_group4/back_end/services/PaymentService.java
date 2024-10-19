@@ -11,6 +11,7 @@ import com.swp_group4.back_end.responses.PaymentResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,35 @@ public class PaymentService {
     PaymentOrderRepository paymentOrderRepository;
     @Autowired
     CustomerRepository customerRepository;
+
+    // VNPAY Configuration
+    @Value("${vnpay.tmnCode}")
+    private String vnpTmnCode;
+
+    @Value("${vnpay.hashSecret}")
+    private String vnpHashSecret;
+
+    @Value("${vnpay.url}")
+    private String vnpUrl;
+
+    @Value("${vnpay.returnUrl}")
+    private String vnpReturnUrl;
+
+    // MOMO Configuration
+    @Value("${momo.partnerCode}")
+    private String momoPartnerCode;
+
+    @Value("${momo.accessKey}")
+    private String momoAccessKey;
+
+    @Value("${momo.secretKey}")
+    private String momoSecretKey;
+
+    @Value("${momo.endpoint}")
+    private String momoEndpoint;
+
+    @Value("${momo.returnUrl}")
+    private String momoReturnUrl;
 
     public List<PaymentOrder> listALl(){
         var context = SecurityContextHolder.getContext();

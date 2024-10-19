@@ -1,11 +1,10 @@
 package com.swp_group4.back_end.controllers;
 
 import com.swp_group4.back_end.entities.Quotation;
+import com.swp_group4.back_end.enums.ConstructionOrderStatus;
+import com.swp_group4.back_end.enums.QuotationStatus;
 import com.swp_group4.back_end.requests.ExportQuotationRequest;
-import com.swp_group4.back_end.responses.ApiResponse;
-import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
-import com.swp_group4.back_end.responses.ConstructQuotationResponse;
-import com.swp_group4.back_end.responses.PackageResponse;
+import com.swp_group4.back_end.responses.*;
 import com.swp_group4.back_end.services.ConsultationService;
 import com.swp_group4.back_end.services.PackageService;
 import lombok.AccessLevel;
@@ -28,26 +27,40 @@ public class ConsultationController {
     // Hàm để CONSULTANT xem các task được Customer gán
     // (Construction Order đang ở trạng thái CONSULTING)
     @GetMapping("/ownedTasks")
-    public ApiResponse<List<ConstructOrderDetailForStaffResponse>> listTask() {
-        return ApiResponse.<List<ConstructOrderDetailForStaffResponse>>builder()
+    public ApiResponse<List<ConstructOrderDetailForStaffResponse<ConstructionOrderStatus>>> listTask() {
+        return ApiResponse.<List<ConstructOrderDetailForStaffResponse<ConstructionOrderStatus>>>builder()
                 .data(consultationService.listOwnedConsultTask())
+                .build();
+    }
+
+    @GetMapping("/quotations")
+    public ApiResponse<List<ConstructOrderDetailForStaffResponse<QuotationStatus>>> listQuotation() {
+        return ApiResponse.<List<ConstructOrderDetailForStaffResponse<QuotationStatus>>>builder()
+                .data(consultationService.listQuotation())
                 .build();
     }
 
     // Hàm để CONSULTANT xem chi tiết Construction Order
     // (Construction Order đang ở trạng thái CONSULTING)
     @GetMapping("/ownedTasks/{constructionOrderId}")
-    public ApiResponse<ConstructOrderDetailForStaffResponse> detailTask(@PathVariable String constructionOrderId) {
-        return ApiResponse.<ConstructOrderDetailForStaffResponse>builder()
-                .data(consultationService.detailOfOrder(constructionOrderId))
+    public ApiResponse<ConstructOrderDetailForStaffResponse<ConstructionOrderStatus>> detailTask(@PathVariable String constructionOrderId) {
+        return ApiResponse.<ConstructOrderDetailForStaffResponse<ConstructionOrderStatus>>builder()
+                .data(consultationService.constructionOrderStatusConstructOrderDetailForStaffResponse(constructionOrderId))
+                .build();
+    }
+
+    @GetMapping("/ownedTasks/{constructionOrderId}/quotation")
+    public ApiResponse<ConstructQuotationResponse> viewQuotation(@PathVariable String constructionOrderId) {
+        return ApiResponse.<ConstructQuotationResponse>builder()
+                .data(consultationService.viewQuotation(constructionOrderId))
                 .build();
     }
 
     // Hàm để CONSULTANT xem chi các package và package price
-    @GetMapping("/ownedTasks/{constructionOrderId}/packages")
-    public ApiResponse<PackageResponse> detailPackage(@PathVariable String constructionOrderId) {
-        return ApiResponse.<PackageResponse>builder()
-                .data(packageService.detailPackage(constructionOrderId))
+    @GetMapping("/packages")
+    public ApiResponse<PackageDetailResponse> detailPackage() {
+        return ApiResponse.<PackageDetailResponse>builder()
+                .data(packageService.detailPackage())
                 .build();
     }
 
@@ -60,10 +73,18 @@ public class ConsultationController {
                 .build();
     }
 
-    @GetMapping("/ownedTasks/{constructionOrderId}/quotation")
-    public ApiResponse<ConstructQuotationResponse> viewQuotation(@PathVariable String constructionOrderId) {
-        return ApiResponse.<ConstructQuotationResponse>builder()
-                .data(consultationService.viewQuotation(constructionOrderId))
+    @GetMapping("/quotations/{quotationId}")
+    public ApiResponse<ViewRejectedQuotationResponse> viewRejectedQuotation(@PathVariable String quotationId) {
+        return ApiResponse.<ViewRejectedQuotationResponse>builder()
+                .data(consultationService.viewRejectedQuotation(quotationId))
                 .build();
     }
+
+    @PutMapping("/quotations/{quotationId}")
+    public ApiResponse<Quotation> updateQuotation(@PathVariable String quotationId, @RequestBody ExportQuotationRequest request) {
+        return ApiResponse.<Quotation>builder()
+                .data(consultationService.updateQuotation(quotationId, request))
+                .build();
+    }
+
 }

@@ -1,12 +1,11 @@
 package com.swp_group4.back_end.mapper;
 
-import com.swp_group4.back_end.entities.ConstructionOrder;
 import com.swp_group4.back_end.entities.Customer;
 import com.swp_group4.back_end.requests.ServiceRequest;
 import com.swp_group4.back_end.requests.UpdateInfoRequest;
 import com.swp_group4.back_end.responses.ConstructOrderDetailForManagerResponse;
-import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
 import com.swp_group4.back_end.responses.CustomerResponse;
+import com.swp_group4.back_end.responses.MaintenanceOrderDetailForManagerResponse;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -21,6 +20,9 @@ public interface CustomerMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     ConstructOrderDetailForManagerResponse toDetailForManager(Customer customer, @MappingTarget ConstructOrderDetailForManagerResponse detail);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    MaintenanceOrderDetailForManagerResponse toMaintenanceDetailForManager(Customer customer, @MappingTarget MaintenanceOrderDetailForManagerResponse detail);
 
 
 }

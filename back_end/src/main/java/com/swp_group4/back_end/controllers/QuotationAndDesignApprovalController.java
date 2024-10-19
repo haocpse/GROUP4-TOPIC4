@@ -1,8 +1,5 @@
 package com.swp_group4.back_end.controllers;
 
-import com.swp_group4.back_end.entities.Design;
-import com.swp_group4.back_end.enums.DesignStatus;
-import com.swp_group4.back_end.enums.QuotationStatus;
 import com.swp_group4.back_end.requests.ManageReviewRequest;
 import com.swp_group4.back_end.responses.*;
 import com.swp_group4.back_end.services.QuotationAndDesignApprovalService;
@@ -41,7 +38,7 @@ public class QuotationAndDesignApprovalController {
 
     // Hàm để MANAGER quyết định APPROVE hay không
     // (Nếu APPROVE Construction Order chuyển sang trạng thái CONFIRMED_QUOTATION)
-    @PostMapping("/quotations/{quotationId}")
+    @PutMapping("/quotations/{quotationId}")
     public ApiResponse<ConstructOrderDetailForManagerResponse> approveQuotation(@RequestBody ManageReviewRequest request, @PathVariable String quotationId){
         return ApiResponse.<ConstructOrderDetailForManagerResponse>builder()
                 .data(quotationAndDesignApprovalService.manageQuotation(request, quotationId))
@@ -68,7 +65,7 @@ public class QuotationAndDesignApprovalController {
 
     // Hàm để MANAGER quyết định APPROVE hay không
     // (Nếu APPROVE Construction Order chuyển sang trạng thái CONFIRMED_DESIGN)
-    @PostMapping("/designs/{designId}")
+    @PutMapping("/designs/{designId}")
     public ApiResponse<ConstructOrderDetailForManagerResponse> approveDesign(@RequestBody ManageReviewRequest request, @PathVariable String designId){
         return ApiResponse.<ConstructOrderDetailForManagerResponse>builder()
                 .data(quotationAndDesignApprovalService.manageDesign(request, designId))

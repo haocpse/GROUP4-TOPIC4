@@ -6,7 +6,9 @@ import com.swp_group4.back_end.enums.DesignStatus;
 import com.swp_group4.back_end.mapper.*;
 import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.requests.UrlDesignRequest;
+import com.swp_group4.back_end.responses.ConstructDesignResponse;
 import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
+import com.swp_group4.back_end.responses.ViewRejectedDesignResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -36,32 +38,26 @@ public class DesignService {
     @Autowired
     CustomerRepository customerRepository;
     @Autowired
-    ConstructOrderRepository constructionOrderMapper;
-    @Autowired
     DesignRepository designRepository;
-    @Autowired
-    DesignMapper designMapper;
 
-    public List<ConstructOrderDetailForStaffResponse> listOwnedDesignTask() {
-        List<ConstructOrderDetailForStaffResponse> responses = new ArrayList<>();
-//        Staff staff = this.identifyStaff();
-        String id = "bc6910eb-8729-11ef-bf00-c85acfa9b517";
-        Staff staff = staffRepository.findById(id).orElseThrow(() -> new RuntimeException("Staff not found"));
-        List<ConstructionOrder> orders = constructOrderRepository.findByDesignerLeaderId(id);
+    public List<ConstructOrderDetailForStaffResponse<ConstructionOrderStatus>> listOwnedDesignTask() {
+        List<ConstructOrderDetailForStaffResponse<ConstructionOrderStatus>> responses = new ArrayList<>();
+        Staff staff = this.identifyStaff();
+        List<ConstructionOrder> orders = constructOrderRepository.findByDesignerLeaderIdAndDesignIdIsNull(staff.getStaffId());
         for (ConstructionOrder order : orders) {
-            ConstructOrderDetailForStaffResponse response = this.detailOfOrder(order.getConstructionOrderId());
+            ConstructOrderDetailForStaffResponse<ConstructionOrderStatus> response = this.constructionOrderStatusConstructOrderDetailForStaffResponse(order.getConstructionOrderId());
             response.setStaffName(staff.getStaffName());
             responses.add(response);
         }
         return responses;
     }
 
-    public ConstructOrderDetailForStaffResponse detailOfOrder(String constructionOrderId) {
+    public ConstructOrderDetailForStaffResponse<ConstructionOrderStatus> constructionOrderStatusConstructOrderDetailForStaffResponse(String constructionOrderId) {
         ConstructionOrder order = this.findOrderById(constructionOrderId);
         Customer customer = this.findCustomerById(order.getCustomerId());
-        return ConstructOrderDetailForStaffResponse.builder()
+        return ConstructOrderDetailForStaffResponse.<ConstructionOrderStatus>builder()
                 .constructionOrderId(order.getConstructionOrderId())
-                .customerName(customer.getFirstname() + " " + customer.getLastname())
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .phone(customer.getPhone())
                 .address(customer.getAddress())
                 .customerRequest(order.getCustomerRequest())
@@ -87,9 +83,9 @@ public class DesignService {
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
     }
 
-    public Design saveDesign(String constructionOrderId, MultipartFile image2D, MultipartFile image3D, MultipartFile frontView, MultipartFile rearView) {
+    public Design saveDesign(String constructionOrderId, MultipartFile image2D, MultipartFile image3D, MultipartFile frontView) {
         Design design = Design.builder()
-                .status(DesignStatus.DESIGNED)
+                .designStatus(DesignStatus.DESIGNED)
                 .build();
 
         String baseUrl = "http://localhost:8080/images/" + constructionOrderId + "/";
@@ -103,14 +99,10 @@ public class DesignService {
         if (!frontView.isEmpty()) {
             design.setUrlFrontDesign(baseUrl + saveImage(frontView, constructionOrderId));
         }
-        if (!rearView.isEmpty()) {
-            design.setUrlBackDesign(baseUrl + saveImage(rearView, constructionOrderId));
-        }
 
         // Save the design and update the order status
         designRepository.save(design);
         ConstructionOrder order = this.findOrderById(constructionOrderId);
-        order.setStatus(ConstructionOrderStatus.DESIGNED);
         order.setDesignId(design.getDesignId());
         constructOrderRepository.save(order);
 
@@ -134,5 +126,77 @@ public class DesignService {
             log.error("Error saving image", e);
             throw new RuntimeException("Error saving image", e);
         }
+    }
+
+    public List<ConstructOrderDetailForStaffResponse<DesignStatus>> listDesign() {
+        List<ConstructOrderDetailForStaffResponse<DesignStatus>> responses = new ArrayList<>();
+        Staff staff = this.identifyStaff();
+        List<ConstructionOrder> orders = constructOrderRepository.findByDesignerLeaderIdAndDesignIdIsNotNull(staff.getStaffId());
+        for (ConstructionOrder order : orders) {
+            ConstructOrderDetailForStaffResponse<DesignStatus> response = this.designStatusConstructOrderDetailForStaffResponse(order.getDesignId());
+            response.setStaffName(staff.getStaffName());
+            response.setStatus(designRepository.findById(order.getDesignId()).orElseThrow().getDesignStatus());
+            responses.add(response);
+        }
+        return responses;
+    }
+
+    public ConstructOrderDetailForStaffResponse<DesignStatus> designStatusConstructOrderDetailForStaffResponse(String designId) {
+        ConstructionOrder order = constructOrderRepository.findByDesignId(designId).orElseThrow();
+        Customer customer = this.findCustomerById(order.getCustomerId());
+        return ConstructOrderDetailForStaffResponse.<DesignStatus>builder()
+                .constructionOrderId(order.getConstructionOrderId())
+                .id(designId)
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
+                .phone(customer.getPhone())
+                .address(customer.getAddress())
+                .customerRequest(order.getCustomerRequest())
+                .staffName(staffRepository.findById(order.getDesignerLeaderId()).orElseThrow().getStaffName())
+                .build();
+    }
+
+    public Design updateDesign(String designId, MultipartFile image2D, MultipartFile image3D, MultipartFile frontView) {
+        ConstructionOrder order = constructOrderRepository.findByDesignId(designId).orElseThrow();
+        Design design = designRepository.findById(designId).orElseThrow();
+        String baseUrl = "http://localhost:8080/images/" + order.getConstructionOrderId() + "/";
+
+        if (image2D != null ) {
+            design.setUrl2dDesign(baseUrl + saveImage(image2D, order.getConstructionOrderId()));
+        }
+        if (image3D != null ) {
+            design.setUrl3dDesign(baseUrl + saveImage(image3D, order.getConstructionOrderId()));
+        }
+        if (frontView != null ) {
+            design.setUrlFrontDesign(baseUrl + saveImage(frontView, order.getConstructionOrderId()));
+        }
+
+        design.setDesignStatus(DesignStatus.DESIGNED);
+        return designRepository.save(design);
+    }
+
+    public ViewRejectedDesignResponse viewRejectedDesign(String designId) {
+        Design design = designRepository.findById(designId).orElseThrow();
+        ConstructionOrder order = constructOrderRepository.findByDesignId(designId).orElseThrow();
+        Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
+        return ViewRejectedDesignResponse.builder()
+                .constructionOrderId(order.getConstructionOrderId())
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
+                .phone(customer.getPhone())
+                .address(customer.getAddress())
+                .customerRequest(order.getCustomerRequest())
+                .designerName(this.getStaffName(order.getDesignerLeaderId()))
+                .customerRequest(order.getCustomerRequest())
+                .url2dDesign(design.getUrl2dDesign())
+                .url3dDesign(design.getUrl3dDesign())
+                .urlFrontDesign(design.getUrlFrontDesign())
+                .build();
+    }
+
+    String getStaffName(String staffId) {
+        if (staffId != null && !staffId.isEmpty()) {
+            return staffRepository.findById(staffId)
+                    .orElseThrow(() -> new RuntimeException("Staff not found")).getStaffName();
+        }
+        return "";
     }
 }

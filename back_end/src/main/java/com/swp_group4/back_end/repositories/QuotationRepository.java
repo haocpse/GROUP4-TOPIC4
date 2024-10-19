@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface QuotationRepository extends JpaRepository<Quotation, String> {
 
-    List<Quotation> findByStatus(QuotationStatus status);
+    List<Quotation> findByQuotationStatus(QuotationStatus status);
 
 }
