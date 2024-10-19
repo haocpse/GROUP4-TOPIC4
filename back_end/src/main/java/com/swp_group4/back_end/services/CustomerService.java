@@ -2,9 +2,12 @@ package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.*;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
+import com.swp_group4.back_end.enums.DesignStatus;
+import com.swp_group4.back_end.enums.QuotationStatus;
 import com.swp_group4.back_end.mapper.CustomerMapper;
 import com.swp_group4.back_end.mapper.QuotationMapper;
 import com.swp_group4.back_end.repositories.*;
+import com.swp_group4.back_end.requests.CustomerConfirmRequest;
 import com.swp_group4.back_end.requests.ServiceRequest;
 import com.swp_group4.back_end.responses.*;
 import lombok.AccessLevel;
@@ -91,17 +94,18 @@ public class CustomerService {
     public List<ConstructOrderDetailForCustomerResponse> listOrders() {
         var context = SecurityContextHolder.getContext();
         String id = context.getAuthentication().getName();
-        log.info(id);
         Customer customer = customerRepository.findByAccountId(id).orElseThrow();
         List<ConstructionOrder> orderList = constructOrderRepository.findByCustomerId(customer.getCustomerId());
         List<ConstructOrderDetailForCustomerResponse> responses = new ArrayList<>();
         for (ConstructionOrder order : orderList) {
+            Quotation quotation = quotationRepository.findByQuotationIdAndQuotationStatus(order.getQuotationId(), QuotationStatus.CONFIRMED)
+                    .orElseThrow();
+            Design design = designRepository.findByDesignIdAndDesignStatus(order.getDesignId(), DesignStatus.CONFIRMED).orElseThrow();
             ConstructOrderDetailForCustomerResponse response = ConstructOrderDetailForCustomerResponse.builder()
                     .constructionOrderId(order.getConstructionOrderId())
-                    .customerName(customerRepository.findById(order.getCustomerId()).orElseThrow().getFirstName()
-                            + " " + customerRepository.findById(order.getCustomerId()).orElseThrow().getLastName())
-                    .quotationId(order.getQuotationId())
-                    .designId(order.getDesignId())
+                    .customerName(customer.getFirstName() + " " + customer.getLastName())
+                    .quotationId(quotation.getQuotationId())
+                    .designId(design.getDesignId())
                     .startDate(order.getStartDate())
                     .endDate(order.getEndDate())
                     .build();
@@ -150,6 +154,38 @@ public class CustomerService {
                 .url3dDesign(design.getUrl3dDesign())
                 .urlFrontDesign(design.getUrlFrontDesign())
                 .urlBackDesign(design.getUrlBackDesign())
+                .build();
+    }
+
+    public StatusOfQuotationOrDesign<DesignStatus> confirmDesign(CustomerConfirmRequest<DesignStatus> request, String constructionOrderId) {
+        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
+        Design design = designRepository.findById(order.getDesignId()).orElseThrow();
+        if (request.getStatus().equals(DesignStatus.CONFIRMED)) {
+            order.setStatus(ConstructionOrderStatus.CONFIRMED_DESIGN);
+            constructOrderRepository.save(order);
+        } else {
+            design.setDesignStatus(DesignStatus.REJECTED);
+            designRepository.save(design);
+        }
+        return StatusOfQuotationOrDesign.<DesignStatus>builder()
+                .id(design.getDesignId())
+                .status(design.getDesignStatus())
+                .build();
+    }
+
+    public StatusOfQuotationOrDesign<QuotationStatus> confirmQuotation(CustomerConfirmRequest<QuotationStatus> request, String constructionOrderId) {
+        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
+        Quotation quotation = quotationRepository.findById(order.getQuotationId()).orElseThrow();
+        if (request.getStatus().equals(QuotationStatus.CONFIRMED)) {
+            order.setStatus(ConstructionOrderStatus.CONFIRMED_QUOTATION);
+            constructOrderRepository.save(order);
+        } else {
+            quotation.setQuotationStatus(QuotationStatus.REJECTED);
+            quotationRepository.save(quotation);
+        }
+        return StatusOfQuotationOrDesign.<QuotationStatus>builder()
+                .id(quotation.getQuotationId())
+                .status(quotation.getQuotationStatus())
                 .build();
     }
 
