@@ -75,19 +75,19 @@ public class PaymentService {
                 .status(PaymentStatus.PENDING)
                 .build();
 
-        PaymentResponse responseDTO = new PaymentResponse();
+        PaymentResponse response = new PaymentResponse();
 
         switch (request.getMethod()) {
             case VNPAY:
-                responseDTO = createVNPayPayment(paymentOrder);
+                response = createVNPayPayment(paymentOrder);
                 break;
             case MOMO:
-                responseDTO = createMomoPayment(paymentOrder);
+                response = createMomoPayment(paymentOrder);
                 break;
             default:
         }
 
-        return responseDTO;
+        return response;
     }
 
     // Xử lý phản hồi (callback) từ cổng thanh toán
@@ -150,12 +150,10 @@ public class PaymentService {
         return "0".equals(resultCode);
     }
 
-    // Giả lập tạo URL thanh toán cho VNPAY
     private String generateVNPayUrl(PaymentOrder paymentOrder) {
         return "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?params";
     }
 
-    // Giả lập tạo URL thanh toán cho MOMO
     private String generateMomoUrl(PaymentOrder paymentOrder) {
         return "https://test-payment.momo.vn/pay?params";
     }
