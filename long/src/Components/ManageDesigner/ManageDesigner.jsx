@@ -27,7 +27,7 @@ const ManageDesigner = () => {
                 {/* Design */}
                 <li className="nav-item">
                     <NavLink to="/design/designs" className="nav-link d-flex align-items-center sidebar-link mt-5 mb-3">
-                        <i class="fa-solid fa-pencil"></i>
+                    <i class="fa-solid fa-compass-drafting"></i>
                     </NavLink>
                 </li>
                 <hr className="mb-3 mt-5" />

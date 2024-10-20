@@ -9,6 +9,13 @@ import hoCaContent2 from '../Assests/409.jpg';
 import hoCaContent3 from '../Assests/410.jpg';
 import hoca84 from '../Assests/84.jpg';
 import hoca43 from '../Assests/43.jpg';
+import hoca123 from '../Assests/resize-1729443139855123197freephotoofkhuvntruynthngchauathanhbinhvicuda.jpeg'
+import hoca345 from '../Assests/resize-17294425681044573785japanesegarden752918640.jpg'
+import hoca3456 from '../Assests/yeah.jpeg'
+import hoca34567 from '../Assests/yeah2.jpeg'
+
+
+
 import './Main.css';
 
 const Main = () => {
@@ -25,7 +32,7 @@ const Main = () => {
                             <div className="col-md-6 text-md-left mb-4 mb-md-0">
                                 <h1 className="mb-4 textMain1" style={{ color: '#BDBDBD', fontSize: '80px', fontWeight: '20' }}>PROJECT</h1>
                                 <h1 className="mb-4 textMain2" style={{ fontSize: '80px', fontWeight: '20' }}>KOI POND</h1>
-                                <button className="btn btn-primary mt-3 button">VIEW PROJECT</button>
+                                <button className="btn btn-danger py-2 mt-3 button">VIEW PROJECT</button>
                             </div>
 
                             {/* Carousel */}
@@ -64,10 +71,10 @@ const Main = () => {
                             <div className="col-md-6">
                                 <div className="row">
                                     <div className="col-6 mb-3">
-                                        <img className="img-fluid rounded img1" src={hoCaContent2} alt="KOI 1" style={{ height: '200px' }} />
+                                        <img className="img-fluid rounded " src={hoCaContent2} alt="KOI 1" style={{ height: '200px' }} />
                                     </div>
                                     <div className="col-6 mb-3">
-                                        <img className="img-fluid rounded img2" src={hoCaContent2} alt="KOI 2" style={{ height: '200px' }} />
+                                        <img className="img-fluid rounded img2" src={hoca345} alt="KOI 2" style={{ height: '200px', width: '90%'}} />
                                     </div>
                                     <div className="col-10">
                                         <img className="img-fluid rounded img3" src={hoCaContent3} alt="KOI 3" />
@@ -83,7 +90,7 @@ const Main = () => {
                                 <p>
                                     With over 20 years of experience, we provide top-notch services from consulting, designing, and maintaining Koi ponds to ensure your Koi live in a healthy and beautiful environment.
                                 </p>
-                                <button className="btn btn-primary mt-3 button">Read More</button>
+                                <button className="btn btn-danger mt-3 button">Read More</button>
                             </div>
                         </div>
                     </div>
@@ -158,27 +165,27 @@ const Main = () => {
                 {/* Projects Section */}
                 <section className="projects-section py-5 bg-light">
                     <div className="container">
-                        <h3 className="text-center">Our Projects</h3>
+                        <h3 className=" text-gray text-center mb-5" style={{ fontWeight: '20', fontSize: '50px' }}>Our Projects</h3>
                         <div className="row mt-4">
                             <div className="col-md-6">
                                 <div className="project-sample">
-                                    <img src={hoca84} alt="Sample Project" className="img-fluid" />
+                                    <img src={hoca84} alt="Sample Project" className="img-fluid rounded" />
                                     <a href="#" className="btn btn-outline-dark mt-3">View More</a>
                                 </div>
                             </div>
                             <div className="col-md-6">
                                 <div className="row">
                                     <div className="col-md-6 mb-3">
-                                        <img src={hoca43} alt="Project 1" className="img-fluid" />
+                                        <img src={hoca43} alt="Project 1" className="img-fluid rounded" />
                                     </div>
                                     <div className="col-md-6 mb-3">
-                                        <img src={hoca43} alt="Project 2" className="img-fluid" />
+                                        <img src={hoca123} alt="Project 2" className="img-fluid rounded" />
                                     </div>
                                     <div className="col-md-6 mb-3">
-                                        <img src={hoca43} alt="Project 3" className="img-fluid" />
+                                        <img src={hoca3456} alt="Project 3" className="img-fluid rounded" />
                                     </div>
                                     <div className="col-md-6 mb-3">
-                                        <img src={hoca43} alt="Project 4" className="img-fluid" />
+                                        <img src={hoca34567} alt="Project 4" className="img-fluid rounded" />
                                     </div>
                                 </div>
                             </div>
@@ -194,7 +201,7 @@ const Main = () => {
                                 <p>Koi Pond Design, FPT University</p>
                                 <p>Phone: 999.999.9999</p>
                                 <p>Email: koipondv@gmail.com</p>
-                                <a href="#" className="btn btn-outline-dark">Contact Us</a>
+                                <a href="#" classNameName="btn btn-outline-dark">Contact Us</a>
                             </div>
                             <div className="col-md-6">
                                 <iframe

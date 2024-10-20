@@ -52,15 +52,31 @@
     color: #f0a500;
   }
   .ul-navbar .highlight-login a {
-    background-color: #ff5733; /* Màu nền nổi bật */
-    color: #fff; /* Màu chữ trắng */
-    border-radius: 20px; /* Bo tròn viền */
-    padding: 10px 25px; /* Khoảng cách trong */
-    font-weight: bold; /* Làm chữ đậm */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Đổ bóng */
+    background-color: #ff5733; 
+    color: #fff; 
+    border-radius: 20px;
+    padding: 10px 25px; 
+    font-weight: bold;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .ul-navbar .highlight-login a:hover {
     background-color: #2200ff;
     color: #fff;
+}
+.ul-navbar i:hover {
+  color: #f0a500;
+}
+.ul-navbar .highlight-login i {
+  background-color: #ff5733; 
+  color: #fff; 
+  border-radius: 20px;
+  padding: 10px 25px; 
+  font-weight: bold; 
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ul-navbar .highlight-login i:hover {
+  background-color: #2200ff;
+  color: #fff;
 }
