@@ -1,6 +1,5 @@
 package com.swp_group4.back_end.configuration;
 
-import com.swp_group4.back_end.util.VNPayUtil;
 import lombok.Getter;
 import org.springframework.context.annotation.Configuration;
 

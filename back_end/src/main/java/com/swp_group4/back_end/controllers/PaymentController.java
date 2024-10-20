@@ -1,6 +1,8 @@
 package com.swp_group4.back_end.controllers;
 
 import com.swp_group4.back_end.entities.PaymentOrder;
+import com.swp_group4.back_end.enums.PaymentStatus;
+import com.swp_group4.back_end.repositories.PaymentOrderRepository;
 import com.swp_group4.back_end.responses.ApiResponse;
 import com.swp_group4.back_end.services.PaymentService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +27,8 @@ public class PaymentController {
 
     @Autowired
     PaymentService paymentService;
+    @Autowired
+    PaymentOrderRepository paymentOrderRepository;
 
     @GetMapping("/{accountId}")
     public ApiResponse<List<PaymentOrder>> getAllPayments(@PathVariable String accountId) {
@@ -61,11 +65,13 @@ public class PaymentController {
             String vnpResponseCode = allParams.get("vnp_ResponseCode");
             String paymentId = allParams.get("vnp_TxnRef");
             String orderId = paymentService.findOrderId(paymentId);
+            PaymentOrder paymentOrder = paymentOrderRepository.findById(paymentId).orElse(null);
             if ("00".equals(vnpResponseCode)) {
-//                paymentService.successPayment(paymentId);
+                assert paymentOrder != null;
+                paymentOrder.setStatus(PaymentStatus.SUCCESS);
+                paymentOrderRepository.save(paymentOrder);
                 response.sendRedirect("http://localhost:3000/myInfo/orders/" + orderId + "/payments");
             } else {
-//                paymentService.failPayment(paymentId);
                 response.sendRedirect("http://localhost:3000/myInfo/orders/" + orderId + "/payments");
             }
         } catch (Exception e) {

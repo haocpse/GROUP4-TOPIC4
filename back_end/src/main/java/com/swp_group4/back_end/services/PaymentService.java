@@ -1,13 +1,9 @@
 package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.configuration.VNPAYConfig;
-import com.swp_group4.back_end.entities.ConstructionOrder;
-import com.swp_group4.back_end.entities.Customer;
 import com.swp_group4.back_end.entities.PaymentOrder;
-import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.enums.PaymentStatus;
 import com.swp_group4.back_end.repositories.ConstructOrderRepository;
-import com.swp_group4.back_end.repositories.CustomerRepository;
 import com.swp_group4.back_end.repositories.PaymentOrderRepository;
 import com.swp_group4.back_end.util.VNPayUtil;
 import jakarta.servlet.http.HttpServletRequest;
