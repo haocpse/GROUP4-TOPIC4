@@ -1,5 +1,9 @@
 package com.swp_group4.back_end.controllers;
 
+import com.swp_group4.back_end.entities.Design;
+import com.swp_group4.back_end.enums.DesignStatus;
+import com.swp_group4.back_end.enums.QuotationStatus;
+import com.swp_group4.back_end.requests.CustomerConfirmRequest;
 import com.swp_group4.back_end.requests.ServiceRequest;
 import com.swp_group4.back_end.requests.UpdateInfoRequest;
 import com.swp_group4.back_end.responses.*;
@@ -44,6 +48,27 @@ public class CustomerController {
     public ApiResponse<ConstructDesignResponse> CustomerViewDesign(@PathVariable String constructionOrderId) {
         return ApiResponse.<ConstructDesignResponse>builder()
                 .data(customerService.viewDesign(constructionOrderId))
+                .build();
+    }
+
+    @PutMapping("/myInfo/orders/{constructionOrderId}/design")
+    public ApiResponse<StatusOfQuotationOrDesign<DesignStatus>> confirmDesign(@RequestBody CustomerConfirmRequest<DesignStatus> request, @PathVariable String constructionOrderId) {
+        return ApiResponse.<StatusOfQuotationOrDesign<DesignStatus>>builder()
+                .data(customerService.confirmDesign(request, constructionOrderId))
+                .build();
+    }
+
+    @PutMapping("/myInfo/orders/{constructionOrderId}/quotation")
+    public ApiResponse<StatusOfQuotationOrDesign<QuotationStatus>> confirmQuotation(@RequestBody CustomerConfirmRequest<QuotationStatus> request, @PathVariable String constructionOrderId) {
+        return ApiResponse.<StatusOfQuotationOrDesign<QuotationStatus>>builder()
+                .data(customerService.confirmQuotation(request, constructionOrderId))
+                .build();
+    }
+
+    @GetMapping("/myInfo/orders/{constructionOrderId}/payments")
+    public ApiResponse<CustomerViewPaymentResponse> viewPayment(@PathVariable String constructionOrderId) {
+        return ApiResponse.<CustomerViewPaymentResponse>builder()
+                .data(customerService.viewPayment(constructionOrderId))
                 .build();
     }
 

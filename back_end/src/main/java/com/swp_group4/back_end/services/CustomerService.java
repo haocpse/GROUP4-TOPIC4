@@ -2,9 +2,13 @@ package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.*;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
+import com.swp_group4.back_end.enums.DesignStatus;
+import com.swp_group4.back_end.enums.PaymentStatus;
+import com.swp_group4.back_end.enums.QuotationStatus;
 import com.swp_group4.back_end.mapper.CustomerMapper;
 import com.swp_group4.back_end.mapper.QuotationMapper;
 import com.swp_group4.back_end.repositories.*;
+import com.swp_group4.back_end.requests.CustomerConfirmRequest;
 import com.swp_group4.back_end.requests.ServiceRequest;
 import com.swp_group4.back_end.responses.*;
 import lombok.AccessLevel;
@@ -46,6 +50,8 @@ public class CustomerService {
     QuotationMapper quotationMapper;
     @Autowired
     DesignRepository designRepository;
+    @Autowired
+    private PaymentOrderRepository paymentOrderRepository;
 
     public void createCustomer(String accountId, String firstname) {
         customerRepository.save(Customer.builder()
@@ -91,17 +97,28 @@ public class CustomerService {
     public List<ConstructOrderDetailForCustomerResponse> listOrders() {
         var context = SecurityContextHolder.getContext();
         String id = context.getAuthentication().getName();
-        log.info(id);
         Customer customer = customerRepository.findByAccountId(id).orElseThrow();
         List<ConstructionOrder> orderList = constructOrderRepository.findByCustomerId(customer.getCustomerId());
         List<ConstructOrderDetailForCustomerResponse> responses = new ArrayList<>();
         for (ConstructionOrder order : orderList) {
+
+            String designId = "";
+            String quotationId = "";
+            if (designRepository.findByDesignIdAndDesignStatus(order.getDesignId(), DesignStatus.CONFIRMED).isPresent()) {
+                Design design = designRepository.findByDesignIdAndDesignStatus(order.getDesignId(), DesignStatus.CONFIRMED).orElseThrow();
+                designId = design.getDesignId();
+            }
+            if (quotationRepository.findByQuotationIdAndQuotationStatus(order.getQuotationId(), QuotationStatus.CONFIRMED).isPresent()) {
+                Quotation quotation = quotationRepository.findByQuotationIdAndQuotationStatus(order.getQuotationId(), QuotationStatus.CONFIRMED)
+                        .orElseThrow();
+                quotationId = quotation.getQuotationId();
+            }
+
             ConstructOrderDetailForCustomerResponse response = ConstructOrderDetailForCustomerResponse.builder()
                     .constructionOrderId(order.getConstructionOrderId())
-                    .customerName(customerRepository.findById(order.getCustomerId()).orElseThrow().getFirstName()
-                            + " " + customerRepository.findById(order.getCustomerId()).orElseThrow().getLastName())
-                    .quotationId(order.getQuotationId())
-                    .designId(order.getDesignId())
+                    .customerName(customer.getFirstName() + " " + customer.getLastName())
+                    .quotationId(quotationId)
+                    .designId(designId)
                     .startDate(order.getStartDate())
                     .endDate(order.getEndDate())
                     .build();
@@ -117,6 +134,7 @@ public class CustomerService {
         Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
         Packages packages = packageRepository.findById(quotation.getPackageId()).orElseThrow();
         ConstructQuotationResponse response = ConstructQuotationResponse.builder()
+                .constructOrderId(constructionOrderId)
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .consultantName(staffRepository.findById(order.getConsultantId()).orElseThrow().getStaffName())
                 .customerRequest(order.getCustomerRequest())
@@ -143,6 +161,7 @@ public class CustomerService {
         Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
         return ConstructDesignResponse.builder()
                 .constructionOrderId(order.getConstructionOrderId())
+                .designId(design.getDesignId())
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .designName(staffRepository.findById(order.getDesignerLeaderId()).orElseThrow().getStaffName())
                 .customerRequest(order.getCustomerRequest())
@@ -150,6 +169,80 @@ public class CustomerService {
                 .url3dDesign(design.getUrl3dDesign())
                 .urlFrontDesign(design.getUrlFrontDesign())
                 .urlBackDesign(design.getUrlBackDesign())
+                .build();
+    }
+
+    public StatusOfQuotationOrDesign<DesignStatus> confirmDesign(CustomerConfirmRequest<DesignStatus> request, String constructionOrderId) {
+        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
+        Design design = designRepository.findById(order.getDesignId()).orElseThrow();
+        if (request.getStatus().equals(DesignStatus.CONFIRMED)) {
+            order.setStatus(ConstructionOrderStatus.CONFIRMED_DESIGN);
+            constructOrderRepository.save(order);
+            Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
+            Quotation quotation = quotationRepository.findById(order.getQuotationId()).orElseThrow();
+            PaymentOrder paymentOrder = PaymentOrder.builder()
+                    .orderId(constructionOrderId)
+                    .customerId(customer.getCustomerId())
+                    .paymentTitle("Khach hang thanh toan giai doan 2")
+                    .total(quotation.getPriceStage2())
+                    .status(PaymentStatus.PENDING)
+                    .build();
+            paymentOrderRepository.save(paymentOrder);
+        } else {
+            design.setDesignStatus(DesignStatus.REJECTED);
+            designRepository.save(design);
+        }
+        return StatusOfQuotationOrDesign.<DesignStatus>builder()
+                .id(design.getDesignId())
+                .status(design.getDesignStatus())
+                .build();
+    }
+
+    public StatusOfQuotationOrDesign<QuotationStatus> confirmQuotation(CustomerConfirmRequest<QuotationStatus> request, String constructionOrderId) {
+        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
+        Quotation quotation = quotationRepository.findById(order.getQuotationId()).orElseThrow();
+        if (request.getStatus().equals(QuotationStatus.CONFIRMED)) {
+            order.setStatus(ConstructionOrderStatus.CONFIRMED_QUOTATION);
+            constructOrderRepository.save(order);
+            Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
+            PaymentOrder paymentOrder = PaymentOrder.builder()
+                    .orderId(constructionOrderId)
+                    .customerId(customer.getCustomerId())
+                    .paymentTitle("Khach hang thanh toan giai doan 1")
+                    .total(quotation.getPriceStage1())
+                    .status(PaymentStatus.PENDING)
+                    .build();
+            paymentOrderRepository.save(paymentOrder);
+        } else {
+            quotation.setQuotationStatus(QuotationStatus.REJECTED);
+            quotationRepository.save(quotation);
+        }
+        return StatusOfQuotationOrDesign.<QuotationStatus>builder()
+                .id(quotation.getQuotationId())
+                .status(quotation.getQuotationStatus())
+                .build();
+    }
+
+    public CustomerViewPaymentResponse viewPayment(String constructionOrderId) {
+        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
+        Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
+        List<PaymentOrder> paymentOrders = paymentOrderRepository.findByOrderId(constructionOrderId);
+        List<PaymentInfoResponse> paymentInfoResponses = new ArrayList<>();
+        for (PaymentOrder paymentOrder : paymentOrders) {
+            PaymentInfoResponse response = PaymentInfoResponse.builder()
+                    .paymentId(paymentOrder.getPaymentId())
+                    .paidDate(paymentOrder.getDate())
+                    .price(paymentOrder.getTotal())
+                    .paymentTitle(paymentOrder.getPaymentTitle())
+                    .paymentStatus(paymentOrder.getStatus())
+                    .build();
+            paymentInfoResponses.add(response);
+        }
+        return CustomerViewPaymentResponse.builder()
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
+                .phone(customer.getPhone())
+                .address(customer.getAddress())
+                .paymentInfoResponseList(paymentInfoResponses)
                 .build();
     }
 

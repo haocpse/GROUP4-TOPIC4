@@ -6,10 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface DesignRepository extends JpaRepository<Design, String> {
 
     List<Design> findByDesignStatus(DesignStatus status);
+    Optional<Design> findByDesignIdAndDesignStatus(String designId, DesignStatus status);
 
 }
