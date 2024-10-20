@@ -33,8 +33,8 @@ public class PaymentController {
                 .build();
     }
 
-    @PostMapping("/{constructionOrderId}/vnpay")
-    public ApiResponse<String> createPayment(@RequestParam("amount") Optional<Long> amount, HttpServletRequest request, @PathVariable String constructionOrderId) {
+    @PostMapping("/{paymentId}/vnpay")
+    public ApiResponse<String> createPayment(@RequestParam("amount") Optional<Long> amount, HttpServletRequest request, @PathVariable String paymentId) {
         if (amount.isEmpty() || amount.get() <= 0) {
             return ApiResponse.<String>builder()
                     .code(99999)
@@ -43,7 +43,7 @@ public class PaymentController {
         }
         try {
             return ApiResponse.<String>builder()
-                    .data(paymentService.createVnPayPayment(request, constructionOrderId))
+                    .data(paymentService.createVnPayPayment(request, paymentId))
                     .build();
         } catch (Exception e) {
             return ApiResponse.<String>builder()
@@ -59,9 +59,14 @@ public class PaymentController {
         try {
             log.info("VNPay callback received with params: {}", allParams);
             String vnpResponseCode = allParams.get("vnp_ResponseCode");
-            String orderId = allParams.get("vnp_TxnRef");
+            String paymentId = allParams.get("vnp_TxnRef");
+            String orderId = paymentService.findOrderId(paymentId);
             if ("00".equals(vnpResponseCode)) {
-                response.sendRedirect("http://localhost:3000/myInfo/orders/" + orderId+ "/payments");
+//                paymentService.successPayment(paymentId);
+                response.sendRedirect("http://localhost:3000/myInfo/orders/" + orderId + "/payments");
+            } else {
+//                paymentService.failPayment(paymentId);
+                response.sendRedirect("http://localhost:3000/myInfo/orders/" + orderId + "/payments");
             }
         } catch (Exception e) {
             log.error("Error in VNPay callback: {}", e.getMessage());

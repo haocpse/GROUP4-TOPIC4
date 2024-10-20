@@ -17,14 +17,14 @@ public class VNPAYConfig {
     private final String orderType="other";
     private final String vnp_ReturnUrl="http://localhost:8080/payments/vnpayCallback";
 
-    public Map<String, String> getVNPayConfig(String orderId) {
+    public Map<String, String> getVNPayConfig(String paymentId) {
         Map<String, String> vnpParamsMap = new HashMap<>();
         vnpParamsMap.put("vnp_Version", this.vnp_Version);
         vnpParamsMap.put("vnp_Command", this.vnp_Command);
         vnpParamsMap.put("vnp_TmnCode", this.vnp_TmnCode);
         vnpParamsMap.put("vnp_CurrCode", "VND");
-        vnpParamsMap.put("vnp_TxnRef",  orderId);
-        vnpParamsMap.put("vnp_OrderInfo", "Thanh toan don hang:" +  orderId);
+        vnpParamsMap.put("vnp_TxnRef",  paymentId);
+        vnpParamsMap.put("vnp_OrderInfo", "Thanh toan don hang:" +  paymentId);
         vnpParamsMap.put("vnp_OrderType", this.orderType);
         vnpParamsMap.put("vnp_Locale", "vn");
         vnpParamsMap.put("vnp_ReturnUrl", this.vnp_ReturnUrl);
