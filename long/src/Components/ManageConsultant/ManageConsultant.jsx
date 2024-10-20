@@ -24,6 +24,12 @@ const ManageConsultant = () => {
                         <i className="fa-solid fa-bell"></i>
                     </NavLink>
                 </li>
+                 {/* Request */}
+                 <li className="nav-item">
+                    <NavLink to="/consult/quotations" className="nav-link d-flex align-items-center sidebar-link mt-5 mb-3">
+                        <i className="fa-solid fa-bell"></i>
+                    </NavLink>
+                </li>
                 <hr className="mb-3 mt-5" />
                 {/* Logout */}
                 <li className="nav-item">
