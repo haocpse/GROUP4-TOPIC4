@@ -3,6 +3,7 @@ package com.swp_group4.back_end.services;
 import com.swp_group4.back_end.entities.*;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.enums.DesignStatus;
+import com.swp_group4.back_end.enums.PaymentStatus;
 import com.swp_group4.back_end.enums.QuotationStatus;
 import com.swp_group4.back_end.mapper.CustomerMapper;
 import com.swp_group4.back_end.mapper.QuotationMapper;
@@ -49,6 +50,8 @@ public class CustomerService {
     QuotationMapper quotationMapper;
     @Autowired
     DesignRepository designRepository;
+    @Autowired
+    private PaymentOrderRepository paymentOrderRepository;
 
     public void createCustomer(String accountId, String firstname) {
         customerRepository.save(Customer.builder()
@@ -175,6 +178,16 @@ public class CustomerService {
         if (request.getStatus().equals(DesignStatus.CONFIRMED)) {
             order.setStatus(ConstructionOrderStatus.CONFIRMED_DESIGN);
             constructOrderRepository.save(order);
+            Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
+            Quotation quotation = quotationRepository.findById(order.getQuotationId()).orElseThrow();
+            PaymentOrder paymentOrder = PaymentOrder.builder()
+                    .orderId(constructionOrderId)
+                    .customerId(customer.getCustomerId())
+                    .paymentTitle("Khach hang thanh toan giai doan 2")
+                    .total(quotation.getPriceStage2())
+                    .status(PaymentStatus.PENDING)
+                    .build();
+            paymentOrderRepository.save(paymentOrder);
         } else {
             design.setDesignStatus(DesignStatus.REJECTED);
             designRepository.save(design);
@@ -191,6 +204,15 @@ public class CustomerService {
         if (request.getStatus().equals(QuotationStatus.CONFIRMED)) {
             order.setStatus(ConstructionOrderStatus.CONFIRMED_QUOTATION);
             constructOrderRepository.save(order);
+            Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
+            PaymentOrder paymentOrder = PaymentOrder.builder()
+                    .orderId(constructionOrderId)
+                    .customerId(customer.getCustomerId())
+                    .paymentTitle("Khach hang thanh toan giai doan 1")
+                    .total(quotation.getPriceStage1())
+                    .status(PaymentStatus.PENDING)
+                    .build();
+            paymentOrderRepository.save(paymentOrder);
         } else {
             quotation.setQuotationStatus(QuotationStatus.REJECTED);
             quotationRepository.save(quotation);
@@ -198,6 +220,28 @@ public class CustomerService {
         return StatusOfQuotationOrDesign.<QuotationStatus>builder()
                 .id(quotation.getQuotationId())
                 .status(quotation.getQuotationStatus())
+                .build();
+    }
+
+    public CustomerViewPaymentResponse viewPayment(String constructionOrderId) {
+        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
+        Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
+        List<PaymentOrder> paymentOrders = paymentOrderRepository.findByOrderId(constructionOrderId);
+        List<PaymentInfoResponse> paymentInfoResponses = new ArrayList<>();
+        for (PaymentOrder paymentOrder : paymentOrders) {
+            PaymentInfoResponse response = PaymentInfoResponse.builder()
+                    .paymentId(paymentOrder.getPaymentId())
+                    .paidDate(paymentOrder.getDate())
+                    .paymentTitle(paymentOrder.getPaymentTitle())
+                    .paymentStatus(paymentOrder.getStatus())
+                    .build();
+            paymentInfoResponses.add(response);
+        }
+        return CustomerViewPaymentResponse.builder()
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
+                .phone(customer.getPhone())
+                .address(customer.getAddress())
+                .paymentInfoResponseList(paymentInfoResponses)
                 .build();
     }
 
