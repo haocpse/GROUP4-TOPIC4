@@ -6,13 +6,17 @@ import { toast, ToastContainer } from "react-toastify";
 const ViewDesign = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [designDetail, setDesignDetail] = useState({}); // Thay đổi thành object để dễ kiểm tra
+  const [designDetail, setDesignDetail] = useState({});
 
-  // Lấy thông tin chi tiết thiết kế
+  // fetch design ne
   useEffect(() => {
     const fetchDesignDetail = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/manage/designs/${id}`);
+        const response = await axios.get(`http://localhost:8080/manage/designs/${id}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+          }
+        });
         setDesignDetail(response.data.data);
       } catch (error) {
         console.error("Error fetching design detail", error);
@@ -20,12 +24,16 @@ const ViewDesign = () => {
       }
     };
     fetchDesignDetail();
-  }, [id]); // Thêm id vào dependency array
+  }, [id]);
 
   const handleApproval = async (status) => {
     try {
       await axios.post(`http://localhost:8080/manage/designs/${id}`, {
         status: status
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+        }
       });
       toast.success(`Design ${status} successfully!`);
     } catch (error) {
@@ -55,12 +63,12 @@ const ViewDesign = () => {
           <div className="img-design">
             <h6>Design Images:</h6>
             <div className="row text-center">
-              <div className="col-md-3 mb-3">
+              <div className="col-md-4 mb-3">
                 <div>
                   <div className="overlay">2D Design</div>
                   <div className="image-container">
                     <img
-                      src={designDetail.url2dDesgin}
+                      src={designDetail.url2dDesign}
                       alt="2D Design"
                       className="img-fluid img-thumbnail"
                       style={{ maxWidth: '100%', height: 'auto', maxHeight: '200px' }}
@@ -68,12 +76,12 @@ const ViewDesign = () => {
                   </div>
                 </div>
               </div>
-              <div className="col-md-3 mb-3">
+              <div className="col-md-4 mb-3">
                 <div>
                   <div className="overlay">3D Design</div>
                   <div className="image-container">
                     <img
-                      src={designDetail.url3dDesgin}
+                      src={designDetail.url3dDesign}
                       alt="3D Design"
                       className="img-fluid img-thumbnail"
                       style={{ maxWidth: '100%', height: 'auto', maxHeight: '200px' }}
@@ -81,26 +89,13 @@ const ViewDesign = () => {
                   </div>
                 </div>
               </div>
-              <div className="col-md-3 mb-3">
+              <div className="col-md-4 mb-3">
                 <div>
                   <div className="overlay">Front Design</div>
                   <div className="image-container">
                     <img
                       src={designDetail.urlFrontDesign}
                       alt="Front Design"
-                      className="img-fluid img-thumbnail"
-                      style={{ maxWidth: '100%', height: 'auto', maxHeight: '200px' }}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-3 mb-3">
-                <div>
-                  <div className="overlay">Back Design</div>
-                  <div className="image-container">
-                    <img
-                      src={designDetail.urlBackDesign}
-                      alt="Back Design"
                       className="img-fluid img-thumbnail"
                       style={{ maxWidth: '100%', height: 'auto', maxHeight: '200px' }}
                     />

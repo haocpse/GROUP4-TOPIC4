@@ -1,28 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useNavigate } from 'react-router-dom';
+import { redirect, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 const PaymentInfo = () => {
     const navigate = useNavigate();
-    const [customerData, setCustomerData] = useState({});
-    const [stages, setStages] = useState([]);
+    const [paymentInfo, setPaymentInfo] = useState({});
+    const [payments, setPayments] = useState([]);
+    const [url, setURL] = useState({});
+    const {constructionOrderId} = useParams()
 
     useEffect(() => {
         // Fetch customer information and stages data
-        axios.get('/api/customer-info')
+        axios.get(`http://localhost:8080/myInfo/orders/${constructionOrderId}/payments`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+            }
+        })
             .then(response => {
-                setCustomerData(response.data.customer);
-                setStages(response.data.stages);
+                setPaymentInfo(response.data.data);
+                setPayments(response.data.data.paymentInfoResponseList)
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
     }, []);
 
-    const handlePaymentClick = (stageId) => {
+    const handlePaymentClick = async (price, paymentId) => {
         // Chuyển hướng đến trang Payment Method với id của stage
-        navigate(`/payment-method/${stageId}`);
+        const response = await axios.post(`http://localhost:8080/payments/${paymentId}/vnpay?amount=${price}`, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+            }
+          });
+          console.log(response.data.data)
+          window.location.href = response.data.data;
+          
     };
 
     return (
@@ -32,10 +45,9 @@ const PaymentInfo = () => {
                 <h5>Thông tin khách hàng</h5>
                 <div className="row">
                     <div className="col-6">
-                        <p><strong>First Name:</strong> {customerData.firstName}</p>
-                        <p><strong>Last Name:</strong> {customerData.lastName}</p>
-                        <p><strong>Phone:</strong> {customerData.phone}</p>
-                        <p><strong>Address:</strong> {customerData.address}</p>
+                        <p><strong>Customer Name:</strong> {paymentInfo.customerName}</p>
+                        <p><strong>Phone:</strong> {paymentInfo.phone}</p>
+                        <p><strong>Address:</strong> {paymentInfo.address}</p>
                     </div>
                 </div>
             </div>
@@ -49,30 +61,29 @@ const PaymentInfo = () => {
                                 <tr>
                                     <th>Tên dịch vụ</th>
                                     <th>Giá</th>
+                                    <th>Ngày thanh toán</th>
                                     <th>Trạng thái</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {stages.map(stage => (
-                                    <React.Fragment key={stage.id}>
+                                {payments && payments.map(payment => (
+                                    <React.Fragment key={payment.paymentId}>
                                         <tr>
-                                            <td>{stage.name}</td>
-                                            <td>{stage.price}đ</td>
+                                            <td>{payment.paymentTitle}</td>
+                                            <td>{payment.price}</td>
+                                            <td>{payment.paidDate}</td>
                                             <td>
-                                                {stage.isPaid ? (
+                                                {payment.paymentStatus === "SUCCESS" ? (
                                                     <span className="badge bg-success">ĐÃ THANH TOÁN</span>
                                                 ) : (
                                                     <button
                                                         className="btn btn-outline-secondary"
-                                                        onClick={() => handlePaymentClick(stage.id)}
+                                                        onClick={() => handlePaymentClick(payment.price, payment.paymentId)}
                                                     >
                                                         THANH TOÁN LIỀN
                                                     </button>
                                                 )}
                                             </td>
-                                        </tr>
-                                        <tr className="table-secondary">
-                                            <td colSpan="3"><em>Chi tiết: {stage.details}</em></td>
                                         </tr>
                                     </React.Fragment>
                                 ))}
@@ -80,11 +91,6 @@ const PaymentInfo = () => {
                         </table>
                     </div>
                 </div>
-            </div>
-
-            <div className="text-center">
-                <p><strong>Tiền phòng:</strong> 687,500đ</p>
-                <p className="text-success">Đã thanh toán</p>
             </div>
         </div>
     );

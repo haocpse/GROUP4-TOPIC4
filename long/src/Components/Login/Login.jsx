@@ -3,6 +3,8 @@ import './Login.css';
 import logo from '../Assests/logo-navbar.png'
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+
 
 
 
@@ -20,6 +22,25 @@ const Login = () => {
 
     // handle logic
 
+    function getRoleFromToken() {
+        // Get token from localStorage
+        const token = localStorage.getItem('token');
+
+        if (token) {
+            // Decode the token
+            const decodedToken = jwtDecode(token);
+
+            // Assuming the roles are stored under a "scope" or "roles" claim
+            // This depends on how you structured the claims in your backend
+            const roles = decodedToken.scope || decodedToken.roles || decodedToken.authorities;
+
+            return roles; // Returns the roles, for example ["ROLE_USER", "ROLE_ADMIN"]
+        }
+
+        return null;
+    }
+
+
     const handleSubmit = async (err) => {
         err.preventDefault(); // Prevent from reload many time
 
@@ -30,7 +51,10 @@ const Login = () => {
                 password: password
             });
 
-            console.log(response.data); // để truy cập vào nội dung mà API trả về
+            console.log(response.data.data); // để truy cập vào nội dung mà API trả về
+            localStorage.setItem('token', response.data.data.token);
+            const roles = getRoleFromToken();
+            console.log(roles);
 
             // if (response.data.token) {
             //     alert('LOGIN SUCCESSFULLY')
@@ -42,10 +66,23 @@ const Login = () => {
             //     } else {
             //         sessionStorage.setItem('token', response.data.token);  // Lưu vào sessionStorage nếu không nhớ
             //     }
+            if (roles === "MANAGER") {
 
-                navigate('/main'); // chuyen den trang home
+                navigate('/manage')
+            } else if (roles === "CONSULTANT") {
+
+                navigate('/consult/ownedTasks')
+            } else if (roles === "DESIGNER") {
+
+                navigate('/design/ownedTasks')
+            } else if (roles === "CONSTRUCTOR") {
+
+                navigate('/construct/ownedTasks')
+            } else {
+                navigate('/');
+            }
+            // chuyen den trang home
             // }
-
         } catch (err) {
             if (err.response) {
                 // Lỗi từ phía server (status code ngoài khoảng 2xx)

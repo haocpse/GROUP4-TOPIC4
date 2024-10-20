@@ -16,7 +16,11 @@ const ConstructionProgress = () => {
     const fetchStaff = async () => {
 
         try {
-            const response = await axios.get(`http://localhost:8080/construct/ownedTasks/${constructionOrderId}/constructors`);
+            const response = await axios.get(`http://localhost:8080/construct/ownedTasks/${constructionOrderId}/constructors`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Include token if needed
+                }
+            });
             setStaffList(response.data.data);
         } catch (error) {
             console.error('Error get staff task ! ^^', error);
@@ -32,7 +36,11 @@ const ConstructionProgress = () => {
         const fetchTask = async () => { // ham de long lay du lieu tu backend ne ^^;
 
             try {
-                const response = await axios.get(`http://localhost:8080/construct/ownedTasks/${constructionOrderId}`);
+                const response = await axios.get(`http://localhost:8080/construct/ownedTasks/${constructionOrderId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Include token if needed
+                    }
+                });
                 setOrders([response.data.data]); // neu la mang se co []
             } catch (error) {
 
@@ -54,13 +62,17 @@ const ConstructionProgress = () => {
             await axios.put(`http://localhost:8080/construct/ownedTasks/${constructionOrderId}`, {
                 status: newStatus,
                 taskId: taskId
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Add token if needed for authentication
+                }
             });
             // cập nhật giao diện
             setOrders(prevOrders =>
                 prevOrders.map(order => ({
                     ...order,
                     constructTaskSatusResponses: order.constructTaskStatusResponses.map(task =>
-                        task.taskId === taskId ? { ...task, constructionStatus: newStatus } : task
+                        task.taskId === taskId ? { ...task, status: newStatus } : task
                     )
                 }))
             );
@@ -78,6 +90,10 @@ const ConstructionProgress = () => {
             await axios.put(`http://localhost:8080/construct/ownedTasks/${constructionOrderId}/constructors`, {
                 taskId: taskId,
                 staffId: staffId
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Include token if needed
+                }
             });
             setOrders(prevOrders =>
                 prevOrders.map(order => ({
@@ -116,6 +132,7 @@ const ConstructionProgress = () => {
                                     <th scope="col">Task Name</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Assign Staff</th>
+                                    <th scope="col">Complete</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -148,6 +165,11 @@ const ConstructionProgress = () => {
                                                     </option>
                                                 ))}
                                             </select>
+                                        </td>
+                                        <td style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                            {task.status === "DONE" && (
+                                                <i className="fas fa-check-circle" style={{ color: 'green', marginLeft: '10px', fontSize: '2.5em' }}></i>
+                                            )}
                                         </td>
                                     </tr>
                                 ))}

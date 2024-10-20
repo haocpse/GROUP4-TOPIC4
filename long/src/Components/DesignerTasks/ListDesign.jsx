@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./DesignerTasks.css";
 import axios from "axios";
 
-const DesignerTasks = () => {
+const ListDesign = () => {
   const [tasks, setTasks] = useState([]);
   const navigate = useNavigate();
 
@@ -11,7 +11,7 @@ const DesignerTasks = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/design/ownedTasks", {
+        const response = await axios.get("http://localhost:8080/design/designs", {
           headers: {
               'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
           }
@@ -25,8 +25,8 @@ const DesignerTasks = () => {
     fetchTasks();
   }, []);
 
-  const handleUploadDesign = (constructionOrderId) => {
-      navigate(`/design/ownedTasks/${constructionOrderId}`); 
+  const handleUpdateDesign = (designId) => {
+      navigate(`/design/designs/${designId}`); 
   };
 
   const handleViewDesign = (constructionOrderId) => {
@@ -58,15 +58,16 @@ const DesignerTasks = () => {
                   <td>{task.address}</td>
                   <td>{task.status}</td>
                   <td>
+                  {console.log(task)}
                   <button
                     className="btn btn-primary"
                     onClick={
-                      task.status === 'DESIGNING'
-                        ? () => handleUploadDesign(task.constructionOrderId)
+                      task.status === 'REJECTED'
+                        ? () => handleUpdateDesign(task.id)
                         : () => handleViewDesign(task.constructionOrderId)
                     }
                   >
-                    {task.status === 'DESIGNING' ? 'Upload Design' : 'View Design'}
+                    {task.status === 'REJECTED' ? 'Update Design' : 'View Design'}
                   </button>
                   </td>
                 </tr>
@@ -85,4 +86,4 @@ const DesignerTasks = () => {
   );
 };
 
-export default DesignerTasks;
+export default ListDesign;

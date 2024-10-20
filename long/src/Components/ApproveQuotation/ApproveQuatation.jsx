@@ -9,7 +9,11 @@ const ApproveQuotation = () => {
 
     const fetchQuotes = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/manage/quotations');
+            const response = await axios.get('http://localhost:8080/manage/quotations',{
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+                    }
+                });
             setQuotes(response.data.data);
         } catch (error) {
             console.error("Fail to fetch quotes! ^^", error);
@@ -38,7 +42,7 @@ const ApproveQuotation = () => {
                             <th scope="col" className="text-center">Quotation ID</th>
                             <th scope="col" className="text-center">Customer Name</th>
                             <th scope="col" className="text-center">Package Type</th>
-                            <th scope="col" className="text-center">Volume</th>
+                            <th scope="col" className="text-center">Volume (m³)</th>
                             <th scope="col" className="text-center">Total Price</th>
                             <th scope="col" className="text-center">View Details</th>
                         </tr>

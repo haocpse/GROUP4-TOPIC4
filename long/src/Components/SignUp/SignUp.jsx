@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import './SignUp.css';
 import logo from "../Assests/logo-navbar.png";
+import { toast, ToastContainer } from "react-toastify";
 
 
 const SignUp = () => {
@@ -34,7 +35,7 @@ const SignUp = () => {
 
             // chuyen trang den trang dang nhap
             if (response.data.success) {       // Kiểm tra API /signup ở backend có trả về response success: true hay không để điều hướng trang.
-                alert('SignUp Successfully !!!');
+                toast.success('Sign Up Successfully !!!');
                 navigate('/login');
             }
 
@@ -45,6 +46,7 @@ const SignUp = () => {
 
     return (
         <div className="container-fluid">
+             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
             <div className="row align-items-center vh-100 img-left">
                 <div className="col-md-6">
                     <div className="login-form">

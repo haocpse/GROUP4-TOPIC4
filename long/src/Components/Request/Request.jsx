@@ -16,7 +16,11 @@ const Request = () => {
     // lay du lieu consultant staff tu backend
     const fetchConsultants = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/manage/requests/consultants');
+            const response = await axios.get('http://localhost:8080/manage/requests/consultants', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+                }
+            });
             setConsultantList(response.data.data);
         } catch (error) {
             console.error('Error fetching consultants:', error);
@@ -30,7 +34,11 @@ const Request = () => {
     // lay du lieu desginer staff tu backend
     const fetchDesigners = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/manage/requests/designers');
+            const response = await axios.get('http://localhost:8080/manage/requests/designers', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+                }
+            });
             setDesignerList(response.data.data);
         } catch (error) {
             console.error('Error fetching designers:', error);
@@ -41,7 +49,11 @@ const Request = () => {
     // lay du lieu constructor staff tu backend
     const fetchConstructors = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/manage/requests/constructors');
+            const response = await axios.get('http://localhost:8080/manage/requests/constructors', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+                }
+            });
             setConstructorList(response.data.data);
         } catch (error) {
             console.error('Error fetching constructors:', error);
@@ -54,7 +66,11 @@ const Request = () => {
     useEffect(() => {
         const fetchRequests = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/manage/requests');
+                const response = await axios.get('http://localhost:8080/manage/requests', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+                    }
+                });
                 setRequests(response.data.data);
                 console.log(requests)
             } catch (error) {

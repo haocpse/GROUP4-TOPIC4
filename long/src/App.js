@@ -1,5 +1,5 @@
 import "./App.css";
-import { createBrowserRouter, RouterProvider } from "react-router-dom"; // Không cần import Route ở đây
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Components/Login/Login";
 import SignUp from "./Components/SignUp/SignUp";
 import Contact from "./Components/Contact/Contact";
@@ -14,8 +14,6 @@ import ConstructionOrder from "./Components/ConstructionProgress/ConstructionOrd
 import QuotationOrder from "./Components/QuotationOrder/QuotationOrder";
 import ApproveQuotation from "./Components/ApproveQuotation/ApproveQuatation";
 import ViewQuotation from "./Components/ApproveQuotation/ViewQuotation";
-import ListQuotation from "./Components/ListQuotation/ListQuotation";
-import ViewQuotationInConsultationPage from "./Components/ListQuotation/ViewQuotationInConsultationPage";
 import ViewDesign from "./Components/ApproveDesign/ViewDesign";
 import DesignerTasks from "./Components/DesignerTasks/DesignerTasks";
 import CustomerView from "./Components/CustomerView/CustomerView";
@@ -23,205 +21,69 @@ import CustomerQuotationList from "./Components/CustomerView/CustomerQuotationLi
 import ViewQuotationAfterCreate from "./Components/QuotationOrder/ViewQuotationAfterCreate";
 import MainLayoutConsultant from "./Components/MainLayoutConsultant";
 import Main from "./Components/Main/Main";
-import Navbar from "./Components/Navbar/Navbar";
 import ApproveMaintenanceQuotation from "./Components/ApproveQuotation/ApproveMaintenanceQuotation";
 import ViewMaintenanceQuotation from "./Components/ApproveQuotation/ViewMaintenanceQuotation";
 import MainLayoutDesigner from "./Components/MainLayoutDesigner";
-import Package from "./Components/Package/PackageManage";
-import PackagePrice from "./Components/Package/PackagePrice";
-import PackageConstruction from "./Components/Package/PackageConstruction";
-import PaymentMethods from "./Components/ListQuotation/PaymentMethod";
-import PaymentPageCard from "./Components/ListQuotation/PaymentPage-Card";
-import PaymentPageQR from "./Components/ListQuotation/PaymentPage_QR";
+import ProtectedRoutesManager from "./utils/ProtectedRoutesManager"
+import ProtectedRoutesConsultant from "./utils/ProtectedRoutesConsultant"
+import ProtectedRoutesDesigner from "./utils/ProtectedRoutesDesigner"
+import ProtectedRoutesConstructor from "./utils/ProtectedRoutesConstructor"
+import ConsultantQuotations from "./Components/ConsultantTasks/ConsultantQuotations";
+import UpdateQuotation from "./Components/QuotationOrder/UpdateQuotation";
+import ListDesign from "./Components/DesignerTasks/ListDesign";
+import UpdateDesign from "./Components/DesignUpload/UpdateDesign";
+import CustomerViewDesign from "./Components/CustomerView/CustomerViewDesign"
 import PaymentInfo from "./Components/ListQuotation/PaymentInfo";
+import MainLayoutConstructor from "./Components/MainLayoutConstructor";
 function App() {
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <Main />,
-    },
-    {
-      path: "login",
-      element: <Login />,
-    },
-    {
-      path: "signup",
-      element: <SignUp />,
-    },
-    {
-      path: "contact",
-      element: <Contact />,
-    },
-    {
-      path: "service",
-      element: <Service />,
-    },
-
-    // MANAGER
-    {
-      path: "manage",
-      element: <MainLayout />,
-      children: [
-        {
-          path: "request",
-          element: <Request />,
-        },
-        {
-          path: "quotations",
-          element: <ApproveQuotation />,
-        },
-        {
-          path: "quotations/:id",
-          element: <ViewQuotation />,
-        },
-        {
-          path: "Maintenance-quotations",
-          element: <ApproveMaintenanceQuotation />,
-        },
-        {
-          path: "Maintenance-quotations/:id",
-          element: <ViewMaintenanceQuotation />,
-        },
-
-        {
-          path: "designs",
-          element: <ApproveDesign />,
-        },
-       
-        {
-          path: "designs/:id",
-          element: <ViewDesign />,
-        },
-       
-      ],
-    },
-
-
-    // CONSULTANT
-    {
-      path: "consult",
-      element: <MainLayoutConsultant />,
-      children: [
-        {
-          path: "ownedTasks",
-          element: <ConsultantTasks />,
-        },
-        {
-          path: "ownedTasks/:constructionOrderId",
-          element: <QuotationOrder />,
-        },
-        {
-          path: "ownedTasks/:constructionOrderId/quotation",
-          element: <ViewQuotationAfterCreate />,
-        },
-        {
-          path: "list-quotation",
-          element: <ListQuotation />,
-        },
-        {
-          path: "view-Quotation",
-          element: <ViewQuotationInConsultationPage />,
-        },
-      ],
-    },
-
-
-
-
-     // DESIGN
-     {
-      path: "design",
-      element: <MainLayoutDesigner />,
-      children: [
-        {
-          path: "ownedTasks",
-          element: <DesignerTasks />,
-        },
-        {
-          path: "ownedTasks/:constructionOrderId",
-          element: <DesignUpload />,
-        },   
-       
-      ],
-    },
-
-
-
-
-
-    // CONSTRUCTOR
-
-    {
-      path: "construct/ownedTasks",
-      element: <ConstructionOrder />,
-    },
-    {
-      path: "construct/ownedTasks/:constructionOrderId",
-      element: <ConstructionProgress />,
-    },
-
-
-    // {
-    //   path: "view-payment", // Sửa path này thành list-quotation thay vì 'list quotation'
-    //   element: <ViewPayment />,
-    // },
-    {
-      path: "list-quotation", // Sửa path này thành list-quotation thay vì 'list quotation'
-      element: <ListQuotation />,
-    },
-    {
-      path: "view-Quotation", // Sửa path này thành list-quotation thay vì 'list quotation'
-      element: <ViewQuotationInConsultationPage />,
-    },
-    {
-      path: "payment-method", // Sửa path này thành list-quotation thay vì 'list quotation'
-      element: <PaymentMethods/>,
-    },
-    {
-      path:"payment-Card",
-      element: <PaymentPageCard/>
-    },
-    {
-      path:"payment-Info",
-      element : <PaymentInfo />
-    },
-    {
-      path: "payment-QR",
-      element :<PaymentPageQR />
-    },
-
-
-    // CUSTOMER
-    {
-      path: "myInfo/orders",
-      element: <CustomerQuotationList />,
-    },
-    {
-      path: "customer-view",
-      element: <CustomerView />,
-    },
-
-
-    {
-      path: "navbar", // Add the route for DesignUpload
-      element: <Navbar />,
-    },
-    {
-      path: "package",
-      element: <Package />, // Route cho Package
-      children: [
-        {
-          path: "package-price", // Route cho Package Price
-          element: <PackagePrice />,
-        },
-        {
-          path: "package-construction", // Route cho Package Construction
-          element: <PackageConstruction />,
-        },
-      ],
-    },
-  ]);
-
-  return <RouterProvider router={router} />;
+  return (
+    <Router>
+      <Routes>
+        <Route element={<ProtectedRoutesManager />}>
+          <Route path="/manage" element={<MainLayout />}>
+            <Route path="request" element={<Request />} />
+            <Route path="quotations" element={<ApproveQuotation />} />
+            <Route path="quotations/:id" element={<ViewQuotation />} />
+            <Route path="Maintenance-quotations" element={<ApproveMaintenanceQuotation />} />
+            <Route path="Maintenance-quotations/:id" element={<ViewMaintenanceQuotation />} />
+            <Route path="designs" element={<ApproveDesign />} />
+            <Route path="designs/:id" element={<ViewDesign />} />
+          </Route>
+        </Route>
+        <Route element={<ProtectedRoutesConsultant />}>
+          <Route path="/consult" element={<MainLayoutConsultant />}>
+            <Route path="ownedTasks" element={<ConsultantTasks />} />
+            <Route path="quotations" element={<ConsultantQuotations />} />
+            <Route path="ownedTasks/:constructionOrderId" element={<QuotationOrder />} />
+            <Route path="ownedTasks/:constructionOrderId/quotation" element={<ViewQuotationAfterCreate />} />
+            <Route path="quotations/:quotationId" element={<UpdateQuotation />} />
+          </Route>
+        </Route>
+        <Route element={<ProtectedRoutesDesigner />}>
+          <Route path="/design" element={<MainLayoutDesigner />}>
+            <Route path="ownedTasks" element={<DesignerTasks />} />
+            <Route path="ownedTasks/:constructionOrderId" element={<DesignUpload />} />
+            <Route path="designs" element={<ListDesign />} />
+            <Route path="designs/:designId" element={<UpdateDesign />} />
+          </Route>
+        </Route>
+        <Route element={<ProtectedRoutesConstructor />}>
+          <Route path="/construct" element={<MainLayoutConstructor />}>
+            <Route path="ownedTasks" element={<ConstructionOrder />} />
+            <Route path="ownedTasks/:constructionOrderId" element={<ConstructionProgress />} />
+          </Route>
+        </Route>
+        <Route path="/myInfo/orders" element={<CustomerView />} />
+        <Route path="/myInfo/orders/:constructionOrderId/quotation" element={<CustomerQuotationList />} />
+        <Route path="/myInfo/orders/:constructionOrderId/design" element={<CustomerViewDesign />} />
+        <Route path="/myInfo/orders/:constructionOrderId/payments" element={<PaymentInfo />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/service" element={<Service />} />
+        <Route path="/" element={<Main />} />
+      </Routes>
+    </Router>
+  );
 }
 export default App;

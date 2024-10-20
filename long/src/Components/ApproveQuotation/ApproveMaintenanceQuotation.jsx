@@ -9,7 +9,11 @@ const ApproveMaintenanceQuotation = () => {
 
     const fetchMaintenanceQuotes = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/manage/Maintenance-quotations');
+            const response = await axios.get('http://localhost:8080/manage/Maintenance-quotations',{
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+                }
+            });
             setMaintenanceQuotes(response.data.data);
         } catch (error) {
             console.error("Fail to fetch quotes! ^^", error);
