@@ -232,6 +232,7 @@ public class CustomerService {
             PaymentInfoResponse response = PaymentInfoResponse.builder()
                     .paymentId(paymentOrder.getPaymentId())
                     .paidDate(paymentOrder.getDate())
+                    .price(paymentOrder.getTotal())
                     .paymentTitle(paymentOrder.getPaymentTitle())
                     .paymentStatus(paymentOrder.getStatus())
                     .build();
