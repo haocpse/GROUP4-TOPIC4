@@ -41,7 +41,7 @@ const ConsultantQuotations = () => {
 
   return (
     <div className="consultant-tasks container mt-4">
-      <h1 className="text-center mb-4" style={{ color: 'blue' }}>Consultant Tasks</h1>
+      <h1 className="text-center mb-4" style={{ color: 'blue' }}>Consultant Quotation</h1>
       <table className="table table-bordered mt-4">
         <thead className="thead-light">
           <tr>

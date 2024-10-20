@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import logo from '../Assests/logo-navbar.png'
 import './Navbar.css';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 const Navbar = () => {
     const [isLogined, setIsLogined] = useState(false);
+    const navigate = useNavigate(); 
     useEffect(() => {
 
         const token = localStorage.getItem("token");
@@ -11,6 +13,35 @@ const Navbar = () => {
             setIsLogined(true);
         }
     }, []);
+    function getRoleFromToken() {
+        // Get token from localStorage
+        const token = localStorage.getItem('token');
+
+        if (token) {
+            const decodedToken = jwtDecode(token);
+            const roles = decodedToken.scope || decodedToken.roles || decodedToken.authorities;
+            return roles;
+        }
+        return null;
+    }
+    const handleClickProfile = () => {
+        const roles = getRoleFromToken();
+        if (roles === "MANAGER") {
+
+            navigate('/manage')
+        } else if (roles === "CONSULTANT") {
+
+            navigate('/consult/ownedTasks')
+        } else if (roles === "DESIGNER") {
+
+            navigate('/design/ownedTasks')
+        } else if (roles === "CONSTRUCTOR") {
+
+            navigate('/construct/ownedTasks')
+        } else {
+            navigate('/login');
+        }
+    }
 
     return (
 
@@ -26,14 +57,14 @@ const Navbar = () => {
                 </div>
             </div>
             <ul className="ul-navbar">
-                <li><Link to="/main">MAIN</Link></li>
+                <li><Link to="/">MAIN</Link></li>
                 <li><Link to="/project">PROJECTS</Link></li>
                 <li><Link to="/service">SERVICE</Link></li>
                 <li><Link to="/contact">CONTACT</Link></li>
                 <li><Link to="/blog">BLOG</Link></li>
                 <li><Link to="/about-us">ABOUT US</Link></li>
                 {isLogined ? (
-                    <li className="highlight-login"><Link to="/login"><i className="fa-solid fa-user"></i></Link></li>
+                    <li className="highlight-login"> <i className="fa-solid fa-user" onClick={handleClickProfile}/></li>
                 ) : (
                     <li className="highlight-login"><Link to="/login">LOGIN</Link></li>
                 )}
