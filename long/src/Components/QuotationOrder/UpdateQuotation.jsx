@@ -4,8 +4,8 @@ import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from './QuotationOrder.module.css';
 
-const QuotationOrder = () => {
-  const { constructionOrderId } = useParams();
+const UpdateQuotation = () => {
+  const {quotationId} = useParams()
   const [quotation, setQuotation] = useState(null);
   const [loading, setLoading] = useState(true);
   const [packageOptions, setPackageOptions] = useState([]);
@@ -24,12 +24,20 @@ const QuotationOrder = () => {
   useEffect(() => {
     const fetchQuotationOrder = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/consult/ownedTasks/${constructionOrderId}`, {
+        const response = await axios.get(`http://localhost:8080/consult/quotations/${quotationId}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
           }
         });
+       
         setQuotation(response.data.data);
+        setCustomerRequest(response.data.data.customerRequest);
+        setWidth(response.data.data.width);
+        setHeight(response.data.data.height);
+        setLength(response.data.data.length);
+        setSelectedPackage(response.data.data.packageId);
+        setStartDate(response.data.data.startDate.split('T')[0]);
+        setEndDate(response.data.data.endDate.split('T')[0]);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching quotation order:", error);
@@ -50,10 +58,13 @@ const QuotationOrder = () => {
         console.error("Error fetching package options:", error);
       }
     };
-
     fetchQuotationOrder();
     fetchPackageOptions();
-  }, [constructionOrderId]);
+  }, [quotationId]);
+
+  useEffect(() => {
+    getItems(quotation?.packageId);
+  }, [quotation])
 
   const getItems = (packageId) => {
     const filteredItems = items.filter(item => item.packageId === packageId);
@@ -70,7 +81,7 @@ const QuotationOrder = () => {
     }
   };
 
-  const handleExportQuotation = async () => {
+  const UpdateQuotation = async () => {
     const requestData = {
       packageId: selectedPackage,
       length,
@@ -83,12 +94,12 @@ const QuotationOrder = () => {
     };
 
     try {
-      await axios.post(`http://localhost:8080/consult/ownedTasks/${constructionOrderId}`, requestData, {
+      await axios.put(`http://localhost:8080/consult/quotations/${quotationId}`, requestData, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
         }
       });
-      navigate(`/consult/ownedTasks/${constructionOrderId}/quotation`);
+      navigate(`/consult/ownedTasks/${quotation.constructionOrderId}/quotation`);
     } catch (error) {
       console.error("Error submitting quotation data:", error);
     }
@@ -108,8 +119,8 @@ const QuotationOrder = () => {
         <div className={`card-header text-center ${styles.bgRed} text-white`}>
           <h2 className="text-center">Quotation</h2>
           <div className="d-flex justify-content-between">
-            <p><strong>Order ID:</strong> {constructionOrderId}</p>
-            <p><strong>Consultant:</strong> {quotation.staffName}</p>
+            <p><strong>Order ID:</strong> {quotation.constructionOrderId}</p>
+            <p><strong>Consultant:</strong> {quotation.consultantName}</p>
           </div>
         </div>
         <div className="card-body">
@@ -146,7 +157,6 @@ const QuotationOrder = () => {
                 id="length"
                 value={length}
                 onChange={(e) => setLength(e.target.value)}
-                placeholder="Enter length"
               />
             </div>
             <div className="col-md-6">
@@ -157,7 +167,6 @@ const QuotationOrder = () => {
                 id="width"
                 value={width}
                 onChange={(e) => setWidth(e.target.value)}
-                placeholder="Enter width"
               />
             </div>
           </div>
@@ -170,7 +179,6 @@ const QuotationOrder = () => {
                 id="height"
                 value={height}
                 onChange={(e) => setHeight(e.target.value)}
-                placeholder="Enter height"
               />
             </div>
           </div>
@@ -221,7 +229,7 @@ const QuotationOrder = () => {
             </div>
           </div>
           <div className="d-flex justify-content-end">
-            <button className="btn btn-success" onClick={handleExportQuotation}>Export Quotation</button>
+            <button className="btn btn-success" onClick={UpdateQuotation}>Update Quotation</button>
           </div>
         </div>
       </div>
@@ -230,5 +238,5 @@ const QuotationOrder = () => {
   );
 };
 
-export default QuotationOrder;
+export default UpdateQuotation;
 

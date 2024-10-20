@@ -1,16 +1,22 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styles from './QuotationOrder.module.css';
 
 const ViewQuotationAfterCreate = () => {
   const { constructionOrderId } = useParams();
   const [infoquotation, setInfoQuotation] = useState({}); // Initialize as an object
+  const navigate = useNavigate()
+  
 
   useEffect(() => {
     const fetchInfoQuotation = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/consult/ownedTasks/${constructionOrderId}/quotation`);
+        const response = await axios.get(`http://localhost:8080/consult/ownedTasks/${constructionOrderId}/quotation`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+          }
+        });
         setInfoQuotation(response.data.data);
       } catch (error) {
         console.error("Error fetching quotation data:", error);
@@ -23,20 +29,17 @@ const ViewQuotationAfterCreate = () => {
   return (
     <div className={`${styles.quotationOrderContainer} container mt-5`}>
       <div className="card shadow">
-      <div className={`card-header text-center ${styles.bgRed} text-white`}>
-           <h2 className="text-center">Quotation</h2>
-           <div className="d-flex justify-content-between">
-             <p><strong>Order ID:</strong> {constructionOrderId}</p>
-             <p><strong>Consultant:</strong> {infoquotation.consultantName}</p>
-           </div>
-         </div>
+        <div className={`card-header text-center ${styles.bgRed} text-white`}>
+          <h2 className="text-center">Quotation</h2>
+          <div className="d-flex justify-content-between">
+            <p><strong>Order ID:</strong> {constructionOrderId}</p>
+            <p><strong>Consultant:</strong> {infoquotation.consultantName}</p>
+          </div>
+        </div>
         <div className="card-body">
           <div className="row mb-4 border p-3">
             <div className="col-md-6">
               <p><strong>Customer: </strong> {infoquotation.customerName}</p>
-            </div>
-            <div className="col-md-6">
-              <p><strong>Consultant: </strong> {infoquotation.consultantName}</p>
             </div>
             <div className="col-md-12">
               <p><strong>Request: </strong> {infoquotation.customerRequest}</p>

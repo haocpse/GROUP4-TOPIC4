@@ -12,7 +12,11 @@ const ApproveDesign = () => {
     // lay danh sach cac design can up' det^'
     const fetchDesigns = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/manage/designs');
+            const response = await axios.get('http://localhost:8080/manage/designs', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+                }
+            });
             setDesigns(response.data.data);
         } catch (error) {
             console.error("Fail to fetch designs! ^^", error);
@@ -36,12 +40,12 @@ const ApproveDesign = () => {
                 <table className="table table-bordered mt-4">
                     <thead>
                         <tr>
-                            <th>Design ID</th>
-                            <th>Customer Name</th>
-                            <th>Phone</th>
-                            <th>Address</th>
-                            <th>View Details</th>
-                            <th>Actions</th>
+                            <th scope="col" className="text-center">Design ID</th>
+                            <th scope="col" className="text-center">Customer Name</th>
+                            <th scope="col" className="text-center">Phone</th>
+                            <th scope="col" className="text-center">Address</th>
+                            <th scope="col" className="text-center">View Details</th>
+                            <th scope="col" className="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -52,10 +56,10 @@ const ApproveDesign = () => {
                         ) : (
                             designs.map(design => (
                                 <tr key={design.id}>
-                                    <td>{design.id}</td>
-                                    <td>{design.customerName}</td>
-                                    <td>{design.phone}</td>
-                                    <td>{design.address}</td>
+                                    <td className="text-center">{design.id}</td>
+                                    <td className="text-center">{design.customerName}</td>
+                                    <td className="text-center">{design.phone}</td>
+                                    <td className="text-center">{design.address}</td>
                                     <td>
                                         <button
                                             className="btn btn-primary"

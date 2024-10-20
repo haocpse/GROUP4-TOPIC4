@@ -11,7 +11,11 @@ const ConstructionOrder = () => {
         const fetchOrder = async () => {
 
             try {
-                const response = await axios.get('http://localhost:8080/construct/ownedTasks');
+                const response = await axios.get('http://localhost:8080/construct/ownedTasks', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+                    }
+                });
                 setConstructionOrders(response.data.data);
             } catch (error) {
                 console.error('Fail fetch order list! ^^', error);
@@ -20,25 +24,6 @@ const ConstructionOrder = () => {
             }
         }; fetchOrder();
     }, []);
-
-    const handleStatusChange = async (constructionOrderId, newStatus) => {
-        try {
-            // gửi yêu cầu cập nhật trạng thái tới backend ^^
-            await axios.post(`http://localhost:8080/construct/ownedTasks/${constructionOrderId}`, {
-                status: newStatus
-            });
-
-            // cập nhật lại danh sách order sau khi thay đổi trạng thái
-            setConstructionOrders(prevOrders =>
-                prevOrders.map(order =>
-                    order.constructionOrderId === constructionOrderId ? { ...order, status: newStatus } : order)
-            );
-            toast.success('Status updated successfully!');
-        } catch (error) {
-            console.error('Error updating status', error);
-            toast.error('Fail to update status! ^^');
-        }
-    };
 
 
 
@@ -80,14 +65,18 @@ const ConstructionOrder = () => {
 
                                     {/* thay đổi status */}
                                     <td>
-                                        <select
-                                            value={order.status}
-                                            onChange={(e) => handleStatusChange(order.constructionOrderId, e.target.value)}
-                                            className="form-select"
-                                        >
-                                            <option value="inprogress">In Progress</option>
-                                            <option value="completed">Completed</option>
-                                        </select>
+                                        {order.status === "CONSTRUCTED" ? (
+                                            <>
+                                                <i className="fas fa-check-circle" style={{ color: 'green', marginRight: '10px' }}></i>
+                                                {order.status}
+                                            </>
+                                        ) : order.status === "CONSTRUCTING" ? (
+                                            <>
+                                                <i className="fa-solid fa-hourglass-start" style={{ color: 'orange', marginRight: '10px' }}></i>
+                                                {order.status}
+                                            </>
+                                        ) : (order.status)}
+
                                     </td>
 
                                     <td>

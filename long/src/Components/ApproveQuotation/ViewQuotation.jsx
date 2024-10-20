@@ -12,7 +12,11 @@ const ViewQuotation = () => {
     useEffect(() => {
         const fetchQuotation = async () => {
             try {
-                const respone = await axios.get(`http://localhost:8080/manage/quotations/${id}`)
+                const respone = await axios.get(`http://localhost:8080/manage/quotations/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+                    }
+                });
                 setQuotation(respone.data.data)
                 console.log(quotation)
             } catch (error) {
@@ -24,8 +28,12 @@ const ViewQuotation = () => {
     }, [id])
     const handleApproval = async (status) => {
         try {
-            await axios.post(`http://localhost:8080/manage/quotations/${id}`, {
+            await axios.put(`http://localhost:8080/manage/quotations/${id}`, {
                 status: status
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+                }
             });
             toast.success(`Quotation ${status === "approve" ? "approve" : "reject"} successfully!`);
             navigate("/manage/quotations");
@@ -64,26 +72,26 @@ const ViewQuotation = () => {
                     <table className="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>Customer Name</th>
-                                <th>Package Type</th>
-                                <th>Volume (m³)</th>
-                                <th>Price Stage 1 (VND)</th>
-                                <th>Price Stage 2 (VND)</th>
-                                <th>Price Stage 3 (VND)</th>
-                                <th>Total Price (VND)</th>
-                                <th>Customer Request</th>
+                                <th className="text-center align-content-center" >Customer Name</th>
+                                <th className="text-center align-content-center">Package Type</th>
+                                <th className="text-center align-content-center">Volume (m³)</th>
+                                <th className="text-center align-content-center">Price Stage 1 (VND)</th>
+                                <th className="text-center align-content-center">Price Stage 2 (VND)</th>
+                                <th className="text-center align-content-center">Price Stage 3 (VND)</th>
+                                <th className="text-center align-content-center">Total Price (VND)</th>
+                                <th className="text-center align-content-center">Customer Request</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{quotation.customerName}</td>
-                                <td>{quotation.packageType}</td>
-                                <td>{quotation.volume}</td>
-                                <td>{quotation.priceStage1.toLocaleString()}</td>
-                                <td>{quotation.priceStage2.toLocaleString()}</td>
-                                <td>{quotation.priceStage3.toLocaleString()}</td>
-                                <td>{quotation.totalPrice.toLocaleString()}</td>
-                                <td>{quotation.customerRequest}</td>
+                                <td className="text-center align-content-center">{quotation.customerName}</td>
+                                <td className="text-center align-content-center">{quotation.packageType}</td>
+                                <td className="text-center align-content-center">{quotation.volume}</td>
+                                <td className="text-center align-content-center">{quotation.priceStage1.toLocaleString()}</td>
+                                <td className="text-center align-content-center">{quotation.priceStage2.toLocaleString()}</td>
+                                <td className="text-center align-content-center">{quotation.priceStage3.toLocaleString()}</td>
+                                <td className="text-center align-content-center">{quotation.totalPrice.toLocaleString()}</td>
+                                <td className="text-center align-content-center">{quotation.customerRequest}</td>
 
                             </tr>
                         </tbody>

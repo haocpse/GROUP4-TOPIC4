@@ -12,7 +12,11 @@ const ViewMaintenanceQuotation = () => {
     useEffect(() => {
         const fetchMaintenanceQuotation = async () => {
             try {
-                const respone = await axios.get(`http://localhost:8080/manage/Maintenance-quotations/${id}`)
+                const respone = await axios.get(`http://localhost:8080/manage/Maintenance-quotations/${id}`,{
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+                    }
+                });
                 setMaintenanceQuotation(respone.data.data)
                 console.log(maintenanceQuotation)
             } catch (error) {

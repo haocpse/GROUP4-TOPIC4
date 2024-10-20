@@ -6,9 +6,7 @@ import logo from '../Assests/logo-navbar.png'
 import axios from 'axios';
 
 const Contact = () => {
-    const [formData, setFormData] = useState({ // luu thong tin lien he cua khach hang
-    });
-
+  
     const [service, setService] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -20,12 +18,7 @@ const Contact = () => {
     const [submitted, setSubmitted] = useState(false);
     const [error, setError] = useState('');
 
-    // handle gia tri ng dung nhap vao form
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setFormData(prev => ({ ...prev, [name]: value })); //prev la gia tri ban dau, ..prev la sao chep gia tri hien tai
-        // [name]: value cap nhat gia tri cho truong tuong ung (email, name) dua vao thuoc tinh name
-    };
+    
 
     // const handleFileChange = (event) => {
     //     const file = event.target.files[0];
@@ -39,7 +32,6 @@ const Contact = () => {
         setError('');
         setSubmitted(false);
 
-        console.log('form: ', formData);
         // console.log('file:', file); // kt file anh
 
         // tao FormData de gui du lieu va file cho backend
@@ -56,14 +48,20 @@ const Contact = () => {
         // }
 
         try {
-            const response = await axios.post('http://localhost:8080/contactUs', {
-                service : service,
-                firstName : firstName,
-                lastName : lastName,
-                address : address,
-                phone : phone,
-                customerRequest : customerRequest
-            });
+            const response = await axios.post('http://localhost:8080/contact', {
+                service: service,
+                firstName: firstName,
+                lastName: lastName,
+                address: address,
+                phone: phone,
+                customerRequest: customerRequest
+            },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+                    }
+                }
+            );
             console.log(response.data);
 
             if (response.status === 200) {
@@ -79,13 +77,12 @@ const Contact = () => {
 
     return (
         <>
-            {/* Navbar ở đầu trang */}
             <Navbar />
 
             <div className="container mb-5">
                 <h1 className="text-center my-4" style={{ color: 'red' }}>Contact us</h1>
                 <div className="row">
-                    <div className="col-md-6">
+                    <div className="col-md-6" style={{marginLeft : '25%'}}>
                         {/* check xem la form dc submit hong */}
                         {submitted ? (
                             // SUCCESS !!!
@@ -112,7 +109,7 @@ const Contact = () => {
                                     <select
                                         name="service"
                                         className="form-control"
-                                        value ={service}
+                                        value={service}
                                         onChange={(event) => setService(event.target.value)}
                                         required
                                     >

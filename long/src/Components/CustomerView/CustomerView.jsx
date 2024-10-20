@@ -1,91 +1,126 @@
-// CustomerView.js
+// // Components/CustomerView/CustomerView.js
+
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import "./CustomerView.css"; // Import CSS file for styling
 import axios from "axios";
-import "./CustomerView.css";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import Navbar from "../Navbar/Navbar";
 
 const CustomerView = () => {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
+  const [orders, setOrders] = useState([]); // State to store orders
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(""); // Error state
+  const navigate = useNavigate()
+  // Fetch data from API
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/myInfo/orders");
-        setOrders(response.data);
+        // Fetch data from the API
+        const response = await axios.get("http://localhost:8080/myInfo/orders", {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+          },
+        });
+        setOrders(response.data.data);
+        console.log(orders) // Set the orders data
       } catch (error) {
         console.error("Error fetching orders:", error);
-        setError("Unable to fetch orders. Please try again later.");
+        setError("Unable to fetch orders. Please try again later."); // Set error message
       } finally {
-        setLoading(false);
+        setLoading(false); // Set loading to false after fetching
       }
     };
 
     fetchOrders();
   }, []);
 
+  const handleView = (constructionOrderId, Type) => {
+    if (Type === "QUOTATION") {
+      navigate(`/myInfo/orders/${constructionOrderId}/quotation`);
+    } else {
+      navigate(`/myInfo/orders/${constructionOrderId}/design`);
+    }
+    // state dc dùng để chứa dữ liệu
+  }
+
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   return (
-    <div className="container customer-view mt-4">
-      <h2 className="text-center">My Construction Progress</h2>
-      {loading ? (
-        <p className="text-center">Loading orders...</p>
-      ) : error ? (
-        <p className="text-center text-danger">{error}</p>
-      ) : (
-        <>
-          <h3 className="mt-4">Orders</h3>
-          {orders.length > 0 ? (
-            <table className="table table-bordered mt-3">
-              <thead className="thead-light">
-                <tr>
-                  <th>Order ID</th>
-                  <th>Quotation</th>
-                  <th>Design</th>
-                  <th>Package Type</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
-                  <th>Checkout</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.map((order) => (
-                  <tr key={order.ConstructionOrderId}>
-                    <td>{order.ConstructionOrderId}</td>
-                    <td>{order.Quotation}</td>
-                    <td>{order.designId}</td>
-                    <td>{order.packageType}</td>
-                    <td>{order.startDate}</td>
-                    <td>{order.endDate}</td>
-                    <td>
-                      <Link
-                        to={{
-                          pathname: "/checkout",
-                          state: {
-                            OrderId: order.ConstructionOrderId,
-                            Design: order.designId,
-                            PackageType: order.packageType,
-                            StartDate: order.startDate,
-                            EndDate: order.endDate,
-                          },
-                        }}
-                        className="btn btn-primary"
-                      >
-                        Checkout
-                      </Link>
-                    </td>
+    <>
+      <Navbar />
+      <div className="container customer-view mt-4">
+        <h2 className="text-center">My Construction Progress</h2>
+        {loading ? (
+          <p className="text-center">Loading orders...</p>
+        ) : error ? (
+          <p className="text-center text-danger">{error}</p>
+        ) : (
+          <>
+            <h3 className="mt-4">Orders</h3>
+            {orders.length > 0 ? (
+              <table className="table table-bordered mt-3">
+                <thead className="thead-dark">
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Quotation</th>
+                    <th>Design</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p className="text-center">No orders found.</p>
-          )}
-        </>
-      )}
-    </div>
+                </thead>
+                <tbody>
+                  {orders.map((order, index) => (
+                    <tr key={order.constructionOrderId}>
+                      <td>{index + 1}</td>
+                      <td>{order.customerName}</td>
+                      <td> {order.quotationId &&
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => handleView(order.constructionOrderId, "QUOTATION")}
+                        >
+                          View Quotation
+                        </button>
+                      }
+                      </td>
+                      <td>{order.designId &&
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => handleView(order.constructionOrderId, "DESIGN")}
+                        >
+                          View Design
+                        </button>
+                      }
+                      </td>
+                      <td>{formatDate(order.startDate)}</td>
+                      <td>{formatDate(order.endDate)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+            ) : (
+              <p className="text-center">No orders found.</p>
+            )}
+          </>
+        )}
+      </div>
+      <button className="btn btn-secondary" onClick={() => navigate('http://localhost:8080/manage/requests')}>Go Manage</button>
+    </>
   );
 };
 
 export default CustomerView;
+
+
+
+
+

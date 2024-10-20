@@ -1,8 +1,8 @@
 import React from "react";
-import './ManageConsultant.module.css';
+import './ManageConstructor.module.css';
 import { Link, NavLink } from "react-router-dom";
 
-const ManageConsultant = () => {
+const ManageConstructor = () => {
     const handleLogout = () => {
         localStorage.removeItem("token");
         window.location.reload();
@@ -18,12 +18,13 @@ const ManageConsultant = () => {
                         <i className="fa-solid fa-house-chimney"></i>
                     </NavLink>
                 </li>
-                {/* Request */}
+                {/* Construct */}
                 <li className="nav-item">
-                    <NavLink to="/consult/ownedTasks" className="nav-link d-flex align-items-center sidebar-link mt-5 mb-3">
-                        <i className="fa-solid fa-bell"></i>
+                    <NavLink to="/construct/ownedTasks" className="nav-link d-flex align-items-center sidebar-link mt-5 mb-3">
+                    <i class="fa-solid fa-person-digging"></i>
                     </NavLink>
                 </li>
+              
                 <hr className="mb-3 mt-5" />
                 {/* Logout */}
                 <li className="nav-item">
@@ -37,4 +38,4 @@ const ManageConsultant = () => {
     );
 }
 
-export default ManageConsultant;
+export default ManageConstructor;

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./ConsultantTasks.css"; // Import CSS file for custom styling
 
-const ConsultantTasks = () => {
+const ConsultantQuotations = () => {
   const [tasks, setTasks] = useState([]);
   const navigate = useNavigate();
 
@@ -14,12 +14,13 @@ const ConsultantTasks = () => {
     const fetchTasks = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/consult/ownedTasks", {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+          "http://localhost:8080/consult/quotations",
+          {
+              headers: {
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+              }
           }
-        }
-        );
+      );
         setTasks(response.data.data);
       } catch (error) {
         console.error("Error fetching tasks:", error);
@@ -30,8 +31,8 @@ const ConsultantTasks = () => {
   }, []);
 
   // Handle view quotation for specific constructionOrderId
-  const handleExportQuotation = (constructionOrderId) => {
-    navigate(`/consult/ownedTasks/${constructionOrderId}`);
+  const handleUpdateQuotation = (quotationId) => {
+    navigate(`/consult/quotations/${quotationId}`);
   };
 
   const handleViewQuotation = (constructionOrderId) => {
@@ -65,12 +66,12 @@ const ConsultantTasks = () => {
                   <button
                     className="btn btn-primary"
                     onClick={
-                      task.status === 'CONSULTING'
-                        ? () => handleExportQuotation(task.constructionOrderId)
+                      task.status === 'REJECTED'
+                        ? () => handleUpdateQuotation(task.id)
                         : () => handleViewQuotation(task.constructionOrderId)
                     }
                   >
-                    {task.status === 'CONSULTING' ? 'Export Quotation' : 'View Quotation'}
+                    {task.status === 'REJECTED' ? 'Update Quotation' : 'View Quotation'}
                   </button>
                 </td>
               </tr>
@@ -86,4 +87,4 @@ const ConsultantTasks = () => {
   );
 };
 
-export default ConsultantTasks;
+export default ConsultantQuotations;

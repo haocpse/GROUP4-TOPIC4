@@ -3,6 +3,10 @@ import './Manage.css';
 import { Link, NavLink } from "react-router-dom";
 
 const Manage = () => {
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        window.location.reload();
+    };
     return (
         <div className="d-flex flex-column p-3 bg-dark sidebar" style={{ width: '90px', height: 'auto' }}>
             <p style={{ color: 'white', fontSize: '20px' }}>Koi Pond Design</p>
@@ -28,7 +32,7 @@ const Manage = () => {
                 </li> {/* Approve Quotation Maintenance*/}
                 <li className="nav-item">
                     <NavLink to="/manage/Maintenance-quotations" className="nav-link d-flex align-items-center sidebar-link">
-                    <i class="fi fi-rr-ballot-check"></i>
+                        <i class="fi fi-rr-ballot-check"></i>
                     </NavLink>
                 </li>
                 {/* Approve Desing */}
@@ -46,9 +50,9 @@ const Manage = () => {
                 <hr className="mb-3" />
                 {/* Logout */}
                 <li className="nav-item">
-                    <NavLink to="/" className="nav-link  d-flex align-items-center sidebar-link">
+                    <button onClick={handleLogout} className="nav-link d-flex align-items-center sidebar-link bg-transparent border-0">
                         <i className="fa-solid fa-right-from-bracket"></i>
-                    </NavLink>
+                    </button>
                 </li>
             </ul>
 
