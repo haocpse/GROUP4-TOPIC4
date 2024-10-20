@@ -46,15 +46,15 @@ public class VNPayUtil {
         return ipAdress;
     }
 
-    public static String getRandomNumber(int len) {
-        Random rnd = new Random();
-        String chars = "0123456789";
-        StringBuilder sb = new StringBuilder(len);
-        for (int i = 0; i < len; i++) {
-            sb.append(chars.charAt(rnd.nextInt(chars.length())));
-        }
-        return sb.toString();
-    }
+//    public static String getOrderId(String orderId) {
+//        Random rnd = new Random();
+//        String chars = "0123456789";
+//        StringBuilder sb = new StringBuilder(orderId);
+//        for (int i = 0; i < orderId.length(); i++) {
+//            sb.append(chars.charAt(rnd.nextInt(chars.length())));
+//        }
+//        return sb.toString();
+//    }
     public static String getPaymentURL(Map<String, String> paramsMap, boolean encodeKey) {
         return paramsMap.entrySet().stream()
                 .filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty())

@@ -28,7 +28,7 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableMethodSecurity
 public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINTS = {
-            "/", "/login", "/signup", "/staff","/contact","/images/**"
+            "/", "/login", "/signup", "/staff","/contact","/images/**","/payments/**"
     };
 
     @Value("${jwt.SIGNER_KEY}")
@@ -51,7 +51,7 @@ public class SecurityConfig {
     public CorsFilter corsFilter(){
         CorsConfiguration corsConfiguration = new CorsConfiguration();
 
-        corsConfiguration.addAllowedOrigin("http://localhost:3000");
+        corsConfiguration.addAllowedOrigin("*");
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.addAllowedHeader("*");
 

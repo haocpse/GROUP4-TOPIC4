@@ -30,10 +30,10 @@ public class PaymentService {
         return paymentOrderRepository.findByCustomerIdAndStatus(accountId, PaymentStatus.PENDING);
     }
 
-    public String createVnPayPayment(HttpServletRequest request) {
+    public String createVnPayPayment(HttpServletRequest request, String orderId) {
         long amount = Integer.parseInt(request.getParameter("amount")) * 100L;
         String bankCode = request.getParameter("bankCode");
-        Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig();
+        Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig(orderId);
         vnpParamsMap.put("vnp_Amount", String.valueOf(amount));
         if (bankCode != null && !bankCode.isEmpty()) {
             vnpParamsMap.put("vnp_BankCode", "NCB");
