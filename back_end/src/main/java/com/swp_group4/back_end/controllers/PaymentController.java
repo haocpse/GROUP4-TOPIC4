@@ -30,6 +30,7 @@ public class PaymentController {
     @Autowired
     PaymentOrderRepository paymentOrderRepository;
 
+    //hàm liệt kê các payment
     @GetMapping("/{accountId}")
     public ApiResponse<List<PaymentOrder>> getAllPayments(@PathVariable String accountId) {
         return ApiResponse.<List<PaymentOrder>>builder()
@@ -37,6 +38,7 @@ public class PaymentController {
                 .build();
     }
 
+    //hàm khi customer nhấn sẽ redirect sang trang VNPAY để thanh toán
     @PostMapping("/{paymentId}/vnpay")
     public ApiResponse<String> createPayment(@RequestParam("amount") Optional<Long> amount, HttpServletRequest request, @PathVariable String paymentId) {
         if (amount.isEmpty() || amount.get() <= 0) {
@@ -57,7 +59,7 @@ public class PaymentController {
         }
     }
 
-    // Callback endpoint to handle VNPay response
+    //hàm callback lại web khi hoàn thành thanh toán
     @GetMapping("/vnpayCallback")
     public void vnPayCallback(HttpServletResponse response, @RequestParam Map<String, String> allParams) {
         try {

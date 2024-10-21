@@ -18,6 +18,7 @@ public class PackageController {
     @Autowired
     PackageService packageService;
 
+    //hàm liệt kê các package
     @GetMapping
     public ApiResponse<PackageResponse> getAllPackages() {
         return ApiResponse.<PackageResponse>builder()
