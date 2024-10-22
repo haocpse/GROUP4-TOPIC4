@@ -35,14 +35,13 @@ public class QuotationController {
                 .build();
     }
 
-    @GetMapping("/quotations/{constructionOrderId}")
-    public ApiResponse<ConstructQuotationResponse> viewQuotation(@PathVariable String constructionOrderId) {
+    @GetMapping("/staffs/{accountId}/quotations/{constructionOrderId}")
+    public ApiResponse<ConstructQuotationResponse> viewQuotation(@PathVariable String constructionOrderId, @PathVariable String accountId) {
         return ApiResponse.<ConstructQuotationResponse>builder()
                 .data(quotationService.viewQuotation(constructionOrderId))
                 .build();
     }
 
-    // Hàm để CONSULTANT xem chi các package và package price
     @GetMapping("/packages")
     public ApiResponse<PackageDetailResponse> detailPackage() {
         return ApiResponse.<PackageDetailResponse>builder()
@@ -50,15 +49,15 @@ public class QuotationController {
                 .build();
     }
 
-    @GetMapping("/rejectedQuotations/{quotationId}")
-    public ApiResponse<ViewRejectedQuotationResponse> viewRejectedQuotation(@PathVariable String quotationId) {
+    @GetMapping("/staffs/{accountId}/rejectedQuotations/{quotationId}")
+    public ApiResponse<ViewRejectedQuotationResponse> viewRejectedQuotation(@PathVariable String quotationId, @PathVariable String accountId) {
         return ApiResponse.<ViewRejectedQuotationResponse>builder()
                 .data(quotationService.viewRejectedQuotation(quotationId))
                 .build();
     }
 
-    @PutMapping("/rejectedQuotations/{quotationId}")
-    public ApiResponse<Quotation> updateQuotation(@PathVariable String quotationId, @RequestBody ExportQuotationRequest request) {
+    @PutMapping("/staffs/{accountId}/rejectedQuotations/{quotationId}")
+    public ApiResponse<Quotation> updateQuotation(@PathVariable String quotationId, @RequestBody ExportQuotationRequest request, @PathVariable String accountId) {
         return ApiResponse.<Quotation>builder()
                 .data(quotationService.updateQuotation(quotationId, request))
                 .build();

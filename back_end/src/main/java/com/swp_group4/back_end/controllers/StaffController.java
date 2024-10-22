@@ -31,7 +31,7 @@ public class StaffController {
                 .build();
     }
 
-    @GetMapping("/constructionOrders/{constructionOrderId}")
+    @GetMapping("/informationCustomer/{constructionOrderId}")
     public ApiResponse<ImportantInfoOfOrderResponse> viewInfo(@PathVariable String constructionOrderId) {
         return ApiResponse.<ImportantInfoOfOrderResponse>builder()
                 .data(staffService.viewInfoCustomer(constructionOrderId))

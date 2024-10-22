@@ -175,20 +175,6 @@ public class QuotationService {
                 .orElseThrow(() -> new RuntimeException("Error"));
     }
 
-    public ConstructOrderDetailForStaffResponse constructionOrderStatusConstructOrderDetailForStaffResponse(String constructionOrderId) {
-        ConstructionOrder order = this.findOrderById(constructionOrderId);
-        Customer customer = this.findCustomerById(order.getCustomerId());
-        Staff staff = staffRepository.findById(order.getConsultantId()).orElseThrow(() -> new RuntimeException("Staff not found"));
-        return ConstructOrderDetailForStaffResponse.<ConstructionOrderStatus>builder()
-                .constructionOrderId(order.getConstructionOrderId())
-                .customerName(customer.getFirstName() + " " + customer.getLastName())
-                .phone(customer.getPhone())
-                .address(customer.getAddress())
-
-                .status(ConstructionOrderStatus.CONSULTING)
-                .build();
-    }
-
     ConstructionOrder findOrderById(String orderId){
         return constructOrderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));

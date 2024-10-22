@@ -1,5 +1,6 @@
 package com.swp_group4.back_end.responses;
 
+import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -18,5 +19,6 @@ public class ConstructOrderDetailForCustomerResponse {
     String designId;
     Date startDate;
     Date endDate;
+    ConstructionOrderStatus status;
 
 }

@@ -55,6 +55,8 @@ public class CustomerService {
     private PaymentOrderRepository paymentOrderRepository;
     @Autowired
     ConstructionTaskStaffRepository constructionTaskStaffRepository;
+    @Autowired
+    private AccountService accountService;
 
     public void createCustomer(String accountId, String firstname) {
         customerRepository.save(Customer.builder()
@@ -97,10 +99,8 @@ public class CustomerService {
 //        return customerMapper.customerToResponse(customer, response);
 //    }
 
-    public List<ConstructOrderDetailForCustomerResponse> listOrders() {
-        var context = SecurityContextHolder.getContext();
-        String id = context.getAuthentication().getName();
-        Customer customer = customerRepository.findByAccountId(id).orElseThrow();
+    public List<ConstructOrderDetailForCustomerResponse> listOrders(String accountId) {
+        Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
         List<ConstructionOrder> orderList = constructOrderRepository.findByCustomerId(customer.getCustomerId());
         List<ConstructOrderDetailForCustomerResponse> responses = new ArrayList<>();
         for (ConstructionOrder order : orderList) {
@@ -124,17 +124,18 @@ public class CustomerService {
                     .designId(designId)
                     .startDate(order.getStartDate())
                     .endDate(order.getEndDate())
+                    .status(order.getStatus())
                     .build();
             responses.add(response);
         }
         return responses;
     }
 
-    public ConstructQuotationResponse viewQuotation(String constructionOrderId) {
+    public ConstructQuotationResponse viewQuotation(String accountId, String constructionOrderId) {
+        Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
         Quotation quotation = quotationRepository.findById(order.getQuotationId())
                 .orElseThrow(() -> new RuntimeException("Quotation not found"));
-        Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
         Packages packages = packageRepository.findById(quotation.getPackageId()).orElseThrow();
         ConstructQuotationResponse response = ConstructQuotationResponse.builder()
                 .constructOrderId(constructionOrderId)
@@ -276,6 +277,7 @@ public class CustomerService {
                 .constructionOrderId(constructionOrderId)
                 .listConstructProgressResponses(listConstructProgressResponses)
                 .constructionOrderStatus(order.getStatus())
+                .status(order.getStatus())
                 .build();
     }
 

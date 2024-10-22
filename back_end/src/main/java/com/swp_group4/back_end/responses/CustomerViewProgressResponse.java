@@ -17,5 +17,6 @@ public class CustomerViewProgressResponse {
     String constructionOrderId;
     List<ListConstructProgressResponse> listConstructProgressResponses;
     ConstructionOrderStatus constructionOrderStatus;
+    ConstructionOrderStatus status;
 
 }
