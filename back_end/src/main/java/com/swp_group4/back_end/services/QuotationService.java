@@ -11,7 +11,6 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ public class QuotationService {
 
     private OverviewQuotationResponse buildOverviewQuotation(String quotationId) {
         ConstructionOrder order = constructOrderRepository.findByQuotationId(quotationId);
-        Quotation quotation = quotationRepository.findById(order.getQuotationId()).orElseThrow();
+        Quotation quotation = quotationRepository.findById(quotationId).orElseThrow();
         Customer customer = this.findCustomerById(order.getCustomerId());
         return OverviewQuotationResponse.builder()
                 .constructionOrderId(order.getConstructionOrderId())
@@ -166,13 +165,6 @@ public class QuotationService {
                     .orElseThrow(() -> new RuntimeException("Staff not found")).getStaffName();
         }
         return "";
-    }
-
-    Staff identifyStaff() {
-        var context = SecurityContextHolder.getContext();
-        String accountId = context.getAuthentication().getName();
-        return staffRepository.findByAccountId(accountId)
-                .orElseThrow(() -> new RuntimeException("Error"));
     }
 
     ConstructionOrder findOrderById(String orderId){

@@ -8,6 +8,7 @@ import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.requests.UrlDesignRequest;
 import com.swp_group4.back_end.responses.ConstructDesignResponse;
 import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
+import com.swp_group4.back_end.responses.OverviewDesignResponse;
 import com.swp_group4.back_end.responses.ViewRejectedDesignResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -126,28 +127,26 @@ public class DesignService {
         }
     }
 
-    public List<ConstructOrderDetailForStaffResponse> listDesign() {
-        List<ConstructOrderDetailForStaffResponse> responses = new ArrayList<>();
-        Staff staff = this.identifyStaff();
+    public List<OverviewDesignResponse> listDesign(String accountId) {
+        List<OverviewDesignResponse> responses = new ArrayList<>();
+        Staff staff = staffRepository.findByAccountId(accountId).orElseThrow(() -> new RuntimeException("Error"));
         List<ConstructionOrder> orders = constructOrderRepository.findByDesignerLeaderIdAndDesignIdIsNotNull(staff.getStaffId());
         for (ConstructionOrder order : orders) {
-            ConstructOrderDetailForStaffResponse response = this.designStatusConstructOrderDetailForStaffResponse(order.getDesignId());
-
+            OverviewDesignResponse response = buildOverviewDesign(order.getDesignId());
             responses.add(response);
         }
         return responses;
     }
 
-    public ConstructOrderDetailForStaffResponse designStatusConstructOrderDetailForStaffResponse(String designId) {
+    public OverviewDesignResponse buildOverviewDesign(String designId) {
         ConstructionOrder order = constructOrderRepository.findByDesignId(designId).orElseThrow();
+        Design design = designRepository.findById(designId).orElseThrow(() -> new RuntimeException("Error"));
         Customer customer = this.findCustomerById(order.getCustomerId());
-        return ConstructOrderDetailForStaffResponse.<DesignStatus>builder()
+        return OverviewDesignResponse.builder()
                 .constructionOrderId(order.getConstructionOrderId())
-                .id(designId)
+                .designId(designId)
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
-                .phone(customer.getPhone())
-                .address(customer.getAddress())
-
+                .postedDate(design.getPostedDate())
                 .build();
     }
 
