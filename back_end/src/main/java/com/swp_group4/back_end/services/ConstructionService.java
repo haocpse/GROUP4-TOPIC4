@@ -42,7 +42,6 @@ public class ConstructionService {
         List<ConstructionOrder> orders = constructOrderRepository.findByConstructorLeaderId(staff.getStaffId());
         for (ConstructionOrder order : orders) {
             ConstructOrderDetailForStaffResponse response = this.detailOfOrder(order.getConstructionOrderId());
-            response.setStaffName(staff.getStaffName());
             responses.add(response);
         }
         return responses;
@@ -98,12 +97,11 @@ public class ConstructionService {
     ConstructOrderDetailForStaffResponse detailOfOrder(String constructionOrderId) {
         ConstructionOrder order = this.findOrderById(constructionOrderId);
         Customer customer = this.findCustomerById(order.getCustomerId());
-        return ConstructOrderDetailForStaffResponse.builder()
+        return ConstructOrderDetailForStaffResponse.<ConstructionOrderStatus>builder()
                 .constructionOrderId(order.getConstructionOrderId())
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .phone(customer.getPhone())
                 .address(customer.getAddress())
-                .customerRequest(order.getCustomerRequest())
                 .status(order.getStatus())
                 .build();
     }
@@ -121,7 +119,6 @@ public class ConstructionService {
     List<ConstructTaskStatusResponse> constructTaskStatusResponseList(List<ConstructionTasks> constructionTasksList) {
         List<ConstructTaskStatusResponse> constructTaskStatusResponseList = new ArrayList<>();
         for (ConstructionTasks constructionTask : constructionTasksList) {
-
              ConstructionTaskStaff taskStaff = constructionTaskStaffRepository.findById(constructionTask.getTaskId())
                     .orElse(null);
             PackageConstruction packageConstruction = this.findPackageConstruction(constructionTask.getPackageConstructionId());

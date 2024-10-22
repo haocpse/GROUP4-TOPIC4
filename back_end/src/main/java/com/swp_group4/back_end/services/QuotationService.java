@@ -11,7 +11,6 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ import java.util.List;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-public class ConsultationService {
+public class QuotationService {
 
     @Autowired
     QuotationMapper quotationMapper;
@@ -41,29 +40,28 @@ public class ConsultationService {
     @Autowired
     CustomerRepository customerRepository;
 
-    public List<ConstructOrderDetailForStaffResponse<ConstructionOrderStatus>> listOwnedConsultTask() {
-        List<ConstructOrderDetailForStaffResponse<ConstructionOrderStatus>> responses = new ArrayList<>();
-        Staff staff = this.identifyStaff();
-        List<ConstructionOrder> orders = constructOrderRepository.findByConsultantIdAndQuotationIdIsNull(staff.getStaffId());
+    public List<OverviewQuotationResponse> listQuotation(String accountId) {
+        List<OverviewQuotationResponse> responses = new ArrayList<>();
+        Staff staff = staffRepository.findByAccountId(accountId).orElseThrow();
+        List<ConstructionOrder> orders = constructOrderRepository.findByConsultantIdAndQuotationIdIsNotNull(staff.getStaffId());
         for (ConstructionOrder order : orders) {
-            ConstructOrderDetailForStaffResponse<ConstructionOrderStatus> response = this.constructionOrderStatusConstructOrderDetailForStaffResponse(order.getConstructionOrderId());
-            response.setStaffName(staff.getStaffName());
+            OverviewQuotationResponse response = buildOverviewQuotation(order.getQuotationId());
             responses.add(response);
         }
         return responses;
     }
 
-    public List<ConstructOrderDetailForStaffResponse<QuotationStatus>> listQuotation() {
-        List<ConstructOrderDetailForStaffResponse<QuotationStatus>> responses = new ArrayList<>();
-        Staff staff = this.identifyStaff();
-        List<ConstructionOrder> orders = constructOrderRepository.findByConsultantIdAndQuotationIdIsNotNull(staff.getStaffId());
-        for (ConstructionOrder order : orders) {
-            ConstructOrderDetailForStaffResponse<QuotationStatus> response = this.quotationStatusConstructOrderDetailForStaffResponse(order.getQuotationId());
-            response.setStaffName(staff.getStaffName());
-            response.setStatus(quotationRepository.findById(order.getQuotationId()).orElseThrow().getQuotationStatus());
-            responses.add(response);
-        }
-        return responses;
+    private OverviewQuotationResponse buildOverviewQuotation(String quotationId) {
+        ConstructionOrder order = constructOrderRepository.findByQuotationId(quotationId);
+        Quotation quotation = quotationRepository.findById(quotationId).orElseThrow();
+        Customer customer = this.findCustomerById(order.getCustomerId());
+        return OverviewQuotationResponse.builder()
+                .constructionOrderId(order.getConstructionOrderId())
+                .quotationId(quotationId)
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
+                .postedDate(quotation.getPostedDate())
+                .quotationStatus(quotation.getQuotationStatus())
+                .build();
     }
 
     public Quotation exportQuotation(String constructionOrderId, ExportQuotationRequest request) {
@@ -167,43 +165,6 @@ public class ConsultationService {
                     .orElseThrow(() -> new RuntimeException("Staff not found")).getStaffName();
         }
         return "";
-    }
-
-    Staff identifyStaff() {
-        var context = SecurityContextHolder.getContext();
-        String accountId = context.getAuthentication().getName();
-        return staffRepository.findByAccountId(accountId)
-                .orElseThrow(() -> new RuntimeException("Error"));
-    }
-
-    public ConstructOrderDetailForStaffResponse<QuotationStatus> quotationStatusConstructOrderDetailForStaffResponse(String quotationId) {
-        ConstructionOrder order = constructOrderRepository.findByQuotationId(quotationId);
-        Customer customer = this.findCustomerById(order.getCustomerId());
-        Staff staff = staffRepository.findById(order.getConsultantId()).orElseThrow(() -> new RuntimeException("Staff not found"));
-        return ConstructOrderDetailForStaffResponse.<QuotationStatus>builder()
-                .constructionOrderId(order.getConstructionOrderId())
-                .id(quotationId)
-                .customerName(customer.getFirstName() + " " + customer.getLastName())
-                .staffName(staff.getStaffName())
-                .phone(customer.getPhone())
-                .address(customer.getAddress())
-                .customerRequest(order.getCustomerRequest())
-                .build();
-    }
-
-    public ConstructOrderDetailForStaffResponse<ConstructionOrderStatus> constructionOrderStatusConstructOrderDetailForStaffResponse(String constructionOrderId) {
-        ConstructionOrder order = this.findOrderById(constructionOrderId);
-        Customer customer = this.findCustomerById(order.getCustomerId());
-        Staff staff = staffRepository.findById(order.getConsultantId()).orElseThrow(() -> new RuntimeException("Staff not found"));
-        return ConstructOrderDetailForStaffResponse.<ConstructionOrderStatus>builder()
-                .constructionOrderId(order.getConstructionOrderId())
-                .customerName(customer.getFirstName() + " " + customer.getLastName())
-                .staffName(staff.getStaffName())
-                .phone(customer.getPhone())
-                .address(customer.getAddress())
-                .customerRequest(order.getCustomerRequest())
-                .status(ConstructionOrderStatus.CONSULTING)
-                .build();
     }
 
     ConstructionOrder findOrderById(String orderId){

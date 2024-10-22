@@ -1,6 +1,7 @@
 package com.swp_group4.back_end.responses;
 
-import com.swp_group4.back_end.enums.ConstructionOrderStatus;
+import com.swp_group4.back_end.enums.DesignStatus;
+import com.swp_group4.back_end.enums.QuotationStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,14 +12,12 @@ import java.util.Date;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class ConstructOrderDetailForCustomerResponse {
+public class OverviewDesignResponse {
 
     String constructionOrderId;
-    String customerName;
-    String quotationId;
     String designId;
-    Date startDate;
-    Date endDate;
-    ConstructionOrderStatus status;
+    String customerName;
+    Date postedDate;
+    DesignStatus designStatus;
 
 }

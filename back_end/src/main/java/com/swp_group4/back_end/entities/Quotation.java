@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -33,6 +34,9 @@ public class Quotation {
     double priceStage3;
     String promotionId;
     String packageId;
+    Date postedDate;
+    Date expectedStartDate;
+    Date expectedEndDate;
     @Enumerated(EnumType.STRING)
     QuotationStatus quotationStatus;
 

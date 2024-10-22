@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -22,5 +24,6 @@ public class Design {
     String urlBackDesign;
     @Enumerated(EnumType.STRING)
     DesignStatus designStatus;
+    Date postedDate;
 
 }
