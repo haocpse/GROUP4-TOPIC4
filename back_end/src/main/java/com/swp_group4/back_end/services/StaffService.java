@@ -11,6 +11,7 @@ import com.swp_group4.back_end.repositories.ConstructOrderRepository;
 import com.swp_group4.back_end.repositories.CustomerRepository;
 import com.swp_group4.back_end.repositories.StaffRepository;
 import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
+import com.swp_group4.back_end.responses.ImportantInfoOfOrderResponse;
 import com.swp_group4.back_end.responses.StaffResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -32,6 +33,8 @@ public class StaffService {
     ConstructOrderRepository constructOrderRepository;
     @Autowired
     CustomerRepository customerRepository;
+    @Autowired
+    AccountService accountService;
 
     public List<StaffResponse> listAllStaff(String staff) {
         List<Account> staffAccounts;
@@ -71,4 +74,20 @@ public class StaffService {
                 .status(order.getStatus())
                 .build();
     }
+
+    public ImportantInfoOfOrderResponse viewInfoCustomer(String constructionOrderId) {
+        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow(() -> new RuntimeException("ConstructionOrder not found for order: " + constructionOrderId));
+        Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
+        String accountId = accountService.getMyInfo().getAccountId();
+        Staff staff = staffRepository.findByAccountId(accountId).orElseThrow(() -> new RuntimeException("Staff not found for account: " + accountId));
+        return ImportantInfoOfOrderResponse.builder()
+                .constructionOrderId(order.getConstructionOrderId())
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
+                .staffName(staff.getStaffName())
+                .customerRequest(order.getCustomerRequest())
+                .address(customer.getAddress())
+                .phone(customer.getPhone())
+                .build();
+    }
+
 }

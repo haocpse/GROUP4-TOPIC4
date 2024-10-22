@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-public class ConsultationService {
+public class QuotationService {
 
     @Autowired
     QuotationMapper quotationMapper;
@@ -41,26 +41,28 @@ public class ConsultationService {
     @Autowired
     CustomerRepository customerRepository;
 
-    public List<ConstructOrderDetailForStaffResponse> listOwnedConsultTask() {
-        List<ConstructOrderDetailForStaffResponse> responses = new ArrayList<>();
-        Staff staff = this.identifyStaff();
-        List<ConstructionOrder> orders = constructOrderRepository.findByConsultantIdAndQuotationIdIsNull(staff.getStaffId());
+    public List<OverviewQuotationResponse> listQuotation(String accountId) {
+        List<OverviewQuotationResponse> responses = new ArrayList<>();
+        Staff staff = staffRepository.findByAccountId(accountId).orElseThrow();
+        List<ConstructionOrder> orders = constructOrderRepository.findByConsultantIdAndQuotationIdIsNotNull(staff.getStaffId());
         for (ConstructionOrder order : orders) {
-            ConstructOrderDetailForStaffResponse response = this.constructionOrderStatusConstructOrderDetailForStaffResponse(order.getConstructionOrderId());
+            OverviewQuotationResponse response = buildOverviewQuotation(order.getQuotationId());
             responses.add(response);
         }
         return responses;
     }
 
-    public List<ConstructOrderDetailForStaffResponse> listQuotation() {
-        List<ConstructOrderDetailForStaffResponse> responses = new ArrayList<>();
-        Staff staff = this.identifyStaff();
-        List<ConstructionOrder> orders = constructOrderRepository.findByConsultantIdAndQuotationIdIsNotNull(staff.getStaffId());
-        for (ConstructionOrder order : orders) {
-            ConstructOrderDetailForStaffResponse response = this.quotationStatusConstructOrderDetailForStaffResponse(order.getQuotationId());
-            responses.add(response);
-        }
-        return responses;
+    private OverviewQuotationResponse buildOverviewQuotation(String quotationId) {
+        ConstructionOrder order = constructOrderRepository.findByQuotationId(quotationId);
+        Quotation quotation = quotationRepository.findById(order.getQuotationId()).orElseThrow();
+        Customer customer = this.findCustomerById(order.getCustomerId());
+        return OverviewQuotationResponse.builder()
+                .constructionOrderId(order.getConstructionOrderId())
+                .quotationId(quotationId)
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
+                .postedDate(quotation.getPostedDate())
+                .quotationStatus(quotation.getQuotationStatus())
+                .build();
     }
 
     public Quotation exportQuotation(String constructionOrderId, ExportQuotationRequest request) {
@@ -171,20 +173,6 @@ public class ConsultationService {
         String accountId = context.getAuthentication().getName();
         return staffRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new RuntimeException("Error"));
-    }
-
-    public ConstructOrderDetailForStaffResponse quotationStatusConstructOrderDetailForStaffResponse(String quotationId) {
-        ConstructionOrder order = constructOrderRepository.findByQuotationId(quotationId);
-        Customer customer = this.findCustomerById(order.getCustomerId());
-        Staff staff = staffRepository.findById(order.getConsultantId()).orElseThrow(() -> new RuntimeException("Staff not found"));
-        return ConstructOrderDetailForStaffResponse.<QuotationStatus>builder()
-                .constructionOrderId(order.getConstructionOrderId())
-                .id(quotationId)
-                .customerName(customer.getFirstName() + " " + customer.getLastName())
-                .phone(customer.getPhone())
-                .address(customer.getAddress())
-
-                .build();
     }
 
     public ConstructOrderDetailForStaffResponse constructionOrderStatusConstructOrderDetailForStaffResponse(String constructionOrderId) {
