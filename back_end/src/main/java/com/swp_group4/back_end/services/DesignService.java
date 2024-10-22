@@ -40,19 +40,19 @@ public class DesignService {
     @Autowired
     DesignRepository designRepository;
 
-    public List<ConstructOrderDetailForStaffResponse<ConstructionOrderStatus>> listOwnedDesignTask() {
-        List<ConstructOrderDetailForStaffResponse<ConstructionOrderStatus>> responses = new ArrayList<>();
+    public List<ConstructOrderDetailForStaffResponse> listOwnedDesignTask() {
+        List<ConstructOrderDetailForStaffResponse> responses = new ArrayList<>();
         Staff staff = this.identifyStaff();
         List<ConstructionOrder> orders = constructOrderRepository.findByDesignerLeaderIdAndDesignIdIsNull(staff.getStaffId());
         for (ConstructionOrder order : orders) {
-            ConstructOrderDetailForStaffResponse<ConstructionOrderStatus> response = this.constructionOrderStatusConstructOrderDetailForStaffResponse(order.getConstructionOrderId());
-            response.setStaffName(staff.getStaffName());
+            ConstructOrderDetailForStaffResponse response = this.constructionOrderStatusConstructOrderDetailForStaffResponse(order.getConstructionOrderId());
+
             responses.add(response);
         }
         return responses;
     }
 
-    public ConstructOrderDetailForStaffResponse<ConstructionOrderStatus> constructionOrderStatusConstructOrderDetailForStaffResponse(String constructionOrderId) {
+    public ConstructOrderDetailForStaffResponse constructionOrderStatusConstructOrderDetailForStaffResponse(String constructionOrderId) {
         ConstructionOrder order = this.findOrderById(constructionOrderId);
         Customer customer = this.findCustomerById(order.getCustomerId());
         return ConstructOrderDetailForStaffResponse.<ConstructionOrderStatus>builder()
@@ -60,8 +60,6 @@ public class DesignService {
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .phone(customer.getPhone())
                 .address(customer.getAddress())
-                .customerRequest(order.getCustomerRequest())
-                .staffName(staffRepository.findById(order.getDesignerLeaderId()).orElseThrow().getStaffName())
                 .status(order.getStatus())
                 .build();
     }
@@ -128,20 +126,19 @@ public class DesignService {
         }
     }
 
-    public List<ConstructOrderDetailForStaffResponse<DesignStatus>> listDesign() {
-        List<ConstructOrderDetailForStaffResponse<DesignStatus>> responses = new ArrayList<>();
+    public List<ConstructOrderDetailForStaffResponse> listDesign() {
+        List<ConstructOrderDetailForStaffResponse> responses = new ArrayList<>();
         Staff staff = this.identifyStaff();
         List<ConstructionOrder> orders = constructOrderRepository.findByDesignerLeaderIdAndDesignIdIsNotNull(staff.getStaffId());
         for (ConstructionOrder order : orders) {
-            ConstructOrderDetailForStaffResponse<DesignStatus> response = this.designStatusConstructOrderDetailForStaffResponse(order.getDesignId());
-            response.setStaffName(staff.getStaffName());
-            response.setStatus(designRepository.findById(order.getDesignId()).orElseThrow().getDesignStatus());
+            ConstructOrderDetailForStaffResponse response = this.designStatusConstructOrderDetailForStaffResponse(order.getDesignId());
+
             responses.add(response);
         }
         return responses;
     }
 
-    public ConstructOrderDetailForStaffResponse<DesignStatus> designStatusConstructOrderDetailForStaffResponse(String designId) {
+    public ConstructOrderDetailForStaffResponse designStatusConstructOrderDetailForStaffResponse(String designId) {
         ConstructionOrder order = constructOrderRepository.findByDesignId(designId).orElseThrow();
         Customer customer = this.findCustomerById(order.getCustomerId());
         return ConstructOrderDetailForStaffResponse.<DesignStatus>builder()
@@ -150,8 +147,7 @@ public class DesignService {
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .phone(customer.getPhone())
                 .address(customer.getAddress())
-                .customerRequest(order.getCustomerRequest())
-                .staffName(staffRepository.findById(order.getDesignerLeaderId()).orElseThrow().getStaffName())
+
                 .build();
     }
 

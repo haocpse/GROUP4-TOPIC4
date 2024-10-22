@@ -41,26 +41,23 @@ public class ConsultationService {
     @Autowired
     CustomerRepository customerRepository;
 
-    public List<ConstructOrderDetailForStaffResponse<ConstructionOrderStatus>> listOwnedConsultTask() {
-        List<ConstructOrderDetailForStaffResponse<ConstructionOrderStatus>> responses = new ArrayList<>();
+    public List<ConstructOrderDetailForStaffResponse> listOwnedConsultTask() {
+        List<ConstructOrderDetailForStaffResponse> responses = new ArrayList<>();
         Staff staff = this.identifyStaff();
         List<ConstructionOrder> orders = constructOrderRepository.findByConsultantIdAndQuotationIdIsNull(staff.getStaffId());
         for (ConstructionOrder order : orders) {
-            ConstructOrderDetailForStaffResponse<ConstructionOrderStatus> response = this.constructionOrderStatusConstructOrderDetailForStaffResponse(order.getConstructionOrderId());
-            response.setStaffName(staff.getStaffName());
+            ConstructOrderDetailForStaffResponse response = this.constructionOrderStatusConstructOrderDetailForStaffResponse(order.getConstructionOrderId());
             responses.add(response);
         }
         return responses;
     }
 
-    public List<ConstructOrderDetailForStaffResponse<QuotationStatus>> listQuotation() {
-        List<ConstructOrderDetailForStaffResponse<QuotationStatus>> responses = new ArrayList<>();
+    public List<ConstructOrderDetailForStaffResponse> listQuotation() {
+        List<ConstructOrderDetailForStaffResponse> responses = new ArrayList<>();
         Staff staff = this.identifyStaff();
         List<ConstructionOrder> orders = constructOrderRepository.findByConsultantIdAndQuotationIdIsNotNull(staff.getStaffId());
         for (ConstructionOrder order : orders) {
-            ConstructOrderDetailForStaffResponse<QuotationStatus> response = this.quotationStatusConstructOrderDetailForStaffResponse(order.getQuotationId());
-            response.setStaffName(staff.getStaffName());
-            response.setStatus(quotationRepository.findById(order.getQuotationId()).orElseThrow().getQuotationStatus());
+            ConstructOrderDetailForStaffResponse response = this.quotationStatusConstructOrderDetailForStaffResponse(order.getQuotationId());
             responses.add(response);
         }
         return responses;
@@ -176,7 +173,7 @@ public class ConsultationService {
                 .orElseThrow(() -> new RuntimeException("Error"));
     }
 
-    public ConstructOrderDetailForStaffResponse<QuotationStatus> quotationStatusConstructOrderDetailForStaffResponse(String quotationId) {
+    public ConstructOrderDetailForStaffResponse quotationStatusConstructOrderDetailForStaffResponse(String quotationId) {
         ConstructionOrder order = constructOrderRepository.findByQuotationId(quotationId);
         Customer customer = this.findCustomerById(order.getCustomerId());
         Staff staff = staffRepository.findById(order.getConsultantId()).orElseThrow(() -> new RuntimeException("Staff not found"));
@@ -184,24 +181,22 @@ public class ConsultationService {
                 .constructionOrderId(order.getConstructionOrderId())
                 .id(quotationId)
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
-                .staffName(staff.getStaffName())
                 .phone(customer.getPhone())
                 .address(customer.getAddress())
-                .customerRequest(order.getCustomerRequest())
+
                 .build();
     }
 
-    public ConstructOrderDetailForStaffResponse<ConstructionOrderStatus> constructionOrderStatusConstructOrderDetailForStaffResponse(String constructionOrderId) {
+    public ConstructOrderDetailForStaffResponse constructionOrderStatusConstructOrderDetailForStaffResponse(String constructionOrderId) {
         ConstructionOrder order = this.findOrderById(constructionOrderId);
         Customer customer = this.findCustomerById(order.getCustomerId());
         Staff staff = staffRepository.findById(order.getConsultantId()).orElseThrow(() -> new RuntimeException("Staff not found"));
         return ConstructOrderDetailForStaffResponse.<ConstructionOrderStatus>builder()
                 .constructionOrderId(order.getConstructionOrderId())
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
-                .staffName(staff.getStaffName())
                 .phone(customer.getPhone())
                 .address(customer.getAddress())
-                .customerRequest(order.getCustomerRequest())
+
                 .status(ConstructionOrderStatus.CONSULTING)
                 .build();
     }

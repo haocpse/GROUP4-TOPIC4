@@ -1,15 +1,19 @@
 package com.swp_group4.back_end.controllers;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.swp_group4.back_end.entities.Design;
+import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.enums.DesignStatus;
 import com.swp_group4.back_end.enums.QuotationStatus;
 import com.swp_group4.back_end.requests.CustomerConfirmRequest;
+import com.swp_group4.back_end.requests.FinishConstructRequest;
 import com.swp_group4.back_end.requests.ServiceRequest;
 import com.swp_group4.back_end.requests.UpdateInfoRequest;
 import com.swp_group4.back_end.responses.*;
 import com.swp_group4.back_end.services.CustomerService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +21,7 @@ import java.util.List;
 
 @RestController
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Slf4j
 public class CustomerController {
 
     @Autowired
@@ -69,6 +74,20 @@ public class CustomerController {
     public ApiResponse<CustomerViewPaymentResponse> viewPayment(@PathVariable String constructionOrderId) {
         return ApiResponse.<CustomerViewPaymentResponse>builder()
                 .data(customerService.viewPayment(constructionOrderId))
+                .build();
+    }
+
+    @GetMapping("/myInfo/orders/{constructionOrderId}/progress")
+    public ApiResponse<CustomerViewProgressResponse> viewProgress(@PathVariable String constructionOrderId) {
+        return ApiResponse.<CustomerViewProgressResponse>builder()
+                .data(customerService.viewProgress(constructionOrderId))
+                .build();
+    }
+
+    @PutMapping("/myInfo/orders/{constructionOrderId}/progress")
+    public ApiResponse<ConstructionOrderStatus> finishConstructOrder(@PathVariable String constructionOrderId, @RequestBody FinishConstructRequest request) {
+        return ApiResponse.<ConstructionOrderStatus>builder()
+                .data(customerService.finishConstructOrder(constructionOrderId, request))
                 .build();
     }
 

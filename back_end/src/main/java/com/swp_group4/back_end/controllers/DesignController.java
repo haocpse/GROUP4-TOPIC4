@@ -26,15 +26,15 @@ public class DesignController {
     // Hàm để DESIGNER xem các task được gán bởi MANAGER
     // (Construction Order đang ở trạng thái DESIGNING)
     @GetMapping("/ownedTasks")
-    public ApiResponse<List<ConstructOrderDetailForStaffResponse<ConstructionOrderStatus>>> listTask() {
-        return ApiResponse.<List<ConstructOrderDetailForStaffResponse<ConstructionOrderStatus>>>builder()
+    public ApiResponse<List<ConstructOrderDetailForStaffResponse>> listTask() {
+        return ApiResponse.<List<ConstructOrderDetailForStaffResponse>>builder()
                 .data(designService.listOwnedDesignTask())
                 .build();
     }
 
     @GetMapping("/designs")
-    public ApiResponse<List<ConstructOrderDetailForStaffResponse<DesignStatus>>> listDesign() {
-        return ApiResponse.<List<ConstructOrderDetailForStaffResponse<DesignStatus>>>builder()
+    public ApiResponse<List<ConstructOrderDetailForStaffResponse>> listDesign() {
+        return ApiResponse.<List<ConstructOrderDetailForStaffResponse>>builder()
                 .data(designService.listDesign())
                 .build();
     }
@@ -42,8 +42,8 @@ public class DesignController {
     // Hàm để DESIGNER thông tin Construction Order
     // (Construction Order đang ở trạng thái DESIGNING)
     @GetMapping("/ownedTasks/{constructionOrderId}")
-    public ApiResponse<ConstructOrderDetailForStaffResponse<ConstructionOrderStatus>> detailTask(@PathVariable String constructionOrderId) {
-        return ApiResponse.<ConstructOrderDetailForStaffResponse<ConstructionOrderStatus>>builder()
+    public ApiResponse<ConstructOrderDetailForStaffResponse> detailTask(@PathVariable String constructionOrderId) {
+        return ApiResponse.<ConstructOrderDetailForStaffResponse>builder()
                 .data(designService.constructionOrderStatusConstructOrderDetailForStaffResponse(constructionOrderId))
                 .build();
     }

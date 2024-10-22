@@ -9,6 +9,7 @@ import com.swp_group4.back_end.mapper.CustomerMapper;
 import com.swp_group4.back_end.mapper.QuotationMapper;
 import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.requests.CustomerConfirmRequest;
+import com.swp_group4.back_end.requests.FinishConstructRequest;
 import com.swp_group4.back_end.requests.ServiceRequest;
 import com.swp_group4.back_end.responses.*;
 import lombok.AccessLevel;
@@ -52,6 +53,8 @@ public class CustomerService {
     DesignRepository designRepository;
     @Autowired
     private PaymentOrderRepository paymentOrderRepository;
+    @Autowired
+    ConstructionTaskStaffRepository constructionTaskStaffRepository;
 
     public void createCustomer(String accountId, String firstname) {
         customerRepository.save(Customer.builder()
@@ -244,6 +247,53 @@ public class CustomerService {
                 .address(customer.getAddress())
                 .paymentInfoResponseList(paymentInfoResponses)
                 .build();
+    }
+
+    public CustomerViewProgressResponse viewProgress(String constructionOrderId) {
+        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
+        List<ConstructionTasks> constructionTasksList = constructionTasksRepository
+                .findByConstructionOrderId(constructionOrderId).orElseThrow();
+        List<ListConstructProgressResponse> listConstructProgressResponses = new ArrayList<>();
+        for (ConstructionTasks constructionTasks : constructionTasksList) {
+            ConstructionTaskStaff taskStaff = constructionTaskStaffRepository.findById(constructionTasks.getTaskId())
+                    .orElse(null);
+            PackageConstruction packageConstruction = packageConstructionRepository
+                    .findById(constructionTasks.getPackageConstructionId()).orElseThrow();
+            ListConstructProgressResponse statusResponse = ListConstructProgressResponse.builder()
+                    .packageConstructionId(constructionTasks.getPackageConstructionId())
+                    .taskId(constructionTasks.getTaskId())
+                    .content(packageConstruction.getContent())
+                    .status(constructionTasks.getStatus())
+                    .build();
+            if (taskStaff != null) {
+                statusResponse.setStaffName(staffRepository.findById(taskStaff.getStaffId()).orElseThrow().getStaffName());
+            } else {
+                statusResponse.setStaffName("");
+            }
+            listConstructProgressResponses.add(statusResponse);
+        }
+        return CustomerViewProgressResponse.builder()
+                .constructionOrderId(constructionOrderId)
+                .listConstructProgressResponses(listConstructProgressResponses)
+                .constructionOrderStatus(order.getStatus())
+                .build();
+    }
+
+    public ConstructionOrderStatus finishConstructOrder(String constructionOrderId, FinishConstructRequest request) {
+        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
+        order.setStatus(request.getStatus());
+        constructOrderRepository.save(order);
+        Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
+        Quotation quotation = quotationRepository.findById(order.getQuotationId()).orElseThrow();
+        PaymentOrder paymentOrder = PaymentOrder.builder()
+                .orderId(constructionOrderId)
+                .customerId(customer.getCustomerId())
+                .paymentTitle("Khach hang thanh toan giai doan 3")
+                .total(quotation.getPriceStage3())
+                .status(PaymentStatus.PENDING)
+                .build();
+        paymentOrderRepository.save(paymentOrder);
+        return order.getStatus();
     }
 
 //    Customer identifyCustomer() {

@@ -30,30 +30,6 @@ public class ManageConstructionOrderController {
                 .build();
     }
 
-    // Hàm để MANAGER xem toàn bộ các staff có ROLE: CONSULTANT
-    @GetMapping("/consultants")
-    public ApiResponse<List<StaffResponse>> listAllConsultant(){
-        return ApiResponse.<List<StaffResponse>>builder()
-                .data(staffService.listAllStaff("consultant"))
-                .build();
-    }
-
-    // Hàm để MANAGER xem toàn bộ các staff có ROLE: DESIGNER
-    @GetMapping("/designers")
-    public ApiResponse<List<StaffResponse>> listAllDesigner(){
-        return ApiResponse.<List<StaffResponse>>builder()
-                .data(staffService.listAllStaff("designer"))
-                .build();
-    }
-
-    // Hàm để MANAGER xem toàn bộ các staff có ROLE: CONSTRUCTOR
-    @GetMapping("/constructors")
-    public ApiResponse<List<StaffResponse>> listAllConstructor(){
-        return ApiResponse.<List<StaffResponse>>builder()
-                .data(staffService.listAllStaff("constructor"))
-                .build();
-    }
-
     // Hàm để MANAGER gán các leader cho từng giai đoạn của Construction Order
     @PutMapping()
     public ApiResponse<ConstructOrderDetailForManagerResponse> assignLeader(@RequestBody StaffAssignedRequest request) {
