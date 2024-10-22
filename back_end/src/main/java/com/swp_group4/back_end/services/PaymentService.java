@@ -2,9 +2,11 @@ package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.configuration.VNPAYConfig;
 import com.swp_group4.back_end.entities.PaymentOrder;
+import com.swp_group4.back_end.enums.PaymentMethods;
 import com.swp_group4.back_end.enums.PaymentStatus;
 import com.swp_group4.back_end.repositories.ConstructOrderRepository;
 import com.swp_group4.back_end.repositories.PaymentOrderRepository;
+import com.swp_group4.back_end.requests.PaymentCreateRequest;
 import com.swp_group4.back_end.util.VNPayUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
@@ -27,6 +29,14 @@ public class PaymentService {
     @Autowired
     private ConstructOrderRepository constructOrderRepository;
 
+    public PaymentOrder createPayment(PaymentCreateRequest request, String orderId){
+        PaymentOrder paymentOrder = PaymentOrder.builder()
+                .customerId(request.getCustomerId())
+                .orderId(orderId)
+                .paymentMethods(request.getPaymentMethods())
+                .build();
+        return paymentOrderRepository.save(paymentOrder);
+    }
 
     public List<PaymentOrder> listALl(String accountId){
         return paymentOrderRepository.findByCustomerIdAndStatus(accountId, PaymentStatus.PENDING);

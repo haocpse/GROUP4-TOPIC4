@@ -72,6 +72,13 @@ public class CustomerController {
                 .build();
     }
 
+    @GetMapping("/myInfo/orders/{maintenanaceOrderId}/payments")
+    public ApiResponse<CustomerViewPaymentResponse> viewMaintenanacePayemnt(@PathVariable String maintenanaceOrderId) {
+        return ApiResponse.<CustomerViewPaymentResponse>builder()
+                .data(customerService.viewPayment(maintenanaceOrderId))
+                .build();
+    }
+
     // Hàm để Customer xem thông tin cá nhân
 //    @GetMapping("/ownedInfo")
 //    public ApiResponse<CustomerResponse> getOwnedInfo() {
