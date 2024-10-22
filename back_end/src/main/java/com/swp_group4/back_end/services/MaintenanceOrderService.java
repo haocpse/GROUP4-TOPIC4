@@ -23,8 +23,6 @@ public class MaintenanceOrderService {
     @Autowired
     MaintenanceOrderRepository maintenanceOrderRepository;
     @Autowired
-    StaffService staffService;
-    @Autowired
     MaintenanceOrderMapper maintenanceOrderMapper;
     @Autowired
     CustomerMapper customerMapper;
