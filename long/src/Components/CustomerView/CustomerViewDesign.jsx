@@ -66,7 +66,7 @@ const CustomerViewDesign = () => {
                         <div className="img-design">
                             <h6>Design Images:</h6>
                             <div className="row text-center">
-                                <div className="col-md-3 mb-3">
+                                <div className="col-md-4 mb-3">
                                     <div>
                                         <div className="overlay">2D Design</div>
                                         <div className="image-container">
@@ -79,7 +79,7 @@ const CustomerViewDesign = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="col-md-3 mb-3">
+                                <div className="col-md-4 mb-3">
                                     <div>
                                         <div className="overlay">3D Design</div>
                                         <div className="image-container">
@@ -92,26 +92,13 @@ const CustomerViewDesign = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="col-md-3 mb-3">
+                                <div className="col-md-4 mb-3">
                                     <div>
                                         <div className="overlay">Front Design</div>
                                         <div className="image-container">
                                             <img
                                                 src={designDetail.urlFrontDesign}
                                                 alt="Front Design"
-                                                className="img-fluid img-thumbnail"
-                                                style={{ maxWidth: '100%', height: 'auto', maxHeight: '200px' }}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-md-3 mb-3">
-                                    <div>
-                                        <div className="overlay">Back Design</div>
-                                        <div className="image-container">
-                                            <img
-                                                src={designDetail.urlBackDesign}
-                                                alt="Back Design"
                                                 className="img-fluid img-thumbnail"
                                                 style={{ maxWidth: '100%', height: 'auto', maxHeight: '200px' }}
                                             />

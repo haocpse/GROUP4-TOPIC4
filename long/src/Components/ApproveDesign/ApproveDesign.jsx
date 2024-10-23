@@ -14,7 +14,7 @@ const ApproveDesign = () => {
         try {
             const response = await axios.get('http://localhost:8080/manage/designs', {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, 
                 }
             });
             setDesigns(response.data.data);
