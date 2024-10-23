@@ -11,6 +11,7 @@ import com.swp_group4.back_end.responses.StaffResponse;
 import com.swp_group4.back_end.services.MaintenanceOrderService;
 import com.swp_group4.back_end.services.PaymentService;
 import com.swp_group4.back_end.services.StaffService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class MaintenanceOrderController {
     }
 
     //hàm để manager xem toàm bộ maintenance order
-    @GetMapping()
+    @GetMapping("/requests")
     public ApiResponse<List<MaintenanceOrderDetailForManagerResponse>> listMaintenanceRequest() {
         return ApiResponse.<List<MaintenanceOrderDetailForManagerResponse>>builder()
                 .data(maintenanceOrderService.listAllOrder())
@@ -52,8 +53,8 @@ public class MaintenanceOrderController {
                 .build();
     }
 
-    @PutMapping()
-    public ApiResponse<MaintenanceOrderDetailForManagerResponse> assignLeader(@RequestBody MaintenanceStaffAssignedRequest request) {
+    @PutMapping("/requests")
+    public ApiResponse<MaintenanceOrderDetailForManagerResponse> assignLeader(@Valid @RequestBody MaintenanceStaffAssignedRequest request) {
         return ApiResponse.<MaintenanceOrderDetailForManagerResponse>builder()
                 .data(maintenanceOrderService.assignLeader(request))
                 .build();
