@@ -35,6 +35,7 @@ import UpdateDesign from "./Components/DesignUpload/UpdateDesign";
 import CustomerViewDesign from "./Components/CustomerView/CustomerViewDesign"
 import PaymentInfo from "./Components/ListQuotation/PaymentInfo";
 import MainLayoutConstructor from "./Components/MainLayoutConstructor";
+import MaintenanceRequest from "./Components/MaintenanceRequest/MaintenanceRequest";
 function App() {
   return (
     <Router>
@@ -42,10 +43,11 @@ function App() {
         <Route element={<ProtectedRoutesManager />}>
           <Route path="/manage" element={<MainLayout />}>
             <Route path="request" element={<Request />} />
+            <Route path="maintenance-request" element={<MaintenanceRequest />} />
             <Route path="quotations" element={<ApproveQuotation />} />
             <Route path="quotations/:id" element={<ViewQuotation />} />
-            <Route path="Maintenance-quotations" element={<ApproveMaintenanceQuotation />} />
-            <Route path="Maintenance-quotations/:id" element={<ViewMaintenanceQuotation />} />
+            <Route path="maintenance-quotations" element={<ApproveMaintenanceQuotation />} />
+            <Route path="maintenance-quotations/:id" element={<ViewMaintenanceQuotation />} />
             <Route path="designs" element={<ApproveDesign />} />
             <Route path="designs/:id" element={<ViewDesign />} />
           </Route>

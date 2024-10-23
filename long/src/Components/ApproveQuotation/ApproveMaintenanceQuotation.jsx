@@ -9,7 +9,7 @@ const ApproveMaintenanceQuotation = () => {
 
     const fetchMaintenanceQuotes = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/manage/Maintenance-quotations',{
+            const response = await axios.get('http://localhost:8080/manage/maintenance-quotations',{
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
                 }
@@ -23,7 +23,7 @@ const ApproveMaintenanceQuotation = () => {
     };
 
     const handleViewDetails = (id) => {
-        navigate(`/manage/Maintenance-quotations/${id}`);
+        navigate(`/manage/maintenance-quotations/${id}`);
     }
 
     useEffect(() => {
@@ -34,7 +34,7 @@ const ApproveMaintenanceQuotation = () => {
         <>
             <ToastContainer position="top-right" autoClose={5000} />
             <div className="container-fuild mt-4">
-                <h2 className="text-center" style={{ color: 'black' }}>Approve Quotes</h2>
+                <h2 className="text-center" style={{ color: 'black' }}>Approve Maintenance Quotes</h2>
                 <table className="table table-bordered mt-4">
                     <thead>
                         <tr>

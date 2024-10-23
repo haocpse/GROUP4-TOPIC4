@@ -24,6 +24,12 @@ const Manage = () => {
                         <i className="fa-solid fa-bell"></i>
                     </NavLink>
                 </li>
+                {/* Maintenance Requests */}
+                <li className="nav-item">
+                    <NavLink to="/manage/maintenance-request" className="nav-link d-flex align-items-center sidebar-link">
+                        <i class="fa-solid fa-shield-heart"></i>
+                    </NavLink>
+                </li>
                 {/* Approve Quotation */}
                 <li className="nav-item">
                     <NavLink to="/manage/quotations" className="nav-link d-flex align-items-center sidebar-link">
@@ -31,7 +37,7 @@ const Manage = () => {
                     </NavLink>
                 </li> {/* Approve Quotation Maintenance*/}
                 <li className="nav-item">
-                    <NavLink to="/manage/Maintenance-quotations" className="nav-link d-flex align-items-center sidebar-link">
+                    <NavLink to="/manage/maintenance-quotations" className="nav-link d-flex align-items-center sidebar-link">
                         <i class="fi fi-rr-ballot-check"></i>
                     </NavLink>
                 </li>

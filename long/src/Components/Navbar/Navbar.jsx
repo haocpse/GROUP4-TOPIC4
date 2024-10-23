@@ -38,8 +38,10 @@ const Navbar = () => {
         } else if (roles === "CONSTRUCTOR") {
 
             navigate('/construct/ownedTasks')
+        } else if (roles === "CUSTOMER"){
+            navigate('/myInfo/orders')
         } else {
-            navigate('/login');
+            navigate('/login')
         }
     }
 

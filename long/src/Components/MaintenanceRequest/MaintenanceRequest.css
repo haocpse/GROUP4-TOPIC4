@@ -1,0 +1,15 @@
+.text-primary {
+    color: blue; /* Hoặc màu mà bạn muốn */
+}
+
+.text-success {
+    color: green;
+}
+
+.text-warning {
+    color: orange;
+}
+
+.text-secondary {
+    color: gray;
+}
