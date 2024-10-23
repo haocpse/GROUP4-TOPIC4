@@ -157,10 +157,10 @@ public class CustomerService {
         return taskList;
     }
 
-    public ConstructDesignResponse viewDesign(String constructionOrderId) {
+    public ConstructDesignResponse viewDesign(String constructionOrderId, String accountId) {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
         Design design = designRepository.findById(order.getDesignId()).orElseThrow();
-        Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
+        Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
         return ConstructDesignResponse.builder()
                 .constructionOrderId(order.getConstructionOrderId())
                 .designId(design.getDesignId())
@@ -174,13 +174,13 @@ public class CustomerService {
                 .build();
     }
 
-    public StatusOfQuotationOrDesign<DesignStatus> confirmDesign(CustomerConfirmRequest<DesignStatus> request, String constructionOrderId) {
+    public StatusOfQuotationOrDesign<DesignStatus> confirmDesign(CustomerConfirmRequest<DesignStatus> request, String constructionOrderId, String accountId) {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
         Design design = designRepository.findById(order.getDesignId()).orElseThrow();
         if (request.getStatus().equals(DesignStatus.CONFIRMED)) {
             order.setStatus(ConstructionOrderStatus.CONFIRMED_DESIGN);
             constructOrderRepository.save(order);
-            Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
+            Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
             Quotation quotation = quotationRepository.findById(order.getQuotationId()).orElseThrow();
             PaymentOrder paymentOrder = PaymentOrder.builder()
                     .orderId(constructionOrderId)
@@ -200,13 +200,13 @@ public class CustomerService {
                 .build();
     }
 
-    public StatusOfQuotationOrDesign<QuotationStatus> confirmQuotation(CustomerConfirmRequest<QuotationStatus> request, String constructionOrderId) {
+    public StatusOfQuotationOrDesign<QuotationStatus> confirmQuotation(CustomerConfirmRequest<QuotationStatus> request, String constructionOrderId, String accountId) {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
         Quotation quotation = quotationRepository.findById(order.getQuotationId()).orElseThrow();
         if (request.getStatus().equals(QuotationStatus.CONFIRMED)) {
             order.setStatus(ConstructionOrderStatus.CONFIRMED_QUOTATION);
             constructOrderRepository.save(order);
-            Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
+            Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
             PaymentOrder paymentOrder = PaymentOrder.builder()
                     .orderId(constructionOrderId)
                     .customerId(customer.getCustomerId())
@@ -222,6 +222,28 @@ public class CustomerService {
         return StatusOfQuotationOrDesign.<QuotationStatus>builder()
                 .id(quotation.getQuotationId())
                 .status(quotation.getQuotationStatus())
+                .build();
+    }
+
+    public CustomerViewPaymentResponse viewPaymentConstruction(String constructionOrderId, String accountId) {
+        Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
+        List<PaymentOrder> paymentOrders = paymentOrderRepository.findByOrderId(constructionOrderId);
+        List<PaymentInfoResponse> paymentInfoResponses = new ArrayList<>();
+        for (PaymentOrder paymentOrder : paymentOrders) {
+            PaymentInfoResponse response = PaymentInfoResponse.builder()
+                    .paymentId(paymentOrder.getPaymentId())
+                    .paidDate(paymentOrder.getDate())
+                    .price(paymentOrder.getTotal())
+                    .paymentTitle(paymentOrder.getPaymentTitle())
+                    .paymentStatus(paymentOrder.getStatus())
+                    .build();
+            paymentInfoResponses.add(response);
+        }
+        return CustomerViewPaymentResponse.builder()
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
+                .phone(customer.getPhone())
+                .address(customer.getAddress())
+                .paymentInfoResponseList(paymentInfoResponses)
                 .build();
     }
 
@@ -247,6 +269,7 @@ public class CustomerService {
                 .paymentInfoResponseList(paymentInfoResponses)
                 .build();
     }
+
 
     public CustomerViewProgressResponse viewProgress(String constructionOrderId) {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
@@ -279,11 +302,11 @@ public class CustomerService {
                 .build();
     }
 
-    public ConstructionOrderStatus finishConstructOrder(String constructionOrderId, FinishConstructRequest request) {
+    public ConstructionOrderStatus finishConstructOrder(String constructionOrderId, FinishConstructRequest request, String accountId) {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
         order.setStatus(request.getStatus());
         constructOrderRepository.save(order);
-        Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
+        Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
         Quotation quotation = quotationRepository.findById(order.getQuotationId()).orElseThrow();
         PaymentOrder paymentOrder = PaymentOrder.builder()
                 .orderId(constructionOrderId)

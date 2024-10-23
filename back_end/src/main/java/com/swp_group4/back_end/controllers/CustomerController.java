@@ -49,28 +49,28 @@ public class CustomerController {
     @GetMapping("/customer/{accountId}/constructionOrders/{constructionOrderId}/design")
     public ApiResponse<ConstructDesignResponse> CustomerViewDesign(@PathVariable String constructionOrderId, @PathVariable String accountId) {
         return ApiResponse.<ConstructDesignResponse>builder()
-                .data(customerService.viewDesign(constructionOrderId))
+                .data(customerService.viewDesign(constructionOrderId, accountId))
                 .build();
     }
 
     @PutMapping("/customer/{accountId}/constructionOrders/{constructionOrderId}/design")
     public ApiResponse<StatusOfQuotationOrDesign<DesignStatus>> confirmDesign(@RequestBody CustomerConfirmRequest<DesignStatus> request, @PathVariable String constructionOrderId, @PathVariable String accountId) {
         return ApiResponse.<StatusOfQuotationOrDesign<DesignStatus>>builder()
-                .data(customerService.confirmDesign(request, constructionOrderId))
+                .data(customerService.confirmDesign(request, constructionOrderId, accountId))
                 .build();
     }
 
     @PutMapping("/customer/{accountId}/constructionOrders/{constructionOrderId}/quotation")
     public ApiResponse<StatusOfQuotationOrDesign<QuotationStatus>> confirmQuotation(@RequestBody CustomerConfirmRequest<QuotationStatus> request, @PathVariable String constructionOrderId, @PathVariable String accountId) {
         return ApiResponse.<StatusOfQuotationOrDesign<QuotationStatus>>builder()
-                .data(customerService.confirmQuotation(request, constructionOrderId))
+                .data(customerService.confirmQuotation(request, constructionOrderId, accountId))
                 .build();
     }
 
-    @GetMapping("/constructionOrders/{constructionOrderId}/payments")
+    @GetMapping("/customer/{accountId}/constructionOrders/{constructionOrderId}/payments")
     public ApiResponse<CustomerViewPaymentResponse> viewPayment(@PathVariable String constructionOrderId, @PathVariable String accountId) {
         return ApiResponse.<CustomerViewPaymentResponse>builder()
-                .data(customerService.viewPayment(constructionOrderId))
+                .data(customerService.viewPaymentConstruction(constructionOrderId, accountId))
                 .build();
     }
 
@@ -91,7 +91,7 @@ public class CustomerController {
     @PutMapping("/customer/{accountId}/constructionOrders/{constructionOrderId}/progress")
     public ApiResponse<ConstructionOrderStatus> finishConstructOrder(@PathVariable String constructionOrderId, @RequestBody FinishConstructRequest request, @PathVariable String accountId) {
         return ApiResponse.<ConstructionOrderStatus>builder()
-                .data(customerService.finishConstructOrder(constructionOrderId, request))
+                .data(customerService.finishConstructOrder(constructionOrderId, request, accountId))
                 .build();
     }
 
