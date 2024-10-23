@@ -113,7 +113,6 @@ const CustomerView = () => {
           </>
         )}
       </div>
-      <button className="btn btn-secondary" onClick={() => navigate('http://localhost:8080/manage/requests')}>Go Manage</button>
     </>
   );
 };
