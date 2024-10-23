@@ -1,14 +1,11 @@
 package com.swp_group4.back_end.controllers;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.swp_group4.back_end.entities.Design;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.enums.DesignStatus;
 import com.swp_group4.back_end.enums.QuotationStatus;
 import com.swp_group4.back_end.requests.CustomerConfirmRequest;
 import com.swp_group4.back_end.requests.FinishConstructRequest;
 import com.swp_group4.back_end.requests.ServiceRequest;
-import com.swp_group4.back_end.requests.UpdateInfoRequest;
 import com.swp_group4.back_end.responses.*;
 import com.swp_group4.back_end.services.CustomerService;
 import lombok.AccessLevel;

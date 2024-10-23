@@ -16,7 +16,6 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -32,9 +31,6 @@ public class CustomerService {
     CustomerRepository customerRepository;
     @Autowired
     CustomerMapper customerMapper;
-    @Autowired
-    @Lazy
-    ManageConstructionOrderService manageConstructionOrderService;
     @Autowired
     ConstructOrderRepository constructOrderRepository;
     @Autowired
@@ -52,11 +48,10 @@ public class CustomerService {
     @Autowired
     DesignRepository designRepository;
     @Autowired
-    private PaymentOrderRepository paymentOrderRepository;
+    PaymentOrderRepository paymentOrderRepository;
     @Autowired
     ConstructionTaskStaffRepository constructionTaskStaffRepository;
-    @Autowired
-    private AccountService accountService;
+
 
     public void createCustomer(String accountId, String firstname) {
         customerRepository.save(Customer.builder()

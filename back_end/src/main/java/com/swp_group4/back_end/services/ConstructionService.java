@@ -49,8 +49,7 @@ public class ConstructionService {
 
     public ConstructionTasksAndStatusResponse detailOfConstruct(String constructionOrderId) {
         List<ConstructionTasks> constructionTasksList = this.findConstructionTasks(constructionOrderId);
-        ConstructionOrder order = this.findOrderById(constructionOrderId);
-
+        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
         Customer customer = this.findCustomerById(order.getCustomerId());
         return ConstructionTasksAndStatusResponse.builder()
                 .constructionOrderId(constructionOrderId)

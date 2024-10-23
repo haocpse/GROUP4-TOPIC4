@@ -1,6 +1,5 @@
 package com.swp_group4.back_end.responses;
 
-import com.swp_group4.back_end.enums.ConstructStatus;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

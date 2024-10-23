@@ -1,10 +1,7 @@
 package com.swp_group4.back_end.controllers;
 
 import com.swp_group4.back_end.entities.Design;
-import com.swp_group4.back_end.enums.ConstructionOrderStatus;
-import com.swp_group4.back_end.enums.DesignStatus;
 import com.swp_group4.back_end.responses.ApiResponse;
-import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
 import com.swp_group4.back_end.responses.OverviewDesignResponse;
 import com.swp_group4.back_end.responses.ViewRejectedDesignResponse;
 import com.swp_group4.back_end.services.DesignService;
