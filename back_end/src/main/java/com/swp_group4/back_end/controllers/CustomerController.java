@@ -67,13 +67,20 @@ public class CustomerController {
                 .build();
     }
 
-    @GetMapping("/customer/{accountId}/constructionOrders/{constructionOrderId}/payments")
+    @GetMapping("/constructionOrders/{constructionOrderId}/payments")
     public ApiResponse<CustomerViewPaymentResponse> viewPayment(@PathVariable String constructionOrderId, @PathVariable String accountId) {
         return ApiResponse.<CustomerViewPaymentResponse>builder()
                 .data(customerService.viewPayment(constructionOrderId))
                 .build();
     }
 
+    @GetMapping("/maintenanceOrders/{maintenanceOrderId}/payments")
+    public ApiResponse<CustomerViewPaymentResponse> viewMaintenancePayment(@PathVariable String maintenanceOrderId) {
+        return ApiResponse.<CustomerViewPaymentResponse>builder()
+                .data(customerService.viewPayment(maintenanceOrderId))
+                .build();
+    }
+    
     @GetMapping("/customer/{accountId}/constructionOrders/{constructionOrderId}/progress")
     public ApiResponse<CustomerViewProgressResponse> viewProgress(@PathVariable String constructionOrderId, @PathVariable String accountId) {
         return ApiResponse.<CustomerViewProgressResponse>builder()

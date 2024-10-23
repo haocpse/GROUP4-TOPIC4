@@ -29,14 +29,16 @@ public class MaintenanceOrderService {
     @Autowired
     CustomerRepository customerRepository;
 
-    public MaintenanceOrder createOrder (Customer customer) {
-        MaintenanceOrder maintenanceOrder = MaintenanceOrder.builder()
-                .customerId(customer.getCustomerId())
-                .startDate(new Date())
-                .status(MaintenanceOrderStatus.REQUESTED)
-                .build();
-        return maintenanceOrderRepository.save(maintenanceOrder);
-    }
+//    public MaintenanceOrder createOrder (Customer customer) {
+//        MaintenanceOrder maintenanceOrder = MaintenanceOrder.builder()
+//                .customerId(customer.getCustomerId())
+//                .startDate(new Date())
+//                .status(MaintenanceOrderStatus.REQUESTED)
+//                .build();
+//        return maintenanceOrderRepository.save(maintenanceOrder);
+//    }
+
+
 
     public List<MaintenanceOrderDetailForManagerResponse> listAllOrder(){
         List<MaintenanceOrderDetailForManagerResponse> responses = new ArrayList<>();
