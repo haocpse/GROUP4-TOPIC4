@@ -35,10 +35,21 @@ import UpdateDesign from "./Components/DesignUpload/UpdateDesign";
 import CustomerViewDesign from "./Components/CustomerView/CustomerViewDesign"
 import PaymentInfo from "./Components/ListQuotation/PaymentInfo";
 import MainLayoutConstructor from "./Components/MainLayoutConstructor";
+import Dashboard from "./Components/Admin/Dashboard";
+import BlogCRUD from "./Components/Admin/BlogCRUD";
+import EditBlog from "./Components/Admin/EditBlog";
+import PackageManage from "./Components/Package/PackageManage";
+import PackagePrice from "./Components/Package/PackagePrice";
+import AdminProfile from "./Components/Admin/AdminProfile";
 function App() {
   return (
     <Router>
       <Routes>
+        
+          <Route path="/admin-dashboard" element ={<Dashboard/>}></Route>
+        <Route path="/Blog" element = {<BlogCRUD/>}></Route>
+        <Route path="/edit-blog/:id" element = {<EditBlog/>}></Route>
+        <Route path="/profile" element = {<AdminProfile/>}></Route>
         <Route element={<ProtectedRoutesManager />}>
           <Route path="/manage" element={<MainLayout />}>
             <Route path="request" element={<Request />} />

@@ -1,58 +1,50 @@
 import React from "react";
 import './Manage.css';
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Manage = () => {
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        window.location.reload();
-    };
     return (
-        <div className="d-flex flex-column p-3 bg-dark sidebar" style={{ width: '90px', height: 'auto' }}>
+        <div className="d-flex flex-column p-3 bg-dark sidebar" style={{ width: '90px', height: '150vh' }}>
             <p style={{ color: 'white', fontSize: '20px' }}>Koi Pond Design</p>
             <hr />
             <ul className="nav nav-pills flex-column mb-auto">
                 {/* Home */}
                 <li className="nav-item">
-                    <NavLink to="/" className="nav-link text-dark d-flex align-items-center sidebar-link">
+                    <Link to="/" className="nav-link text-dark d-flex align-items-center sidebar-link">
                         <i className="fa-solid fa-house-chimney"></i>
-                    </NavLink>
+
+                    </Link>
                 </li>
-                {/* Request */}
+                {/* Construction Request - từng phần riêng biệt */}
                 <li className="nav-item">
-                    <NavLink to="/manage/request" className="nav-link d-flex align-items-center sidebar-link">
+                    <Link to="/manage/consultation" className="nav-link d-flex align-items-center sidebar-link">
                         <i className="fa-solid fa-bell"></i>
-                    </NavLink>
+                    </Link>
                 </li>
-                {/* Approve Quotation */}
+                {/* Approve Request */}
                 <li className="nav-item">
-                    <NavLink to="/manage/quotations" className="nav-link d-flex align-items-center sidebar-link">
+                    <Link to="/manage/approve-quotation" className="nav-link d-flex align-items-center sidebar-link">
                         <i className="fa-solid fa-money-bill"></i>
-                    </NavLink>
-                </li> {/* Approve Quotation Maintenance*/}
-                <li className="nav-item">
-                    <NavLink to="/manage/Maintenance-quotations" className="nav-link d-flex align-items-center sidebar-link">
-                        <i class="fi fi-rr-ballot-check"></i>
-                    </NavLink>
+                    </Link>
                 </li>
-                {/* Approve Desing */}
+                {/* Approve Design */}
                 <li className="nav-item">
-                    <NavLink to="/manage/designs" className="nav-link  d-flex align-items-center sidebar-link">
+                    <Link to="/manage/approve-design" className="nav-link  d-flex align-items-center sidebar-link">
                         <i className="fa-solid fa-pen"></i>
-                    </NavLink>
+                    </Link>
                 </li>
                 {/* Dashboard */}
                 <li className="nav-item mb-4">
-                    <NavLink to="/manage/dashboard" className="nav-link text-dark align-items-center sidebar-link">
+                    <Link to="/manage/dashboard" className="nav-link text-dark align-items-center sidebar-link">
                         <i className="fa-solid fa-table-list"></i>
-                    </NavLink>
+                    </Link>
                 </li>
                 <hr className="mb-3" />
                 {/* Logout */}
                 <li className="nav-item">
-                    <button onClick={handleLogout} className="nav-link d-flex align-items-center sidebar-link bg-transparent border-0">
+                    <Link to="/" className="nav-link  d-flex align-items-center sidebar-link">
                         <i className="fa-solid fa-right-from-bracket"></i>
-                    </button>
+                    </Link>
                 </li>
             </ul>
 
