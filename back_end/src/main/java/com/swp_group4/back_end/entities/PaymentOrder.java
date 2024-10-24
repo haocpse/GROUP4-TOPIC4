@@ -6,8 +6,6 @@ import com.swp_group4.back_end.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.ZonedDateTime;
 import java.util.Date;
 
 @Entity
@@ -20,7 +18,8 @@ public class PaymentOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String paymentId;
-    String serviceId;
+    String paymentTitle;
+    String orderId;
     String customerId;
     Date date;
     PaymentMethods paymentMethods;

@@ -13,6 +13,7 @@ import com.swp_group4.back_end.repositories.StaffRepository;
 import com.swp_group4.back_end.requests.CreateAccountForStaffRequest;
 import com.swp_group4.back_end.requests.CreateAccountRequest;
 import com.swp_group4.back_end.requests.LoginRequest;
+import com.swp_group4.back_end.responses.AccountResponse;
 import com.swp_group4.back_end.responses.LoginResponse;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -22,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -71,10 +73,6 @@ public class AccountService {
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.CUSTOMER)
-//                .role(Role.CONSULTANT)
-//                .role(Role.DESIGNER)
-//                .role(Role.CONSTRUCTOR)
-//                .role(Role.MANAGER)
                 .build();
         accountRepository.save(acc);
         customerService.createCustomer(acc.getAccountId(), acc.getUsername());
@@ -120,6 +118,16 @@ public class AccountService {
                 .build();
         staffRepository.save(staff);
         return acc;
+    }
+
+    public AccountResponse getMyInfo() {
+        var context = SecurityContextHolder.getContext();
+        String accountId = context.getAuthentication().getName();
+        Account account = accountRepository.findById(accountId).orElseThrow();
+        return AccountResponse.builder()
+                .accountId(accountId)
+                .role(account.getRole())
+                .build();
     }
 
 //    public String logout(){

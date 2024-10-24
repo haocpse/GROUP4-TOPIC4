@@ -3,11 +3,9 @@ package com.swp_group4.back_end.services;
 import com.swp_group4.back_end.entities.*;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.enums.DesignStatus;
-import com.swp_group4.back_end.mapper.*;
 import com.swp_group4.back_end.repositories.*;
-import com.swp_group4.back_end.requests.UrlDesignRequest;
-import com.swp_group4.back_end.responses.ConstructDesignResponse;
 import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
+import com.swp_group4.back_end.responses.OverviewDesignResponse;
 import com.swp_group4.back_end.responses.ViewRejectedDesignResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -19,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,38 +37,6 @@ public class DesignService {
     @Autowired
     DesignRepository designRepository;
 
-    public List<ConstructOrderDetailForStaffResponse<ConstructionOrderStatus>> listOwnedDesignTask() {
-        List<ConstructOrderDetailForStaffResponse<ConstructionOrderStatus>> responses = new ArrayList<>();
-        Staff staff = this.identifyStaff();
-        List<ConstructionOrder> orders = constructOrderRepository.findByDesignerLeaderIdAndDesignIdIsNull(staff.getStaffId());
-        for (ConstructionOrder order : orders) {
-            ConstructOrderDetailForStaffResponse<ConstructionOrderStatus> response = this.constructionOrderStatusConstructOrderDetailForStaffResponse(order.getConstructionOrderId());
-            response.setStaffName(staff.getStaffName());
-            responses.add(response);
-        }
-        return responses;
-    }
-
-    public ConstructOrderDetailForStaffResponse<ConstructionOrderStatus> constructionOrderStatusConstructOrderDetailForStaffResponse(String constructionOrderId) {
-        ConstructionOrder order = this.findOrderById(constructionOrderId);
-        Customer customer = this.findCustomerById(order.getCustomerId());
-        return ConstructOrderDetailForStaffResponse.<ConstructionOrderStatus>builder()
-                .constructionOrderId(order.getConstructionOrderId())
-                .customerName(customer.getFirstName() + " " + customer.getLastName())
-                .phone(customer.getPhone())
-                .address(customer.getAddress())
-                .customerRequest(order.getCustomerRequest())
-                .staffName(staffRepository.findById(order.getDesignerLeaderId()).orElseThrow().getStaffName())
-                .status(order.getStatus())
-                .build();
-    }
-
-    Staff identifyStaff() {
-        var context = SecurityContextHolder.getContext();
-        String accountId = context.getAuthentication().getName();
-        return staffRepository.findByAccountId(accountId)
-                .orElseThrow(() -> new RuntimeException("Error"));
-    }
 
     ConstructionOrder findOrderById(String orderId){
         return constructOrderRepository.findById(orderId)
@@ -128,30 +93,26 @@ public class DesignService {
         }
     }
 
-    public List<ConstructOrderDetailForStaffResponse<DesignStatus>> listDesign() {
-        List<ConstructOrderDetailForStaffResponse<DesignStatus>> responses = new ArrayList<>();
-        Staff staff = this.identifyStaff();
+    public List<OverviewDesignResponse> listDesign(String accountId) {
+        List<OverviewDesignResponse> responses = new ArrayList<>();
+        Staff staff = staffRepository.findByAccountId(accountId).orElseThrow(() -> new RuntimeException("Error"));
         List<ConstructionOrder> orders = constructOrderRepository.findByDesignerLeaderIdAndDesignIdIsNotNull(staff.getStaffId());
         for (ConstructionOrder order : orders) {
-            ConstructOrderDetailForStaffResponse<DesignStatus> response = this.designStatusConstructOrderDetailForStaffResponse(order.getDesignId());
-            response.setStaffName(staff.getStaffName());
-            response.setStatus(designRepository.findById(order.getDesignId()).orElseThrow().getDesignStatus());
+            OverviewDesignResponse response = buildOverviewDesign(order.getDesignId());
             responses.add(response);
         }
         return responses;
     }
 
-    public ConstructOrderDetailForStaffResponse<DesignStatus> designStatusConstructOrderDetailForStaffResponse(String designId) {
+    public OverviewDesignResponse buildOverviewDesign(String designId) {
         ConstructionOrder order = constructOrderRepository.findByDesignId(designId).orElseThrow();
+        Design design = designRepository.findById(designId).orElseThrow(() -> new RuntimeException("Error"));
         Customer customer = this.findCustomerById(order.getCustomerId());
-        return ConstructOrderDetailForStaffResponse.<DesignStatus>builder()
+        return OverviewDesignResponse.builder()
                 .constructionOrderId(order.getConstructionOrderId())
-                .id(designId)
+                .designId(designId)
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
-                .phone(customer.getPhone())
-                .address(customer.getAddress())
-                .customerRequest(order.getCustomerRequest())
-                .staffName(staffRepository.findById(order.getDesignerLeaderId()).orElseThrow().getStaffName())
+                .postedDate(design.getPostedDate())
                 .build();
     }
 

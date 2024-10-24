@@ -4,21 +4,18 @@ import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class ConstructOrderDetailForCustomerResponse {
+public class CustomerViewProgressResponse {
 
     String constructionOrderId;
-    String customerName;
-    String quotationId;
-    String designId;
-    Date startDate;
-    Date endDate;
+    List<ListConstructProgressResponse> listConstructProgressResponses;
+    ConstructionOrderStatus constructionOrderStatus;
     ConstructionOrderStatus status;
 
 }
