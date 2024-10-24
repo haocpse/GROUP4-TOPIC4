@@ -1,7 +1,6 @@
 package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.*;
-import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.mapper.*;
 import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.requests.*;
@@ -10,7 +9,6 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -72,22 +70,6 @@ public class ManageConstructionOrderService {
         return response;
     }
 
-    ServiceResponse<ConstructOrderResponse> contactUsForConstruction(ServiceRequest serviceRequest, ConstructionOrder constructionOrder) {
-        ConstructOrderResponse response = new ConstructOrderResponse();
-        constructionOrderMapper.constructOrderResponse(constructionOrder, response);
-        return ServiceResponse.<ConstructOrderResponse>builder()
-                .service(serviceRequest.getService())
-                .data(response)
-                .build();
-    }
-
-    String getStaffName(String staffId) {
-        if (staffId != null && !staffId.isEmpty()) {
-            return staffRepository.findById(staffId)
-                    .orElseThrow(() -> new RuntimeException("Staff not found")).getStaffName();
-        }
-        return "";
-    }
 
     Customer findCustomerById(String customerId){
         return customerRepository.findById(customerId)

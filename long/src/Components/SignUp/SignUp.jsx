@@ -26,27 +26,25 @@ const SignUp = () => {
         }
         try {
             // send req den backend
-            const response = await axios.post('http://localhost:8080/signup', {
+            await axios.post('http://localhost:8080/signup', {
                 username: account, // dinh dang du lieu thanh object de gui cho backend ne` ^^
                 password: password,
             }
             );
-            console.log(response.data);
+            toast.success('Sign Up Successfully !!!');
 
-            // chuyen trang den trang dang nhap
-            if (response.data.success) {       // Kiểm tra API /signup ở backend có trả về response success: true hay không để điều hướng trang.
-                toast.success('Sign Up Successfully !!!');
-                navigate('/login');
-            }
+
 
         } catch (err) {
             setError(err.response?.data?.messgae || 'Sign Up FAIL, please try again !! .-. ');
+            toast.error('Sign Up Fail !!!');
         }
     }
 
+
     return (
         <div className="container-fluid">
-             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
             <div className="row align-items-center vh-100 img-left">
                 <div className="col-md-6">
                     <div className="login-form">

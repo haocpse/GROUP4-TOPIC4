@@ -71,7 +71,7 @@ const ConstructionProgress = () => {
             setOrders(prevOrders =>
                 prevOrders.map(order => ({
                     ...order,
-                    constructTaskSatusResponses: order.constructTaskStatusResponses.map(task =>
+                    constructTaskStatusResponses: order.constructTaskStatusResponses.map(task =>
                         task.taskId === taskId ? { ...task, status: newStatus } : task
                     )
                 }))

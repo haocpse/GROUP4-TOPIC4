@@ -14,7 +14,7 @@ const ViewDesign = () => {
       try {
         const response = await axios.get(`http://localhost:8080/manage/designs/${id}`, {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+            'Authorization': `Bearer ${localStorage.getItem('token')}`, 
           }
         });
         setDesignDetail(response.data.data);
@@ -32,7 +32,7 @@ const ViewDesign = () => {
         status: status
       }, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
         }
       });
       toast.success(`Design ${status} successfully!`);
