@@ -1,11 +1,10 @@
 package com.swp_group4.back_end.controllers;
 
+import com.swp_group4.back_end.entities.MaintenanceOrder;
 import com.swp_group4.back_end.entities.PaymentOrder;
 import com.swp_group4.back_end.requests.MaintenanceStaffAssignedRequest;
 import com.swp_group4.back_end.requests.PaymentCreateRequest;
-import com.swp_group4.back_end.requests.StaffAssignedRequest;
 import com.swp_group4.back_end.responses.ApiResponse;
-import com.swp_group4.back_end.responses.ConstructOrderDetailForManagerResponse;
 import com.swp_group4.back_end.responses.MaintenanceOrderDetailForManagerResponse;
 import com.swp_group4.back_end.responses.StaffResponse;
 import com.swp_group4.back_end.services.MaintenanceOrderService;
@@ -29,6 +28,13 @@ public class MaintenanceOrderController {
     StaffService staffService;
     @Autowired
     PaymentService paymentService;
+
+    @PutMapping("/{orderId}/addTotal")
+    public ApiResponse<MaintenanceOrder> addTotal(@PathVariable String orderId, double total) {
+        return ApiResponse.<MaintenanceOrder>builder()
+                .data(maintenanceOrderService.addTotal(orderId, total))
+                .build();
+    }
 
     @PostMapping("/{orderId}")
     public ApiResponse<PaymentOrder> createPayment(@PathVariable String orderId,@RequestBody PaymentCreateRequest request){

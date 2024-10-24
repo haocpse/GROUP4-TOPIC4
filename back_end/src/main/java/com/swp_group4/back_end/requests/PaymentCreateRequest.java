@@ -11,6 +11,5 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class PaymentCreateRequest {
     String customerId;
-    PaymentMethods paymentMethods;
     double total;
 }

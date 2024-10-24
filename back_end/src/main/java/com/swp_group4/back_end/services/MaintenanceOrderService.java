@@ -2,7 +2,6 @@ package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.Customer;
 import com.swp_group4.back_end.entities.MaintenanceOrder;
-import com.swp_group4.back_end.enums.MaintenanceOrderStatus;
 import com.swp_group4.back_end.mapper.CustomerMapper;
 import com.swp_group4.back_end.mapper.MaintenanceOrderMapper;
 import com.swp_group4.back_end.repositories.CustomerRepository;
@@ -14,7 +13,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -28,6 +26,13 @@ public class MaintenanceOrderService {
     CustomerMapper customerMapper;
     @Autowired
     CustomerRepository customerRepository;
+
+    public MaintenanceOrder addTotal(String orderId, double total){
+        MaintenanceOrder order = maintenanceOrderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        order.setTotal(total);
+        return maintenanceOrderRepository.save(order);
+    }
 
     public List<MaintenanceOrderDetailForManagerResponse> listAllOrder(){
         List<MaintenanceOrderDetailForManagerResponse> responses = new ArrayList<>();
