@@ -175,7 +175,7 @@ const MaintenanceRequest = () => {
                                         value={request.constructorLeaderId ? request.constructorLeaderId : ""}
                                         name="constructorLeaderId"
                                     >
-                                        <option value="" disabled>Select Consultant</option>
+                                        <option value="" disabled>Select Constructor</option>
                                         {constructorList.map(staff => (
                                             <option key={staff.staffId} value={staff.staffId}>
                                                 {staff.staffName}
