@@ -1,10 +1,7 @@
 package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.*;
-import com.swp_group4.back_end.enums.ConstructionOrderStatus;
-import com.swp_group4.back_end.enums.DesignStatus;
-import com.swp_group4.back_end.enums.PaymentStatus;
-import com.swp_group4.back_end.enums.QuotationStatus;
+import com.swp_group4.back_end.enums.*;
 import com.swp_group4.back_end.mapper.CustomerMapper;
 import com.swp_group4.back_end.mapper.QuotationMapper;
 import com.swp_group4.back_end.repositories.*;
@@ -51,6 +48,8 @@ public class CustomerService {
     PaymentOrderRepository paymentOrderRepository;
     @Autowired
     ConstructionTaskStaffRepository constructionTaskStaffRepository;
+    @Autowired
+    MaintenanceOrderRepository maintenanceOrderRepository;
 
 
     public void createCustomer(String accountId, String firstname) {
@@ -74,9 +73,13 @@ public class CustomerService {
                     .build();
             constructOrderRepository.save(order);
         }
-//        if (serviceRequest.getService().name().equals("MAINTENANCE_SERVICE")) {
-//          return contactUsForMaintenance(serviceRequest);
-//        }
+        if (serviceRequest.getService().name().equals("MAINTENANCE_SERVICE")) {
+          MaintenanceOrder order = MaintenanceOrder.builder()
+                  .customerId(customer.getCustomerId())
+                  .status(MaintenanceOrderStatus.REQUESTED)
+                  .build();
+          maintenanceOrderRepository.save(order);
+        }
         return null;
     }
 

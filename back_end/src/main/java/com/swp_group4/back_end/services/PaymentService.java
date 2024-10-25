@@ -33,7 +33,9 @@ public class PaymentService {
         PaymentOrder paymentOrder = PaymentOrder.builder()
                 .customerId(request.getCustomerId())
                 .orderId(orderId)
-                .paymentMethods(request.getPaymentMethods())
+                .paymentMethods(PaymentMethods.VNPAY)
+                .status(PaymentStatus.PENDING)
+                .total(request.getTotal())
                 .build();
         return paymentOrderRepository.save(paymentOrder);
     }
