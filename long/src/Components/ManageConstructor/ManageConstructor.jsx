@@ -24,6 +24,12 @@ const ManageConstructor = () => {
                     <i class="fa-solid fa-person-digging"></i>
                     </NavLink>
                 </li>
+                 {/* Maintenance !! */}
+                <li className="nav-item">
+                    <NavLink to="/maintenance/ownedTasks" className="nav-link d-flex align-items-center sidebar-link mt-5 mb-3">
+                    <i class="fa-solid fa-building-shield"></i>
+                    </NavLink>
+                </li>
               
                 <hr className="mb-3 mt-5" />
                 {/* Logout */}

@@ -16,9 +16,9 @@ const Request = () => {
     // lay du lieu consultant staff tu backend
     const fetchConsultants = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/manage/requests/consultants', {
+            const response = await axios.get('http://localhost:8080/staffs/consultants', {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, 
                 }
             });
             setConsultantList(response.data.data);
@@ -34,9 +34,9 @@ const Request = () => {
     // lay du lieu desginer staff tu backend
     const fetchDesigners = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/manage/requests/designers', {
+            const response = await axios.get('http://localhost:8080/staffs/designers', {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 }
             });
             setDesignerList(response.data.data);
@@ -49,7 +49,7 @@ const Request = () => {
     // lay du lieu constructor staff tu backend
     const fetchConstructors = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/manage/requests/constructors', {
+            const response = await axios.get('http://localhost:8080/staffs/constructors', {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
                 }
@@ -66,7 +66,7 @@ const Request = () => {
     useEffect(() => {
         const fetchRequests = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/manage/requests', {
+                const response = await axios.get('http://localhost:8080/requests', {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
                     }
@@ -113,7 +113,7 @@ const Request = () => {
                     break;
             }
 
-            await axios.put('http://localhost:8080/manage/requests', {
+            await axios.put('http://localhost:8080/requests', {
                 constructionOrderId,
                 [staffType]: staffId,
                 status: newStatus

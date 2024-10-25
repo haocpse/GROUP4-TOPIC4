@@ -4,17 +4,23 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./ConsultantTasks.css"; // Import CSS file for custom styling
+import { jwtDecode } from "jwt-decode";
 
 const ConsultantTasks = () => {
   const [tasks, setTasks] = useState([]);
   const navigate = useNavigate();
 
+
+
   // Fetch tasks assigned to the consultant
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    const decoded = jwtDecode(token)
+    const accountId = decoded.sub
     const fetchTasks = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/consult/ownedTasks", {
+          `http://localhost:8080/staffs/${accountId}/orders`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
           }

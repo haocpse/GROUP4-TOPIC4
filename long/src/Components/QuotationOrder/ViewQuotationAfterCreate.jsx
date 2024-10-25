@@ -1,18 +1,17 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import styles from './QuotationOrder.module.css';
 
 const ViewQuotationAfterCreate = () => {
   const { constructionOrderId } = useParams();
   const [infoquotation, setInfoQuotation] = useState({}); // Initialize as an object
-  const navigate = useNavigate()
   
 
   useEffect(() => {
     const fetchInfoQuotation = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/consult/ownedTasks/${constructionOrderId}/quotation`, {
+        const response = await axios.get(`http://localhost:8080/quotations/${constructionOrderId}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
           }

@@ -4,6 +4,7 @@ import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from './DesignUpload.module.css'; // Thêm các kiểu tùy chỉnh của bạn ở đây
 
+
 const DesignUpload = () => {
   const [designDetail, setDesignDetail] = useState({});
   const { constructionOrderId } = useParams();
@@ -13,6 +14,8 @@ const DesignUpload = () => {
   const [rearView, setRearView] = useState(null);
   const navigate = useNavigate()
 
+
+
   const handleFileChange = (e, setter) => {
     setter(e.target.files[0]);
   };
@@ -20,7 +23,7 @@ const DesignUpload = () => {
   useEffect(() => {
     const fetchDesign = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/design/ownedTasks/${constructionOrderId}`, {
+        const response = await axios.get(`http://localhost:8080/informationCustomer/${constructionOrderId}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
           }
@@ -42,7 +45,7 @@ const DesignUpload = () => {
       formData.append('frontView', frontView);
       // formData.append('rearView', rearView); // Uncomment if needed
 
-      const response = await axios.post(`http://localhost:8080/design/ownedTasks/${constructionOrderId}`, formData, {
+      const response = await axios.post(`http://localhost:8080/constructionOrders/${constructionOrderId}/design`, formData, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
           'Content-Type': 'multipart/form-data' // Set Content-Type for form data
@@ -164,7 +167,6 @@ const DesignUpload = () => {
           </form>
         </div>
       </div>
-      <button className="btn btn-secondary" onClick={() => navigate('/manage/requests')}>Go Manage</button>
     </div>
 
   );

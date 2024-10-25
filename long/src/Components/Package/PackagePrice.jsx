@@ -23,10 +23,30 @@ const PackagePrice = () => {
     setPackages([...packages, { minVolume: "", maxVolume: "" }]);
   };
 
+  const handleRemovePackage = (index) => {
+    const newPackages = packages.filter((_, i) => i !== index);
+    setPackages(newPackages);
+  };
+
   const handlePriceGenerate = (index) => {
-    const minVolume = packages[index].minVolume;
-    const maxVolume = packages[index].maxVolume;
-    const generatedPrice = (parseFloat(minVolume) + parseFloat(maxVolume)) * 10;
+    const minVolume = parseFloat(packages[index].minVolume);
+    const maxVolume = parseFloat(packages[index].maxVolume);
+
+    // Validation check
+    if (
+      isNaN(minVolume) ||
+      isNaN(maxVolume) ||
+      minVolume < 0 ||
+      maxVolume < 0 ||
+      minVolume >= maxVolume
+    ) {
+      alert(
+        "Invalid volume range. Please ensure that Min Volume is less than Max Volume and both are positive."
+      );
+      return;
+    }
+
+    const generatedPrice = (minVolume + maxVolume) * 10; // Example pricing logic
     alert(`Generated Price: ${generatedPrice.toFixed(2)}`);
   };
 
@@ -41,7 +61,7 @@ const PackagePrice = () => {
         <Col md={12} className="p-3">
           <h5 className="text-muted">Package Price</h5>
 
-          {/* Chọn loại gói */}
+          {/* Select Package Type */}
           <Form.Group className="mb-3">
             <Form.Label>Select Package Type:</Form.Label>
             <Form.Select
@@ -54,6 +74,7 @@ const PackagePrice = () => {
               <option value="deluxe">Deluxe</option>
             </Form.Select>
           </Form.Group>
+
           <Button variant="success" onClick={handleAddPackage} className="mb-3">
             New Package
           </Button>
@@ -92,6 +113,13 @@ const PackagePrice = () => {
                     className="mt-2"
                   >
                     New Price
+                  </Button>
+                  <Button
+                    variant="danger"
+                    onClick={() => handleRemovePackage(index)}
+                    className="mt-2 ms-2"
+                  >
+                    Remove Package
                   </Button>
                 </div>
               </Col>

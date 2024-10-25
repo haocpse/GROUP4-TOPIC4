@@ -47,6 +47,18 @@ const Manage = () => {
                         <i className="fa-solid fa-pen"></i>
                     </NavLink>
                 </li>
+                {/* View Construction Progress */}
+                <li className="nav-item">
+                    <NavLink to="/manage/viewProgress" className="nav-link  d-flex align-items-center sidebar-link">
+                        <i class="fa-solid fa-person-digging"></i>
+                    </NavLink>
+                </li>
+                {/* View Payment */}
+                <li className="nav-item">
+                    <NavLink to="/manage/viewPayment" className="nav-link  d-flex align-items-center sidebar-link">
+                        <i class="fa-solid fa-dollar-sign"></i>
+                    </NavLink>
+                </li>
                 {/* Dashboard */}
                 <li className="nav-item mb-4">
                     <NavLink to="/manage/dashboard" className="nav-link text-dark align-items-center sidebar-link">
