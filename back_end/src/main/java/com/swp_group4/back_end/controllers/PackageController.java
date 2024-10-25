@@ -11,8 +11,10 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/manage/package")
+//@RequestMapping("/manage/package")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PackageController {
     @Autowired

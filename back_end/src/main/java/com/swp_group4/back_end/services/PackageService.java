@@ -11,6 +11,7 @@ import com.swp_group4.back_end.requests.PackageConstructionRequest;
 import com.swp_group4.back_end.requests.PackageCreateRequest;
 import com.swp_group4.back_end.requests.PackagePriceRequest;
 import com.swp_group4.back_end.responses.PackageDetailResponse;
+import com.swp_group4.back_end.responses.PackagePriceResponse;
 import com.swp_group4.back_end.responses.PackageResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
