@@ -3,6 +3,7 @@ import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify'; // Import toast
 import 'react-toastify/dist/ReactToastify.css'; // Import CSS cho toast de hien thong bao
 import { useNavigate, useParams } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const ConstructionProgress = () => {
 
@@ -16,7 +17,7 @@ const ConstructionProgress = () => {
     const fetchStaff = async () => {
 
         try {
-            const response = await axios.get(`http://localhost:8080/construct/ownedTasks/${constructionOrderId}/constructors`, {
+            const response = await axios.get("http://localhost:8080/staffs/workers", {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`, // Include token if needed
                 }
@@ -36,7 +37,7 @@ const ConstructionProgress = () => {
         const fetchTask = async () => { // ham de long lay du lieu tu backend ne ^^;
 
             try {
-                const response = await axios.get(`http://localhost:8080/construct/ownedTasks/${constructionOrderId}`, {
+                const response = await axios.get(`http://localhost:8080/staffs/{accountId}/tasks/${constructionOrderId}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`, // Include token if needed
                     }
@@ -57,9 +58,12 @@ const ConstructionProgress = () => {
 
     // set status cho task
     const handleStatusChange = async (newStatus, taskId) => {
+        const token = localStorage.getItem('token');
+        const decoded = jwtDecode(token)
+        const accountId = decoded.sub
 
         try {
-            await axios.put(`http://localhost:8080/construct/ownedTasks/${constructionOrderId}`, {
+            await axios.put(`http://localhost:8080/staffs/${accountId}/construction/${constructionOrderId}/status`, {
                 status: newStatus,
                 taskId: taskId
             }, {
@@ -86,8 +90,12 @@ const ConstructionProgress = () => {
 
     // set nhan vien cho tung task
     const handleAssignStaff = async (taskId, staffId) => {
+        const token = localStorage.getItem('token');
+        const decoded = jwtDecode(token)
+        const accountId = decoded.sub
+    
         try {
-            await axios.put(`http://localhost:8080/construct/ownedTasks/${constructionOrderId}/constructors`, {
+            await axios.put(`http://localhost:8080/staffs/${accountId}/construction/${constructionOrderId}/worker`, {
                 taskId: taskId,
                 staffId: staffId
             }, {

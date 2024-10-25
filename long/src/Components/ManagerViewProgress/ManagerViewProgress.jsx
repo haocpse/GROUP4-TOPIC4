@@ -1,39 +1,26 @@
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 
-const ConstructionOrder = () => {
+const ManagerViewProgess = () => {
     const [constructionOrders, setConstructionOrders] = useState([]);
-    const navigate = useNavigate();
-
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        const decoded = jwtDecode(token)
-        const accountId = decoded.sub
         const fetchOrder = async () => {
-
             try {
-                const response = await axios.get(`http://localhost:8080/staffs/${accountId}/orders`, {
+                const response = await axios.get('http://localhost:8080/manager/viewProgress', {
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     }
                 });
                 setConstructionOrders(response.data.data);
             } catch (error) {
-                console.error('Fail fetch order list! ^^', error);
+                console.error('Fail fetch construction progress! ^^', error);
 
-                toast.error('Failed to load construction orders! ^^');
+                toast.error('Failed to load construction Progress! ^^');
             }
         }; fetchOrder();
     }, []);
 
-
-
-    const handleViewDetails = (constructionOrderId) => {
-        navigate(`${constructionOrderId}`);
-    }
 
 
     return (
@@ -41,17 +28,17 @@ const ConstructionOrder = () => {
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
             <div className="container mt-4">
                 <div className="text-center" style={{ color: 'black' }}>
-                    <h2>Constructor - Construction Orders</h2>
+                    <h2>Construction Progress</h2>
                 </div>
                 <table className="table table-bordered">
                     <thead>
                         <tr>
-                            <th>Construction Order ID</th>
-                            <th>Customer Name</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th scope="col" className="text-center">Construction Order ID</th>
+                            <th scope="col" className="text-center">Customer Name</th>
+                            <th scope="col" className="text-center">Start Date</th>
+                            <th scope="col" className="text-center">End Date</th>
+                            <th scope="col" className="text-center">Staff Name</th>
+                            <th scope="col" className="text-center">Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -62,12 +49,13 @@ const ConstructionOrder = () => {
                         ) : (
                             constructionOrders.map(order => (
                                 <tr key={order.constructionOrderId}>
-                                    <td>{order.constructionOrderId}</td>
-                                    <td>{order.customerName}</td>
-                                    <td>{order.startDate}</td>
-                                    <td>{order.endDate}</td>
+                                    <td className="text-center align-content-center col-1">{order.constructionOrderId}</td>
+                                    <td className="text-center align-content-center col-1">{order.customerName}</td>
+                                    <td className="text-center align-content-center col-1">{order.startDate}</td>
+                                    <td className="text-center align-content-center col-1">{order.endDate}</td>
+                                    <td className="text-center align-content-center col-1">{order.staffName}</td>
 
-                                    {/* thay đổi status */}
+                                    {/* thay đổi status nè */}
                                     <td>
                                         {order.status === "CONSTRUCTED" ? (
                                             <>
@@ -83,11 +71,7 @@ const ConstructionOrder = () => {
 
                                     </td>
 
-                                    <td>
-                                        <button onClick={() => handleViewDetails(order.constructionOrderId)} className="btn btn-primary">
-                                            View Detail
-                                        </button>
-                                    </td>
+
                                 </tr>
                             ))
                         )}
@@ -98,5 +82,4 @@ const ConstructionOrder = () => {
     );
 }
 
-export default ConstructionOrder;
-
+export default ManagerViewProgess;

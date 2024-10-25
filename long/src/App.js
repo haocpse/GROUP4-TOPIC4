@@ -36,6 +36,10 @@ import CustomerViewDesign from "./Components/CustomerView/CustomerViewDesign"
 import PaymentInfo from "./Components/ListQuotation/PaymentInfo";
 import MainLayoutConstructor from "./Components/MainLayoutConstructor";
 import MaintenanceRequest from "./Components/MaintenanceRequest/MaintenanceRequest";
+import ConstructionMaintenance from "./Components/ConstructionMaintenance/ConstructionMaintenance";
+import ManagerViewProgess from "./Components/ManagerViewProgress/ManagerViewProgress";
+import ManagerViewPayment from "./Components/ManagerViewPayment/ManagerViewPayment";
+import ManagerViewDetailPayment from "./Components/ManagerViewPayment/ManagerViewDetailPayment";
 function App() {
   return (
     <Router>
@@ -50,6 +54,9 @@ function App() {
             <Route path="maintenance-quotations/:id" element={<ViewMaintenanceQuotation />} />
             <Route path="designs" element={<ApproveDesign />} />
             <Route path="designs/:id" element={<ViewDesign />} />
+            <Route path="viewProgress" element={<ManagerViewProgess />} />
+            <Route path="viewPayment" element={<ManagerViewPayment />} />
+            <Route path="viewPayment/:id" element={<ManagerViewDetailPayment />} />
           </Route>
         </Route>
         <Route element={<ProtectedRoutesConsultant />}>
@@ -73,6 +80,12 @@ function App() {
           <Route path="/construct" element={<MainLayoutConstructor />}>
             <Route path="ownedTasks" element={<ConstructionOrder />} />
             <Route path="ownedTasks/:constructionOrderId" element={<ConstructionProgress />} />
+          </Route>
+        </Route>
+        <Route element={<ProtectedRoutesConstructor />}>
+          <Route path="/maintenance" element={<MainLayoutConstructor />}>
+            <Route path="ownedTasks" element={<ConstructionMaintenance />} />
+
           </Route>
         </Route>
         <Route path="/myInfo/orders" element={<CustomerView />} />

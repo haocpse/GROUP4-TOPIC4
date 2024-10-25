@@ -4,23 +4,28 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./ConsultantTasks.css"; // Import CSS file for custom styling
+import { jwtDecode } from "jwt-decode";
 
 const ConsultantQuotations = () => {
   const [tasks, setTasks] = useState([]);
   const navigate = useNavigate();
 
+
   // Fetch tasks assigned to the consultant
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    const decoded = jwtDecode(token)
+    const accountId = decoded.sub
     const fetchTasks = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/consult/quotations",
+          `http://localhost:8080/staffs/${accountId}/quotations`,
           {
-              headers: {
-                  'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
-              }
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+            }
           }
-      );
+        );
         setTasks(response.data.data);
       } catch (error) {
         console.error("Error fetching tasks:", error);
@@ -47,8 +52,7 @@ const ConsultantQuotations = () => {
           <tr>
             <th>Construction Order ID</th>
             <th>Customer Name</th>
-            <th>Phone</th>
-            <th>Address</th>
+            <th>Post Date</th>
             <th>Status</th>
             <th>Action</th>
           </tr>
@@ -59,15 +63,14 @@ const ConsultantQuotations = () => {
               <tr key={task.constructionOrderId}>
                 <td>{task.constructionOrderId}</td>
                 <td>{task.customerName}</td>
-                <td>{task.phone}</td>
-                <td>{task.address}</td>
-                <td>{task.status}</td>
+                <td>{task.postedDate}</td>
+                <td>{task.quotationStatus}</td>
                 <td>
                   <button
                     className="btn btn-primary"
                     onClick={
                       task.status === 'REJECTED'
-                        ? () => handleUpdateQuotation(task.id)
+                        ? () => handleUpdateQuotation(task.quotationId)
                         : () => handleViewQuotation(task.constructionOrderId)
                     }
                   >

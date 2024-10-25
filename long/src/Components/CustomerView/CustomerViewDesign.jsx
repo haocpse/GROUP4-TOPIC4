@@ -3,17 +3,27 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import Navbar from "../Navbar/Navbar";
+import { jwtDecode } from "jwt-decode";
 
 const CustomerViewDesign = () => {
     const navigate = useNavigate();
     const { constructionOrderId } = useParams();
     const [designDetail, setDesignDetail] = useState({}); // Thay đổi thành object để dễ kiểm tra
+    const [accountId, setAccountId] = useState('')
+
+   
 
     // Lấy thông tin chi tiết thiết kế
+
+
+
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        const decoded = jwtDecode(token)
+        setAccountId(decoded.sub)
         const fetchDesignDetail = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/myInfo/orders/${constructionOrderId}/design`, {
+                const response = await axios.get(`http://localhost:8080/customer/${accountId}/constructionOrders/${constructionOrderId}/design`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
                     }
@@ -28,28 +38,32 @@ const CustomerViewDesign = () => {
     }, []); // Thêm id vào dependency array
 
     const handleApproval = async (status) => {
+        const token = localStorage.getItem('token');
+        const decoded = jwtDecode(token)
+        const accountId = decoded.sub
+
         try {
-          await axios.put(`http://localhost:8080/myInfo/orders/${constructionOrderId}/design`, {
-            status: status
-          }, {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
-            }
-          });
-          toast.success(`Design ${status} successfully!`);
+            await axios.put(`http://localhost:8080/customer/${accountId}/constructionOrders/${constructionOrderId}/design`, {
+                status: status
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+                }
+            });
+            toast.success(`Design ${status} successfully!`);
         } catch (error) {
-          console.error("Error approving/rejecting design", error);
-          toast.error(`Fail to update status! ${error.response ? error.response.data.message : ''}`);
+            console.error("Error approving/rejecting design", error);
+            toast.error(`Fail to update status! ${error.response ? error.response.data.message : ''}`);
         }
-      };
-    
-      const confirmApproval = (status) => {
+    };
+
+    const confirmApproval = (status) => {
         const action = status ? "CONFIRMED" : "REJECTED";
         const confirmed = window.confirm(`Are you sure to want to ${action} this design?`);
         if (confirmed) {
-          handleApproval(status);
+            handleApproval(status);
         }
-      };
+    };
 
     return (
         <>

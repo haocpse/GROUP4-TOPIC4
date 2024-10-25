@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from './DesignUpload.module.css'; // Thêm các kiểu tùy chỉnh của bạn ở đây
+import { jwtDecode } from "jwt-decode";
 
 const UpdateDesign = () => {
   const [designDetail, setDesignDetail] = useState({});
@@ -13,14 +14,20 @@ const UpdateDesign = () => {
   const [rearView, setRearView] = useState(null);
   const navigate = useNavigate()
 
+
+
   const handleFileChange = (e, setter) => {
     setter(e.target.files[0]);
   };
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    const decoded = jwtDecode(token)
+    const accountId = decoded.sub
+
     const fetchDesign = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/design/designs/${designId}`, {
+        const response = await axios.get(`http://localhost:8080/staffs/${accountId}/rejectedDesigns/${designId}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
           }
@@ -37,6 +44,9 @@ const UpdateDesign = () => {
   }, [designId]);
 
   const handleSubmit = async (e) => {
+    const token = localStorage.getItem('token');
+    const decoded = jwtDecode(token)
+    const accountId = decoded.sub
     e.preventDefault();
     try {
       const formData = new FormData();
@@ -62,7 +72,7 @@ const UpdateDesign = () => {
         formData.append('frontView', null); // Send back the old URL
       }
 
-      const response = await axios.put(`http://localhost:8080/design/designs/${designId}`, formData, {
+      const response = await axios.put(`http://localhost:8080/staffs/${accountId}/rejectedDesigns/${designId}`, formData, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
           'Content-Type': 'multipart/form-data', // Set Content-Type for form data

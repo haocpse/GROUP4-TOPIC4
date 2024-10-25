@@ -2,20 +2,26 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./DesignerTasks.css";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 const DesignerTasks = () => {
   const [tasks, setTasks] = useState([]);
   const navigate = useNavigate();
 
+
+
   // Fetch tasks assigned to the consultant from an API
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    const decoded = jwtDecode(token)
+    const accountId = decoded.sub
     const fetchTasks = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/design/ownedTasks", {
+        const response = await axios.get(`http://localhost:8080/staffs/${accountId}/orders`, {
           headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+            'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
           }
-      });
+        });
         setTasks(response.data.data); // Assuming the API returns the tasks in the data property
       } catch (error) {
         console.error("Error fetching tasks:", error);
@@ -26,7 +32,7 @@ const DesignerTasks = () => {
   }, []);
 
   const handleUploadDesign = (constructionOrderId) => {
-      navigate(`/design/ownedTasks/${constructionOrderId}`); 
+    navigate(`/design/ownedTasks/${constructionOrderId}`);
   };
 
   const handleViewDesign = (constructionOrderId) => {
@@ -58,16 +64,16 @@ const DesignerTasks = () => {
                   <td>{task.address}</td>
                   <td>{task.status}</td>
                   <td>
-                  <button
-                    className="btn btn-primary"
-                    onClick={
-                      task.status === 'DESIGNING'
-                        ? () => handleUploadDesign(task.constructionOrderId)
-                        : () => handleViewDesign(task.constructionOrderId)
-                    }
-                  >
-                    {task.status === 'DESIGNING' ? 'Upload Design' : 'View Design'}
-                  </button>
+                    <button
+                      className="btn btn-primary"
+                      onClick={
+                        task.status === 'DESIGNING'
+                          ? () => handleUploadDesign(task.constructionOrderId)
+                          : () => handleViewDesign(task.constructionOrderId)
+                      }
+                    >
+                      {task.status === 'DESIGNING' ? 'Upload Design' : 'View Design'}
+                    </button>
                   </td>
                 </tr>
               ))

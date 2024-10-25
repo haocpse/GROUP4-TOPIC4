@@ -24,7 +24,7 @@ const QuotationOrder = () => {
   useEffect(() => {
     const fetchQuotationOrder = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/consult/ownedTasks/${constructionOrderId}`, {
+        const response = await axios.get(`http://localhost:8080/informationCustomer/${constructionOrderId}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
           }
@@ -39,7 +39,7 @@ const QuotationOrder = () => {
 
     const fetchPackageOptions = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/consult/packages`, {
+        const response = await axios.get(`http://localhost:8080/packages`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
           }
@@ -83,7 +83,7 @@ const QuotationOrder = () => {
     };
 
     try {
-      await axios.post(`http://localhost:8080/consult/ownedTasks/${constructionOrderId}`, requestData, {
+      await axios.post(`http://localhost:8080/constructionOrders/${constructionOrderId}/quotation`, requestData, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
         }

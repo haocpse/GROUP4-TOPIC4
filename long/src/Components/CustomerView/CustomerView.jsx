@@ -5,18 +5,24 @@ import { Link, useNavigate } from "react-router-dom";
 import "./CustomerView.css"; // Import CSS file for styling
 import axios from "axios";
 import Navbar from "../Navbar/Navbar";
+import { jwtDecode } from "jwt-decode";
 
 const CustomerView = () => {
   const [orders, setOrders] = useState([]); // State to store orders
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(""); // Error state
   const navigate = useNavigate()
+
+
   // Fetch data from API
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    const decoded = jwtDecode(token)
+    const accountId = decoded.sub
     const fetchOrders = async () => {
       try {
         // Fetch data from the API
-        const response = await axios.get("http://localhost:8080/myInfo/orders", {
+        const response = await axios.get(`http://localhost:8080/customer/${accountId}/constructionOrders`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
           },

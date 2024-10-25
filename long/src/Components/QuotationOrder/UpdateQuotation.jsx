@@ -3,9 +3,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from './QuotationOrder.module.css';
+import { jwtDecode } from "jwt-decode";
 
 const UpdateQuotation = () => {
-  const {quotationId} = useParams()
+  const { quotationId } = useParams()
   const [quotation, setQuotation] = useState(null);
   const [loading, setLoading] = useState(true);
   const [packageOptions, setPackageOptions] = useState([]);
@@ -21,15 +22,21 @@ const UpdateQuotation = () => {
   const [customerRequest, setCustomerRequest] = useState('');
   const navigate = useNavigate();
 
+
+
+
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    const decoded = jwtDecode(token)
+    const accountId = decoded.sub
     const fetchQuotationOrder = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/consult/quotations/${quotationId}`, {
+        const response = await axios.get(`http://localhost:8080/staffs/${accountId}/rejectedQuotation/${quotationId}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
           }
         });
-       
+
         setQuotation(response.data.data);
         setCustomerRequest(response.data.data.customerRequest);
         setWidth(response.data.data.width);
@@ -47,7 +54,7 @@ const UpdateQuotation = () => {
 
     const fetchPackageOptions = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/consult/packages`, {
+        const response = await axios.get(`http://localhost:8080/packages`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
           }
@@ -82,6 +89,9 @@ const UpdateQuotation = () => {
   };
 
   const UpdateQuotation = async () => {
+    const token = localStorage.getItem('token');
+    const decoded = jwtDecode(token)
+    const accountId = decoded.sub
     const requestData = {
       packageId: selectedPackage,
       length,
@@ -94,7 +104,7 @@ const UpdateQuotation = () => {
     };
 
     try {
-      await axios.put(`http://localhost:8080/consult/quotations/${quotationId}`, requestData, {
+      await axios.put(`http://localhost:8080/staffs/${accountId}/rejectedQuotation/${quotationId}`, requestData, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
         }

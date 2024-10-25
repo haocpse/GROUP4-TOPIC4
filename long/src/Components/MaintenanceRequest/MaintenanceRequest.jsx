@@ -5,13 +5,13 @@ import { toast, ToastContainer } from "react-toastify";
 const MaintenanceRequest = () => {
     const [maintenanceRequests, setMaintenanceRequests] = useState([]);
     const [constructorList, setConstructorList] = useState([]);
-    
+
     // lay du lieu constructor staff tu backend
     const fetchConstructors = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/manage/requests/constructors', {
+            const response = await axios.get('http://localhost:8080/manage/maintenance/constructors', {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`, 
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 }
             });
             setConstructorList(response.data.data);
@@ -26,9 +26,9 @@ const MaintenanceRequest = () => {
     useEffect(() => {
         const fetchRequests = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/manage/Maintenance-requests', {
+                const response = await axios.get('http://localhost:8080/maintenance/requests', {
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`, 
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     }
                 });
                 setMaintenanceRequests(response.data.data);
@@ -51,7 +51,7 @@ const MaintenanceRequest = () => {
     };
 
     //handle staff assignment
-    const handleAssignStaff = async (constructionOrderId, staffType, staffId) => {
+    const handleAssignStaff = async (maintenanceOrderId, staffType, staffId) => {
         try {
             // xac dinh trang thai moi dua tren loai nhan vien
             let newStatus;
@@ -64,8 +64,8 @@ const MaintenanceRequest = () => {
                     break;
             }
 
-            await axios.put('http://localhost:8080/manage/requests', {
-                constructionOrderId,
+            await axios.put('http://localhost:8080/maintenance/requests', {
+                maintenanceOrderId,
                 [staffType]: staffId,
                 status: newStatus
             }, {
@@ -75,7 +75,7 @@ const MaintenanceRequest = () => {
             });
             setMaintenanceRequests(prevRequests =>
                 prevRequests.map(request =>
-                    request.orderId === constructionOrderId
+                    request.orderId === maintenanceOrderId
                         ? { ...request, [staffType]: staffId, status: newStatus } : request
                 )
             );
@@ -165,7 +165,7 @@ const MaintenanceRequest = () => {
                                 <td className="text-center align-content-center">{formatDate(request.startDate)}</td>
                                 <td className="text-center align-content-center">{formatDate(request.endDate)}</td>
                                 <td className="text-center align-content-center">{request.totalPrice.toLocaleString()}</td>
-                                
+
                                 <td>
                                     <select
                                         className="form-select mt-2"

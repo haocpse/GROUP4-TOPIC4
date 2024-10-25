@@ -4,16 +4,21 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import styles from './CustomerVIewQuotation.module.css';
 import Navbar from "../Navbar/Navbar";
+import { jwtDecode } from "jwt-decode";
 
 const CustomerQuotationList = () => {
     const { constructionOrderId } = useParams();
     const [quotations, setQuotations] = useState([]);
     const navigate = useNavigate();
     const customerId = "current_customer_id";
+    
+    const [accountId, setAccountId] = useState('')
 
-    const fetchCustomerQuotations = async () => {
+
+
+    const fetchCustomerQuotations = async (accountId) => {
         try {
-            const response = await axios.get(`http://localhost:8080/myInfo/orders/${constructionOrderId}/quotation`, {
+            const response = await axios.get(`http://localhost:8080/customer/${accountId}/constructionOrders/${constructionOrderId}/quotation`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
                 }
@@ -26,12 +31,19 @@ const CustomerQuotationList = () => {
     };
 
     useEffect(() => {
-        fetchCustomerQuotations();
+        const token = localStorage.getItem('token');
+        const decoded = jwtDecode(token)
+        fetchCustomerQuotations(decoded.sub);
     }, []);
 
     const handleApproval = async (status) => {
+
+        const token = localStorage.getItem('token');
+        const decoded = jwtDecode(token)
+        const accountId = decoded.sub
+
         try {
-            await axios.put(`http://localhost:8080/myInfo/orders/${constructionOrderId}/quotation`, {
+            await axios.put(`http://localhost:8080/customer/${accountId}/constructionOrders/${constructionOrderId}/quotation`, {
                 status: status
             }, {
                 headers: {
