@@ -37,7 +37,6 @@ public class PackageService {
     @Autowired
     PackagePriceRepository packagePriceRepository;
 
-
     public PackageResponse getAllPackage() {
         List<Packages> packagesList = packageRepository.findAll();
         return PackageResponse.builder()
