@@ -11,7 +11,7 @@ const ManagerViewPayment = () => {
 
     useEffect(() => {
         // Fetch customer information and stages data
-        axios.get(`http://localhost:8080/manager/viewPayments`, {
+        axios.get(`http://localhost:8080/manage/viewPayments`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
             }
@@ -21,6 +21,7 @@ const ManagerViewPayment = () => {
                 setPayments(response.data.data.paymentInfoResponseList)
             })
             .catch(error => {
+                toast.error("ERROR fetch Payment ^^")
                 console.error('Error fetching data:', error);
             });
     }, []);

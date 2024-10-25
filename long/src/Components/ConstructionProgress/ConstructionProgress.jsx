@@ -34,10 +34,14 @@ const ConstructionProgress = () => {
 
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        const decoded = jwtDecode(token)
+        const accountId = decoded.sub
+
         const fetchTask = async () => { // ham de long lay du lieu tu backend ne ^^;
 
             try {
-                const response = await axios.get(`http://localhost:8080/staffs/{accountId}/tasks/${constructionOrderId}`, {
+                const response = await axios.get(`http://localhost:8080/staffs/${accountId}/tasks/${constructionOrderId}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`, // Include token if needed
                     }
@@ -93,7 +97,7 @@ const ConstructionProgress = () => {
         const token = localStorage.getItem('token');
         const decoded = jwtDecode(token)
         const accountId = decoded.sub
-    
+
         try {
             await axios.put(`http://localhost:8080/staffs/${accountId}/construction/${constructionOrderId}/worker`, {
                 taskId: taskId,

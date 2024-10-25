@@ -1,9 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 
 const ManagerViewProgess = () => {
     const [constructionOrders, setConstructionOrders] = useState([]);
+    const navigate = useNavigate();
     useEffect(() => {
         const fetchOrder = async () => {
             try {
@@ -21,6 +23,9 @@ const ManagerViewProgess = () => {
         }; fetchOrder();
     }, []);
 
+    const handleViewDetails = (constructionOrderId) => {
+        navigate(`${constructionOrderId}`);
+    }
 
 
     return (
@@ -70,7 +75,11 @@ const ManagerViewProgess = () => {
                                         ) : (order.status)}
 
                                     </td>
-
+                                    <td>
+                                        <button onClick={() => handleViewDetails(order.constructionOrderId)} className="btn btn-primary">
+                                            View Detail
+                                        </button>
+                                    </td>
 
                                 </tr>
                             ))
