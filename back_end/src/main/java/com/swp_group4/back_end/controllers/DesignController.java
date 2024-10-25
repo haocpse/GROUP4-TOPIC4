@@ -28,7 +28,8 @@ public class DesignController {
     }
 
     @PostMapping("/constructionOrders/{constructionOrderId}/design")
-    public ApiResponse<Design> uploadDesign(@PathVariable String constructionOrderId, @RequestParam("image2D") MultipartFile image2D,
+    public ApiResponse<Design> uploadDesign(@PathVariable String constructionOrderId,
+                                            @RequestParam("image2D") MultipartFile image2D,
                                             @RequestParam("image3D") MultipartFile image3D,
                                             @RequestParam("frontView") MultipartFile frontView ) {
         return ApiResponse.<Design>builder()
