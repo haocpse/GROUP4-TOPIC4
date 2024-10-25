@@ -4,6 +4,7 @@ import com.swp_group4.back_end.enums.DesignStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -16,7 +17,7 @@ public class OverviewDesignResponse {
     String constructionOrderId;
     String designId;
     String customerName;
-    Date postedDate;
+    LocalDateTime postedDate;
     DesignStatus designStatus;
 
 }

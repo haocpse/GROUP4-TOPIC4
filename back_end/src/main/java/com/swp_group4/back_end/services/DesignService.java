@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
@@ -53,7 +54,7 @@ public class DesignService {
     public Design saveDesign(String constructionOrderId, MultipartFile image2D, MultipartFile image3D, MultipartFile frontView) {
         Design design = Design.builder()
                 .designStatus(DesignStatus.DESIGNED)
-                .postedDate(Date.valueOf(LocalDate.now()))
+                .postedDate(LocalDateTime.now())
                 .build();
 
         String baseUrl = "http://localhost:8080/images/" + constructionOrderId + "/";
@@ -134,6 +135,7 @@ public class DesignService {
             design.setUrlFrontDesign(baseUrl + saveImage(frontView, order.getConstructionOrderId()));
         }
 
+        design.setPostedDate(LocalDateTime.now());
         design.setDesignStatus(DesignStatus.DESIGNED);
         return designRepository.save(design);
     }

@@ -3,6 +3,8 @@ package com.swp_group4.back_end.responses;
 import com.swp_group4.back_end.enums.QuotationStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -15,7 +17,7 @@ public class OverviewQuotationResponse {
     String constructionOrderId;
     String quotationId;
     String customerName;
-    Date postedDate;
+    LocalDateTime postedDate;
     QuotationStatus quotationStatus;
 
 }

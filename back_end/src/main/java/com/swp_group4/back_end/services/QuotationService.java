@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -136,7 +137,7 @@ public class QuotationService {
                 .height(request.getHeight())
                 .length(request.getLength())
                 .volume(volume)
-                .postedDate(Date.valueOf(LocalDate.now()))
+                .postedDate(LocalDateTime.now())
                 .batch(QuotationBatch.STAGE_1)
                 .paymentStatus(PaymentStatus.PENDING)
                 .quotationStatus(QuotationStatus.QUOTED)
@@ -153,7 +154,7 @@ public class QuotationService {
         quotation.setWidth(request.getWidth());
         quotation.setHeight(request.getHeight());
         quotation.setLength(request.getLength());
-        quotation.setPostedDate(Date.valueOf(LocalDate.now()));
+        quotation.setPostedDate(LocalDateTime.now());
         quotation.setVolume(volume);
         quotation.setBatch(QuotationBatch.STAGE_1);
         quotation.setPaymentStatus(PaymentStatus.PENDING);
@@ -229,7 +230,7 @@ public class QuotationService {
                 .consultantName(this.getStaffName(order.getConsultantId()))
                 .customerRequest(order.getCustomerRequest())
                 .startDate(order.getStartDate())
-                .endDate(order.getEndDate())
+                .endDate(order.getConstructionEndDate())
                 .build();
     }
 }

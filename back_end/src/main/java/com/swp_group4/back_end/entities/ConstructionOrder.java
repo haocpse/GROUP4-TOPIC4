@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
@@ -22,10 +24,9 @@ public class ConstructionOrder {
     String customerId;
     String customerRequest;
     double total;
-    Date startDate;
-    Date endDate;
-    Date constructionStartDate;
-    Date constructionEndDate;
+    LocalDateTime startDate;
+    LocalDateTime constructionStartDate;
+    LocalDateTime constructionEndDate;
     String quotationId;
     String designId;
     String consultantId;

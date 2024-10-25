@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -22,7 +24,7 @@ public class ConstructionTasks {
     String packageConstructionId;
     @Enumerated(EnumType.STRING)
     ConstructStatus status;
-    Date startDate;
-    Date endDate;
+    LocalDateTime startDate;
+    LocalDateTime endDate;
 
 }

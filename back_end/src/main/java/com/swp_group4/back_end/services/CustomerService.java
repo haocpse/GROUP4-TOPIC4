@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +72,7 @@ public class CustomerService {
             ConstructionOrder order = ConstructionOrder.builder()
                     .customerId(customer.getCustomerId())
                     .customerRequest(serviceRequest.getCustomerRequest())
-                    .startDate(Date.valueOf(LocalDate.now()))
+                    .startDate(LocalDateTime.now())
                     .status(ConstructionOrderStatus.REQUESTED)
                     .build();
             constructOrderRepository.save(order);
@@ -124,7 +125,7 @@ public class CustomerService {
                     .quotationId(quotationId)
                     .designId(designId)
                     .startDate(order.getStartDate())
-                    .endDate(order.getEndDate())
+                    .endDate(order.getConstructionEndDate())
                     .status(order.getStatus())
                     .build();
             responses.add(response);
@@ -235,7 +236,8 @@ public class CustomerService {
         for (PaymentOrder paymentOrder : paymentOrders) {
             PaymentInfoResponse response = PaymentInfoResponse.builder()
                     .paymentId(paymentOrder.getPaymentId())
-                    .paidDate(paymentOrder.getDate())
+                    .paidDate(paymentOrder.getPaidDate())
+                    .dueDate(paymentOrder.getDueDate())
                     .price(paymentOrder.getTotal())
                     .paymentTitle(paymentOrder.getPaymentTitle())
                     .paymentStatus(paymentOrder.getStatus())
@@ -258,7 +260,8 @@ public class CustomerService {
         for (PaymentOrder paymentOrder : paymentOrders) {
             PaymentInfoResponse response = PaymentInfoResponse.builder()
                     .paymentId(paymentOrder.getPaymentId())
-                    .paidDate(paymentOrder.getDate())
+                    .paidDate(paymentOrder.getPaidDate())
+                    .dueDate(paymentOrder.getDueDate())
                     .price(paymentOrder.getTotal())
                     .paymentTitle(paymentOrder.getPaymentTitle())
                     .paymentStatus(paymentOrder.getStatus())
