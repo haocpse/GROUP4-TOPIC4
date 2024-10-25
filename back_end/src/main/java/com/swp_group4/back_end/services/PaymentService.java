@@ -1,7 +1,9 @@
 package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.configuration.VNPAYConfig;
+import com.swp_group4.back_end.entities.ConstructionOrder;
 import com.swp_group4.back_end.entities.PaymentOrder;
+import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.enums.PaymentMethods;
 import com.swp_group4.back_end.enums.PaymentStatus;
 import com.swp_group4.back_end.repositories.ConstructOrderRepository;
@@ -62,6 +64,12 @@ public class PaymentService {
 
     public String findOrderId(String paymentId) {
         return paymentOrderRepository.findById(paymentId).orElseThrow().getOrderId();
+    }
+
+    public void successPaid(String orderId) {
+        ConstructionOrder order = constructOrderRepository.findById(orderId).orElseThrow();
+        order.setStatus(ConstructionOrderStatus.PAID_STAGE_1);
+        constructOrderRepository.save(order);
     }
 //
 //    public void successPayment(String paymentId) {

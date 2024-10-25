@@ -53,9 +53,15 @@ public class StaffService {
     }
 
     public List<ConstructOrderDetailForStaffResponse> getTasks(String accountId) {
+        Account account = accountRepository.findById(accountId).orElseThrow();
         List<ConstructOrderDetailForStaffResponse> responses = new ArrayList<>();
         Staff staff = staffRepository.findByAccountId(accountId).orElseThrow(() -> new RuntimeException("Staff not found for account: " + accountId));
-        List<ConstructionOrder> orders = constructOrderRepository.findByConsultantIdAndQuotationIdIsNull(staff.getStaffId());
+        List<ConstructionOrder> orders = new ArrayList<>();
+        if (account.getRole().equals(Role.CONSULTANT)) {
+            orders = constructOrderRepository.findByConsultantIdAndQuotationIdIsNull(staff.getStaffId());
+        } else if (account.getRole().equals(Role.DESIGNER)) {
+            orders = constructOrderRepository.findByDesignerLeaderIdAndDesignIdIsNull(staff.getStaffId());
+        }
         for (ConstructionOrder order : orders) {
             ConstructOrderDetailForStaffResponse response = buildGeneralInfoTask(order.getConstructionOrderId());
             responses.add(response);

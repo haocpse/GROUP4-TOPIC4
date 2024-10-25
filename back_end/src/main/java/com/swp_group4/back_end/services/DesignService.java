@@ -15,6 +15,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
@@ -51,6 +53,7 @@ public class DesignService {
     public Design saveDesign(String constructionOrderId, MultipartFile image2D, MultipartFile image3D, MultipartFile frontView) {
         Design design = Design.builder()
                 .designStatus(DesignStatus.DESIGNED)
+                .postedDate(Date.valueOf(LocalDate.now()))
                 .build();
 
         String baseUrl = "http://localhost:8080/images/" + constructionOrderId + "/";

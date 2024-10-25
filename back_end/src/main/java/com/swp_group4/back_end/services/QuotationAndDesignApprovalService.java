@@ -41,16 +41,17 @@ public class QuotationAndDesignApprovalService {
     @Autowired
     ConstructionTasksRepository constructionTasksRepository;
 
-    public List<QuotationAndDesignReviewResponse> listAllQuotation() {
-        List<Quotation> quotations = quotationRepository.findByQuotationStatus(QuotationStatus.QUOTED);
-        List<QuotationAndDesignReviewResponse> responses = new ArrayList<>();
+    public List<QuotationAndDesignReviewResponse<QuotationStatus>> listAllQuotation() {
+        List<Quotation> quotations = quotationRepository.findAll();
+        List<QuotationAndDesignReviewResponse<QuotationStatus>> responses = new ArrayList<>();
         for (Quotation quotation : quotations) {
             ConstructionOrder order = this.findOrderByQuotationId(quotation.getQuotationId());
             Customer customer = this.findCustomerById(order.getCustomerId());
             Packages packages = this.findPackageById(quotation.getPackageId());
-            QuotationAndDesignReviewResponse response = QuotationAndDesignReviewResponse.builder()
+            QuotationAndDesignReviewResponse<QuotationStatus> response = QuotationAndDesignReviewResponse.<QuotationStatus>builder()
                     .constructionOrderId(order.getConstructionOrderId())
                     .id(quotation.getQuotationId())
+                    .postedDate(quotation.getPostedDate())
                     .customerName(customer.getFirstName() + " " + customer.getLastName())
                     .phone(customer.getPhone())
                     .address(customer.getAddress())
@@ -58,25 +59,28 @@ public class QuotationAndDesignApprovalService {
                     .packageType(packages.getPackageType())
                     .volume(quotation.getVolume())
                     .totalPrice(order.getTotal())
+                    .status(quotation.getQuotationStatus())
                     .build();
             responses.add(response);
         }
         return responses;
     }
 
-    public List<QuotationAndDesignReviewResponse> listAllDesign() {
-        List<Design> designs = designRepository.findByDesignStatus(DesignStatus.DESIGNED);
-        List<QuotationAndDesignReviewResponse> responses = new ArrayList<>();
+    public List<QuotationAndDesignReviewResponse<DesignStatus>> listAllDesign() {
+        List<Design> designs = designRepository.findAll();
+        List<QuotationAndDesignReviewResponse<DesignStatus>> responses = new ArrayList<>();
         for (Design design : designs) {
             ConstructionOrder order = constructOrderRepository
                     .findByDesignId(design.getDesignId()).orElseThrow();
             Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
-            QuotationAndDesignReviewResponse response = QuotationAndDesignReviewResponse.builder()
+            QuotationAndDesignReviewResponse<DesignStatus> response = QuotationAndDesignReviewResponse.<DesignStatus>builder()
                     .constructionOrderId(order.getConstructionOrderId())
                     .id(design.getDesignId())
                     .customerName(customer.getFirstName() + " " + customer.getLastName())
                     .phone(customer.getPhone())
                     .address(customer.getAddress())
+                    .leaderName(this.getStaffName(order.getDesignerLeaderId()))
+                    .status(design.getDesignStatus())
                     .build();
             responses.add(response);
         }
@@ -96,6 +100,7 @@ public class QuotationAndDesignApprovalService {
                 .content(this.contentTasks(tasks))
                 .totalPrice(order.getTotal())
                 .customerRequest(order.getCustomerRequest())
+                .quotationStatus(quotation.getQuotationStatus())
                 .build();
         quotationMapper.toQuotationResponse(quotation, response);
         return response;
@@ -173,10 +178,6 @@ public class QuotationAndDesignApprovalService {
         return "";
     }
 
-    ConstructionOrder findOrderById(String orderId){
-        return constructOrderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
-    }
 
     ConstructionOrder findOrderByQuotationId(String quotationId){
         return constructOrderRepository.findByQuotationId(quotationId)

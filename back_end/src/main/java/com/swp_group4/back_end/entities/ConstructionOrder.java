@@ -24,6 +24,8 @@ public class ConstructionOrder {
     double total;
     Date startDate;
     Date endDate;
+    Date constructionStartDate;
+    Date constructionEndDate;
     String quotationId;
     String designId;
     String consultantId;

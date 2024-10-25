@@ -1,5 +1,6 @@
 package com.swp_group4.back_end.responses;
 
+import com.swp_group4.back_end.enums.QuotationStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -22,6 +23,7 @@ public class ConstructQuotationResponse {
     double priceStage2;
     double priceStage3;
     double totalPrice;
+    QuotationStatus quotationStatus;
     String customerRequest;
     List<String> content;
 

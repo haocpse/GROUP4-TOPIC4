@@ -9,8 +9,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class PackagePriceInfoResponse {
-    String packageId;
-    double min;
-    double max;
-    double volume;
+    String packagePriceId;
+    double minVolume;
+    double maxVolume;
+    double price;
 }

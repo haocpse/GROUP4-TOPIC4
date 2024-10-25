@@ -13,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,8 +124,6 @@ public class QuotationService {
         order.setQuotationId(quotation.getQuotationId());
         order.setCustomerRequest(request.getCustomerRequest());
         order.setTotal(totalPrice);
-        order.setStartDate(request.getStartDate());
-        order.setEndDate(request.getEndDate());
         return constructOrderRepository.save(order);
     }
 
@@ -135,6 +136,7 @@ public class QuotationService {
                 .height(request.getHeight())
                 .length(request.getLength())
                 .volume(volume)
+                .postedDate(Date.valueOf(LocalDate.now()))
                 .batch(QuotationBatch.STAGE_1)
                 .paymentStatus(PaymentStatus.PENDING)
                 .quotationStatus(QuotationStatus.QUOTED)
@@ -151,6 +153,7 @@ public class QuotationService {
         quotation.setWidth(request.getWidth());
         quotation.setHeight(request.getHeight());
         quotation.setLength(request.getLength());
+        quotation.setPostedDate(Date.valueOf(LocalDate.now()));
         quotation.setVolume(volume);
         quotation.setBatch(QuotationBatch.STAGE_1);
         quotation.setPaymentStatus(PaymentStatus.PENDING);

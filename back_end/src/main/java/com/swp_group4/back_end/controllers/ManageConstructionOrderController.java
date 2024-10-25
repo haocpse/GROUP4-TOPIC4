@@ -1,5 +1,7 @@
 package com.swp_group4.back_end.controllers;
 
+import com.swp_group4.back_end.enums.DesignStatus;
+import com.swp_group4.back_end.enums.QuotationStatus;
 import com.swp_group4.back_end.requests.ManageReviewRequest;
 import com.swp_group4.back_end.requests.StaffAssignedRequest;
 import com.swp_group4.back_end.responses.*;
@@ -37,8 +39,8 @@ public class ManageConstructionOrderController {
     }
 
     @GetMapping("/quotations")
-    public ApiResponse<List<QuotationAndDesignReviewResponse>> listAllQuotation(){
-        return ApiResponse.<List<QuotationAndDesignReviewResponse>>builder()
+    public ApiResponse<List<QuotationAndDesignReviewResponse<QuotationStatus>>> listAllQuotation(){
+        return ApiResponse.<List<QuotationAndDesignReviewResponse<QuotationStatus>>>builder()
                 .data(quotationAndDesignApprovalService.listAllQuotation())
                 .build();
     }
@@ -58,8 +60,8 @@ public class ManageConstructionOrderController {
     }
 
     @GetMapping("/designs")
-    public ApiResponse<List<QuotationAndDesignReviewResponse>> listAllDesign(){
-        return ApiResponse.<List<QuotationAndDesignReviewResponse>>builder()
+    public ApiResponse<List<QuotationAndDesignReviewResponse<DesignStatus>>> listAllDesign(){
+        return ApiResponse.<List<QuotationAndDesignReviewResponse<DesignStatus>>>builder()
                 .data(quotationAndDesignApprovalService.listAllDesign())
                 .build();
     }

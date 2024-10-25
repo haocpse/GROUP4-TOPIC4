@@ -70,6 +70,7 @@ public class PaymentController {
                 assert paymentOrder != null;
                 paymentOrder.setStatus(PaymentStatus.SUCCESS);
                 paymentOrderRepository.save(paymentOrder);
+                paymentService.successPaid(orderId);
                 response.sendRedirect("http://localhost:3000/myInfo/orders/" + orderId + "/payments");
             } else {
                 response.sendRedirect("http://localhost:3000/myInfo/orders/" + orderId + "/payments");

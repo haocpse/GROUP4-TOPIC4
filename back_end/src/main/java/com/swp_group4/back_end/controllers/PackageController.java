@@ -4,6 +4,7 @@ import com.swp_group4.back_end.entities.Packages;
 import com.swp_group4.back_end.requests.PackageConstructionCreateRequest;
 import com.swp_group4.back_end.requests.PackageCreateRequest;
 import com.swp_group4.back_end.responses.ApiResponse;
+import com.swp_group4.back_end.responses.PackagePriceResponse;
 import com.swp_group4.back_end.responses.PackageResponse;
 import com.swp_group4.back_end.services.PackageService;
 import lombok.AccessLevel;
@@ -60,4 +61,10 @@ public class PackageController {
                 .build();
     }
 
+    @GetMapping("/packagePrices")
+    public ApiResponse<List<PackagePriceResponse>> getAllPackagePrices() {
+        return ApiResponse.<List<PackagePriceResponse>>builder()
+                .data(packageService.getAllPackagePrices())
+                .build();
+    }
 }
