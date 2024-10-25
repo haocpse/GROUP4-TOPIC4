@@ -1,10 +1,10 @@
 // import { Outlet, Navigate } from "react-router-dom";
 // import { jwtDecode } from "jwt-decode";
 
-// const ProtectedRoutesManager = () => {
+// const ProtectedRoutesAdmin = () => {
 //     const token = localStorage.getItem("token");
 //     const role = getRoleFromToken()
-//     return role === "MANAGER" ? <Outlet/> : <Navigate to="/login"/> 
+//     return role === "ADMIN" ? <Outlet/> : <Navigate to="/login"/> 
 // }
 
 // function getRoleFromToken() {
@@ -25,4 +25,4 @@
 //     return null;
 // }
 
-// export default ProtectedRoutesManager
+// export default ProtectedRoutesAdmin;

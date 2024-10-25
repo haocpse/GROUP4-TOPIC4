@@ -1,0 +1,45 @@
+.menu-cards {
+    margin: 0;
+    padding: 0;
+}
+
+.menu-card {
+    transition: transform 0.3s, box-shadow 0.3s; /* Hiệu ứng chuyển động */
+    cursor: pointer; /* Thêm con trỏ khi hover */
+}
+
+.menu-card:hover {
+    transform: translateY(-5px); /* Nổi lên khi hover */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Đổ bóng khi hover */
+}
+
+/* Hiệu ứng cho thẻ được chọn */
+.menu-card.active {
+    background-color: rgba(0, 123, 255, 0.2); /* Màu nền khi được chọn */
+    color: #007bff; /* Màu chữ khi được chọn */
+}
+
+/* Thêm kiểu dáng cho bảng */
+.rounded-table {
+    border-radius: 10px; /* Bo tròn cho bảng */
+    overflow: hidden; /* Ẩn phần thừa */
+}
+
+.pill-status {
+    border-radius: 20px; /* Bo tròn cho badge */
+    padding: 5px 10px; /* Thêm khoảng cách cho badge */
+}
+
+/* Thay đổi màu sắc cho background */
+.sidebar-menu {
+    background-color: #f8f9fa; /* Màu nền cho sidebar */
+    height: 100vh; /* Chiều cao cho sidebar */
+    position: fixed; /* Để sidebar cố định */
+}
+.pill-status {
+    border-radius: 20px; /* Bo tròn cho badge */
+    padding: 5px 10px; /* Thêm khoảng cách cho badge */
+}
+
+
+
