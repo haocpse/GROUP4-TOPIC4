@@ -28,7 +28,7 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableMethodSecurity
 public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINTS = {
-            "/", "/login", "/signup", "/staff","/contact","/images/**","/payments/**"
+            "/", "/login", "/signup", "/staff","/contact","/images/**","/payments/**", "/generatePDF"
     };
 
     @Value("${jwt.SIGNER_KEY}")

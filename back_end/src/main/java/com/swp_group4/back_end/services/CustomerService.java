@@ -147,6 +147,7 @@ public class CustomerService {
                 .packageType(packages.getPackageType())
                 .totalPrice(order.getTotal())
                 .content(this.findContentOfTask(constructionOrderId))
+                .constructionOrderStatus(order.getStatus())
                 .build();
         return quotationMapper.toQuotationResponse(quotation, response);
     }

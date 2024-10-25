@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.FileNotFoundException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -68,7 +69,7 @@ public class QuotationService {
                 .build();
     }
 
-    public Quotation exportQuotation(String constructionOrderId, ExportQuotationRequest request) {
+    public Quotation exportQuotation(String constructionOrderId, ExportQuotationRequest request){
         Packages packages = this.findPackage(request.getPackageId());
         double volume = request.getHeight() * request.getWidth() * request.getLength();
         PackagePrice packagePrice = this.findPackagePrice(packages.getPackageId(), volume, volume);
@@ -231,6 +232,29 @@ public class QuotationService {
                 .customerRequest(order.getCustomerRequest())
                 .startDate(order.getStartDate())
                 .endDate(order.getConstructionEndDate())
+                .build();
+    }
+
+    public GeneratePDFResponse generatePDF(String constructionOrderId) {
+        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
+        Staff staff = staffRepository.findById(order.getConsultantId()).orElseThrow();
+        Quotation quotation = quotationRepository.findById(order.getQuotationId()).orElseThrow();
+        Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
+        Packages packages = packageRepository.findById(quotation.getPackageId()).orElseThrow();
+        List<PackageConstruction> listPackageConstruction = packageConstructionRepository.findByPackageId(packages.getPackageId());
+        return GeneratePDFResponse.builder()
+                .consultant(staff.getStaffName())
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
+                .address(customer.getAddress())
+                .phone(customer.getPhone())
+                .customerRequest(order.getCustomerRequest())
+                .volume(quotation.getVolume())
+                .packageType(packages.getPackageType())
+                .postedDate(quotation.getPostedDate())
+                .constructionStartDate(quotation.getExpectedStartDate())
+                .constructionEndDate(quotation.getExpectedEndDate())
+                .listPackageConstruction(listPackageConstruction)
+                .total(order.getTotal())
                 .build();
     }
 }

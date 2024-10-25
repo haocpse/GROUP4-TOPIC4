@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 @RestController
@@ -29,7 +30,7 @@ public class QuotationController {
     }
 
     @PostMapping("/constructionOrders/{constructionOrderId}/quotation")
-    public ApiResponse<Quotation> exportQuotation(@PathVariable String constructionOrderId, @RequestBody ExportQuotationRequest request) {
+    public ApiResponse<Quotation> exportQuotation(@PathVariable String constructionOrderId, @RequestBody ExportQuotationRequest request){
         return ApiResponse.<Quotation>builder()
                 .data(quotationService.exportQuotation(constructionOrderId, request))
                 .build();
@@ -60,6 +61,13 @@ public class QuotationController {
     public ApiResponse<Quotation> updateQuotation(@PathVariable String quotationId, @RequestBody ExportQuotationRequest request, @PathVariable String accountId) {
         return ApiResponse.<Quotation>builder()
                 .data(quotationService.updateQuotation(quotationId, request))
+                .build();
+    }
+
+    @GetMapping("/generatePDF/{constructionOrderId}")
+    public ApiResponse<GeneratePDFResponse> generatePDF(@PathVariable String constructionOrderId) {
+        return ApiResponse.<GeneratePDFResponse>builder()
+                .data(quotationService.generatePDF(constructionOrderId))
                 .build();
     }
 
