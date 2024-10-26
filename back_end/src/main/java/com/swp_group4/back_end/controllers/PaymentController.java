@@ -73,6 +73,10 @@ public class PaymentController {
                 paymentService.successPaid(orderId);
                 response.sendRedirect("http://localhost:3000/myInfo/orders/" + orderId + "/payments");
             } else {
+                assert paymentOrder != null;
+                paymentOrder.setStatus(PaymentStatus.FAILED);
+                paymentOrderRepository.save(paymentOrder);
+                paymentService.reCreatePayment(paymentId);
                 response.sendRedirect("http://localhost:3000/myInfo/orders/" + orderId + "/payments");
             }
         } catch (Exception e) {

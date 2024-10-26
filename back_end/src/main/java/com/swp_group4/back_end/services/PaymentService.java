@@ -31,6 +31,19 @@ public class PaymentService {
     @Autowired
     private ConstructOrderRepository constructOrderRepository;
 
+    public void reCreatePayment(String paymentId){
+        PaymentOrder paymentOrder = paymentOrderRepository.findById(paymentId).orElse(null);
+        assert paymentOrder != null;
+        PaymentOrder paymentOrder1 = PaymentOrder.builder()
+                .orderId(paymentOrder.getOrderId())
+                .customerId(paymentOrder.getCustomerId())
+                .paymentMethods(PaymentMethods.VNPAY)
+                .total(paymentOrder.getTotal())
+                .status(PaymentStatus.PENDING)
+                .build();
+        paymentOrderRepository.save(paymentOrder1);
+    }
+
     public PaymentOrder createPayment(PaymentCreateRequest request, String orderId){
         PaymentOrder paymentOrder = PaymentOrder.builder()
                 .customerId(request.getCustomerId())
