@@ -79,6 +79,7 @@ public class QuotationAndDesignApprovalService {
                     .customerName(customer.getFirstName() + " " + customer.getLastName())
                     .phone(customer.getPhone())
                     .address(customer.getAddress())
+                    .postedDate(design.getPostedDate())
                     .leaderName(this.getStaffName(order.getDesignerLeaderId()))
                     .status(design.getDesignStatus())
                     .build();
@@ -101,6 +102,8 @@ public class QuotationAndDesignApprovalService {
                 .totalPrice(order.getTotal())
                 .customerRequest(order.getCustomerRequest())
                 .quotationStatus(quotation.getQuotationStatus())
+                .startDate(quotation.getExpectedStartDate())
+                .endDate(quotation.getExpectedEndDate())
                 .build();
         quotationMapper.toQuotationResponse(quotation, response);
         return response;
@@ -113,6 +116,7 @@ public class QuotationAndDesignApprovalService {
         Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
         return ConstructDesignResponse.builder()
                 .constructionOrderId(order.getConstructionOrderId())
+                .designId(designId)
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .designName(this.getStaffName(order.getDesignerLeaderId()))
                 .customerRequest(order.getCustomerRequest())

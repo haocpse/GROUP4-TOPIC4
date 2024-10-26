@@ -37,8 +37,8 @@ public class Quotation {
     String promotionId;
     String packageId;
     LocalDateTime postedDate;
-    LocalDateTime expectedStartDate;
-    LocalDateTime expectedEndDate;
+    Date expectedStartDate;
+    Date expectedEndDate;
     @Enumerated(EnumType.STRING)
     QuotationStatus quotationStatus;
 

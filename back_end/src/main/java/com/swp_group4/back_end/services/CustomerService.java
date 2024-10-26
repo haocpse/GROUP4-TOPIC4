@@ -148,6 +148,8 @@ public class CustomerService {
                 .totalPrice(order.getTotal())
                 .content(this.findContentOfTask(constructionOrderId))
                 .constructionOrderStatus(order.getStatus())
+                .startDate(quotation.getExpectedStartDate())
+                .endDate(quotation.getExpectedEndDate())
                 .build();
         return quotationMapper.toQuotationResponse(quotation, response);
     }

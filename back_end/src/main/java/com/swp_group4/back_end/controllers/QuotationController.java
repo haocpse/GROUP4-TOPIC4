@@ -64,7 +64,7 @@ public class QuotationController {
                 .build();
     }
 
-    @GetMapping("/generatePDF/{constructionOrderId}")
+    @GetMapping("/quotationPDF/{constructionOrderId}")
     public ApiResponse<GeneratePDFResponse> generatePDF(@PathVariable String constructionOrderId) {
         return ApiResponse.<GeneratePDFResponse>builder()
                 .data(quotationService.generatePDF(constructionOrderId))

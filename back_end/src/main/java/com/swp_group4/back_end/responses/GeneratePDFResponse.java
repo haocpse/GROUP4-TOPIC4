@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -21,10 +22,13 @@ public class GeneratePDFResponse {
     String customerRequest;
     double volume;
     double total;
+    double priceVolume;
+    double minVolume;
+    double maxVolume;
     String packageType;
     List<PackageConstruction> listPackageConstruction;
-    LocalDateTime constructionStartDate;
-    LocalDateTime constructionEndDate;
+    Date constructionStartDate;
+    Date constructionEndDate;
     LocalDateTime postedDate;
 
 }

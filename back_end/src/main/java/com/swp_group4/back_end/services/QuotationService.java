@@ -71,9 +71,14 @@ public class QuotationService {
 
     public Quotation exportQuotation(String constructionOrderId, ExportQuotationRequest request){
         Packages packages = this.findPackage(request.getPackageId());
+        List<PackageConstruction> packageConstructions = packageConstructionRepository.findByPackageId(request.getPackageId());
+        double totalPrice = 0;
+        for (PackageConstruction packageConstruction : packageConstructions) {
+            totalPrice += packageConstruction.getPrice();
+        }
         double volume = request.getHeight() * request.getWidth() * request.getLength();
         PackagePrice packagePrice = this.findPackagePrice(packages.getPackageId(), volume, volume);
-        double totalPrice = this.totalPrice(volume, packagePrice.getPrice());
+        totalPrice = this.totalPrice(volume, packagePrice.getPrice());
         ConstructionOrder order = this.findOrderById(constructionOrderId);
         this.saveConstructionTasks(constructionOrderId, request.getPackageId());
         Quotation quotation =  quotationRepository.save(this.saveQuotation(request, totalPrice, volume));
@@ -138,6 +143,8 @@ public class QuotationService {
                 .height(request.getHeight())
                 .length(request.getLength())
                 .volume(volume)
+                .expectedStartDate(request.getStartDate())
+                .expectedEndDate(request.getEndDate())
                 .postedDate(LocalDateTime.now())
                 .batch(QuotationBatch.STAGE_1)
                 .paymentStatus(PaymentStatus.PENDING)
@@ -195,6 +202,8 @@ public class QuotationService {
                 .packageType(packages.getPackageType())
                 .totalPrice(order.getTotal())
                 .content(this.constructionTasks(packages.getPackageId()))
+                .startDate(quotation.getExpectedStartDate())
+                .endDate(quotation.getExpectedEndDate())
                 .build();
         return quotationMapper.toQuotationResponse(quotation, response);
     }
@@ -242,6 +251,9 @@ public class QuotationService {
         Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
         Packages packages = packageRepository.findById(quotation.getPackageId()).orElseThrow();
         List<PackageConstruction> listPackageConstruction = packageConstructionRepository.findByPackageId(packages.getPackageId());
+        double volume = quotation.getVolume();
+        PackagePrice packagePrice = this.findPackagePrice(packages.getPackageId(), volume, volume);
+        double priceVolume = this.totalPrice(volume, packagePrice.getPrice());
         return GeneratePDFResponse.builder()
                 .consultant(staff.getStaffName())
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
@@ -255,6 +267,11 @@ public class QuotationService {
                 .constructionEndDate(quotation.getExpectedEndDate())
                 .listPackageConstruction(listPackageConstruction)
                 .total(order.getTotal())
+                .constructionStartDate(quotation.getExpectedStartDate())
+                .priceVolume(priceVolume)
+                .minVolume(packagePrice.getMinVolume())
+                .maxVolume(packagePrice.getMaxVolume())
+                .constructionEndDate(quotation.getExpectedEndDate())
                 .build();
     }
 }

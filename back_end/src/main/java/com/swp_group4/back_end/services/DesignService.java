@@ -117,6 +117,7 @@ public class DesignService {
                 .designId(designId)
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .postedDate(design.getPostedDate())
+                .designStatus(design.getDesignStatus())
                 .build();
     }
 
