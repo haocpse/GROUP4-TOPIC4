@@ -178,6 +178,7 @@ public class CustomerService {
                 .url3dDesign(design.getUrl3dDesign())
                 .urlFrontDesign(design.getUrlFrontDesign())
                 .urlBackDesign(design.getUrlBackDesign())
+                .constructionOrderStatus(order.getStatus())
                 .build();
     }
 

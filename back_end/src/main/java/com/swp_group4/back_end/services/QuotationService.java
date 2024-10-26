@@ -271,6 +271,9 @@ public class QuotationService {
                 .priceVolume(priceVolume)
                 .minVolume(packagePrice.getMinVolume())
                 .maxVolume(packagePrice.getMaxVolume())
+                .priceStage1(quotation.getPriceStage1())
+                .priceStage2(quotation.getPriceStage2())
+                .priceStage3(quotation.getPriceStage3())
                 .constructionEndDate(quotation.getExpectedEndDate())
                 .build();
     }

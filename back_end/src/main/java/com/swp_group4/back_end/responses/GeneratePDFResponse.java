@@ -25,6 +25,9 @@ public class GeneratePDFResponse {
     double priceVolume;
     double minVolume;
     double maxVolume;
+    double priceStage1;
+    double priceStage2;
+    double priceStage3;
     String packageType;
     List<PackageConstruction> listPackageConstruction;
     Date constructionStartDate;

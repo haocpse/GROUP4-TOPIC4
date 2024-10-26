@@ -81,7 +81,13 @@ public class PaymentService {
 
     public void successPaid(String orderId) {
         ConstructionOrder order = constructOrderRepository.findById(orderId).orElseThrow();
-        order.setStatus(ConstructionOrderStatus.PAID_STAGE_1);
+        if (order.getStatus().name().equals("CONFIRMED_QUOTATION")) {
+            order.setStatus(ConstructionOrderStatus.PAID_STAGE_1);
+        } else if (order.getStatus().name().equals("CONFIRMED_DESIGN")) {
+            order.setStatus(ConstructionOrderStatus.PAID_STAGE_2);
+        } else {
+            order.setStatus(ConstructionOrderStatus.PAID_STAGE_3);
+        }
         constructOrderRepository.save(order);
     }
 //

@@ -124,6 +124,7 @@ public class QuotationAndDesignApprovalService {
                 .url3dDesign(design.getUrl3dDesign())
                 .urlFrontDesign(design.getUrlFrontDesign())
                 .urlBackDesign(design.getUrlBackDesign())
+                .designStatus(design.getDesignStatus())
                 .build();
     }
 

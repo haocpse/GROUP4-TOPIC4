@@ -61,6 +61,8 @@ public class StaffService {
             orders = constructOrderRepository.findByConsultantIdAndQuotationIdIsNull(staff.getStaffId());
         } else if (account.getRole().equals(Role.DESIGNER)) {
             orders = constructOrderRepository.findByDesignerLeaderIdAndDesignIdIsNull(staff.getStaffId());
+        } else {
+            orders = constructOrderRepository.findByConstructorLeaderId(staff.getStaffId());
         }
         for (ConstructionOrder order : orders) {
             ConstructOrderDetailForStaffResponse response = buildGeneralInfoTask(order.getConstructionOrderId());
