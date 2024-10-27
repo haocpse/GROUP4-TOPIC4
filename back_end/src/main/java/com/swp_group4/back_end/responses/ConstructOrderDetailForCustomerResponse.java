@@ -20,7 +20,7 @@ public class ConstructOrderDetailForCustomerResponse {
     String quotationId;
     String designId;
     LocalDateTime startDate;
-    LocalDateTime endDate;
+    Date endDate;
     ConstructionOrderStatus status;
 
 }

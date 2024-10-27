@@ -12,6 +12,6 @@ import java.util.Optional;
 public interface DesignRepository extends JpaRepository<Design, String> {
 
     List<Design> findByDesignStatus(DesignStatus status);
-    Optional<Design> findByDesignIdAndDesignStatus(String designId, DesignStatus status);
+    Optional<Design> findByDesignIdAndDesignStatusIn(String designId, List<DesignStatus> statuses);
 
 }

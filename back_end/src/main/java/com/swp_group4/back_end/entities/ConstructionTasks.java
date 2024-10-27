@@ -24,7 +24,7 @@ public class ConstructionTasks {
     String packageConstructionId;
     @Enumerated(EnumType.STRING)
     ConstructStatus status;
-    LocalDateTime startDate;
-    LocalDateTime endDate;
+    Date startDate;
+    Date endDate;
 
 }

@@ -239,8 +239,8 @@ public class QuotationService {
                 .packageId(packages.getPackageId())
                 .consultantName(this.getStaffName(order.getConsultantId()))
                 .customerRequest(order.getCustomerRequest())
-                .startDate(order.getStartDate())
-                .endDate(order.getConstructionEndDate())
+                .startDate(quotation.getExpectedStartDate())
+                .endDate(quotation.getExpectedEndDate())
                 .build();
     }
 

@@ -23,6 +23,6 @@ public class ViewRejectedQuotationResponse {
     double height;
     double width;
     String packageId;
-    LocalDateTime startDate;
-    LocalDateTime endDate;
+    Date startDate;
+    Date endDate;
 }

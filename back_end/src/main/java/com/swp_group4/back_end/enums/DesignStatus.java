@@ -4,6 +4,7 @@ public enum DesignStatus {
 
     DESIGNED, // Trạng thái của DESIGN sau khi DESIGNER upload các design
     CONFIRMED,
-    REJECTED// Trạng thái của DESIGN sau khi được phê duyệt từ MANAGER
+    REJECTED,
+    CONFIRMED_BY_USER// Trạng thái của DESIGN sau khi được phê duyệt từ MANAGER
 
 }

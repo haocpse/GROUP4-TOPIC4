@@ -12,6 +12,6 @@ import java.util.Optional;
 public interface QuotationRepository extends JpaRepository<Quotation, String> {
 
     List<Quotation> findByQuotationStatus(QuotationStatus status);
-    Optional<Quotation> findByQuotationIdAndQuotationStatus(String quotationId, QuotationStatus status);
+    Optional<Quotation> findByQuotationIdAndQuotationStatusIn(String quotationId, List<QuotationStatus> statuses);
 
 }

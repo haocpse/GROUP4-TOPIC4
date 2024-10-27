@@ -11,11 +11,11 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class CustomerViewProgressResponse {
+public class ViewProgressResponse {
 
     String constructionOrderId;
     List<ListConstructProgressResponse> listConstructProgressResponses;
-    ConstructionOrderStatus constructionOrderStatus;
+    List<String> staffNames;
     ConstructionOrderStatus status;
 
 }

@@ -16,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -109,12 +107,12 @@ public class CustomerService {
 
             String designId = "";
             String quotationId = "";
-            if (designRepository.findByDesignIdAndDesignStatus(order.getDesignId(), DesignStatus.CONFIRMED).isPresent()) {
-                Design design = designRepository.findByDesignIdAndDesignStatus(order.getDesignId(), DesignStatus.CONFIRMED).orElseThrow();
+            if (designRepository.findByDesignIdAndDesignStatusIn(order.getDesignId(), List.of(DesignStatus.CONFIRMED, DesignStatus.CONFIRMED_BY_USER)).isPresent()) {
+                Design design = designRepository.findByDesignIdAndDesignStatusIn(order.getDesignId(), List.of(DesignStatus.CONFIRMED, DesignStatus.CONFIRMED_BY_USER)).orElseThrow();
                 designId = design.getDesignId();
             }
-            if (quotationRepository.findByQuotationIdAndQuotationStatus(order.getQuotationId(), QuotationStatus.CONFIRMED).isPresent()) {
-                Quotation quotation = quotationRepository.findByQuotationIdAndQuotationStatus(order.getQuotationId(), QuotationStatus.CONFIRMED)
+            if (quotationRepository.findByQuotationIdAndQuotationStatusIn(order.getQuotationId(), List.of(QuotationStatus.CONFIRMED, QuotationStatus.CONFIRMED_BY_USER)).isPresent()) {
+                Quotation quotation = quotationRepository.findByQuotationIdAndQuotationStatusIn(order.getQuotationId(),  List.of(QuotationStatus.CONFIRMED, QuotationStatus.CONFIRMED_BY_USER))
                         .orElseThrow();
                 quotationId = quotation.getQuotationId();
             }
@@ -178,6 +176,7 @@ public class CustomerService {
                 .url3dDesign(design.getUrl3dDesign())
                 .urlFrontDesign(design.getUrlFrontDesign())
                 .urlBackDesign(design.getUrlBackDesign())
+                .designStatus(design.getDesignStatus())
                 .constructionOrderStatus(order.getStatus())
                 .build();
     }
@@ -186,6 +185,8 @@ public class CustomerService {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
         Design design = designRepository.findById(order.getDesignId()).orElseThrow();
         if (request.getStatus().equals(DesignStatus.CONFIRMED)) {
+            design.setDesignStatus(DesignStatus.CONFIRMED_BY_USER);
+            designRepository.save(design);
             order.setStatus(ConstructionOrderStatus.CONFIRMED_DESIGN);
             constructOrderRepository.save(order);
             Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
@@ -212,6 +213,8 @@ public class CustomerService {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
         Quotation quotation = quotationRepository.findById(order.getQuotationId()).orElseThrow();
         if (request.getStatus().equals(QuotationStatus.CONFIRMED)) {
+            quotation.setQuotationStatus(QuotationStatus.CONFIRMED_BY_USER);
+            quotationRepository.save(quotation);
             order.setStatus(ConstructionOrderStatus.CONFIRMED_QUOTATION);
             constructOrderRepository.save(order);
             Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
@@ -233,7 +236,7 @@ public class CustomerService {
                 .build();
     }
 
-    public CustomerViewPaymentResponse viewPaymentConstruction(String constructionOrderId, String accountId) {
+    public ViewPaymentResponse viewPaymentConstruction(String constructionOrderId, String accountId) {
         Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
         List<PaymentOrder> paymentOrders = paymentOrderRepository.findByOrderId(constructionOrderId);
         List<PaymentInfoResponse> paymentInfoResponses = new ArrayList<>();
@@ -248,7 +251,7 @@ public class CustomerService {
                     .build();
             paymentInfoResponses.add(response);
         }
-        return CustomerViewPaymentResponse.builder()
+        return ViewPaymentResponse.builder()
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .phone(customer.getPhone())
                 .address(customer.getAddress())
@@ -256,7 +259,7 @@ public class CustomerService {
                 .build();
     }
 
-    public CustomerViewPaymentResponse viewPayment(String constructionOrderId) {
+    public ViewPaymentResponse viewPayment(String constructionOrderId) {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
         Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
         List<PaymentOrder> paymentOrders = paymentOrderRepository.findByOrderId(constructionOrderId);
@@ -272,7 +275,7 @@ public class CustomerService {
                     .build();
             paymentInfoResponses.add(response);
         }
-        return CustomerViewPaymentResponse.builder()
+        return ViewPaymentResponse.builder()
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .phone(customer.getPhone())
                 .address(customer.getAddress())
@@ -281,36 +284,31 @@ public class CustomerService {
     }
 
 
-    public CustomerViewProgressResponse viewProgress(String constructionOrderId) {
+    public ViewProgressResponse viewProgress(String constructionOrderId) {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
-        List<ConstructionTasks> constructionTasksList = constructionTasksRepository
-                .findByConstructionOrderId(constructionOrderId).orElseThrow();
         List<ListConstructProgressResponse> listConstructProgressResponses = new ArrayList<>();
-        for (ConstructionTasks constructionTasks : constructionTasksList) {
-            ConstructionTaskStaff taskStaff = constructionTaskStaffRepository.findById(constructionTasks.getTaskId())
-                    .orElse(null);
-            PackageConstruction packageConstruction = packageConstructionRepository
-                    .findById(constructionTasks.getPackageConstructionId()).orElseThrow();
-            ListConstructProgressResponse statusResponse = ListConstructProgressResponse.builder()
-                    .packageConstructionId(constructionTasks.getPackageConstructionId())
-                    .taskId(constructionTasks.getTaskId())
-                    .content(packageConstruction.getContent())
-                    .status(constructionTasks.getStatus())
+        List<ConstructionTasks> constructionTasks = constructionTasksRepository.findByConstructionOrderId(constructionOrderId).orElseThrow();
+        for (ConstructionTasks constructionTask : constructionTasks) {
+            String content = packageConstructionRepository.findById(constructionTask.getPackageConstructionId()).orElseThrow().getContent();
+            ListConstructProgressResponse response = ListConstructProgressResponse.builder()
+                    .packageConstructionId(constructionTask.getPackageConstructionId())
+                    .taskId(constructionTask.getTaskId())
+                    .startDate(constructionTask.getStartDate())
+                    .endDate(constructionTask.getEndDate())
+                    .content(content)
+                    .status(constructionTask.getStatus())
                     .build();
-            if (taskStaff != null) {
-                statusResponse.setStaffName(staffRepository.findById(taskStaff.getStaffId()).orElseThrow().getStaffName());
-            } else {
-                statusResponse.setStaffName("");
-            }
-            listConstructProgressResponses.add(statusResponse);
+            listConstructProgressResponses.add(response);
         }
-        return CustomerViewProgressResponse.builder()
+        List<String> staffNames = constructionTaskStaffRepository.findStaffNamesByTaskId(constructionTasks.getFirst().getTaskId());
+        return ViewProgressResponse.builder()
                 .constructionOrderId(constructionOrderId)
                 .listConstructProgressResponses(listConstructProgressResponses)
-                .constructionOrderStatus(order.getStatus())
+                .staffNames(staffNames)
                 .status(order.getStatus())
                 .build();
     }
+
 
     public ConstructionOrderStatus finishConstructOrder(String constructionOrderId, FinishConstructRequest request, String accountId) {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();

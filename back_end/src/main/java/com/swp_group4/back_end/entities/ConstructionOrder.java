@@ -25,8 +25,8 @@ public class ConstructionOrder {
     String customerRequest;
     double total;
     LocalDateTime startDate;
-    LocalDateTime constructionStartDate;
-    LocalDateTime constructionEndDate;
+    Date constructionStartDate;
+    Date constructionEndDate;
     String quotationId;
     String designId;
     String consultantId;

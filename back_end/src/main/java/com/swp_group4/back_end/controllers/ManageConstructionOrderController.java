@@ -80,4 +80,25 @@ public class ManageConstructionOrderController {
                 .build();
     }
 
+    @GetMapping("/progress")
+    public ApiResponse<List<ProgressReviewResponse>> listAllConstructionProgress(){
+        return ApiResponse.<List<ProgressReviewResponse>>builder()
+                .data(manageConstructionOrderService.listAllConstructionProgress())
+                .build();
+    }
+
+    @GetMapping("/progress/{constructionOrderId}")
+    public ApiResponse<ViewProgressResponse> getProgress(@PathVariable String constructionOrderId){
+        return ApiResponse.<ViewProgressResponse>builder()
+                .data(manageConstructionOrderService.detailProgress(constructionOrderId))
+                .build();
+    }
+
+//    @GetMapping("/payments")
+//    public ApiResponse<List<PaymentReviewResponse>> listAllPayments(){
+//        return ApiResponse.<List<PaymentReviewResponse>>builder()
+//                .data(manageConstructionOrderService.listAllPayments())
+//                .build();
+//    }
+
 }

@@ -15,8 +15,7 @@ import lombok.experimental.FieldDefaults;
 public class ConstructionTaskStaff {
 
     @Id
-    String taskId;
-    String staffId;
+    ConstructionTaskStaffId id;
     String staffName;
 
 }
