@@ -48,19 +48,24 @@ import ManagerViewProgess from "./Components/ManagerViewProgress/ManagerViewProg
 import ManagerViewPayment from "./Components/ManagerViewPayment/ManagerViewPayment";
 import ManagerViewDetailPayment from "./Components/ManagerViewPayment/ManagerViewDetailPayment";
 import ManagerViewDetailProgress from "./Components/ManagerViewProgress/ManagerViewDetailProgress";
+import ProtectedRoutesAdmin from "./utils/ProtectedRoutesAdmin";
+import Blog from "./Components/Blog/Blog";
+import BlogDetail from "./Components/Blog/BlodDetail";
 function App() {
   return (
     <Router>
+      
       <Routes>
+      <Route element={<ProtectedRoutesAdmin />}>
         <Route path="/package" element={<PackageManage />}>
           <Route path="package-price" element={<PackagePrice />} />
           <Route path="package-construction" element={<PackageConstruction />} />{" "}
         </Route>
 
-        <Route path="/Blog" element={<BlogCRUD />}></Route>
+        <Route path="/BlogCRUD" element={<BlogCRUD />}></Route>
         <Route path="/edit-blog/:id" element={<EditBlog />}></Route>
         <Route path="/profile" element={<AdminProfile />}></Route>
-
+        </Route>
 
         {/* MANAGER*/}
         <Route element={<ProtectedRoutesManager />}>
@@ -133,6 +138,8 @@ function App() {
           path="/myInfo/orders/:constructionOrderId/payments"
           element={<PaymentInfo />}
         />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:id" element={<BlogDetail/>} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/contact" element={<Contact />} />
