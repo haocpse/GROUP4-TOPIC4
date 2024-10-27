@@ -41,6 +41,8 @@ public class ManageConstructionOrderService {
     PackageConstructionRepository packageConstructionRepository;
     @Autowired
     ConstructionTaskStaffRepository constructionTaskStaffRepository;
+    @Autowired
+    private PaymentOrderRepository paymentOrderRepository;
 
     public List<ConstructOrderDetailForManagerResponse> listAllOrder() {
         List<ConstructOrderDetailForManagerResponse> responses = new ArrayList<>();
@@ -140,9 +142,55 @@ public class ManageConstructionOrderService {
                 .build();
     }
 
-//    public List<PaymentReviewResponse> listAllPayments() {
-//
-//    }
+    public List<PaymentReviewResponse> listAllPayments() {
+        List<ConstructionOrder> constructionOrders = constructOrderRepository.findAll();
+        List<PaymentReviewResponse> responses = new ArrayList<>();
+        for (ConstructionOrder constructionOrder : constructionOrders) {
+            Customer customer = findCustomerById(constructionOrder.getCustomerId());
+            PaymentReviewResponse response = PaymentReviewResponse.builder()
+                    .constructionOrderId(constructionOrder.getConstructionOrderId())
+                    .customerName(customer.getFirstName() + " " + customer.getLastName())
+                    .phone(customer.getPhone())
+                    .address(customer.getAddress())
+                    .total(constructionOrder.getTotal())
+                    .build();
+            responses.add(response);
+        }
+        return responses;
+    }
+
+    public ViewPaymentResponse getPayments(String constructionOrderId) {
+        List<PaymentInfoResponse> paymentInfoResponses = new ArrayList<>();
+        ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
+        List<PaymentOrder> paymentOrders = paymentOrderRepository.findByOrderId(constructionOrderId);
+        Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
+        Quotation quotation = quotationRepository.findById(order.getQuotationId()).orElseThrow();
+        int count = 1;
+        for (PaymentOrder paymentOrder : paymentOrders) {
+            PaymentInfoResponse infoResponse = PaymentInfoResponse.builder()
+                    .paymentId(paymentOrder.getPaymentId())
+                    .paymentTitle(paymentOrder.getPaymentTitle())
+                    .paidDate(paymentOrder.getPaidDate())
+                    .dueDate(paymentOrder.getDueDate())
+                    .paymentStatus(paymentOrder.getStatus())
+                    .build();
+            if (count == 1) {
+                infoResponse.setPrice(quotation.getPriceStage1());
+            } else if (count == 2) {
+                infoResponse.setPrice(quotation.getPriceStage2());
+            } else {
+                infoResponse.setPrice(quotation.getPriceStage3());
+            }
+            paymentInfoResponses.add(infoResponse);
+            count++;
+        }
+        return ViewPaymentResponse.builder()
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
+                .phone(customer.getPhone())
+                .address(customer.getAddress())
+                .paymentInfoResponseList(paymentInfoResponses)
+                .build();
+    }
     //    public ServiceResponse<MaintenanceOrderResponse> contactUsForMaintenance(ServiceRequest serviceRequest) {
     // Your logic for maintenance service...
     //    }

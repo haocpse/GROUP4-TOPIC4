@@ -13,7 +13,7 @@ public class PaymentReviewResponse {
     String constructionOrderId;
     String customerName;
     String phone;
-    String email;
+    String address;
     double total;
 
 }

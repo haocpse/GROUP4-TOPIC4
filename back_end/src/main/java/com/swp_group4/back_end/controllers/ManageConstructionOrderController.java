@@ -94,11 +94,18 @@ public class ManageConstructionOrderController {
                 .build();
     }
 
-//    @GetMapping("/payments")
-//    public ApiResponse<List<PaymentReviewResponse>> listAllPayments(){
-//        return ApiResponse.<List<PaymentReviewResponse>>builder()
-//                .data(manageConstructionOrderService.listAllPayments())
-//                .build();
-//    }
+    @GetMapping("/payments")
+    public ApiResponse<List<PaymentReviewResponse>> listAllPayments(){
+        return ApiResponse.<List<PaymentReviewResponse>>builder()
+                .data(manageConstructionOrderService.listAllPayments())
+                .build();
+    }
+
+    @GetMapping("/payments/{constructionOrderId}")
+    public ApiResponse<ViewPaymentResponse> detailPayment(@PathVariable String constructionOrderId){
+        return ApiResponse.<ViewPaymentResponse>builder()
+                .data(manageConstructionOrderService.getPayments(constructionOrderId))
+                .build();
+    }
 
 }

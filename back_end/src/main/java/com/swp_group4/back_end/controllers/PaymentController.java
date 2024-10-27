@@ -29,12 +29,12 @@ public class PaymentController {
     PaymentOrderRepository paymentOrderRepository;
 
     //hàm liệt kê các payment
-    @GetMapping("/{accountId}")
-    public ApiResponse<List<PaymentOrder>> getAllPayments(@PathVariable String accountId) {
-        return ApiResponse.<List<PaymentOrder>>builder()
-                .data(paymentService.listALl(accountId))
-                .build();
-    }
+//    @GetMapping("/{accountId}")
+//    public ApiResponse<List<PaymentOrder>> getAllPayments(@PathVariable String accountId) {
+//        return ApiResponse.<List<PaymentOrder>>builder()
+//                .data(paymentService.listALl(accountId))
+//                .build();
+//    }
 
     //hàm khi customer nhấn sẽ redirect sang trang VNPAY để thanh toán
     @PostMapping("/{paymentId}/vnpay")
