@@ -60,7 +60,7 @@ public class MaintenanceOrderController {
     }
 
     @PutMapping("/requests")
-    public ApiResponse<MaintenanceOrderDetailForManagerResponse> assignLeader(@Valid @RequestBody MaintenanceStaffAssignedRequest request) {
+    public ApiResponse<MaintenanceOrderDetailForManagerResponse> assignLeader(@RequestBody MaintenanceStaffAssignedRequest request) {
         return ApiResponse.<MaintenanceOrderDetailForManagerResponse>builder()
                 .data(maintenanceOrderService.assignLeader(request))
                 .build();
