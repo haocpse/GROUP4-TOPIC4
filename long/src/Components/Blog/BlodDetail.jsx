@@ -6,6 +6,7 @@ import './BlogDetail.module.css';
 import KoiPond from '../Assests/ho-ca-koi-dep.jpg';
 import KoiPond2 from '../Assests/hocaikoi2.jpg';
 import KoiPond3 from '../Assests/backyard-koi-pond-neave-group-outdoor-solutions_8685.jpg';
+import Footer from '../Footer/Footer';
 
 const userImages = [KoiPond, KoiPond2, KoiPond3];
 
@@ -117,6 +118,7 @@ const BlogDetail = () => {
                     </Card.Footer>
                 </Card>
             </Container>
+            <Footer/>
         </>
     );
 };

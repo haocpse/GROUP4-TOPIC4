@@ -36,7 +36,7 @@ import CustomerViewDesign from "./Components/CustomerView/CustomerViewDesign";
 import PaymentInfo from "./Components/ListQuotation/PaymentInfo";
 import MainLayoutConstructor from "./Components/MainLayoutConstructor";
 import Dashboard from "./Components/Admin/Dashboard"
-import Blog from "./Components/Admin/BlogCRUD";
+import BlogCRUD from "./Components/Admin/BlogCRUD";
 import EditBlog from "./Components/Admin/EditBlog";
 import PackageManage from "./Components/Package/PackageManage";
 import PackagePrice from "./Components/Package/PackagePrice";
@@ -48,13 +48,10 @@ import ManagerViewProgess from "./Components/ManagerViewProgress/ManagerViewProg
 import ManagerViewPayment from "./Components/ManagerViewPayment/ManagerViewPayment";
 import ManagerViewDetailPayment from "./Components/ManagerViewPayment/ManagerViewDetailPayment";
 import ManagerViewDetailProgress from "./Components/ManagerViewProgress/ManagerViewDetailProgress";
-<<<<<<< Updated upstream
 import ProtectedRoutesAdmin from "./utils/ProtectedRoutesAdmin";
-import Blog from "./Components/Blog/Blog";
 import BlogDetail from "./Components/Blog/BlodDetail";
-=======
 import AboutUs from "./Components/AboutUs/AboutUs";
->>>>>>> Stashed changes
+import Blog from "./Components/Blog/Blog"
 function App() {
   return (
     <Router>
@@ -66,14 +63,11 @@ function App() {
           <Route path="package-construction" element={<PackageConstruction />} />{" "}
         </Route>
 
-<<<<<<< Updated upstream
         <Route path="/BlogCRUD" element={<BlogCRUD />}></Route>
-=======
-        <Route path="/blog" element={<Blog />}></Route>
->>>>>>> Stashed changes
         <Route path="/edit-blog/:id" element={<EditBlog />}></Route>
         <Route path="/profile" element={<AdminProfile />}></Route>
         </Route>
+
 
         {/* MANAGER*/}
         <Route element={<ProtectedRoutesManager />}>

@@ -6,6 +6,7 @@ import "./CustomerView.css"; // Import CSS file for styling
 import axios from "axios";
 import Navbar from "../Navbar/Navbar";
 import { jwtDecode } from "jwt-decode";
+import Footer from "../Footer/Footer";
 
 const CustomerView = () => {
   const [orders, setOrders] = useState([]); // State to store orders
@@ -39,6 +40,10 @@ const CustomerView = () => {
 
     fetchOrders();
   }, []);
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.reload();
+  };
 
   const handleView = (constructionOrderId, Type) => {
     if (Type === "QUOTATION") {
@@ -63,10 +68,11 @@ const CustomerView = () => {
     return `${day}/${month}/${year}`;
   };
 
+
   return (
     <>
       <Navbar />
-      <div className="container customer-view mt-4">
+      <div className="container customer-view mt-4" style={{ marginBottom: '90px' }}>
         <h2 className="text-center">My Construction Progress</h2>
         {loading ? (
           <p className="text-center">Loading orders...</p>
@@ -142,8 +148,15 @@ const CustomerView = () => {
             )}
           </>
         )}
+        <div className="button-container d-flex flex-column justify-content-end" style={{ height: '100%' }}>
+          <button onClick={handleLogout} className="nav-link d-flex align-items-center sidebar-link bg-transparent border-0">
+            <i className="fa-solid fa-right-from-bracket"></i>
+          </button>
+        </div>
       </div>
+      <Footer />
     </>
+
   );
 };
 

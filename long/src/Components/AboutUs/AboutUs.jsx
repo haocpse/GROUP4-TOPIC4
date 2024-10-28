@@ -41,30 +41,44 @@ const AboutUs = () => {
                 <section className="team-section">
                     <h2>Our Team</h2>
                     <div className="team-grid">
-                        {/* Replace with actual team images */}
                         <div className="team-member">
-                            <img src={HAO} alt="Team Member 1" />
+                            <div className="image-container">
+                                <img src={HAO} alt="Team Member 1" />
+                                <div className="overlay">CEO Châu Phú Hào</div>
+                            </div>
                             <p>Châu Phú Hào</p>
                         </div>
                         <div className="team-member">
-                            <img src={LONG} alt="Team Member 1" />
+                            <div className="image-container">
+                                <img src={LONG} alt="Team Member 2" />
+                                <div className="overlay">CEO Trương Hoàng Long</div>
+                            </div>
                             <p>Trương Hoàng Long</p>
                         </div>
                         <div className="team-member">
-                            <img src={HAO} alt="Team Member 1" />
+                            <div className="image-container">
+                                <img src={HAO} alt="Team Member 3" />
+                                <div className="overlay">CEO Châu Phú Hào</div>
+                            </div>
                             <p>Châu Phú Hào</p>
                         </div>
                         <div className="team-member">
-                            <img src={LONG} alt="Team Member 1" />
+                            <div className="image-container">
+                                <img src={LONG} alt="Team Member 4" />
+                                <div className="overlay">CEO Trương Hoàng Long</div>
+                            </div>
                             <p>Trương Hoàng Long</p>
-                        </div>
-                        <div className="team-member">
-                            <img src={HAO} alt="Team Member 1" />
+                        </div> <div className="team-member">
+                            <div className="image-container">
+                                <img src={HAO} alt="Team Member 5" />
+                                <div className="overlay">CEO Châu Phú Hào</div>
+                            </div>
                             <p>Châu Phú Hào</p>
                         </div>
-                        {/* Add more team members as needed */}
+
                     </div>
                 </section>
+
 
                 <section className="about-ceo-section">
                     <div className="container d-flex align-items-center">

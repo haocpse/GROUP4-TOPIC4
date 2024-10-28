@@ -6,8 +6,7 @@ import './Blog.module.css';
 import KoiPond from '../Assests/ho-ca-koi-dep.jpg';
 import KoiPond2 from '../Assests/hocaikoi2.jpg';
 import KoiPond3 from '../Assests/backyard-koi-pond-neave-group-outdoor-solutions_8685.jpg';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faComment } from '@fortawesome/free-solid-svg-icons';
+import Footer from '../Footer/Footer';
 
 const userImages = [KoiPond, KoiPond2, KoiPond3];
 
@@ -76,21 +75,22 @@ const Blog = () => {
                                     <Row className="mt-2 w-100">
                                         <Col xs={6} className="text-start">
                                             <small>
-                                                <FontAwesomeIcon icon={faEye} /> {blog.views} Views
+                                                <i className="fas fa-eye"></i> {blog.views} Views
                                             </small>
                                         </Col>
                                         <Col xs={6} className="text-end">
                                             <small>
-                                                <FontAwesomeIcon icon={faComment} /> {blog.comments.length} Comments
+                                                <i className="fas fa-comment"></i> {blog.comments.length} Comments
                                             </small>
                                         </Col>
-                                    </Row>
-                                </Card.Footer>
-                            </Card>
+                                </Row>
+                            </Card.Footer>
+                        </Card>
                         </Col>
                     ))}
-                </Row>
-            </Container>
+            </Row>
+        </Container >
+        <Footer/>
         </>
     );
 };
