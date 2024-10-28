@@ -1,137 +1,144 @@
 // src/components/PackagePrice.js
-import React, { useState } from "react";
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const PackagePrice = () => {
-  const [packages, setPackages] = useState([
-    { minVolume: 0, maxVolume: 10 },
-    { minVolume: 11, maxVolume: 20 },
-    { minVolume: 21, maxVolume: 50 },
-    { minVolume: 51, maxVolume: 100 },
-    { minVolume: 101, maxVolume: 3000 },
-  ]);
-
+  const [isInputVisible, setIsInputVisible] = useState(false);
   const [selectedPackageType, setSelectedPackageType] = useState("");
+  const [newPackageType, setNewPackageType] = useState("");
+  const [packagePrice, setPackagePrice] = ([])
+  const [packagePriceInfo, setPackagePriceInfo] = ([])
 
-  const handlePackageChange = (index, field, value) => {
-    const newPackages = [...packages];
-    newPackages[index][field] = value;
-    setPackages(newPackages);
-  };
+  useEffect(() => {
+    const fetchPackagePrice = async () => {
+      const response = await axios.get(`http://localhost:8080/packagePrices`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+        }
+      });
+      setPackagePrice(response.data.data)
+      setPackagePriceInfo(response.data.data.packagePriceInfoResponseList)
+    }
+  fetchPackagePrice()  
+  })
 
   const handleAddPackage = () => {
-    setPackages([...packages, { minVolume: "", maxVolume: "" }]);
+    setIsInputVisible(true);
   };
 
-  const handleRemovePackage = (index) => {
-    const newPackages = packages.filter((_, i) => i !== index);
-    setPackages(newPackages);
+  const handleCancelPackage = () => {
+    setIsInputVisible(false);
+    setSelectedPackageType('');
   };
 
-  const handlePriceGenerate = (index) => {
-    const minVolume = parseFloat(packages[index].minVolume);
-    const maxVolume = parseFloat(packages[index].maxVolume);
+  const handlePackageChange = (packageId) => {
 
-    // Validation check
-    if (
-      isNaN(minVolume) ||
-      isNaN(maxVolume) ||
-      minVolume < 0 ||
-      maxVolume < 0 ||
-      minVolume >= maxVolume
-    ) {
-      alert(
-        "Invalid volume range. Please ensure that Min Volume is less than Max Volume and both are positive."
-      );
-      return;
-    }
-
-    const generatedPrice = (minVolume + maxVolume) * 10; // Example pricing logic
-    alert(`Generated Price: ${generatedPrice.toFixed(2)}`);
-  };
-
-  const handleSubmit = () => {
-    console.log("Submitted Packages:", packages);
-    alert("Packages submitted successfully!");
-  };
+  }
 
   return (
-    <Container fluid>
-      <Row>
-        <Col md={12} className="p-3">
-          <h5 className="text-muted">Package Price</h5>
+    <div className="container mt-5">
+      <div className="card shadow">
+        <div className="card-header text-center bg-danger text-white">
+          <h2 className="pt-1">Package Price</h2>
+        </div>
+        <div className="card-body">
+          <div className="mb-3 d-flex align-items-center">
+            <label htmlFor="packageType" className="form-label mt-2 mr-2">
+              <strong>Package Type: </strong>
+            </label>
+            {isInputVisible ? (
+              <input
+                type="text"
+                className="form-control col-4"
+                placeholder="New package type"
+                value={newPackageType}
+                onChange={(e) => handlePackageChange(e.target.value, "new")}
+              />
+            ) : (
+              <select
+                className="form-control col-4"
+                id="packageType"
+                value={selectedPackageType}
+                onChange={(e) => handlePackageChange(e.target.value)}
+              >
+               <option value="">Select Package</option>
+                {packagePrice.map((pkg) => (
+                  <option key={pkg.packageId} value={pkg.packageId}>
+                    {pkg.packageType}
+                  </option>
+                ))}
+              </select>
+            )}
+            <div className="col-3">
+              {!isInputVisible ? (
+                <button className="btn btn-primary" onClick={handleAddPackage}>
+                  New Package
+                </button>
+              ) : (
+                <button className="btn btn-primary" onClick={handleCancelPackage}>
+                  Choose Package
+                </button>
+              )}
+            </div>
+          </div>
 
-          {/* Select Package Type */}
-          <Form.Group className="mb-3">
-            <Form.Label>Select Package Type:</Form.Label>
-            <Form.Select
-              value={selectedPackageType}
-              onChange={(e) => setSelectedPackageType(e.target.value)}
-            >
-              <option value="">Choose a package type</option>
-              <option value="basic">Basic</option>
-              <option value="premium">Premium</option>
-              <option value="deluxe">Deluxe</option>
-            </Form.Select>
-          </Form.Group>
-
-          <Button variant="success" onClick={handleAddPackage} className="mb-3">
-            New Package
-          </Button>
-
-          <Row className="g-4">
-            {packages.map((pkg, index) => (
-              <Col md={6} key={index}>
-                <div className="p-3 bg-light border">
-                  <Form.Group className="mb-3">
-                    <Form.Label>Min Volume:</Form.Label>
-                    <Form.Control
-                      type="number"
-                      value={pkg.minVolume}
-                      onChange={(e) =>
-                        handlePackageChange(index, "minVolume", e.target.value)
-                      }
-                      placeholder="Min Volume"
+          <div className="row g-4">
+            {packagePriceInfo.map((pkg, index) => (
+              <div className="col-md-6" key={index}>
+                <div className="p-3 border rounded bg-light">
+                  <div className="mb-3">
+                    <div className="col-5 d-flex p-2">
+                      <label htmlFor={`minVolume-${index}`} className="form-label mt-2 mr-2"><strong>Min Volume:</strong></label>
+                      <input
+                        type="number"
+                        className="form-control col-4"
+                        id={`minVolume-${index}`}
+                        value={pkg.minVolume}
+                        onChange={(e) => handlePackageChange(index, "minVolume", e.target.value)}
+                        placeholder="Min Volume"
+                      />
+                    </div>
+                    <div className="col-5 d-flex p-2">
+                      <label htmlFor={`maxVolume-${index}`} className="form-label mt-2 mr-2"><strong>Max Volume:</strong></label>
+                      <input
+                        type="number"
+                        className="form-control col-4"
+                        id={`maxVolume-${index}`}
+                        value={pkg.maxVolume}
+                        onChange={(e) => handlePackageChange(index, "maxVolume", e.target.value)}
+                        placeholder="Max Volume"
+                      />
+                    </div>
+                  </div>
+                  <div className="d-flex p-2">
+                    <label htmlFor={`maxVolume-${index}`} className="form-label mt-2 mr-2"><strong>Price:</strong></label>
+                    <input
+                      type="text"
+                      className="form-control col-8"
+                      id="price"
+                      // value={height}d
+                      // onChange={(e) => setHeight(e.target.value)}
+                      placeholder="Enter price"
                     />
-                  </Form.Group>
-
-                  <Form.Group className="mb-3">
-                    <Form.Label>Max Volume:</Form.Label>
-                    <Form.Control
-                      type="number"
-                      value={pkg.maxVolume}
-                      onChange={(e) =>
-                        handlePackageChange(index, "maxVolume", e.target.value)
-                      }
-                      placeholder="Max Volume"
-                    />
-                  </Form.Group>
-
-                  <Button
-                    variant="primary"
-                    onClick={() => handlePriceGenerate(index)}
-                    className="mt-2"
-                  >
-                    New Price
-                  </Button>
-                  <Button
-                    variant="danger"
-                    onClick={() => handleRemovePackage(index)}
-                    className="mt-2 ms-2"
-                  >
-                    Remove Package
-                  </Button>
+                  </div>
                 </div>
-              </Col>
+              </div>
             ))}
-          </Row>
-
-          <Button variant="success" onClick={handleSubmit} className="mt-4">
-            Submit
-          </Button>
-        </Col>
-      </Row>
-    </Container>
+          </div>
+          <div className="mt-2">
+            {!isInputVisible ? (
+              <button className="btn btn-primary" onClick={handleAddPackage}>
+                Save
+              </button>
+            ) : (
+              <button className="btn btn-primary" onClick={handleCancelPackage}>
+                Add new
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

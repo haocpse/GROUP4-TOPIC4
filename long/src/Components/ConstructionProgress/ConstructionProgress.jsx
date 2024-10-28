@@ -4,12 +4,18 @@ import { ToastContainer, toast } from 'react-toastify'; // Import toast
 import 'react-toastify/dist/ReactToastify.css'; // Import CSS cho toast de hien thong bao
 import { useNavigate, useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import Modal from 'react-modal';
 
 const ConstructionProgress = () => {
 
     const { constructionOrderId } = useParams(); // lay constructionOrderId từ url
     const [orders, setOrders] = useState([]);
     const [staffList, setStaffList] = useState([]);
+    const [selectedStaff, setSelectedStaff] = useState([]);
+    const [assignedStaffNames, setAssignedStaffNames] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const navigate = useNavigate();
 
     // lay ra du lieu nhan vien 
@@ -17,7 +23,7 @@ const ConstructionProgress = () => {
     const fetchStaff = async () => {
 
         try {
-            const response = await axios.get("http://localhost:8080/staffs/workers", {
+            const response = await axios.get(`http://localhost:8080/staffs/workers`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`, // Include token if needed
                 }
@@ -34,6 +40,7 @@ const ConstructionProgress = () => {
 
 
     useEffect(() => {
+
         const token = localStorage.getItem('token');
         const decoded = jwtDecode(token)
         const accountId = decoded.sub
@@ -47,6 +54,8 @@ const ConstructionProgress = () => {
                     }
                 });
                 setOrders([response.data.data]); // neu la mang se co []
+                setAssignedStaffNames(response.data.data.staffNames)
+                console.log(response.data.data.staffNames)
             } catch (error) {
 
                 console.error('Error get task list !!', error);
@@ -62,9 +71,12 @@ const ConstructionProgress = () => {
 
     // set status cho task
     const handleStatusChange = async (newStatus, taskId) => {
+
+
         const token = localStorage.getItem('token');
         const decoded = jwtDecode(token)
         const accountId = decoded.sub
+
 
         try {
             await axios.put(`http://localhost:8080/staffs/${accountId}/construction/${constructionOrderId}/status`, {
@@ -75,7 +87,7 @@ const ConstructionProgress = () => {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`, // Add token if needed for authentication
                 }
             });
-            // cập nhật giao diện
+            // cap nhat giao dien 
             setOrders(prevOrders =>
                 prevOrders.map(order => ({
                     ...order,
@@ -92,35 +104,68 @@ const ConstructionProgress = () => {
         }
     };
 
-    // set nhan vien cho tung task
-    const handleAssignStaff = async (taskId, staffId) => {
+    // set nhan vien cho constructionOrderId
+    const handleAssignStaff = async () => {
+
         const token = localStorage.getItem('token');
         const decoded = jwtDecode(token)
         const accountId = decoded.sub
-
         try {
-            await axios.put(`http://localhost:8080/staffs/${accountId}/construction/${constructionOrderId}/worker`, {
-                taskId: taskId,
-                staffId: staffId
+            const response = await axios.put(`http://localhost:8080/staffs/${accountId}/construction/${constructionOrderId}/worker`, {
+                constructionOrderId: constructionOrderId,
+                staffIds: selectedStaff
             }, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`, // Include token if needed
                 }
             });
-            setOrders(prevOrders =>
-                prevOrders.map(order => ({
-                    ...order,
-                    constructTaskStatusResponses: order.constructTaskStatusResponses.map(task =>
-                        task.taskId === taskId ? { ...task, staffId: staffId } : task
-                    )
-                }))
-            );
-            toast.success("Staff assigned SUCCESSFULLY !");
+            // Cập nhật giao diện hoặc hiển thị thông báo thành công
+            toast.success("Staff assigned SUCCESSFULLY!");
+
+            // Hiển thị tên các staff được gán bên dưới bảng
+            const assignedStaffNames = staffList
+                .filter(staff => selectedStaff.includes(staff.staffId))
+                .map(staff => staff.staffName)
+                .join(", ");
+
+            setAssignedStaffNames(assignedStaffNames); // Biến này sẽ lưu trữ tên staff để hiển thị
         } catch (error) {
             console.error('Assign error', error);
             toast.error("Staff assigned FAIL!");
         }
     }
+
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => {
+        setSelectedStaff([]); // Clear selected staff when closing
+        setIsModalOpen(false);
+    };
+
+    // Handle staff selection
+    const handleStaffSelection = (staffId) => {
+        if (selectedStaff.includes(staffId)) {
+            // Nếu đã chọn nhân viên này, bỏ chọn
+            setSelectedStaff(prev => prev.filter(id => id !== staffId));
+        } else {
+            if (selectedStaff.length >= 5) {
+                // Hiển thị thông báo nếu số lượng vượt quá giới hạn
+                toast.warning("You can assign a maximum of 5 staff members.");
+                return;
+            }
+            // Nếu chưa đạt giới hạn, thêm nhân viên mới
+            setSelectedStaff(prev => [...prev, staffId]);
+        }
+    };
+
+
+    const formatDate = (dateString) => {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
 
 
     return (
@@ -131,19 +176,24 @@ const ConstructionProgress = () => {
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
 
             <div className="container mt-4">
-                <div className="text-center" style={{ color: 'black' }}>
-                    <h2>Constructor - Construction Progress</h2>
-
+                <div className="text-center" style={{ color: 'blue' }}>
+                    <h2>Construction Progress</h2>
+                </div>
+                <div className="d-flex justify-content-end">
+                    <button onClick={openModal} className="btn btn-primary mb-3">
+                        Assign Staff
+                    </button>
                 </div>
                 {/* chay qa cac construction order */}
                 {orders.map(order => (
                     <div key={order.constructionOrderId}>
                         <table className="table table-bordered">
-                            <thead>
+                            <thead className="thead-light">
                                 <tr>
                                     <th scope="col">Task Name</th>
                                     <th scope="col">Status</th>
-                                    <th scope="col">Assign Staff</th>
+                                    <th scope="col">Start Date</th>
+                                    <th scope="col">End Date</th>
                                     <th scope="col">Complete</th>
                                 </tr>
                             </thead>
@@ -153,7 +203,7 @@ const ConstructionProgress = () => {
                                         <td>{task.content}</td>
                                         <td className="text-center">
                                             <select
-                                                value={task.constructionStatus}
+                                                value={task.status ? task.status : ""}
                                                 onChange={(e) => handleStatusChange(e.target.value, task.taskId)}
                                                 className="form-select"
                                             >
@@ -161,22 +211,23 @@ const ConstructionProgress = () => {
                                                 <option value="DONE">Completed</option>
                                             </select>
                                         </td>
-                                        <td>
-                                            <select
-                                                className="form-select mt-2"
-                                                onChange={(e) => {
-                                                    handleAssignStaff(task.taskId, e.target.value)
-                                                }}
-                                                value={task.staffId ? task.staffId : ""}
-
-                                            >
-                                                <option value="" disabled>Assign staff</option>
-                                                {staffList && staffList.map(staff => (
-                                                    <option key={staff.staffId} value={staff.staffId}>
-                                                        {staff.staffName}
-                                                    </option>
-                                                ))}
-                                            </select>
+                                        <td className="text-center">
+                                            <input
+                                                type="date"
+                                                className="form-control"
+                                                id="startDate"
+                                                value={startDate}
+                                                onChange={(e) => setStartDate(e.target.value)}
+                                            />
+                                        </td>
+                                        <td className="text-center">
+                                            <input
+                                                type="date"
+                                                className="form-control"
+                                                id="endDate"
+                                                value={endDate}
+                                                onChange={(e) => setEndDate(e.target.value)}
+                                            />
                                         </td>
                                         <td style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                             {task.status === "DONE" && (
@@ -187,8 +238,53 @@ const ConstructionProgress = () => {
                                 ))}
                             </tbody>
                         </table>
+
+                        {/* Modal for multi-select staff assignment */}
+                        <Modal isOpen={isModalOpen} onRequestClose={closeModal} contentLabel="Assign Staff Modal">
+                            <h3>Select Staff for Tasks</h3>
+                            <ul>
+                                {staffList.map(staff => (
+                                    <li key={staff.staffId}>
+                                        <label>
+                                            <input
+                                                type="checkbox"
+                                                style={{ width: "20px", height: "20px", marginRight: "8px" }}
+                                                checked={selectedStaff.includes(staff.staffId)}
+                                                onChange={() => handleStaffSelection(staff.staffId)}
+                                                // de vo hieu hoa chck box neu du 5 ng va cac staff da co
+                                                disabled={selectedStaff.length >= 5 && !selectedStaff.includes(staff.staffId)}
+                                            />
+                                            {staff.staffName}
+                                        </label>
+                                    </li>
+                                ))}
+                            </ul>
+                            <button onClick={handleAssignStaff} className="btn btn-success mt-3">
+                                Confirm Assignment
+                            </button>
+                            <button onClick={closeModal} className="btn btn-secondary mt-3">
+                                Cancel
+                            </button>
+                        </Modal>
+
                     </div>
                 ))}
+                <div className="mt-4 mb-4">
+                    <h4 className="mb-4">Assigned Staff:</h4>
+                    {
+                        assignedStaffNames && assignedStaffNames.length > 0 ? (
+                            <ul className="list-group">
+                                {assignedStaffNames.map((name, index) => (
+                                    <li key={index + 1} className="list-group-item list-group-item-secondary">
+                                        {index + 1}. {name}
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <h6 className="text-muted">No assigned staff</h6>
+                        )
+                    }
+                </div>
                 <button onClick={() => navigate(-1)} className="btn btn-secondary ">
                     Back
                 </button>

@@ -15,7 +15,8 @@ const Login = () => {
 
     const navigate = useNavigate();
 
-    function getRoleFromToken(token) {
+    function getRoleFromToken() {
+        const token = localStorage.getItem('token');
         if (token) {
             const decodedToken = jwtDecode(token);
             const roles = decodedToken.scope || decodedToken.roles || decodedToken.authorities;
@@ -39,8 +40,13 @@ const Login = () => {
             navigateBasedOnRole(roles);
         } catch (err) {
             if (err.response) {
+                // Lỗi từ phía server (status code ngoài khoảng 2xx)
                 setError(err.response.data.message || 'Something went wrong. Please try again.');
+            } else if (err.request) {
+                // Không nhận được phản hồi từ server
+                setError('No response from server. Please check your network connection.');
             } else {
+                // Các lỗi khác
                 setError('An unknown error occurred.');
             }
         }
@@ -99,12 +105,14 @@ const Login = () => {
                                 />
                             </div>
 
+                            {/* chu or */}
                             <div className="text-center col-12 row">
                                 <div className="col-md-5"><hr /></div>
                                 <div className="col-md-2">OR</div>
                                 <div className="col-md-5"><hr /></div>
                             </div>
 
+                            {/* form login */}
                             <div className="form-group mb-3 position-relative">
                                 <input
                                     type="text"
@@ -116,6 +124,7 @@ const Login = () => {
                                 />
                                 <i className="fa-solid fa-user person"></i>
                             </div>
+                            {/* password */}
                             <div className="form-group mb-3 position-relative">
                                 <input
                                     type={showHang ? 'text' : 'password'}
@@ -125,11 +134,14 @@ const Login = () => {
                                     onChange={(event) => setPassword(event.target.value)}
                                     required
                                 />
+
+                                {/* button show hang */}
                                 <button type="button" className="button-show-pass" onClick={() => setShowHang(!showHang)}>
                                     <i className={showHang ? 'fas fa-eye-slash' : 'fas fa-eye'}></i>
                                 </button>
                             </div>
 
+                            {/* Checkbox Remember Me */}
                             <div className="form-group mb-3">
                                 <input
                                     className="box"
@@ -140,7 +152,7 @@ const Login = () => {
                                 <label className="ms-2 remember-me">Remember username</label>
                             </div>
                             <button type="submit" className="btn btn-danger w-100 fw-medium py-2">LOGIN</button>
-
+                            {/* nut sign up de chuyen trang qa sign up*/}
                             <div className="text-center mt-3">
                                 <button type="button" className="btn btn-alert" onClick={handleSignUp}>
                                     Don't have an account? Sign Up

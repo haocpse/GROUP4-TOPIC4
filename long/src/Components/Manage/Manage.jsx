@@ -35,7 +35,8 @@ const Manage = () => {
                     <NavLink to="/manage/quotations" className="nav-link d-flex align-items-center sidebar-link">
                         <i className="fa-solid fa-money-bill"></i>
                     </NavLink>
-                </li> {/* Approve Quotation Maintenance*/}
+                </li>
+                 {/* Approve Quotation Maintenance*/}
                 <li className="nav-item">
                     <NavLink to="/manage/maintenance-quotations" className="nav-link d-flex align-items-center sidebar-link">
                         <i class="fi fi-rr-ballot-check"></i>
