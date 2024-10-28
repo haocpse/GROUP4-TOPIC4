@@ -52,6 +52,8 @@ import ProtectedRoutesAdmin from "./utils/ProtectedRoutesAdmin";
 import BlogDetail from "./Components/Blog/BlodDetail";
 import AboutUs from "./Components/AboutUs/AboutUs";
 import Blog from "./Components/Blog/Blog"
+import ProjectPage from "./Components/Project/Project";
+
 function App() {
   return (
     <Router>
@@ -146,7 +148,6 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/service" element={<Service />} />
-        <Route path="/about-us" element={<AboutUs />} />
         <Route path="/" element={<Main />} />
       </Routes>
     </Router>

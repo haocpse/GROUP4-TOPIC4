@@ -1,0 +1,86 @@
+.projectRow {
+    margin-bottom: 40px;
+}
+
+.projectIcon {
+    font-size: 24px;
+    color: #ffa500; /* Customize this color as needed */
+}
+
+.projectTitle {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.projectPrice {
+    font-size: 18px;
+    color: #555;
+    margin-left: 10px;
+}
+
+.projectImage {
+    max-width: 100%;
+    border-radius: 5px;
+}
+
+.viewMoreBtn {
+    margin-top: 15px;
+}
+.projectRow {
+    margin-bottom: 5rem;
+}
+
+.projectImage {
+    border-radius: 8px;
+}
+
+.badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 10;
+}
+
+.fireEffect {
+    position: relative;
+    display: inline-block;
+    animation: flicker 1s infinite;
+}
+
+.fireEffect:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url('https://your-fire-image-url.png') no-repeat center center; /* Replace with your fire image URL */
+    background-size: cover;
+    z-index: -1;
+    animation: burn 1s infinite alternate;
+}
+
+.projectIcon {
+    transition: transform 0.3s ease;
+}
+
+.projectIcon:hover {
+    transform: scale(1.1);
+}
+
+.projectTitle {
+    font-size: 1.5rem;
+}
+
+.packageInfo {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+@keyframes flicker {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
+}
+
+@keyframes burn {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.1); }
+}
