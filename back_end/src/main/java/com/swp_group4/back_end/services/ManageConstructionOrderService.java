@@ -50,7 +50,7 @@ public class ManageConstructionOrderService {
         for (ConstructionOrder constructionOrder : constructionOrders) {
             Customer customer = this.findCustomerById(constructionOrder.getCustomerId());
             ConstructOrderDetailForManagerResponse response = this.buildConstructOrderDetailForManagerResponse(constructionOrder, customer);
-            if (constructionOrder.getQuotationId() != null){
+            if (constructionOrder.getQuotationId() != null) {
                 String type = packageRepository.findById(quotationRepository.findById(constructionOrder.getQuotationId())
                                 .orElseThrow().getPackageId())
                         .orElseThrow().getPackageType();
@@ -61,7 +61,7 @@ public class ManageConstructionOrderService {
         return responses;
     }
 
-    public ConstructOrderDetailForManagerResponse assignLeader(StaffAssignedRequest request){
+    public ConstructOrderDetailForManagerResponse assignLeader(StaffAssignedRequest request) {
         ConstructionOrder order = this.findConstructOrder(request.getConstructionOrderId());
         Customer customer = this.findCustomerById(order.getCustomerId());
         constructOrderRepository.save(constructionOrderMapper.toConstructionOrder(request, order));
@@ -82,7 +82,7 @@ public class ManageConstructionOrderService {
     }
 
 
-    Customer findCustomerById(String customerId){
+    Customer findCustomerById(String customerId) {
         return customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
     }
@@ -107,7 +107,7 @@ public class ManageConstructionOrderService {
                     .endDate(constructionOrder.getConstructionEndDate())
                     .customerName(customer.getFirstName() + " " + customer.getLastName())
                     .build();
-            if (listInCompleteTasks.isEmpty()){
+            if (listInCompleteTasks.isEmpty()) {
                 response.setStatus(ConstructionOrderStatus.CONSTRUCTED);
             } else {
                 response.setStatus(ConstructionOrderStatus.CONSTRUCTING);
@@ -191,6 +191,143 @@ public class ManageConstructionOrderService {
                 .paymentInfoResponseList(paymentInfoResponses)
                 .build();
     }
+
+    public List<ConstructOrderDetailForManagerResponse> listAllOrderByStatus(String status) {
+        List<ConstructOrderDetailForManagerResponse> responses = new ArrayList<>();
+        if (status.equals("requested")) {
+            List<ConstructionOrder> constructionOrders = constructOrderRepository.findByStatus(ConstructionOrderStatus.REQUESTED);
+            for (ConstructionOrder constructionOrder : constructionOrders) {
+                Customer customer = this.findCustomerById(constructionOrder.getCustomerId());
+                ConstructOrderDetailForManagerResponse response = this.buildConstructOrderDetailForManagerResponse(constructionOrder, customer);
+                if (constructionOrder.getQuotationId() != null) {
+                    String type = packageRepository.findById(quotationRepository.findById(constructionOrder.getQuotationId())
+                                    .orElseThrow().getPackageId())
+                            .orElseThrow().getPackageType();
+                    response.setPackageType(type);
+                }
+                responses.add(response);
+            }
+        } else if (status.equals("consulting")) {
+            List<ConstructionOrder> constructionOrders = constructOrderRepository.findByStatus(ConstructionOrderStatus.CONSULTING);
+            for (ConstructionOrder constructionOrder : constructionOrders) {
+                Customer customer = this.findCustomerById(constructionOrder.getCustomerId());
+                ConstructOrderDetailForManagerResponse response = this.buildConstructOrderDetailForManagerResponse(constructionOrder, customer);
+                if (constructionOrder.getQuotationId() != null) {
+                    String type = packageRepository.findById(quotationRepository.findById(constructionOrder.getQuotationId())
+                                    .orElseThrow().getPackageId())
+                            .orElseThrow().getPackageType();
+                    response.setPackageType(type);
+                }
+                responses.add(response);
+            }
+        } else if (status.equals("designing")) {
+            List<ConstructionOrder> constructionOrders = constructOrderRepository.findByStatus(ConstructionOrderStatus.DESIGNING);
+            for (ConstructionOrder constructionOrder : constructionOrders) {
+                Customer customer = this.findCustomerById(constructionOrder.getCustomerId());
+                ConstructOrderDetailForManagerResponse response = this.buildConstructOrderDetailForManagerResponse(constructionOrder, customer);
+                if (constructionOrder.getQuotationId() != null) {
+                    String type = packageRepository.findById(quotationRepository.findById(constructionOrder.getQuotationId())
+                                    .orElseThrow().getPackageId())
+                            .orElseThrow().getPackageType();
+                    response.setPackageType(type);
+                }
+                responses.add(response);
+            }
+        } else if (status.equals("constructing")) {
+            List<ConstructionOrder> constructionOrders = constructOrderRepository.findByStatus(ConstructionOrderStatus.CONSTRUCTING);
+            for (ConstructionOrder constructionOrder : constructionOrders) {
+                Customer customer = this.findCustomerById(constructionOrder.getCustomerId());
+                ConstructOrderDetailForManagerResponse response = this.buildConstructOrderDetailForManagerResponse(constructionOrder, customer);
+                if (constructionOrder.getQuotationId() != null) {
+                    String type = packageRepository.findById(quotationRepository.findById(constructionOrder.getQuotationId())
+                                    .orElseThrow().getPackageId())
+                            .orElseThrow().getPackageType();
+                    response.setPackageType(type);
+                }
+                responses.add(response);
+            }
+        } else if (status.equals("paid_1")) {
+            List<ConstructionOrder> constructionOrders = constructOrderRepository.findByStatus(ConstructionOrderStatus.PAID_STAGE_1);
+            for (ConstructionOrder constructionOrder : constructionOrders) {
+                Customer customer = this.findCustomerById(constructionOrder.getCustomerId());
+                ConstructOrderDetailForManagerResponse response = this.buildConstructOrderDetailForManagerResponse(constructionOrder, customer);
+                if (constructionOrder.getQuotationId() != null) {
+                    String type = packageRepository.findById(quotationRepository.findById(constructionOrder.getQuotationId())
+                                    .orElseThrow().getPackageId())
+                            .orElseThrow().getPackageType();
+                    response.setPackageType(type);
+                }
+                responses.add(response);
+            }
+        } else if (status.equals("paid_2")) {
+            List<ConstructionOrder> constructionOrders = constructOrderRepository.findByStatus(ConstructionOrderStatus.PAID_STAGE_2);
+            for (ConstructionOrder constructionOrder : constructionOrders) {
+                Customer customer = this.findCustomerById(constructionOrder.getCustomerId());
+                ConstructOrderDetailForManagerResponse response = this.buildConstructOrderDetailForManagerResponse(constructionOrder, customer);
+                if (constructionOrder.getQuotationId() != null) {
+                    String type = packageRepository.findById(quotationRepository.findById(constructionOrder.getQuotationId())
+                                    .orElseThrow().getPackageId())
+                            .orElseThrow().getPackageType();
+                    response.setPackageType(type);
+                }
+                responses.add(response);
+            }
+        } else if (status.equals("paid_3")) {
+            List<ConstructionOrder> constructionOrders = constructOrderRepository.findByStatus(ConstructionOrderStatus.PAID_STAGE_3);
+            for (ConstructionOrder constructionOrder : constructionOrders) {
+                Customer customer = this.findCustomerById(constructionOrder.getCustomerId());
+                ConstructOrderDetailForManagerResponse response = this.buildConstructOrderDetailForManagerResponse(constructionOrder, customer);
+                if (constructionOrder.getQuotationId() != null) {
+                    String type = packageRepository.findById(quotationRepository.findById(constructionOrder.getQuotationId())
+                                    .orElseThrow().getPackageId())
+                            .orElseThrow().getPackageType();
+                    response.setPackageType(type);
+                }
+                responses.add(response);
+            }
+        } else if (status.equals("constructed")) {
+            List<ConstructionOrder> constructionOrders = constructOrderRepository.findByStatus(ConstructionOrderStatus.CONSTRUCTED);
+            for (ConstructionOrder constructionOrder : constructionOrders) {
+                Customer customer = this.findCustomerById(constructionOrder.getCustomerId());
+                ConstructOrderDetailForManagerResponse response = this.buildConstructOrderDetailForManagerResponse(constructionOrder, customer);
+                if (constructionOrder.getQuotationId() != null) {
+                    String type = packageRepository.findById(quotationRepository.findById(constructionOrder.getQuotationId())
+                                    .orElseThrow().getPackageId())
+                            .orElseThrow().getPackageType();
+                    response.setPackageType(type);
+                }
+                responses.add(response);
+            }
+        } else if (status.equals("confirm_quotation")) {
+            List<ConstructionOrder> constructionOrders = constructOrderRepository.findByStatus(ConstructionOrderStatus.CONFIRMED_QUOTATION);
+            for (ConstructionOrder constructionOrder : constructionOrders) {
+                Customer customer = this.findCustomerById(constructionOrder.getCustomerId());
+                ConstructOrderDetailForManagerResponse response = this.buildConstructOrderDetailForManagerResponse(constructionOrder, customer);
+                if (constructionOrder.getQuotationId() != null) {
+                    String type = packageRepository.findById(quotationRepository.findById(constructionOrder.getQuotationId())
+                                    .orElseThrow().getPackageId())
+                            .orElseThrow().getPackageType();
+                    response.setPackageType(type);
+                }
+                responses.add(response);
+            }
+        } else if (status.equals("confirm_design")) {
+            List<ConstructionOrder> constructionOrders = constructOrderRepository.findByStatus(ConstructionOrderStatus.CONFIRMED_DESIGN);
+            for (ConstructionOrder constructionOrder : constructionOrders) {
+                Customer customer = this.findCustomerById(constructionOrder.getCustomerId());
+                ConstructOrderDetailForManagerResponse response = this.buildConstructOrderDetailForManagerResponse(constructionOrder, customer);
+                if (constructionOrder.getQuotationId() != null) {
+                    String type = packageRepository.findById(quotationRepository.findById(constructionOrder.getQuotationId())
+                                    .orElseThrow().getPackageId())
+                            .orElseThrow().getPackageType();
+                    response.setPackageType(type);
+                }
+                responses.add(response);
+            }
+        }
+        return responses;
+    }
+
     //    public ServiceResponse<MaintenanceOrderResponse> contactUsForMaintenance(ServiceRequest serviceRequest) {
     // Your logic for maintenance service...
     //    }

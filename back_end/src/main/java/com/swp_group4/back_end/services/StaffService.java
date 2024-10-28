@@ -42,12 +42,14 @@ public class StaffService {
             staffAccounts = accountRepository.findByRole(Role.CONSULTANT);
         } else if (staff.equals("designer")) {
             staffAccounts = accountRepository.findByRole(Role.DESIGNER);
-        } else {
+        } else if (staff.equals("constructor")) {
             staffAccounts = accountRepository.findByRole(Role.CONSTRUCTOR);
+        } else {
+            staffAccounts = accountRepository.findByRoleNotIn(List.of(Role.CUSTOMER, Role.ADMIN, Role.MANAGER));
         }
         return staffAccounts.stream()
                 .map(account -> staffRepository.findByAccountId(account.getAccountId())
-                        .map(staffs -> new StaffResponse(staffs.getStaffId(), staffs.getStaffName()))
+                        .map(staffs -> new StaffResponse(staffs.getStaffId(), staffs.getStaffName(), account.getRole()))
                         .orElseThrow(() -> new RuntimeException("Staff not found for account: " + account.getAccountId())))
                 .toList();
     }

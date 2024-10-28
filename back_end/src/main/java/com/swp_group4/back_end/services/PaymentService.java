@@ -32,11 +32,13 @@ public class PaymentService {
     private ConstructOrderRepository constructOrderRepository;
 
     public void reCreatePayment(String paymentId){
-        PaymentOrder paymentOrder = paymentOrderRepository.findById(paymentId).orElse(null);
-        assert paymentOrder != null;
+        PaymentOrder paymentOrder = paymentOrderRepository.findById(paymentId).orElseThrow();
+        String title = "Thanh toán lại " + paymentOrder.getPaymentTitle();
+        paymentOrderRepository.delete(paymentOrder);
         PaymentOrder paymentOrder1 = PaymentOrder.builder()
                 .orderId(paymentOrder.getOrderId())
                 .customerId(paymentOrder.getCustomerId())
+                .paymentTitle(title)
                 .paymentMethods(PaymentMethods.VNPAY)
                 .total(paymentOrder.getTotal())
                 .status(PaymentStatus.PENDING)

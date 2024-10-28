@@ -10,10 +10,7 @@ import com.swp_group4.back_end.requests.PackageConstructionCreateRequest;
 import com.swp_group4.back_end.requests.PackageConstructionRequest;
 import com.swp_group4.back_end.requests.PackageCreateRequest;
 import com.swp_group4.back_end.requests.PackagePriceRequest;
-import com.swp_group4.back_end.responses.PackageDetailResponse;
-import com.swp_group4.back_end.responses.PackagePriceInfoResponse;
-import com.swp_group4.back_end.responses.PackagePriceResponse;
-import com.swp_group4.back_end.responses.PackageResponse;
+import com.swp_group4.back_end.responses.*;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -209,6 +206,30 @@ public class PackageService {
                     .packageId(pkg.getPackageId())
                     .packageType(pkg.getPackageType())
                     .packagePriceInfoResponseList(infoResponses)
+                    .build();
+            responses.add(response);
+        }
+        return responses;
+    }
+
+    public List<PackageConstructionResponse> getAllPackageConstruction() {
+        List<Packages> packages = packageRepository.findAll();
+        List<PackageConstructionResponse> responses = new ArrayList<>();
+        for (Packages pkg : packages) {
+            List<PackageConstruction> packageConstructions = packageConstructionRepository.findByPackageId(pkg.getPackageId());
+            List<PackageConstructionInfoResponse> infoResponses = new ArrayList<>();
+            for (PackageConstruction packageConstruction : packageConstructions) {
+                PackageConstructionInfoResponse infoResponse = PackageConstructionInfoResponse.builder()
+                        .packageConstructionId(packageConstruction.getPackageConstructionId())
+                        .content(packageConstruction.getContent())
+                        .price(packageConstruction.getPrice())
+                        .build();
+                infoResponses.add(infoResponse);
+            }
+            PackageConstructionResponse response = PackageConstructionResponse.builder()
+                    .packageId(pkg.getPackageId())
+                    .packageType(pkg.getPackageType())
+                    .constructionInfoResponseList(infoResponses)
                     .build();
             responses.add(response);
         }
