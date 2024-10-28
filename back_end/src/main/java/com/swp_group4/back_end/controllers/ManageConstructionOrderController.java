@@ -24,6 +24,13 @@ public class ManageConstructionOrderController {
     QuotationAndDesignApprovalService quotationAndDesignApprovalService;
 
 
+    @GetMapping("/requests/{status}")
+    public ApiResponse<List<ConstructOrderDetailForManagerResponse>> listAllOrdersByStatus(@PathVariable String status) {
+        return ApiResponse.<List<ConstructOrderDetailForManagerResponse>>builder()
+                .data(manageConstructionOrderService.listAllOrderByStatus(status))
+                .build();
+    }
+
     @GetMapping("/requests")
     public ApiResponse<List<ConstructOrderDetailForManagerResponse>> listAllOrders() {
         return ApiResponse.<List<ConstructOrderDetailForManagerResponse>>builder()

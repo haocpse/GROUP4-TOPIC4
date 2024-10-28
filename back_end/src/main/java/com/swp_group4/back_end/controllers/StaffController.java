@@ -59,4 +59,11 @@ public class StaffController {
                 .data(staffService.listAllStaff("constructor"))
                 .build();
     }
+
+    @GetMapping("/staffs")
+    public ApiResponse<List<StaffResponse>> listAll(){
+        return ApiResponse.<List<StaffResponse>>builder()
+                .data(staffService.listAllStaff(""))
+                .build();
+    }
 }
