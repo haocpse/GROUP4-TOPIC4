@@ -12,7 +12,7 @@ const ViewQuotation = () => {
     useEffect(() => {
         const fetchQuotation = async () => {
             try {
-                const respone = await axios.get(`http://localhost:8080/manage/quotations/${id}`, {
+                const respone = await axios.get(`http://localhost:8080/quotations/${id}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
                     }
@@ -28,7 +28,7 @@ const ViewQuotation = () => {
     }, [id])
     const handleApproval = async (status) => {
         try {
-            await axios.put(`http://localhost:8080/manage/quotations/${id}`, {
+            await axios.put(`http://localhost:8080/quotations/${id}`, {
                 status: status
             }, {
                 headers: {
@@ -64,6 +64,16 @@ const ViewQuotation = () => {
         );
     }
 
+    const formatDate = (dateString) => {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
+
+
     return (
         <div className="container mt-4">
             <h2 className="text-center text-primary mb-4">Quotation Details</h2>
@@ -79,10 +89,9 @@ const ViewQuotation = () => {
                                 <th className="text-center align-content-center">Price Stage 2 (VND)</th>
                                 <th className="text-center align-content-center">Price Stage 3 (VND)</th>
                                 <th className="text-center align-content-center">Total Price (VND)</th>
-                                <th className="text-center align-content-center">Customer Request</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody>{quotation &&
                             <tr>
                                 <td className="text-center align-content-center">{quotation.customerName}</td>
                                 <td className="text-center align-content-center">{quotation.packageType}</td>
@@ -91,11 +100,13 @@ const ViewQuotation = () => {
                                 <td className="text-center align-content-center">{quotation.priceStage2.toLocaleString()}</td>
                                 <td className="text-center align-content-center">{quotation.priceStage3.toLocaleString()}</td>
                                 <td className="text-center align-content-center">{quotation.totalPrice.toLocaleString()}</td>
-                                <td className="text-center align-content-center">{quotation.customerRequest}</td>
+                            </tr>}
 
-                            </tr>
                         </tbody>
                     </table>
+                    <h6 className="mt-4 fw-light">Excepted Construction Start Date: {formatDate(quotation.startDate)} </h6>
+                    <h6 className="mt-4 fw-light">Excepted Construction End Date: {formatDate(quotation.endDate)} </h6>
+                    <h3 className="mt-4">Customer request:</h3> {quotation.customerRequest}
 
                     <h3 className="mt-4">Content:</h3>
                     <ul className="list-group">
@@ -104,22 +115,24 @@ const ViewQuotation = () => {
                         ))}
                     </ul>
 
-                    <div className="text-center mt-4">
-
-                        <button
-                            className="btn btn-success me-2"
-                            onClick={() => confirmApproval("APPROVED")}
-                        >
-                            Approve
-                        </button>
-                        <button
-                            className="btn btn-danger me-2"
-                            onClick={() => confirmApproval("REJECTED")}
-                        >
-                            Reject
-                        </button>
-
-                        <button className="btn btn-danger" onClick={() => navigate(-1)}>
+                    <div className="text-center mt-4 d-flex ">
+                        {quotation.quotationStatus && quotation.quotationStatus !== "CONFIRMED" ?
+                            <div>
+                                <button
+                                    className="btn btn-success me-2"
+                                    onClick={() => confirmApproval("APPROVED")}
+                                >
+                                    Approve
+                                </button>
+                                <button
+                                    className="btn btn-danger me-2"
+                                    onClick={() => confirmApproval("REJECTED")}
+                                >
+                                    Reject
+                                </button>
+                            </div>
+                            : null}
+                        <button className="btn btn-secondary" onClick={() => navigate(-1)}>
                             Back to Quotations
                         </button>
                     </div>

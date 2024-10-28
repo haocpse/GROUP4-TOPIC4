@@ -12,9 +12,9 @@ const ViewDesign = () => {
   useEffect(() => {
     const fetchDesignDetail = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/manage/designs/${id}`, {
+        const response = await axios.get(`http://localhost:8080/designs/${id}`, {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`, 
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
           }
         });
         setDesignDetail(response.data.data);
@@ -28,7 +28,7 @@ const ViewDesign = () => {
 
   const handleApproval = async (status) => {
     try {
-      await axios.post(`http://localhost:8080/manage/designs/${id}`, {
+      await axios.post(`http://localhost:8080/designs/${id}`, {
         status: status
       }, {
         headers: {
@@ -56,7 +56,6 @@ const ViewDesign = () => {
       <h2 className="text-center" style={{ color: 'black' }}>Design Details</h2>
       <div className="card">
         <div className="card-body">
-          <h5 className="card-title">Design ID: {designDetail.designId}</h5>
           <p className="card-text"><strong>Customer Name:</strong> {designDetail.customerName}</p>
           <p className="card-text"><strong>Customer Request:</strong> {designDetail.customerRequest}</p>
 
@@ -104,19 +103,25 @@ const ViewDesign = () => {
               </div>
             </div>
           </div>
-          <button
-            className="btn btn-success me-2"
-            onClick={() => confirmApproval("APPROVED")}
-          >
-            Approve
-          </button>
-          <button
-            className="btn btn-danger me-2"
-            onClick={() => confirmApproval("REJECTED")}
-          >
-            Reject
-          </button>
-          <button className="btn btn-secondary" onClick={() => navigate(-1)}>Go Back</button>
+          {designDetail.designStatus !== "CONFIRMED" ? (
+            <div>
+              <button
+                className="btn btn-success me-2"
+                onClick={() => confirmApproval("APPROVED")}
+              >
+                Approve
+              </button>
+              <button
+                className="btn btn-danger me-2"
+                onClick={() => confirmApproval("REJECTED")}
+              >
+                Reject
+              </button>
+            </div>) : (
+            <div>
+              <button className="btn btn-secondary" onClick={() => navigate(-1)}>Go Back</button>
+            </div>
+          )}
         </div>
       </div>
     </div>

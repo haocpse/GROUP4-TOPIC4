@@ -8,19 +8,14 @@ import { jwtDecode } from "jwt-decode";
 const CustomerViewDesign = () => {
     const navigate = useNavigate();
     const { constructionOrderId } = useParams();
-    const [designDetail, setDesignDetail] = useState({}); // Thay đổi thành object để dễ kiểm tra
-    const [accountId, setAccountId] = useState('')
-
-   
+    const [designDetail, setDesignDetail] = useState({});
 
     // Lấy thông tin chi tiết thiết kế
-
-
-
     useEffect(() => {
+
         const token = localStorage.getItem('token');
         const decoded = jwtDecode(token)
-        setAccountId(decoded.sub)
+        const accountId = decoded.sub
         const fetchDesignDetail = async () => {
             try {
                 const response = await axios.get(`http://localhost:8080/customer/${accountId}/constructionOrders/${constructionOrderId}/design`, {
@@ -41,7 +36,6 @@ const CustomerViewDesign = () => {
         const token = localStorage.getItem('token');
         const decoded = jwtDecode(token)
         const accountId = decoded.sub
-
         try {
             await axios.put(`http://localhost:8080/customer/${accountId}/constructionOrders/${constructionOrderId}/design`, {
                 status: status
@@ -73,7 +67,6 @@ const CustomerViewDesign = () => {
                 <h2 className="text-center" style={{ color: 'black' }}>Design Details</h2>
                 <div className="card">
                     <div className="card-body">
-                        <h5 className="card-title">Design ID: {designDetail.designId}</h5>
                         <p className="card-text"><strong>Customer Name:</strong> {designDetail.customerName}</p>
                         <p className="card-text"><strong>Customer Request:</strong> {designDetail.customerRequest}</p>
 
@@ -123,18 +116,26 @@ const CustomerViewDesign = () => {
                         </div>
                     </div>
                 </div>
-                <button
-                    className="btn btn-success me-2"
-                    onClick={() => confirmApproval("CONFIRMED")}
-                >
-                    Approve
-                </button>
-                <button
-                    className="btn btn-danger me-2"
-                    onClick={() => confirmApproval("REJECTED")}
-                >
-                    Reject
-                </button>
+                <div className="d-flex">
+                    {designDetail.constructionOrderStatus !== "CONFIRMED_QUOTATION" ? (
+                        <div>
+                            <button
+                                className="btn btn-success me-2"
+                                onClick={() => confirmApproval("CONFIRMED")}
+                            >
+                                Approve
+                            </button>
+                            <button
+                                className="btn btn-danger me-2"
+                                onClick={() => confirmApproval("REJECTED")}
+                            >
+                                Reject
+                            </button>
+                        </div>
+                    ) : null
+                    }
+                    <button className="btn btn-secondary mt-2" onClick={() => navigate(-1)}>Go Back</button>
+                </div>
             </div>
         </>
     );

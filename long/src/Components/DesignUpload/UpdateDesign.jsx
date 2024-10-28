@@ -14,13 +14,12 @@ const UpdateDesign = () => {
   const [rearView, setRearView] = useState(null);
   const navigate = useNavigate()
 
-
-
   const handleFileChange = (e, setter) => {
     setter(e.target.files[0]);
   };
 
   useEffect(() => {
+
     const token = localStorage.getItem('token');
     const decoded = jwtDecode(token)
     const accountId = decoded.sub
@@ -44,9 +43,11 @@ const UpdateDesign = () => {
   }, [designId]);
 
   const handleSubmit = async (e) => {
+
     const token = localStorage.getItem('token');
     const decoded = jwtDecode(token)
     const accountId = decoded.sub
+
     e.preventDefault();
     try {
       const formData = new FormData();
@@ -122,7 +123,7 @@ const UpdateDesign = () => {
 
           <div className="row mb-4">
             {image2D && (
-              <div className="col-md-3 text-center">
+              <div className="col-md-4 text-center">
                 <p>2D View</p>
                 {typeof image2D === 'string' ? (
                   <img src={image2D} alt="Image 2D" className="img-fluid mb-2" />
@@ -132,7 +133,7 @@ const UpdateDesign = () => {
               </div>
             )}
             {image3D && (
-              <div className="col-md-3 text-center">
+              <div className="col-md-4 text-center">
                 <p>3D View</p>
                 {typeof image3D === 'string' ? (
                   <img src={image3D} alt="Image 3D" className="img-fluid mb-2" />
@@ -142,7 +143,7 @@ const UpdateDesign = () => {
               </div>
             )}
             {frontView && (
-              <div className="col-md-3 text-center">
+              <div className="col-md-4 text-center">
                 <p>Front View</p>
                 {typeof frontView === 'string' ? (
                   <img src={frontView} alt="Front View" className="img-fluid mb-2" />

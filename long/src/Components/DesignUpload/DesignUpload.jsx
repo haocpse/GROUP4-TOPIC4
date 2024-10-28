@@ -4,7 +4,6 @@ import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from './DesignUpload.module.css'; // Thêm các kiểu tùy chỉnh của bạn ở đây
 
-
 const DesignUpload = () => {
   const [designDetail, setDesignDetail] = useState({});
   const { constructionOrderId } = useParams();
@@ -13,8 +12,6 @@ const DesignUpload = () => {
   const [frontView, setFrontView] = useState(null);
   const [rearView, setRearView] = useState(null);
   const navigate = useNavigate()
-
-
 
   const handleFileChange = (e, setter) => {
     setter(e.target.files[0]);
@@ -70,9 +67,12 @@ const DesignUpload = () => {
   return (
     <div className="container mt-5">
       <div className="card shadow">
-        <div className="card-header text-center bg-primary text-white">
-          <h2>Customer Information</h2>
-          <p>Order ID: {constructionOrderId}</p>
+        <div className="card-header text-center text-white bg-danger">
+          <h2>Design</h2>
+          <div className="d-flex justify-content-between">
+            <p><strong>Order ID:</strong> {constructionOrderId}</p>
+            <p><strong>Designer:</strong> {designDetail.staffName}</p>
+          </div>
         </div>
         <div className="card-body">
           <div className="row mb-3 border">
@@ -86,9 +86,6 @@ const DesignUpload = () => {
               <p><strong>Address:</strong> {designDetail.address}</p>
             </div>
             <div className="col-md-12">
-              <p><strong>Staff:</strong> {designDetail.staffName}</p>
-            </div>
-            <div className="col-md-12">
               <p><strong>Request:</strong><br /> {designDetail.customerRequest}</p>
             </div>
           </div>
@@ -96,21 +93,21 @@ const DesignUpload = () => {
           <h2 className="mb-4">Uploaded Images</h2>
           <div className="row mb-4">
             {image2D && (
-              <div className="col-md-3 text-center">
+              <div className="col-md-4 text-center">
                 <p>2D View</p>
                 <img src={URL.createObjectURL(image2D)} alt="Image 2D" className="img-fluid mb-2" />
 
               </div>
             )}
             {image3D && (
-              <div className="col-md-3 text-center">
+              <div className="col-md-4 text-center">
                 <p>3D View</p>
                 <img src={URL.createObjectURL(image3D)} alt="Image 3D" className="img-fluid mb-2" />
 
               </div>
             )}
             {frontView && (
-              <div className="col-md-3 text-center">
+              <div className="col-md-4 text-center">
                 <p>Front View</p>
                 <img src={URL.createObjectURL(frontView)} alt="Front View" className="img-fluid mb-2" />
 

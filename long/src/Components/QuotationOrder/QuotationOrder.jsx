@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from './QuotationOrder.module.css';
+import { jwtDecode } from "jwt-decode";
 
 const QuotationOrder = () => {
   const { constructionOrderId } = useParams();
@@ -22,6 +23,7 @@ const QuotationOrder = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+
     const fetchQuotationOrder = async () => {
       try {
         const response = await axios.get(`http://localhost:8080/informationCustomer/${constructionOrderId}`, {

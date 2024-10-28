@@ -81,8 +81,7 @@ const BlogCRUD = () => {
                                         <small><i className="fas fa-comments"></i> {blog.comments} Comments</small>
                                     </Col>
                                 </Row>
-                            </Card.Body>
-                            <Card.Footer className="text-left">
+                            </Card.Body><Card.Footer className="text-left">
                                 <Button variant="warning" size="sm" className="me-2" onClick={() => handleEdit(blog.id)}>Edit</Button>
                                 <Button variant="danger" size="sm" onClick={() => handleDelete(blog.id)}>Delete</Button>
                             </Card.Footer>
