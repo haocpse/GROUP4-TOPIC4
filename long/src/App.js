@@ -36,7 +36,6 @@ import CustomerViewDesign from "./Components/CustomerView/CustomerViewDesign";
 import PaymentInfo from "./Components/ListQuotation/PaymentInfo";
 import MainLayoutConstructor from "./Components/MainLayoutConstructor";
 import Dashboard from "./Components/Admin/Dashboard"
-import BlogCRUD from "./Components/Admin/BlogCRUD";
 import EditBlog from "./Components/Admin/EditBlog";
 import PackageManage from "./Components/Package/PackageManage";
 import PackagePrice from "./Components/Package/PackagePrice";
@@ -49,11 +48,11 @@ import ManagerViewPayment from "./Components/ManagerViewPayment/ManagerViewPayme
 import ManagerViewDetailPayment from "./Components/ManagerViewPayment/ManagerViewDetailPayment";
 import ManagerViewDetailProgress from "./Components/ManagerViewProgress/ManagerViewDetailProgress";
 import ProtectedRoutesAdmin from "./utils/ProtectedRoutesAdmin";
+import Blog from "./Components/Blog/Blog";
 import BlogDetail from "./Components/Blog/BlodDetail";
 import AboutUs from "./Components/AboutUs/AboutUs";
-import Blog from "./Components/Blog/Blog"
 import ProjectPage from "./Components/Project/Project";
-
+import BlogCRUD from "./Components/Admin/BlogCRUD";
 function App() {
   return (
     <Router>
@@ -69,7 +68,6 @@ function App() {
         <Route path="/edit-blog/:id" element={<EditBlog />}></Route>
         <Route path="/profile" element={<AdminProfile />}></Route>
         </Route>
-
 
         {/* MANAGER*/}
         <Route element={<ProtectedRoutesManager />}>
@@ -148,6 +146,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/service" element={<Service />} />
+        <Route path="/project" element={<ProjectPage/>}/>
         <Route path="/" element={<Main />} />
       </Routes>
     </Router>
