@@ -2,11 +2,14 @@ package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.configuration.VNPAYConfig;
 import com.swp_group4.back_end.entities.ConstructionOrder;
+import com.swp_group4.back_end.entities.MaintenanceOrder;
 import com.swp_group4.back_end.entities.PaymentOrder;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
+import com.swp_group4.back_end.enums.MaintenanceOrderStatus;
 import com.swp_group4.back_end.enums.PaymentMethods;
 import com.swp_group4.back_end.enums.PaymentStatus;
 import com.swp_group4.back_end.repositories.ConstructOrderRepository;
+import com.swp_group4.back_end.repositories.MaintenanceOrderRepository;
 import com.swp_group4.back_end.repositories.PaymentOrderRepository;
 import com.swp_group4.back_end.requests.PaymentCreateRequest;
 import com.swp_group4.back_end.util.VNPayUtil;
@@ -30,6 +33,8 @@ public class PaymentService {
     private final VNPAYConfig vnPayConfig;
     @Autowired
     private ConstructOrderRepository constructOrderRepository;
+    @Autowired
+    private MaintenanceOrderRepository maintenanceOrderRepository;
 
     public void reCreatePayment(String paymentId){
         PaymentOrder paymentOrder = paymentOrderRepository.findById(paymentId).orElse(null);
@@ -45,13 +50,16 @@ public class PaymentService {
     }
 
     public PaymentOrder createPayment(PaymentCreateRequest request, String orderId){
+        MaintenanceOrder order = maintenanceOrderRepository.findById(orderId).orElseThrow();
+        order.setStatus(MaintenanceOrderStatus.PAYMENT_CREATED);
         PaymentOrder paymentOrder = PaymentOrder.builder()
-                .customerId(request.getCustomerId())
+                .customerId(request.getAccountId())
                 .orderId(orderId)
                 .paymentMethods(PaymentMethods.VNPAY)
                 .status(PaymentStatus.PENDING)
-                .total(request.getTotal())
+                .total(request.getTotalPrice())
                 .build();
+        maintenanceOrderRepository.save(order);
         return paymentOrderRepository.save(paymentOrder);
     }
 

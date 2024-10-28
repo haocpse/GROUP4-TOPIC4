@@ -1,7 +1,7 @@
 package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.*;
-import com.swp_group4.back_end.enums.ConstructionOrderStatus;
+import com.swp_group4.back_end.enums.MaintenanceOrderStatus;
 import com.swp_group4.back_end.enums.Role;
 import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
@@ -74,18 +74,19 @@ public class StaffService {
         Staff staff = staffRepository.findByAccountId(accountId).orElseThrow();
         List<MaintenanceOrder> orders = new ArrayList<>();
         if(account.getRole().equals(Role.CONSTRUCTOR))
-            orders = maintenanceOrderRepository.findByConstructorLeaderId(staff.getStaffId());
+            orders = maintenanceOrderRepository.findByConstructorLeaderIdAndStatus(staff.getStaffId(),MaintenanceOrderStatus.MAINTAINING);
         for (MaintenanceOrder order : orders){
-            MaintenanceOrderDetailForManagerResponse response = buildMaintennaceGeneralInfoTask(order.getMaintenanceOrderId());
+            MaintenanceOrderDetailForManagerResponse response = buildMaintenanceGeneralInfoTask(order.getMaintenanceOrderId());
             responses.add(response);
         }
         return responses;
     }
 
-    private MaintenanceOrderDetailForManagerResponse buildMaintennaceGeneralInfoTask(String maintenanceOrderId) {
+    private MaintenanceOrderDetailForManagerResponse buildMaintenanceGeneralInfoTask(String maintenanceOrderId) {
         MaintenanceOrder order = maintenanceOrderRepository.findById(maintenanceOrderId).orElseThrow();
         Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
         return MaintenanceOrderDetailForManagerResponse.builder()
+                .status(MaintenanceOrderStatus.MAINTAINING)
                 .orderId(order.getMaintenanceOrderId())
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .phone(customer.getPhone())
