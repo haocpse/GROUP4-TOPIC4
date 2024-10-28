@@ -1,0 +1,16 @@
+.blog-card {
+    transition: transform 0.2s ease;
+}
+
+.blog-card:hover {
+    transform: scale(1.03);
+}
+
+.blog-image {
+    height: 200px; /* Set a fixed height for the image */
+    object-fit: cover; /* Ensure the image covers the entire area */
+}
+
+.text-primary {
+    font-weight: bold; /* Make the title bold */
+}

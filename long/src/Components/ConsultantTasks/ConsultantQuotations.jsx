@@ -3,29 +3,29 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "./ConsultantTasks.css"; // Import CSS file for custom styling
 import { jwtDecode } from "jwt-decode";
 
 const ConsultantQuotations = () => {
   const [tasks, setTasks] = useState([]);
   const navigate = useNavigate();
 
-
   // Fetch tasks assigned to the consultant
   useEffect(() => {
+
     const token = localStorage.getItem('token');
     const decoded = jwtDecode(token)
     const accountId = decoded.sub
+
     const fetchTasks = async () => {
       try {
         const response = await axios.get(
           `http://localhost:8080/staffs/${accountId}/quotations`,
           {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
-            }
+              headers: {
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+              }
           }
-        );
+      );
         setTasks(response.data.data);
       } catch (error) {
         console.error("Error fetching tasks:", error);
@@ -44,37 +44,51 @@ const ConsultantQuotations = () => {
     navigate(`/consult/ownedTasks/${constructionOrderId}/quotation`);
   };
 
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const year = date.getFullYear();
+    return `${hours}:${minutes}:${seconds} ${day}/${month}/${year}`;
+};
+
+
   return (
     <div className="consultant-tasks container mt-4">
-      <h1 className="text-center mb-4" style={{ color: 'blue' }}>Consultant Quotation</h1>
+      <h1 className="text-center mb-4" style={{ color: 'blue' }}>Quotations</h1>
       <table className="table table-bordered mt-4">
         <thead className="thead-light">
           <tr>
-            <th>Construction Order ID</th>
+            <th>Quotation</th>
             <th>Customer Name</th>
-            <th>Post Date</th>
+            <th>Posted Date</th>
             <th>Status</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
           {tasks.length > 0 ? (
-            tasks.map((task) => (
+            tasks.map((task, index) => (
               <tr key={task.constructionOrderId}>
-                <td>{task.constructionOrderId}</td>
+                <td>{index+1}</td>
                 <td>{task.customerName}</td>
-                <td>{task.postedDate}</td>
+                <td>{formatDate(task.postedDate)}</td>
                 <td>{task.quotationStatus}</td>
                 <td>
                   <button
                     className="btn btn-primary"
                     onClick={
-                      task.status === 'REJECTED'
+                      task.quotationStatus === 'REJECTED'
                         ? () => handleUpdateQuotation(task.quotationId)
                         : () => handleViewQuotation(task.constructionOrderId)
                     }
                   >
-                    {task.status === 'REJECTED' ? 'Update Quotation' : 'View Quotation'}
+                    {task.quotationStatus === 'REJECTED' ? 'Update Quotation' : 'View Quotation'}
                   </button>
                 </td>
               </tr>

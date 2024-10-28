@@ -1,17 +1,24 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styles from './QuotationOrder.module.css';
+import { jwtDecode } from "jwt-decode";
 
 const ViewQuotationAfterCreate = () => {
   const { constructionOrderId } = useParams();
   const [infoquotation, setInfoQuotation] = useState({}); // Initialize as an object
+  const navigate = useNavigate()
   
 
   useEffect(() => {
+
+    const token = localStorage.getItem('token')
+    const decode = jwtDecode(token)
+    const accountId = decode.sub
+
     const fetchInfoQuotation = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/quotations/${constructionOrderId}`, {
+        const response = await axios.get(`http://localhost:8080/staffs/${accountId}/quotations/${constructionOrderId}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
           }
@@ -24,6 +31,15 @@ const ViewQuotationAfterCreate = () => {
 
     fetchInfoQuotation();
   }, [constructionOrderId]);
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+};
 
   return (
     <div className={`${styles.quotationOrderContainer} container mt-5`}>
@@ -51,16 +67,16 @@ const ViewQuotationAfterCreate = () => {
               </p>
             </div>
             <div className="col-md-12">
-              <p><strong>Price Stage 1:</strong> {infoquotation.priceStage1} VND</p>
+              <p><strong>Price Stage 1:</strong> {infoquotation.priceStage1?.toLocaleString()} VND</p>
             </div>
             <div className="col-md-12">
-              <p><strong>Price Stage 2:</strong> {infoquotation.priceStage2} VND</p>
+              <p><strong>Price Stage 2:</strong> {infoquotation.priceStage2?.toLocaleString()} VND</p>
             </div>
             <div className="col-md-12">
-              <p><strong>Price Stage 3:</strong> {infoquotation.priceStage3} VND</p>
+              <p><strong>Price Stage 3:</strong> {infoquotation.priceStage3?.toLocaleString()} VND</p>
             </div>
             <div className="col-md-12">
-              <p className="font-weight-bold"><strong>Total Price:</strong> {infoquotation.totalPrice} VND</p>
+              <p className="font-weight-bold"><strong>Total Price:</strong> {infoquotation.totalPrice?.toLocaleString()} VND</p>
             </div>
           </div>
           <div>
@@ -71,6 +87,8 @@ const ViewQuotationAfterCreate = () => {
                 <label>{item}</label>
               </div>
             ))}
+            <p><strong>Excepted Construction Start Date: </strong>{formatDate(infoquotation.startDate)}</p>
+            <p><strong>Excepted Construction End Date: </strong>{formatDate(infoquotation.endDate)}</p>
           </div>
         </div>
       </div>

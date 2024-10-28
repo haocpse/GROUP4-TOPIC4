@@ -1,10 +1,9 @@
-// src/components/PackageConstruction.js
 import React, { useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 
 const PackageConstruction = () => {
   const [constructions, setConstructions] = useState([
-    { constructionName: "Construction 1", content: "" },
+    { constructionName: "Construction 1", content: "Content" },
   ]);
 
   const handleConstructionChange = (index, field, value) => {
@@ -23,19 +22,8 @@ const PackageConstruction = () => {
     ]);
   };
 
-  const handleRemoveConstruction = (index) => {
-    const newConstructions = constructions.filter((_, i) => i !== index);
-    setConstructions(newConstructions);
-  };
-
   const handleSubmit = () => {
-    if (constructions.some((construction) => !construction.content)) {
-      alert("Please fill in all content fields before submitting.");
-      return;
-    }
-
     console.log("Submitted Constructions:", constructions);
-    alert("Constructions submitted successfully!");
   };
 
   return (
@@ -66,13 +54,6 @@ const PackageConstruction = () => {
                   }
                   placeholder="Content"
                 />
-                <Button
-                  variant="danger"
-                  onClick={() => handleRemoveConstruction(index)}
-                  className="mt-2"
-                >
-                  Remove
-                </Button>
               </Form.Group>
             </div>
           ))}

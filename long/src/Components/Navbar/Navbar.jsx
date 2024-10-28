@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 const Navbar = () => {
     const [isLogined, setIsLogined] = useState(false);
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
     useEffect(() => {
 
         const token = localStorage.getItem("token");
@@ -38,7 +38,7 @@ const Navbar = () => {
         } else if (roles === "CONSTRUCTOR") {
 
             navigate('/construct/ownedTasks')
-        } else if (roles === "CUSTOMER"){
+        } else if (roles === "CUSTOMER") {
             navigate('/myInfo/orders')
         } else {
             navigate('/login')
@@ -63,10 +63,10 @@ const Navbar = () => {
                 <li><Link to="/project">PROJECTS</Link></li>
                 <li><Link to="/service">SERVICE</Link></li>
                 <li><Link to="/contact">CONTACT</Link></li>
-                <li><Link to="/blog">BLOG</Link></li>
+                <li><Link to="/Blog">BLOG</Link></li>
                 <li><Link to="/about-us">ABOUT US</Link></li>
                 {isLogined ? (
-                    <li className="highlight-login"> <i className="fa-solid fa-user" onClick={handleClickProfile}/></li>
+                    <li className="highlight-login"> <i className="fa-solid fa-user" onClick={handleClickProfile} /></li>
                 ) : (
                     <li className="highlight-login"><Link to="/login">LOGIN</Link></li>
                 )}
