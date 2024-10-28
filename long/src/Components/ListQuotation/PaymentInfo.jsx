@@ -9,7 +9,7 @@ const PaymentInfo = () => {
     const [paymentInfo, setPaymentInfo] = useState({});
     const [payments, setPayments] = useState([]);
     const [url, setURL] = useState({});
-    const {constructionOrderId} = useParams()
+    const { constructionOrderId } = useParams()
 
     useEffect(() => {
 
@@ -36,12 +36,12 @@ const PaymentInfo = () => {
         // Chuyển hướng đến trang Payment Method với id của stage
         const response = await axios.post(`http://localhost:8080/payments/${paymentId}/vnpay?amount=${price}`, {
             headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+                'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
             }
-          });
-          console.log(response.data.data)
-          window.location.href = response.data.data;
-          
+        });
+        console.log(response.data.data)
+        window.location.href = response.data.data;
+
     };
 
     return (
