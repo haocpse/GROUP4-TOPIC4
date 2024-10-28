@@ -32,6 +32,13 @@ public class CustomerController {
                 .build();
     }
 
+    @GetMapping("/customer/{accountId}/maintenanceOrders")
+    public ApiResponse<List<MaintenanceOrderResponse>> getMaintenanceOrders(@PathVariable String accountId) {
+        return ApiResponse.<List<MaintenanceOrderResponse>>builder()
+                .data(customerService.listMaintenanceOrders(accountId))
+                .build();
+    }
+
     @GetMapping("/customer/{accountId}/constructionOrders")
     public ApiResponse<List<ConstructOrderDetailForCustomerResponse>> getCustomerOrders(@PathVariable String accountId) {
         return ApiResponse.<List<ConstructOrderDetailForCustomerResponse>>builder()

@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface MaintenanceOrderRepository extends JpaRepository<MaintenanceOrder, String> {
     List<MaintenanceOrder> findByConstructorLeaderIdAndStatus(String constructionLeader, MaintenanceOrderStatus status);
+    List<MaintenanceOrder> findByCustomerId(String customerId);
 }
