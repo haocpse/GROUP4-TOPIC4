@@ -51,6 +51,7 @@ import ManagerViewDetailProgress from "./Components/ManagerViewProgress/ManagerV
 import ProtectedRoutesAdmin from "./utils/ProtectedRoutesAdmin";
 import Blog from "./Components/Blog/Blog";
 import BlogDetail from "./Components/Blog/BlodDetail";
+import ProjectPage from "./Components/Project/Project";
 function App() {
   return (
     <Router>
@@ -144,6 +145,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/service" element={<Service />} />
+        <Route path ="/project" element={<ProjectPage/>} />
         <Route path="/" element={<Main />} />
       </Routes>
     </Router>
