@@ -10,11 +10,13 @@ import com.swp_group4.back_end.requests.MaintenanceStaffAssignedRequest;
 import com.swp_group4.back_end.responses.MaintenanceOrderDetailForManagerResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MaintenanceOrderService {
@@ -48,7 +50,9 @@ public class MaintenanceOrderService {
     public MaintenanceOrderDetailForManagerResponse assignLeader(MaintenanceStaffAssignedRequest request){
         MaintenanceOrder order = this.findMaintenanceOrder(request.getMaintenanceOrderId());
         Customer customer = this.findCustomerById(order.getCustomerId());
+        log.info(request.getConstructorLeaderId());
         maintenanceOrderRepository.save(maintenanceOrderMapper.toMaintenanceOrder(request, order));
+        log.info(order.toString());
         return this.buildMaintenanceOrderDetailForManagerResponse(order, customer);
     }
 

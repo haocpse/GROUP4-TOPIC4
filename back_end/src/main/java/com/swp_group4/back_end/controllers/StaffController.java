@@ -1,9 +1,6 @@
 package com.swp_group4.back_end.controllers;
 
-import com.swp_group4.back_end.responses.ApiResponse;
-import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
-import com.swp_group4.back_end.responses.ImportantInfoOfOrderResponse;
-import com.swp_group4.back_end.responses.StaffResponse;
+import com.swp_group4.back_end.responses.*;
 import com.swp_group4.back_end.services.StaffService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -25,6 +22,13 @@ public class StaffController {
     public ApiResponse<List<ConstructOrderDetailForStaffResponse>> getTasks(@PathVariable String accountId) {
         return ApiResponse.<List<ConstructOrderDetailForStaffResponse>>builder()
                 .data(staffService.getTasks(accountId))
+                .build();
+    }
+
+    @GetMapping("/staffs/{accountId}/maintenanceOrders")
+    public ApiResponse<List<MaintenanceOrderDetailForManagerResponse>> getMaintenanceOrders(@PathVariable String accountId) {
+        return ApiResponse.<List<MaintenanceOrderDetailForManagerResponse>>builder()
+                .data(staffService.getMaintenanceTask(accountId))
                 .build();
     }
 
