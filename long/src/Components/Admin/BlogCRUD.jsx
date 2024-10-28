@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Badge } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-<<<<<<< Updated upstream
 import KoiPond from '../Assests/ho-ca-koi-dep.jpg';
 import KoiPond2 from '../Assests/hocaikoi2.jpg';
 import KoiPond3 from '../Assests/backyard-koi-pond-neave-group-outdoor-solutions_8685.jpg';
-=======
-import Navbar from '../Navbar/Navbar';
->>>>>>> Stashed changes
 
 const BlogCRUD = () => {
     const [blogs, setBlogs] = useState([]);
@@ -60,11 +56,13 @@ const BlogCRUD = () => {
     };
 
     return (
-        <>
-            <Navbar />
-            <Container fluid className="mt-4">
+        <Container fluid className="mt-4">
+            <Row className="mb-3">
+                <Col>
+                    <h2>Blog Dashboard</h2>
+                </Col>
+            </Row>
 
-<<<<<<< Updated upstream
             <Row>
                 {blogs.map((blog) => (
                     <Col md={4} key={blog.id} className="mb-4">
@@ -83,55 +81,15 @@ const BlogCRUD = () => {
                                         <small><i className="fas fa-comments"></i> {blog.comments} Comments</small>
                                     </Col>
                                 </Row>
-                            </Card.Body>
-                            <Card.Footer className="text-left">
+                            </Card.Body><Card.Footer className="text-left">
                                 <Button variant="warning" size="sm" className="me-2" onClick={() => handleEdit(blog.id)}>Edit</Button>
                                 <Button variant="danger" size="sm" onClick={() => handleDelete(blog.id)}>Delete</Button>
                             </Card.Footer>
                         </Card>
-=======
-                <Row className="mb-3">
-                    <Col>
-                        <h2>Blog Dashboard</h2>
->>>>>>> Stashed changes
                     </Col>
-                </Row>
-
-                <Row>
-                    {blogs.map((blog) => (
-                        <Col md={4} key={blog.id} className="mb-4">
-                            <Card>
-                                <Card.Img variant="top" src={blog.image} />
-                                <Card.Body>
-                                    <Card.Title>{blog.title}</Card.Title>
-
-                                    {/* Blog Status */}
-                                    <Badge bg={blog.status === "Published" ? "success" : "secondary"} className="mb-2">
-                                        {blog.status}
-                                    </Badge>
-
-                                    {/* Views and Comments */}
-                                    <Row className="mt-2">
-                                        <Col xs={6} className="text-left">
-                                            <small><i className="fas fa-eye"></i> {blog.views} Views</small>
-                                        </Col>
-                                        <Col xs={6} className="text-right">
-                                            <small><i className="fas fa-comments"></i> {blog.comments} Comments</small>
-                                        </Col>
-                                    </Row>
-                                </Card.Body>
-
-                                {/* Admin Actions */}
-                                <Card.Footer className="text-left">
-                                    <Button variant="warning" size="sm" className="me-2" onClick={() => handleEdit(blog.id)}>Edit</Button>
-                                    <Button variant="danger" size="sm" onClick={() => handleDelete(blog.id)}>Delete</Button>
-                                </Card.Footer>
-                            </Card>
-                        </Col>
-                    ))}
-                </Row>
-            </Container>
-        </>
+                ))}
+            </Row>
+        </Container>
     );
 };
 
