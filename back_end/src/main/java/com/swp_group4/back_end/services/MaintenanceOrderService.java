@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
@@ -50,7 +51,9 @@ public class MaintenanceOrderService {
     public MaintenanceOrderDetailForManagerResponse assignLeader(MaintenanceStaffAssignedRequest request){
         MaintenanceOrder order = this.findMaintenanceOrder(request.getMaintenanceOrderId());
         Customer customer = this.findCustomerById(order.getCustomerId());
+        log.info(request.getConstructorLeaderId());
         maintenanceOrderRepository.save(maintenanceOrderMapper.toMaintenanceOrder(request, order));
+        log.info(order.toString());
         return this.buildMaintenanceOrderDetailForManagerResponse(order, customer);
     }
 

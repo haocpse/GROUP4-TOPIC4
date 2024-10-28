@@ -1,17 +1,12 @@
 package com.swp_group4.back_end.services;
 
-import com.swp_group4.back_end.entities.Account;
-import com.swp_group4.back_end.entities.ConstructionOrder;
-import com.swp_group4.back_end.entities.Customer;
-import com.swp_group4.back_end.entities.Staff;
+import com.swp_group4.back_end.entities.*;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.enums.Role;
-import com.swp_group4.back_end.repositories.AccountRepository;
-import com.swp_group4.back_end.repositories.ConstructOrderRepository;
-import com.swp_group4.back_end.repositories.CustomerRepository;
-import com.swp_group4.back_end.repositories.StaffRepository;
+import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
 import com.swp_group4.back_end.responses.ImportantInfoOfOrderResponse;
+import com.swp_group4.back_end.responses.MaintenanceOrderDetailForManagerResponse;
 import com.swp_group4.back_end.responses.StaffResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -35,6 +30,8 @@ public class StaffService {
     CustomerRepository customerRepository;
     @Autowired
     AccountService accountService;
+    @Autowired
+    MaintenanceOrderRepository maintenanceOrderRepository;
 
     public List<StaffResponse> listAllStaff(String staff) {
         List<Account> staffAccounts;
@@ -71,6 +68,32 @@ public class StaffService {
             responses.add(response);
         }
         return responses;
+    }
+
+    public List<MaintenanceOrderDetailForManagerResponse> getMaintenanceTask(String accountId){
+        Account account = accountRepository.findById(accountId).orElseThrow();
+        List<MaintenanceOrderDetailForManagerResponse> responses = new ArrayList<>();
+        Staff staff = staffRepository.findByAccountId(accountId).orElseThrow();
+        List<MaintenanceOrder> orders = new ArrayList<>();
+        if(account.getRole().equals(Role.CONSTRUCTOR))
+            orders = maintenanceOrderRepository.findByConstructorLeaderId(staff.getStaffId());
+        for (MaintenanceOrder order : orders){
+            MaintenanceOrderDetailForManagerResponse response = buildMaintennaceGeneralInfoTask(order.getMaintenanceOrderId());
+            responses.add(response);
+        }
+        return responses;
+    }
+
+    private MaintenanceOrderDetailForManagerResponse buildMaintennaceGeneralInfoTask(String maintenanceOrderId) {
+        MaintenanceOrder order = maintenanceOrderRepository.findById(maintenanceOrderId).orElseThrow();
+        Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
+        return MaintenanceOrderDetailForManagerResponse.builder()
+                .orderId(order.getMaintenanceOrderId())
+                .customerName(customer.getFirstName() + " " + customer.getLastName())
+                .phone(customer.getPhone())
+                .address(customer.getAddress())
+                .status(order.getStatus())
+                .build();
     }
 
     private ConstructOrderDetailForStaffResponse buildGeneralInfoTask(String constructionOrderId) {
