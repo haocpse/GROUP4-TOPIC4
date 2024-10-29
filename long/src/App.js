@@ -36,7 +36,6 @@ import CustomerViewDesign from "./Components/CustomerView/CustomerViewDesign";
 import PaymentInfo from "./Components/ListQuotation/PaymentInfo";
 import MainLayoutConstructor from "./Components/MainLayoutConstructor";
 import Dashboard from "./Components/Admin/Dashboard"
-import BlogCRUD from "./Components/Admin/BlogCRUD";
 import EditBlog from "./Components/Admin/EditBlog";
 import PackageManage from "./Components/Package/PackageManage";
 import PackagePrice from "./Components/Package/PackagePrice";
@@ -49,13 +48,15 @@ import ManagerViewPayment from "./Components/ManagerViewPayment/ManagerViewPayme
 import ManagerViewDetailPayment from "./Components/ManagerViewPayment/ManagerViewDetailPayment";
 import ManagerViewDetailProgress from "./Components/ManagerViewProgress/ManagerViewDetailProgress";
 import ProtectedRoutesAdmin from "./utils/ProtectedRoutesAdmin";
+import Blog from "./Components/Blog/Blog";
 import BlogDetail from "./Components/Blog/BlodDetail";
 import AboutUs from "./Components/AboutUs/AboutUs";
-import Blog from "./Components/Blog/Blog"
 import ProjectPage from "./Components/Project/Project";
 import CustomerProfile from "./Components/CustomerProfile/CustomerProfile";
 import CustomerUpdate from "./Components/CustomerProfile/CustomerUpdate";
 
+import BlogCRUD from "./Components/Admin/BlogCRUD";
+import CustomerViewMaintenance from "./Components/CustomerView/CustomerViewMaintenance";
 function App() {
   return (
     <Router>
@@ -71,7 +72,6 @@ function App() {
           <Route path="/edit-blog/:id" element={<EditBlog />}></Route>
           <Route path="/profile" element={<AdminProfile />}></Route>
         </Route>
-
 
         {/* MANAGER*/}
         <Route element={<ProtectedRoutesManager />}>
@@ -119,7 +119,7 @@ function App() {
           </Route>
         </Route>
 
-        {/* CUSTOMER */}
+        {/* MAINTENANCE CONSTRUCTOR */}
         <Route element={<ProtectedRoutesConstructor />}>
           <Route path="/maintenance" element={<MainLayoutConstructor />}>
             <Route path="ownedTasks" element={<ConstructionMaintenance />} />
@@ -127,35 +127,29 @@ function App() {
         </Route>
 
 
-        {/* MAINTENANCE CONSTRUCTOR*/}
+        {/* CUSTOMER*/}
         <Route path="/myInfo" element={<CustomerProfile />} />
         <Route path="/myInfo/:id/update" element={<CustomerUpdate />} />
 
         <Route path="/myInfo/orders" element={<CustomerView />} />
-        <Route
-          path="/myInfo/orders/:constructionOrderId/quotation"
-          element={<CustomerQuotationList />}
-        />
-        <Route
-          path="/myInfo/orders/:constructionOrderId/design"
-          element={<CustomerViewDesign />}
-        />
-        <Route
-          path="/myInfo/orders/:constructionOrderId/payments"
-          element={<PaymentInfo />}
-        />
-
+        <Route path="/myInfo/orders/:constructionOrderId/quotation" element={<CustomerQuotationList />} />
+        <Route path="/myInfo/orders/:constructionOrderId/design" element={<CustomerViewDesign />} />
+        <Route path="/myInfo/orders/:constructionOrderId/payments" element={<PaymentInfo />} />
+        <Route path="/myInfo/orders/maintenance" element={<CustomerViewMaintenance />} />
 
 
 
         {/* NAVBAR */}
         <Route path="/about-us" element={<AboutUs />} />
+
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/service" element={<Service />} />
+        <Route path="/project" element={<ProjectPage />} />
+        <Route path="/about-us" element={<AboutUs />} />
         <Route path="/" element={<Main />} />
       </Routes>
     </Router>
