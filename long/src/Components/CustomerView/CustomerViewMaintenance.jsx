@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./CustomerView.css";
 import axios from "axios";
 import Navbar from "../Navbar/Navbar";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode"; // Named import
 import Footer from "../Footer/Footer";
 
 const CustomerViewMaintenance = () => {
@@ -14,14 +14,31 @@ const CustomerViewMaintenance = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const decode = jwtDecode(token);
-    const accountId = decode.sub;
+
+    // Kiểm tra token có tồn tại không
+    if (!token) {
+      setError("You are not logged in. Please log in to view your orders.");
+      setLoading(false);
+      return;
+    }
+
+    let accountId;
+    try {
+      const decodedToken = jwtDecode(token);
+      accountId = decodedToken.sub; // Lấy accountId từ token
+    } catch (err) {
+      console.error("Invalid token:", err);
+      setError("Invalid token. Please log in again.");
+      setLoading(false);
+      return;
+    }
 
     const fetchOrders = async () => {
       try {
+        // Thay đổi URL API ở đây
         const response = await axios.get(`http://localhost:8080/customer/${accountId}/maintenanceOrders`, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`, // Đảm bảo rằng token được sử dụng đúng cách
           },
         });
         setOrders(response.data.data);
@@ -35,6 +52,11 @@ const CustomerViewMaintenance = () => {
 
     fetchOrders();
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
 
   const handleViewPayment = (maintenanceOrderId) => {
     navigate(`/myInfo/orders/${maintenanceOrderId}/paymentInfo`);
@@ -80,7 +102,7 @@ const CustomerViewMaintenance = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {orders.map((order, index) => (
+                  {orders.map((order) => (
                     <tr key={order.maintenanceOrderId}>
                       <td>{order.customerName}</td>
                       <td>{order.phone}</td>
@@ -106,6 +128,11 @@ const CustomerViewMaintenance = () => {
             )}
           </>
         )}
+        <div className="text-center mt-4">
+          <button className="btn btn-danger" onClick={handleLogout}>
+            Log Out
+          </button>
+        </div>
       </div>
       <Footer />
     </>
