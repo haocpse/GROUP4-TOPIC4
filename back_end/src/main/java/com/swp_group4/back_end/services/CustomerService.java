@@ -105,8 +105,8 @@ public class CustomerService {
         List<MaintenanceOrderResponse> responses = new ArrayList<>();
         for (MaintenanceOrder order : orderList) {
             MaintenanceOrderResponse response = MaintenanceOrderResponse.builder()
-                    .customerId(customer.getFirstName() + " " + customer.getLastName())
-                    .total(order.getTotal())
+                    .customerName(customer.getFirstName() + " " + customer.getLastName())
+                    .totalPrice(order.getTotal())
                     .status(order.getStatus())
                     .maintenanceOrderId(order.getMaintenanceOrderId())
                     .build();
