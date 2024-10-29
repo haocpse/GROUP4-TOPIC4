@@ -11,6 +11,5 @@ import org.springframework.web.multipart.MultipartFile;
 @Builder
 public class BlogCreateOrUpdateRequest {
     String title;
-    String author;
     String content;
 }

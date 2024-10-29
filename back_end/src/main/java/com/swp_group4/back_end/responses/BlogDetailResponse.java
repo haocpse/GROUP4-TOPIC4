@@ -3,6 +3,9 @@ package com.swp_group4.back_end.responses;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
+
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,4 +17,5 @@ public class BlogDetailResponse {
     String content;
     String headerImageUrl;
     String imageUrl;
+    LocalDateTime date;
 }

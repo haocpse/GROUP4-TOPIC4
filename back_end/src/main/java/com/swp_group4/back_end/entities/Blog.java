@@ -20,7 +20,6 @@ public class Blog {
     @GeneratedValue(strategy = GenerationType.UUID)
     String blogId;
     String title;
-    String author;
     String content;
     String headerImageUrl;
     String imageUrl;

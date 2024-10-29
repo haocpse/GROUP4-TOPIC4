@@ -31,7 +31,6 @@ public class BlogService {
         Blog blog = Blog.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
-                .author(request.getAuthor())
                 .dateCreated(LocalDateTime.now())
                 .build();
         blog = blogRepository.save(blog);
@@ -56,9 +55,6 @@ public class BlogService {
         if (request.getContent() != null) {
             blog.setContent(request.getContent());
         }
-        if (request.getAuthor() != null) {
-            blog.setAuthor(request.getAuthor());
-        }
         String baseUrl = "http://localhost:8080/images/" + id + "/";
         if (headerImg != null && !headerImg.isEmpty()) {
             String headerImageFileName = saveImage(headerImg, id);
@@ -82,11 +78,11 @@ public class BlogService {
     public BlogDetailResponse getBlogDetail(String id) {
         Blog blog = blogRepository.findById(id).orElseThrow();
         return BlogDetailResponse.builder()
-                .author(blog.getAuthor())
                 .title(blog.getTitle())
                 .content(blog.getContent())
                 .imageUrl(blog.getImageUrl())
                 .headerImageUrl(blog.getHeaderImageUrl())
+                .date(blog.getDateCreated())
                 .build();
     }
 
