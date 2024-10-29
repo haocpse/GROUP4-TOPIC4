@@ -20,7 +20,6 @@ import java.util.List;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Slf4j
 public class MaintenanceOrderService {
     @Autowired
     MaintenanceOrderRepository maintenanceOrderRepository;
