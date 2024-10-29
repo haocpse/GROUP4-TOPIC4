@@ -1,4 +1,5 @@
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 
@@ -7,6 +8,10 @@ const formatCurrency = (value) => {
 };
 
 const ConstructionMaintenance = () => {
+    const token = localStorage.getItem('token');
+    const decoded = jwtDecode(token)
+    const accountId = decoded.sub
+
 
     const [maintenanceOrders, setMaintenanceOrders] = useState([]);
     const [totalPrice, setTotalPrice] = useState({});
@@ -14,7 +19,7 @@ const ConstructionMaintenance = () => {
         const fetchOrder = async () => {
 
             try {
-                const response = await axios.get('http://localhost:8080/maintenance/ownedTasks', {
+                const response = await axios.get(`http://localhost:8080/staffs/${accountId}/maintenanceOrders`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
                     }
@@ -38,17 +43,17 @@ const ConstructionMaintenance = () => {
 
 
 
-    const handleSubmit = async (maintenanceOrderId) => {
+    const handleSubmit = async (orderId) => {
         try {
-            const price = totalPrice[maintenanceOrderId];
+            const price = totalPrice[orderId];
 
-            if (price === undefined) {
+            if (price === undefined || price === null || isNaN(price) || Number(price) <= 0) {
                 toast.error("Please enter price !!!");
                 return;
             }
 
-            const response = await axios.post('http://localhost:8080/maintenance/totalPrice', {
-                maintenanceOrderId,
+            const response = await axios.put(`http://localhost:8080/maintenance/${orderId}/addTotal`, {
+                orderId,
                 totalPrice: Number(price)
             },
                 {
@@ -75,8 +80,7 @@ const ConstructionMaintenance = () => {
                         <tr>
                             <th>Maintenance Order ID</th>
                             <th>Customer Name</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
+
                             <th>Total (VND)</th>
                             <th>Actions</th>
                         </tr>
@@ -87,12 +91,11 @@ const ConstructionMaintenance = () => {
                                 <td colSpan="4" className="text-center">No construction orders available.</td>
                             </tr>
                         ) : (
-                            maintenanceOrders.map(order => (
-                                <tr key={order.maintenanceOrderId}>
-                                    <td>{order.maintenanceOrderId}</td>
-                                    <td>{order.customerName}</td>
-                                    <td>{order.startDate}</td>
-                                    <td>{order.endDate}</td>
+                            maintenanceOrders.map(orderId => (
+                                <tr key={orderId.orderId}>
+                                    <td>{orderId.orderId}</td>
+                                    <td>{orderId.customerName}</td>
+
 
                                     {/* total */}
                                     <td>
@@ -102,15 +105,15 @@ const ConstructionMaintenance = () => {
                                             placeholder="Enter Price" /> */}
                                         <input
                                             type="text"
-                                            value={totalPrice[order.maintenanceOrderId] ? formatCurrency(totalPrice[order.maintenanceOrderId]) : ''}
-                                            onChange={(e) => handlePriceChange(order.maintenanceOrderId, e.target.value)}
+                                            value={totalPrice[orderId.orderId] ? formatCurrency(totalPrice[orderId.orderId]) : ''}
+                                            onChange={(e) => handlePriceChange(orderId.orderId, e.target.value)}
                                             placeholder="Enter Price"
                                         />
 
                                     </td>
 
                                     <td>
-                                        <button onClick={() => handleSubmit(order.maintenanceOrderId)} className="btn btn-danger">
+                                        <button onClick={() => handleSubmit(orderId.orderId)} className="btn btn-danger">
                                             Submit
                                         </button>
                                     </td>

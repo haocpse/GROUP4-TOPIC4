@@ -36,12 +36,6 @@ const Manage = () => {
                         <i className="fa-solid fa-money-bill"></i>
                     </NavLink>
                 </li>
-                 {/* Approve Quotation Maintenance*/}
-                <li className="nav-item">
-                    <NavLink to="/manage/maintenance-quotations" className="nav-link d-flex align-items-center sidebar-link">
-                        <i class="fi fi-rr-ballot-check"></i>
-                    </NavLink>
-                </li>
                 {/* Approve Desing */}
                 <li className="nav-item">
                     <NavLink to="/manage/designs" className="nav-link  d-flex align-items-center sidebar-link">
