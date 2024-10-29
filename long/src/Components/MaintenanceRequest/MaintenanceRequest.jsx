@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
+import { jwtDecode } from "jwt-decode";
 
 const MaintenanceRequest = () => {
     const [maintenanceRequests, setMaintenanceRequests] = useState([]);
@@ -9,7 +10,7 @@ const MaintenanceRequest = () => {
     // lay du lieu constructor staff tu backend
     const fetchConstructors = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/manage/maintenance/constructors', {
+            const response = await axios.get('http://localhost:8080/maintenance/constructors', {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 }
@@ -108,6 +109,26 @@ const MaintenanceRequest = () => {
                 return { icon: <i className="fas fa-info-circle" title="Requested" style={{ marginRight: '5px' }}></i>, className: "text-secondary" };
         }
     };
+    const handleCreatePayment = async (totalPrice, orderId) => {
+        const token = localStorage.getItem('token');
+        const decoded = jwtDecode(token)
+        const accountId = decoded.sub
+        try {
+            await axios.post(`http://localhost:8080/maintenance/${orderId}/createPayment`, {
+                totalPrice, orderId, accountId
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+
+            });
+
+            toast.success("POST SUCCESS !! ^^");
+        } catch (error) {
+            console.error('Error fetching constructors:', error);
+            toast.error('Failed to load constructors. ^^');
+        }
+    };
 
 
     return (
@@ -142,11 +163,10 @@ const MaintenanceRequest = () => {
                         <th scope="col" className="text-center">Customer</th>
                         <th scope="col" className="text-center">Phone</th>
                         <th scope="col" className="text-center">Address</th>
-                        <th scope="col" className="text-center">Start Date</th>
-                        <th scope="col" className="text-center">End Date</th>
                         <th scope="col" className="text-center">Total Price</th>
                         <th scope="col" className="text-center">Constructor</th>
                         <th scope="col" className="text-center">Status</th>
+                        <th scope="col" className="text-center">Create Payment</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -186,7 +206,16 @@ const MaintenanceRequest = () => {
                                 <td className={`text-center align-content-center col-2 ${getStatusIcon(request.status).className}`}>
                                     {getStatusIcon(request.status).icon} {request.status}
                                 </td>
+                                <td className="text-center align-content-center">
+                                    {request.status === "MAINTENANing" ? (
+                                        <button
+                                            className="btn btn-danger"
+                                            onClick={() => handleCreatePayment(request.totalPrice, request.orderId)}
+                                        >
+                                        </button>) : (null)
+                                    }
 
+                                </td>
                             </tr>
                         ))
                     )}

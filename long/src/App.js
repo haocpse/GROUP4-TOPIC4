@@ -53,21 +53,23 @@ import BlogDetail from "./Components/Blog/BlodDetail";
 import AboutUs from "./Components/AboutUs/AboutUs";
 import Blog from "./Components/Blog/Blog"
 import ProjectPage from "./Components/Project/Project";
+import CustomerProfile from "./Components/CustomerProfile/CustomerProfile";
+import CustomerUpdate from "./Components/CustomerProfile/CustomerUpdate";
 
 function App() {
   return (
     <Router>
-      
-      <Routes>
-      <Route element={<ProtectedRoutesAdmin />}>
-        <Route path="/package" element={<PackageManage />}>
-          <Route path="package-price" element={<PackagePrice />} />
-          <Route path="package-construction" element={<PackageConstruction />} />{" "}
-        </Route>
 
-        <Route path="/BlogCRUD" element={<BlogCRUD />}></Route>
-        <Route path="/edit-blog/:id" element={<EditBlog />}></Route>
-        <Route path="/profile" element={<AdminProfile />}></Route>
+      <Routes>
+        <Route element={<ProtectedRoutesAdmin />}>
+          <Route path="/package" element={<PackageManage />}>
+            <Route path="package-price" element={<PackagePrice />} />
+            <Route path="package-construction" element={<PackageConstruction />} />{" "}
+          </Route>
+
+          <Route path="/BlogCRUD" element={<BlogCRUD />}></Route>
+          <Route path="/edit-blog/:id" element={<EditBlog />}></Route>
+          <Route path="/profile" element={<AdminProfile />}></Route>
         </Route>
 
 
@@ -78,8 +80,6 @@ function App() {
             <Route path="maintenance-request" element={<MaintenanceRequest />} />
             <Route path="quotations" element={<ApproveQuotation />} />
             <Route path="quotations/:id" element={<ViewQuotation />} />
-            <Route path="maintenance-quotations" element={<ApproveMaintenanceQuotation />} />
-            <Route path="maintenance-quotations/:id" element={<ViewMaintenanceQuotation />} />
             <Route path="designs" element={<ApproveDesign />} />
             <Route path="designs/:id" element={<ViewDesign />} />
             <Route path="viewProgress" element={<ManagerViewProgess />} />
@@ -119,7 +119,7 @@ function App() {
           </Route>
         </Route>
 
-        {/* MAINTENANCE CONSTRUCTOR*/}
+        {/* CUSTOMER */}
         <Route element={<ProtectedRoutesConstructor />}>
           <Route path="/maintenance" element={<MainLayoutConstructor />}>
             <Route path="ownedTasks" element={<ConstructionMaintenance />} />
@@ -127,7 +127,9 @@ function App() {
         </Route>
 
 
-
+        {/* MAINTENANCE CONSTRUCTOR*/}
+        <Route path="/myInfo" element={<CustomerProfile />} />
+        <Route path="/myInfo/:id/update" element={<CustomerUpdate />} />
 
         <Route path="/myInfo/orders" element={<CustomerView />} />
         <Route
@@ -142,8 +144,14 @@ function App() {
           path="/myInfo/orders/:constructionOrderId/payments"
           element={<PaymentInfo />}
         />
+
+
+
+
+        {/* NAVBAR */}
+        <Route path="/about-us" element={<AboutUs />} />
         <Route path="/blog" element={<Blog />} />
-        <Route path="/blog/:id" element={<BlogDetail/>} />
+        <Route path="/blog/:id" element={<BlogDetail />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/contact" element={<Contact />} />
