@@ -15,6 +15,7 @@ public class ProjectDashboardResponse {
     long totalProjects;
     double successPercentage;
     double failedPercentage;
+    double inProgressPercentage;
     List<PackageDashboardResponse> PackageDashboardResponses;
 
 }

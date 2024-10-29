@@ -13,5 +13,5 @@ public interface QuotationRepository extends JpaRepository<Quotation, String> {
 
     List<Quotation> findByQuotationStatus(QuotationStatus status);
     Optional<Quotation> findByQuotationIdAndQuotationStatusIn(String quotationId, List<QuotationStatus> statuses);
-
+    List<Quotation> findByPackageId(String packageId);
 }

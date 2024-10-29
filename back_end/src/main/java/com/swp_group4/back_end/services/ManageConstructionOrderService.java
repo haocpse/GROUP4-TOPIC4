@@ -175,11 +175,11 @@ public class ManageConstructionOrderService {
                     .paymentStatus(paymentOrder.getStatus())
                     .build();
             if (count == 1) {
-                infoResponse.setPrice(quotation.getPriceStage1());
+                infoResponse.setPrice(order.getTotal() * quotation.getPercentageStage1());
             } else if (count == 2) {
-                infoResponse.setPrice(quotation.getPriceStage2());
+                infoResponse.setPrice(order.getTotal() * quotation.getPercentageStage2());
             } else {
-                infoResponse.setPrice(quotation.getPriceStage3());
+                infoResponse.setPrice(order.getTotal() * quotation.getPercentageStage3());
             }
             paymentInfoResponses.add(infoResponse);
             count++;

@@ -81,7 +81,7 @@ public class QuotationService {
         totalPrice = this.totalPrice(volume, packagePrice.getPrice());
         ConstructionOrder order = this.findOrderById(constructionOrderId);
         this.saveConstructionTasks(constructionOrderId, request.getPackageId());
-        Quotation quotation =  quotationRepository.save(this.saveQuotation(request, totalPrice, volume));
+        Quotation quotation =  quotationRepository.save(this.saveQuotation(request, volume));
         constructOrderRepository.save(this.saveConstructionOrder(order, quotation, request, totalPrice));
         return quotation;
     }
@@ -134,11 +134,11 @@ public class QuotationService {
         return constructOrderRepository.save(order);
     }
 
-    Quotation saveQuotation(ExportQuotationRequest request, double totalPrice, double volume) {
+    Quotation saveQuotation(ExportQuotationRequest request, double volume) {
         Quotation quotation = Quotation.builder()
-                .priceStage1(totalPrice*0.2)
-                .priceStage2(totalPrice*0.3)
-                .priceStage3(totalPrice*0.5)
+                .percentageStage1(request.getPercentageStage1())
+                .percentageStage2(request.getPercentageStage2())
+                .percentageStage3(request.getPercentageStage3())
                 .width(request.getWidth())
                 .height(request.getHeight())
                 .length(request.getLength())
@@ -154,11 +154,11 @@ public class QuotationService {
         return quotation;
     }
 
-    Quotation updateQuotation(ExportQuotationRequest request, double totalPrice, double volume, String quotationId) {
+    Quotation updateQuotation(ExportQuotationRequest request, double volume, String quotationId) {
         Quotation quotation = quotationRepository.findById(quotationId).orElseThrow(() -> new RuntimeException("Quotation not found for id: " + quotationId));
-        quotation.setPriceStage1(totalPrice * 0.2);
-        quotation.setPriceStage2(totalPrice * 0.3);
-        quotation.setPriceStage3(totalPrice * 0.5);
+        quotation.setPercentageStage1(request.getPercentageStage1());
+        quotation.setPercentageStage2(request.getPercentageStage2());
+        quotation.setPercentageStage3(request.getPercentageStage3());
         quotation.setWidth(request.getWidth());
         quotation.setHeight(request.getHeight());
         quotation.setLength(request.getLength());
@@ -217,7 +217,7 @@ public class QuotationService {
         ConstructionOrder order = constructOrderRepository.findByQuotationId(quotationId);
         constructionTasksRepository.deleteAllByConstructionOrderId(order.getConstructionOrderId());
         this.saveConstructionTasks(order.getConstructionOrderId(), request.getPackageId());
-        Quotation quotation = quotationRepository.save(this.updateQuotation(request, totalPrice, volume, quotationId));
+        Quotation quotation = quotationRepository.save(this.updateQuotation(request, volume, quotationId));
         constructOrderRepository.save(this.saveConstructionOrder(order, quotation, request, totalPrice));
         return quotation;
     }
@@ -271,9 +271,9 @@ public class QuotationService {
                 .priceVolume(priceVolume)
                 .minVolume(packagePrice.getMinVolume())
                 .maxVolume(packagePrice.getMaxVolume())
-                .priceStage1(quotation.getPriceStage1())
-                .priceStage2(quotation.getPriceStage2())
-                .priceStage3(quotation.getPriceStage3())
+                .priceStage1(quotation.getPercentageStage1() * order.getTotal())
+                .priceStage2(quotation.getPercentageStage2() * order.getTotal())
+                .priceStage3(quotation.getPercentageStage3() * order.getTotal())
                 .constructionEndDate(quotation.getExpectedEndDate())
                 .build();
     }

@@ -36,25 +36,25 @@ public class BlogController {
                 .build();
     }
 
-    @PostMapping()
-    public ApiResponse<Blog> createBlog(@RequestBody BlogCreateOrUpdateRequest request) {
-        return ApiResponse.<Blog>builder()
-                .data(blogService.create(request))
-                .build();
-    }
+//    @PostMapping()
+//    public ApiResponse<Blog> createBlog(@RequestBody BlogCreateOrUpdateRequest request) {
+//        return ApiResponse.<Blog>builder()
+//                .data(blogService.create(request))
+//                .build();
+//    }
+//
+//    @GetMapping()
+//    public ApiResponse<BlogResponse> getAllBlogs() {
+//        return ApiResponse.<BlogResponse>builder()
+//                .data(blogService.getAllBlog())
+//                .build();
+//    }
 
-    @GetMapping()
-    public ApiResponse<BlogResponse> getAllBlogs() {
-        return ApiResponse.<BlogResponse>builder()
-                .data(blogService.getAllBlog())
-                .build();
-    }
-
-    @GetMapping("/blogId")
-    public ApiResponse<BlogDetailResponse> getBlog(@PathVariable String blogId) {
-        return ApiResponse.<BlogDetailResponse>builder()
-                .data(blogService.getBlogDetail(blogId))
-                .build();
-    }
+//    @GetMapping("/blogId")
+//    public ApiResponse<BlogDetailResponse> getBlog(@PathVariable String blogId) {
+//        return ApiResponse.<BlogDetailResponse>builder()
+//                .data(blogService.getBlogDetail(blogId))
+//                .build();
+//    }
 
 }

@@ -31,9 +31,9 @@ public class Quotation {
     double width;
     double height;
     double volume;
-    double priceStage1;
-    double priceStage2;
-    double priceStage3;
+    double percentageStage1;
+    double percentageStage2;
+    double percentageStage3;
     String promotionId;
     String packageId;
     LocalDateTime postedDate;

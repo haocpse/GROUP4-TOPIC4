@@ -1,14 +1,16 @@
 package com.swp_group4.back_end.controllers;
 
-import com.swp_group4.back_end.responses.ApiResponse;
-import com.swp_group4.back_end.responses.DashboardResponse;
+import com.swp_group4.back_end.responses.*;
 import com.swp_group4.back_end.services.DashboardService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -18,10 +20,31 @@ public class DashboardController {
     @Autowired
     DashboardService dashboardService;
 
-    @GetMapping("/dashboard")
-    public ApiResponse<DashboardResponse> dashboard() {
-        return ApiResponse.<DashboardResponse>builder()
-                .data(dashboardService.getDashboard())
+    @GetMapping("/dashboard/projects")
+    public ApiResponse<ProjectDashboardResponse> dashboardProjects() {
+        return ApiResponse.<ProjectDashboardResponse>builder()
+                .data(dashboardService.getDashboardProjects())
+                .build();
+    }
+
+    @GetMapping("/dashboard/inProgressProjects")
+    public ApiResponse<InProgressProjectDashboardResponse> dashboardInProgressProjects() {
+        return ApiResponse.<InProgressProjectDashboardResponse>builder()
+                .data(dashboardService.getDashboardInProgressProjects())
+                .build();
+    }
+
+    @GetMapping("/dashboard/monthlyRevenue")
+    public ApiResponse<List<MonthlyRevenueDashboardResponse>> dashboardMonthlyRevenue(@RequestParam int year) {
+        return ApiResponse.<List<MonthlyRevenueDashboardResponse>>builder()
+                .data(dashboardService.getDashboardMonthlyRevenue(year))
+                .build();
+    }
+
+    @GetMapping("/dashboard/yearlyRevenue")
+    public ApiResponse<List<YearlyRevenueDashboardResponse>> dashboardYearlyRevenue() {
+        return ApiResponse.<List<YearlyRevenueDashboardResponse>>builder()
+                .data(dashboardService.getDashboardYearlyRevenue())
                 .build();
     }
 

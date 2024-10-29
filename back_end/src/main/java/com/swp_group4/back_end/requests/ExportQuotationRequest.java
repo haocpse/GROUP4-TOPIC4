@@ -19,6 +19,9 @@ public class ExportQuotationRequest {
     double length;
     double height;
     double width;
+    double percentageStage1;
+    double percentageStage2;
+    double percentageStage3;
     String customerRequest;
     Date startDate;
     Date endDate;
