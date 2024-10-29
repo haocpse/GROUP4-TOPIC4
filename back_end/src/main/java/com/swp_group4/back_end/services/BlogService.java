@@ -10,9 +10,15 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -21,19 +27,28 @@ public class BlogService {
     @Autowired
     BlogRepository blogRepository;
 
-    public Blog create(BlogCreateOrUpdateRequest request) {
+    public Blog create(BlogCreateOrUpdateRequest request, MultipartFile headerImg, MultipartFile img) {
         Blog blog = Blog.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
                 .author(request.getAuthor())
-                .imageUrl(request.getImageUrl())
-                .headerImageUrl(request.getHeaderImageUrl())
                 .dateCreated(LocalDateTime.now())
                 .build();
+        blog = blogRepository.save(blog);
+        String blogId = blog.getBlogId().toString();
+        String baseUrl = "http://localhost:8080/images/" + blogId + "/";
+        if (headerImg != null && !headerImg.isEmpty()) {
+            String headerImageFileName = saveImage(headerImg, blogId);
+            blog.setHeaderImageUrl(baseUrl + headerImageFileName);
+        }
+        if (img != null && !img.isEmpty()) {
+            String imageFileName = saveImage(img, blogId);
+            blog.setImageUrl(baseUrl + imageFileName);
+        }
         return blogRepository.save(blog);
     }
 
-    public Blog update(String id, BlogCreateOrUpdateRequest request) {
+    public Blog update(String id, BlogCreateOrUpdateRequest request, MultipartFile headerImg, MultipartFile img) {
         Blog blog = blogRepository.findById(id).orElseThrow();
         if (request.getTitle() != null) {
             blog.setTitle(request.getTitle());
@@ -44,19 +59,18 @@ public class BlogService {
         if (request.getAuthor() != null) {
             blog.setAuthor(request.getAuthor());
         }
-        if (request.getImageUrl() != null) {
-            blog.setImageUrl(request.getImageUrl());
+        String baseUrl = "http://localhost:8080/images/" + id + "/";
+        if (headerImg != null && !headerImg.isEmpty()) {
+            String headerImageFileName = saveImage(headerImg, id);
+            blog.setHeaderImageUrl(baseUrl + headerImageFileName);
         }
-        if (request.getHeaderImageUrl() != null) {
-            blog.setHeaderImageUrl(request.getHeaderImageUrl());
+        if (img != null && !img.isEmpty()) {
+            String imageFileName = saveImage(img, id);
+            blog.setImageUrl(baseUrl + imageFileName);
         }
         return blogRepository.save(blog);
     }
 
-    public Blog delete(String id){
-        blogRepository.deleteById(id);
-        return null;
-    }
 
     public BlogResponse getAllBlog() {
         List<Blog> blogs = blogRepository.findAll();
@@ -75,4 +89,24 @@ public class BlogService {
                 .headerImageUrl(blog.getHeaderImageUrl())
                 .build();
     }
+
+    private String saveImage(MultipartFile file, String blogId){
+        try{
+            String UPLOAD_DIR = "image/" + blogId + "/";
+            String fileName = Objects.requireNonNull(file.getOriginalFilename()).replace(" ", "_");
+            Path filePath = Paths.get(UPLOAD_DIR, fileName);
+            Files.createDirectories(filePath.getParent());
+            Files.write(filePath, file.getBytes());
+            return fileName;
+        }catch (IOException e) {
+            log.error("Error saving image", e);
+            throw new RuntimeException("Error saving image", e);
+        }
+    }
+
+    public Blog delete(String blogId) {
+        Blog blog = blogRepository.findById(blogId).orElseThrow();
+        return blogRepository.save(blog);
+    }
 }
+

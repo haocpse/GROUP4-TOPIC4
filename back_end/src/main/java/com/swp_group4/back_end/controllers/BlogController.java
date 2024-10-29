@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,9 +24,12 @@ public class BlogController {
     BlogService blogService;
 
     @PutMapping("/updateBlog/{blogId}")
-    public ApiResponse<Blog> updateBlog(@PathVariable String blogId, @RequestBody BlogCreateOrUpdateRequest request) {
+    public ApiResponse<Blog> updateBlog(@PathVariable String blogId,
+                                        @RequestBody BlogCreateOrUpdateRequest request,
+                                        @RequestParam(value = "headerImg", required = false) MultipartFile headerImg,
+                                        @RequestParam(value = "img", required = false) MultipartFile Img) {
         return ApiResponse.<Blog>builder()
-                .data(blogService.update(blogId, request))
+                .data(blogService.update(blogId, request, headerImg, Img))
                 .build();
     }
 
@@ -37,9 +41,11 @@ public class BlogController {
     }
 
     @PostMapping("/createBlog")
-    public ApiResponse<Blog> createBlog(@RequestBody BlogCreateOrUpdateRequest request) {
+    public ApiResponse<Blog> createBlog(@RequestBody BlogCreateOrUpdateRequest request,
+                                        @RequestParam(value = "headerImg", required = false) MultipartFile headerImg,
+                                        @RequestParam(value = "img", required = false) MultipartFile Img) {
         return ApiResponse.<Blog>builder()
-                .data(blogService.create(request))
+                .data(blogService.create(request,headerImg,Img))
                 .build();
     }
 
