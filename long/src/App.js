@@ -53,6 +53,7 @@ import BlogDetail from "./Components/Blog/BlodDetail";
 import AboutUs from "./Components/AboutUs/AboutUs";
 import ProjectPage from "./Components/Project/Project";
 import BlogCRUD from "./Components/Admin/BlogCRUD";
+import CustomerViewMaintenance from "./Components/CustomerView/CustomerViewMaintenance";
 function App() {
   return (
     <Router>
@@ -140,6 +141,7 @@ function App() {
           path="/myInfo/orders/:constructionOrderId/payments"
           element={<PaymentInfo />}
         />
+        <Route path="/myInfo/orders/maintenance" element ={<CustomerViewMaintenance/>} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:id" element={<BlogDetail/>} />
         <Route path="/login" element={<Login />} />
