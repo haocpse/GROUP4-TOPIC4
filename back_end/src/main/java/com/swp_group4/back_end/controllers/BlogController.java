@@ -22,7 +22,7 @@ public class BlogController {
     @Autowired
     BlogService blogService;
 
-    @PutMapping("/{blogId}/blog")
+    @PutMapping("/blog/{blogId}")
     public ApiResponse<Blog> updateBlog(@PathVariable String blogId, @RequestBody BlogCreateOrUpdateRequest request) {
         return ApiResponse.<Blog>builder()
                 .data(blogService.update(blogId, request))
@@ -36,21 +36,21 @@ public class BlogController {
                 .build();
     }
 
-    @PostMapping()
+    @PostMapping("/blog/create")
     public ApiResponse<Blog> createBlog(@RequestBody BlogCreateOrUpdateRequest request) {
         return ApiResponse.<Blog>builder()
                 .data(blogService.create(request))
                 .build();
     }
 
-    @GetMapping()
+    @GetMapping("/blog")
     public ApiResponse<BlogResponse> getAllBlogs() {
         return ApiResponse.<BlogResponse>builder()
                 .data(blogService.getAllBlog())
                 .build();
     }
 
-    @GetMapping("/blogId")
+    @GetMapping("/{blogId}")
     public ApiResponse<BlogDetailResponse> getBlog(@PathVariable String blogId) {
         return ApiResponse.<BlogDetailResponse>builder()
                 .data(blogService.getBlogDetail(blogId))
