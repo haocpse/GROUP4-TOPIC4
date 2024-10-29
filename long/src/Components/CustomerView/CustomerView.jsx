@@ -6,19 +6,20 @@ import "./CustomerView.css"; // Import CSS file for styling
 import axios from "axios";
 import Navbar from "../Navbar/Navbar";
 import { jwtDecode } from "jwt-decode";
+import Footer from "../Footer/Footer";
 
 const CustomerView = () => {
   const [orders, setOrders] = useState([]); // State to store orders
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(""); // Error state
   const navigate = useNavigate()
-
-
   // Fetch data from API
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const decoded = jwtDecode(token)
-    const accountId = decoded.sub
+
+    const token = localStorage.getItem('token')
+    const decode = jwtDecode(token)
+    const accountId = decode.sub
+
     const fetchOrders = async () => {
       try {
         // Fetch data from the API
@@ -39,12 +40,20 @@ const CustomerView = () => {
 
     fetchOrders();
   }, []);
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.reload();
+  };
 
   const handleView = (constructionOrderId, Type) => {
     if (Type === "QUOTATION") {
       navigate(`/myInfo/orders/${constructionOrderId}/quotation`);
-    } else {
+    } else if (Type === "DESIGN") {
       navigate(`/myInfo/orders/${constructionOrderId}/design`);
+    } else if (Type === "PAYMENT") {
+      navigate(`/myInfo/orders/${constructionOrderId}/payments`);
+    } else {
+      navigate(`/myInfo/orders/${constructionOrderId}/progress`);
     }
     // state dc dùng để chứa dữ liệu
   }
@@ -59,10 +68,11 @@ const CustomerView = () => {
     return `${day}/${month}/${year}`;
   };
 
+
   return (
     <>
       <Navbar />
-      <div className="container customer-view mt-4">
+      <div className="container customer-view mt-4" style={{ marginBottom: '90px' }}>
         <h2 className="text-center">My Construction Progress</h2>
         {loading ? (
           <p className="text-center">Loading orders...</p>
@@ -79,8 +89,10 @@ const CustomerView = () => {
                     <th>Customer</th>
                     <th>Quotation</th>
                     <th>Design</th>
+                    <th>Progress</th>
                     <th>Start Date</th>
                     <th>End Date</th>
+                    <th>Payment</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -106,8 +118,26 @@ const CustomerView = () => {
                         </button>
                       }
                       </td>
+                      <td>{order.designId &&
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => handleView(order.constructionOrderId, "CONSTRUCTION")}
+                        >
+                          View Progress
+                        </button>
+                      }
+                      </td>
                       <td>{formatDate(order.startDate)}</td>
                       <td>{formatDate(order.endDate)}</td>
+                      <td>
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => handleView(order.constructionOrderId, "PAYMENT")}
+                        >
+                          View payment
+                        </button>
+
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -118,9 +148,21 @@ const CustomerView = () => {
             )}
           </>
         )}
+        <div className="button-container d-flex flex-column justify-content-end" style={{ height: '100%' }}>
+          <button onClick={handleLogout} className="nav-link d-flex align-items-center sidebar-link bg-transparent border-0">
+            <i className="fa-solid fa-right-from-bracket"></i>
+          </button>
+        </div>
       </div>
+      <Footer />
     </>
+
   );
 };
 
 export default CustomerView;
+
+
+
+
+

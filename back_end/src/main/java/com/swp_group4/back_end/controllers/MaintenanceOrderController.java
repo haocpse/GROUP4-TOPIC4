@@ -2,6 +2,7 @@ package com.swp_group4.back_end.controllers;
 
 import com.swp_group4.back_end.entities.MaintenanceOrder;
 import com.swp_group4.back_end.entities.PaymentOrder;
+import com.swp_group4.back_end.requests.MaintenancePriceRequest;
 import com.swp_group4.back_end.requests.MaintenanceStaffAssignedRequest;
 import com.swp_group4.back_end.requests.PaymentCreateRequest;
 import com.swp_group4.back_end.responses.ApiResponse;
@@ -30,13 +31,13 @@ public class MaintenanceOrderController {
     PaymentService paymentService;
 
     @PutMapping("/{orderId}/addTotal")
-    public ApiResponse<MaintenanceOrder> addTotal(@PathVariable String orderId, double total) {
+    public ApiResponse<MaintenanceOrder> addTotal(@PathVariable String orderId,@RequestBody MaintenancePriceRequest request) {
         return ApiResponse.<MaintenanceOrder>builder()
-                .data(maintenanceOrderService.addTotal(orderId, total))
+                .data(maintenanceOrderService.addTotal(orderId, request))
                 .build();
     }
 
-    @PostMapping("/{orderId}")
+    @PostMapping("/{orderId}/createPayment")
     public ApiResponse<PaymentOrder> createPayment(@PathVariable String orderId,@RequestBody PaymentCreateRequest request){
         return ApiResponse.<PaymentOrder>builder()
                 .data(paymentService.createPayment(request, orderId))

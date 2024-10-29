@@ -99,6 +99,22 @@ public class CustomerService {
 //        return customerMapper.customerToResponse(customer, response);
 //    }
 
+    public List<MaintenanceOrderResponse> listMaintenanceOrders(String accountId){
+        Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
+        List<MaintenanceOrder> orderList = maintenanceOrderRepository.findByCustomerId(customer.getCustomerId());
+        List<MaintenanceOrderResponse> responses = new ArrayList<>();
+        for (MaintenanceOrder order : orderList) {
+            MaintenanceOrderResponse response = MaintenanceOrderResponse.builder()
+                    .customerId(customer.getFirstName() + " " + customer.getLastName())
+                    .total(order.getTotal())
+                    .status(order.getStatus())
+                    .maintenanceOrderId(order.getMaintenanceOrderId())
+                    .build();
+            responses.add(response);
+        }
+        return responses;
+    }
+
     public List<ConstructOrderDetailForCustomerResponse> listOrders(String accountId) {
         Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
         List<ConstructionOrder> orderList = constructOrderRepository.findByCustomerId(customer.getCustomerId());

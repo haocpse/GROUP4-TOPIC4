@@ -35,8 +35,7 @@ import UpdateDesign from "./Components/DesignUpload/UpdateDesign";
 import CustomerViewDesign from "./Components/CustomerView/CustomerViewDesign";
 import PaymentInfo from "./Components/ListQuotation/PaymentInfo";
 import MainLayoutConstructor from "./Components/MainLayoutConstructor";
-import Dashboard from "./Components/Admin/Dashboard";
-import BlogCRUD from "./Components/Admin/BlogCRUD";
+import Dashboard from "./Components/Admin/Dashboard"
 import EditBlog from "./Components/Admin/EditBlog";
 import PackageManage from "./Components/Package/PackageManage";
 import PackagePrice from "./Components/Package/PackagePrice";
@@ -48,19 +47,28 @@ import ManagerViewProgess from "./Components/ManagerViewProgress/ManagerViewProg
 import ManagerViewPayment from "./Components/ManagerViewPayment/ManagerViewPayment";
 import ManagerViewDetailPayment from "./Components/ManagerViewPayment/ManagerViewDetailPayment";
 import ManagerViewDetailProgress from "./Components/ManagerViewProgress/ManagerViewDetailProgress";
+import ProtectedRoutesAdmin from "./utils/ProtectedRoutesAdmin";
+import Blog from "./Components/Blog/Blog";
+import BlogDetail from "./Components/Blog/BlodDetail";
+import AboutUs from "./Components/AboutUs/AboutUs";
+import ProjectPage from "./Components/Project/Project";
+import BlogCRUD from "./Components/Admin/BlogCRUD";
+import CustomerViewMaintenance from "./Components/CustomerView/CustomerViewMaintenance";
 function App() {
   return (
     <Router>
+      
       <Routes>
+      <Route element={<ProtectedRoutesAdmin />}>
         <Route path="/package" element={<PackageManage />}>
           <Route path="package-price" element={<PackagePrice />} />
           <Route path="package-construction" element={<PackageConstruction />} />{" "}
         </Route>
 
-        <Route path="/Blog" element={<BlogCRUD />}></Route>
+        <Route path="/BlogCRUD" element={<BlogCRUD />}></Route>
         <Route path="/edit-blog/:id" element={<EditBlog />}></Route>
         <Route path="/profile" element={<AdminProfile />}></Route>
-
+        </Route>
 
         {/* MANAGER*/}
         <Route element={<ProtectedRoutesManager />}>
@@ -133,10 +141,14 @@ function App() {
           path="/myInfo/orders/:constructionOrderId/payments"
           element={<PaymentInfo />}
         />
+        <Route path="/myInfo/orders/maintenance" element ={<CustomerViewMaintenance/>} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:id" element={<BlogDetail/>} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/service" element={<Service />} />
+        <Route path="/project" element={<ProjectPage/>}/>
         <Route path="/" element={<Main />} />
       </Routes>
     </Router>

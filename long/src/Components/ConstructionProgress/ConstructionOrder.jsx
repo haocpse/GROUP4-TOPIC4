@@ -12,6 +12,7 @@ const ConstructionOrder = () => {
         const token = localStorage.getItem('token');
         const decoded = jwtDecode(token)
         const accountId = decoded.sub
+
         const fetchOrder = async () => {
 
             try {
@@ -40,16 +41,16 @@ const ConstructionOrder = () => {
         <>
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
             <div className="container mt-4">
-                <div className="text-center" style={{ color: 'black' }}>
-                    <h2>Constructor - Construction Orders</h2>
+                <div className="text-center" style={{ color: 'blue' }}>
+                    <h2>Construction Tasks</h2>
                 </div>
                 <table className="table table-bordered">
-                    <thead>
+                    <thead className="thead-light">
                         <tr>
-                            <th>Construction Order ID</th>
+                            <th>Tasks</th>
                             <th>Customer Name</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
+                            <th>Phone</th>
+                            <th>Address</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -60,12 +61,12 @@ const ConstructionOrder = () => {
                                 <td colSpan="4" className="text-center">No construction orders available.</td>
                             </tr>
                         ) : (
-                            constructionOrders.map(order => (
+                            constructionOrders.map((order, index) => (
                                 <tr key={order.constructionOrderId}>
-                                    <td>{order.constructionOrderId}</td>
+                                    <td>{index + 1}</td>
                                     <td>{order.customerName}</td>
-                                    <td>{order.startDate}</td>
-                                    <td>{order.endDate}</td>
+                                    <td>{order.phone}</td>
+                                    <td>{order.address}</td>
 
                                     {/* thay đổi status */}
                                     <td>
