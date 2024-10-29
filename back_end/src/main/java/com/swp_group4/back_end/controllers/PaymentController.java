@@ -2,6 +2,7 @@ package com.swp_group4.back_end.controllers;
 
 import com.swp_group4.back_end.entities.PaymentOrder;
 import com.swp_group4.back_end.enums.PaymentStatus;
+import com.swp_group4.back_end.repositories.ConstructOrderRepository;
 import com.swp_group4.back_end.repositories.PaymentOrderRepository;
 import com.swp_group4.back_end.responses.ApiResponse;
 import com.swp_group4.back_end.services.PaymentService;
@@ -27,6 +28,8 @@ public class PaymentController {
     PaymentService paymentService;
     @Autowired
     PaymentOrderRepository paymentOrderRepository;
+    @Autowired
+    private ConstructOrderRepository constructOrderRepository;
 
     //hàm liệt kê các payment
 //    @GetMapping("/{accountId}")
@@ -70,14 +73,21 @@ public class PaymentController {
                 assert paymentOrder != null;
                 paymentOrder.setStatus(PaymentStatus.SUCCESS);
                 paymentOrderRepository.save(paymentOrder);
-                paymentService.successPaid(orderId);
-                response.sendRedirect("http://localhost:3000/myInfo/orders/" + orderId + "/payments");
+                if(constructOrderRepository.findById(orderId).isPresent()) {
+                    paymentService.successPaid(orderId);
+                    response.sendRedirect("http://localhost:3000/myInfo/orders/" + orderId + "/payments");
+                }
+                else
+                    response.sendRedirect("http://localhost:3000/myInfo/orders/maintenance" + orderId + "/payments");
             } else {
                 assert paymentOrder != null;
                 paymentOrder.setStatus(PaymentStatus.FAILED);
                 paymentOrderRepository.save(paymentOrder);
                 paymentService.reCreatePayment(paymentId);
-                response.sendRedirect("http://localhost:3000/myInfo/orders/" + orderId + "/payments");
+                if(constructOrderRepository.findById(orderId).isPresent())
+                    response.sendRedirect("http://localhost:3000/myInfo/orders/" + orderId + "/payments");
+                else
+                    response.sendRedirect("http://localhost:3000/myInfo/orders/maintenance" + orderId + "/payments");
             }
         } catch (Exception e) {
             log.error("Error in VNPay callback: {}", e.getMessage());
