@@ -118,14 +118,42 @@ public class DashboardService {
         LocalDate localDate = date.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
-        return localDate.getMonthValue(); // Returns the month (1-12)
+        return localDate.getMonthValue();
     }
 
-    public List<YearlyRevenueDashboardResponse> getDashboardYearlyRevenue() {
-        List<YearlyRevenueDashboardResponse> responses = new ArrayList<>();
+    public YearlyRevenueDashboardResponse getDashboardYearlyRevenue() {
+        List<YearlyRevenueInfoDashboardResponse> responses = new ArrayList<>();
         ConstructionOrder oldestOrder = constructOrderRepository.findTopByConstructionEndDateDescAndStatus(ConstructionOrderStatus.FINISHED);
+        int oldestYear = getYearFromDate(oldestOrder.getConstructionEndDate());
         ConstructionOrder lastOrder = constructOrderRepository.findTopByConstructionEndDateAscAndStatus(ConstructionOrderStatus.FINISHED);
-        return responses;
+        int lastYear = getYearFromDate(lastOrder.getConstructionEndDate());
+        List<ConstructionOrder> orders = constructOrderRepository.findByStatus(ConstructionOrderStatus.FINISHED);
+        long total = 0;
+        for (int i = oldestYear; i <= lastYear; i++) {
+            long totalRevenue = 0;
+            for (ConstructionOrder c : orders) {
+                if (getYearFromDate(c.getConstructionEndDate()) == i) {
+                    totalRevenue += (long) c.getTotal();
+                }
+            }
+            YearlyRevenueInfoDashboardResponse response = YearlyRevenueInfoDashboardResponse.builder()
+                    .year(i)
+                    .totalRevenue(totalRevenue)
+                    .build();
+            responses.add(response);
+            total += totalRevenue;
+        }
+        return YearlyRevenueDashboardResponse.builder()
+                .total(total)
+                .yearlyRevenueInfoDashboardResponseList(responses)
+                .build();
+    }
+
+    private int getYearFromDate(Date date) {
+        LocalDate localDate = date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+        return localDate.getYear();
     }
 
 //    public DashboardResponse getDashboard() {

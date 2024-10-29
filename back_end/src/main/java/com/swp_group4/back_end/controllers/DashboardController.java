@@ -42,8 +42,8 @@ public class DashboardController {
     }
 
     @GetMapping("/dashboard/yearlyRevenue")
-    public ApiResponse<List<YearlyRevenueDashboardResponse>> dashboardYearlyRevenue() {
-        return ApiResponse.<List<YearlyRevenueDashboardResponse>>builder()
+    public ApiResponse<YearlyRevenueDashboardResponse> dashboardYearlyRevenue() {
+        return ApiResponse.<YearlyRevenueDashboardResponse>builder()
                 .data(dashboardService.getDashboardYearlyRevenue())
                 .build();
     }
