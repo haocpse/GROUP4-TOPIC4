@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -22,39 +23,44 @@ public class BlogController {
     @Autowired
     BlogService blogService;
 
-    @PutMapping("/{blogId}/blog")
-    public ApiResponse<Blog> updateBlog(@PathVariable String blogId, @RequestBody BlogCreateOrUpdateRequest request) {
+    @PutMapping("/updateBlog/{blogId}")
+    public ApiResponse<Blog> updateBlog(@PathVariable String blogId,
+                                        @RequestBody BlogCreateOrUpdateRequest request,
+                                        @RequestParam(value = "headerImg", required = false) MultipartFile headerImg,
+                                        @RequestParam(value = "img", required = false) MultipartFile Img) {
         return ApiResponse.<Blog>builder()
-                .data(blogService.update(blogId, request))
+                .data(blogService.update(blogId, request, headerImg, Img))
                 .build();
     }
 
-    @DeleteMapping("/{blogId}")
+    @DeleteMapping("/deleteBlog/{blogId}")
     public ApiResponse<Blog> deleteBlog(@PathVariable String blogId) {
         return ApiResponse.<Blog>builder()
                 .data(blogService.delete(blogId))
                 .build();
     }
 
-//    @PostMapping()
-//    public ApiResponse<Blog> createBlog(@RequestBody BlogCreateOrUpdateRequest request) {
-//        return ApiResponse.<Blog>builder()
-//                .data(blogService.create(request))
-//                .build();
-//    }
-//
-//    @GetMapping()
-//    public ApiResponse<BlogResponse> getAllBlogs() {
-//        return ApiResponse.<BlogResponse>builder()
-//                .data(blogService.getAllBlog())
-//                .build();
-//    }
+    @PostMapping("/createBlog")
+    public ApiResponse<Blog> createBlog(@RequestBody BlogCreateOrUpdateRequest request,
+                                        @RequestParam(value = "headerImg", required = false) MultipartFile headerImg,
+                                        @RequestParam(value = "img", required = false) MultipartFile Img) {
+        return ApiResponse.<Blog>builder()
+                .data(blogService.create(request,headerImg,Img))
+                .build();
+    }
 
-//    @GetMapping("/blogId")
-//    public ApiResponse<BlogDetailResponse> getBlog(@PathVariable String blogId) {
-//        return ApiResponse.<BlogDetailResponse>builder()
-//                .data(blogService.getBlogDetail(blogId))
-//                .build();
-//    }
+    @GetMapping("/blog")
+    public ApiResponse<BlogResponse> getAllBlogs() {
+        return ApiResponse.<BlogResponse>builder()
+                .data(blogService.getAllBlog())
+                .build();
+    }
+
+    @GetMapping("/blog/{blogId}")
+    public ApiResponse<BlogDetailResponse> getBlog(@PathVariable String blogId) {
+        return ApiResponse.<BlogDetailResponse>builder()
+                .data(blogService.getBlogDetail(blogId))
+                .build();
+    }
 
 }

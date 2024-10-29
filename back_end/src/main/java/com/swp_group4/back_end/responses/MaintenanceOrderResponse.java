@@ -11,7 +11,8 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class MaintenanceOrderResponse {
     String maintenanceOrderId;
-    String customerId;
-    Double total;
+    String accountId;
+    String customerName;
+    Double totalPrice;
     MaintenanceOrderStatus status;
 }

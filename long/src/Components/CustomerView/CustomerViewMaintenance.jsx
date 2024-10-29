@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./CustomerView.css";
 import axios from "axios";
 import Navbar from "../Navbar/Navbar";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode"; // Corrected import
 import Footer from "../Footer/Footer";
 
 const CustomerViewMaintenance = () => {
@@ -21,7 +21,7 @@ const CustomerViewMaintenance = () => {
       try {
         const response = await axios.get(`http://localhost:8080/customer/${accountId}/maintenanceOrders`, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         });
         setOrders(response.data.data);
@@ -70,8 +70,6 @@ const CustomerViewMaintenance = () => {
                 <thead className="thead-dark">
                   <tr>
                     <th>Customer</th>
-                    <th>Phone</th>
-                    <th>Address</th>
                     <th>Start Date</th>
                     <th>End Date</th>
                     <th>Total Price</th>
@@ -83,11 +81,9 @@ const CustomerViewMaintenance = () => {
                   {orders.map((order, index) => (
                     <tr key={order.maintenanceOrderId}>
                       <td>{order.customerName}</td>
-                      <td>{order.phone}</td>
-                      <td>{order.address}</td>
                       <td>{formatDate(order.startDate)}</td>
                       <td>{formatDate(order.endDate)}</td>
-                      <td>{order.totalPrice.toLocaleString()}</td>
+                      <td>{order.totalPrice}</td>
                       <td>{order.status}</td>
                       <td>
                         <button className="btn btn-primary" onClick={() => handleViewPayment(order.maintenanceOrderId)}>

@@ -2,6 +2,7 @@ package com.swp_group4.back_end.requests;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
@@ -10,8 +11,5 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class BlogCreateOrUpdateRequest {
     String title;
-    String author;
     String content;
-    String headerImageUrl;
-    String imageUrl;
 }
