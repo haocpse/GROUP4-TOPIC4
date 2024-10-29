@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./CustomerView.css";
 import axios from "axios";
 import Navbar from "../Navbar/Navbar";
-import jwtDecode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import Footer from "../Footer/Footer";
 
 const CustomerViewMaintenance = () => {
