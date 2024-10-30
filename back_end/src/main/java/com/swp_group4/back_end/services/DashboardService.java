@@ -3,11 +3,10 @@ package com.swp_group4.back_end.services;
 import com.swp_group4.back_end.entities.ConstructionOrder;
 import com.swp_group4.back_end.entities.Customer;
 import com.swp_group4.back_end.entities.Packages;
+import com.swp_group4.back_end.entities.PaymentOrder;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
-import com.swp_group4.back_end.repositories.ConstructOrderRepository;
-import com.swp_group4.back_end.repositories.CustomerRepository;
-import com.swp_group4.back_end.repositories.PackageRepository;
-import com.swp_group4.back_end.repositories.QuotationRepository;
+import com.swp_group4.back_end.enums.PaymentStatus;
+import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.responses.*;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -34,6 +33,8 @@ public class DashboardService {
     private QuotationRepository quotationRepository;
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private PaymentOrderRepository paymentOrderRepository;
 
     public ProjectDashboardResponse getDashboardProjects() {
         long allOrder = constructOrderRepository.findAll().size();
@@ -89,51 +90,46 @@ public class DashboardService {
                 .build();
     }
 
-    public List<MonthlyRevenueDashboardResponse> getDashboardMonthlyRevenue(int year) {
-        List<MonthlyRevenueDashboardResponse> responses = new ArrayList<>();
-        List<ConstructionOrder> order = constructOrderRepository.findByYearAndStatus(year, ConstructionOrderStatus.FINISHED);;
+    public MonthlyRevenueDashboardResponse getDashboardMonthlyRevenue(int year) {
+        List<MonthlyRevenueInfoDashboardResponse> responses = new ArrayList<>();
+        List<PaymentOrder> payments = paymentOrderRepository.findByYearAndStatus(year, PaymentStatus.SUCCESS);
+        log.info(payments.toString());
+        long total = 0;
         for (int i = 1; i <= 12; i++) {
             long revenue = 0;
-            long total = 0;
-            for (ConstructionOrder c : order) {
-                Date date = c.getConstructionEndDate();
-                int month = getMonthFromDate(date);
+
+            for (PaymentOrder payment : payments) {
+                int month = payment.getPaidDate().getMonthValue();
                 if (month == i) {
-                    revenue += (long) c.getTotal();
+                    revenue += payment.getTotal();
                 }
             }
             total += revenue;
-            MonthlyRevenueDashboardResponse response = MonthlyRevenueDashboardResponse.builder()
+            MonthlyRevenueInfoDashboardResponse response = MonthlyRevenueInfoDashboardResponse.builder()
                     .month(i)
                     .revenue(revenue)
-                    .total(total)
                     .build();
             responses.add(response);
-            i++;
         }
-        return responses;
-    }
-
-    private int getMonthFromDate(Date date) {
-        LocalDate localDate = date.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
-        return localDate.getMonthValue();
+        return MonthlyRevenueDashboardResponse.builder()
+                .total(total)
+                .monthlyRevenueInfoDashboardResponseList(responses)
+                .build();
     }
 
     public YearlyRevenueDashboardResponse getDashboardYearlyRevenue() {
         List<YearlyRevenueInfoDashboardResponse> responses = new ArrayList<>();
-        ConstructionOrder oldestOrder = constructOrderRepository.findTopByConstructionEndDateDescAndStatus(ConstructionOrderStatus.FINISHED);
-        int oldestYear = getYearFromDate(oldestOrder.getConstructionEndDate());
-        ConstructionOrder lastOrder = constructOrderRepository.findTopByConstructionEndDateAscAndStatus(ConstructionOrderStatus.FINISHED);
-        int lastYear = getYearFromDate(lastOrder.getConstructionEndDate());
-        List<ConstructionOrder> orders = constructOrderRepository.findByStatus(ConstructionOrderStatus.FINISHED);
+        PaymentOrder oldestPayment = paymentOrderRepository.findByStatusOrderedByPaidDateDesc(PaymentStatus.SUCCESS).getFirst();
+        int oldestYear = oldestPayment.getPaidDate().getYear();
+        PaymentOrder lastPayment = paymentOrderRepository.findByStatusOrderedByPaidDateAsc(PaymentStatus.SUCCESS).getFirst();
+        int lastYear = lastPayment.getPaidDate().getYear();
+        List<PaymentOrder> paymentOrders = paymentOrderRepository.findByStatus(PaymentStatus.SUCCESS);
         long total = 0;
         for (int i = oldestYear; i <= lastYear; i++) {
             long totalRevenue = 0;
-            for (ConstructionOrder c : orders) {
-                if (getYearFromDate(c.getConstructionEndDate()) == i) {
-                    totalRevenue += (long) c.getTotal();
+            for (PaymentOrder payment : paymentOrders) {
+                if (payment.getPaidDate().getYear() == i) {
+                    totalRevenue +=  payment.getTotal();
                 }
             }
             YearlyRevenueInfoDashboardResponse response = YearlyRevenueInfoDashboardResponse.builder()
@@ -147,13 +143,6 @@ public class DashboardService {
                 .total(total)
                 .yearlyRevenueInfoDashboardResponseList(responses)
                 .build();
-    }
-
-    private int getYearFromDate(Date date) {
-        LocalDate localDate = date.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
-        return localDate.getYear();
     }
 
 //    public DashboardResponse getDashboard() {

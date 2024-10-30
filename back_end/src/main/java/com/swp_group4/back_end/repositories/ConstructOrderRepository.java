@@ -25,13 +25,4 @@ public interface ConstructOrderRepository extends JpaRepository<ConstructionOrde
     List<ConstructionOrder> findByStatusNotIn(List<ConstructionOrderStatus> statuses);
     List<ConstructionOrder> findByQuotationIdIsNotNullAndStatusNot(ConstructionOrderStatus status);
 
-    @Query("SELECT o FROM ConstructionOrder o WHERE YEAR(o.constructionEndDate) = :year AND o.status = :status")
-    List<ConstructionOrder> findByYearAndStatus(@Param("year") int year, @Param("status") ConstructionOrderStatus status);
-
-    @Query("SELECT o FROM ConstructionOrder o WHERE o.status = :status ORDER BY o.constructionEndDate DESC")
-    ConstructionOrder findTopByConstructionEndDateDescAndStatus(@Param("status") ConstructionOrderStatus status);
-
-    @Query("SELECT o FROM ConstructionOrder o WHERE o.status = :status ORDER BY o.constructionEndDate ASC")
-    ConstructionOrder findTopByConstructionEndDateAscAndStatus(@Param("status") ConstructionOrderStatus status);
-
 }

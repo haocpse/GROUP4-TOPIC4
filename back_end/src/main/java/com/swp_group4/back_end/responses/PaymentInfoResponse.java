@@ -18,6 +18,6 @@ public class PaymentInfoResponse {
     String paymentTitle;
     LocalDateTime paidDate;
     LocalDateTime dueDate;
-    Double price;
+    long price;
     PaymentStatus paymentStatus;
 }

@@ -27,7 +27,7 @@ public class PaymentOrder {
     LocalDateTime paidDate;
     LocalDateTime dueDate;
     PaymentMethods paymentMethods;
-    Double total;
+    Long total;
     @Enumerated(EnumType.STRING)
     PaymentStatus status;
 }
