@@ -11,5 +11,5 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class PaymentCreateRequest {
     String accountId;
-    double totalPrice;
+    long totalPrice;
 }

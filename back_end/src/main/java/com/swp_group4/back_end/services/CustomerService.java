@@ -208,11 +208,12 @@ public class CustomerService {
             constructOrderRepository.save(order);
             Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
             Quotation quotation = quotationRepository.findById(order.getQuotationId()).orElseThrow();
+            long total = (long) (order.getTotal() * quotation.getPercentageStage2());
             PaymentOrder paymentOrder = PaymentOrder.builder()
                     .orderId(constructionOrderId)
                     .customerId(customer.getCustomerId())
                     .paymentTitle("Khach hang thanh toan giai doan 2")
-                    .total(order.getTotal() * quotation.getPercentageStage2())
+                    .total(total)
                     .status(PaymentStatus.PENDING)
                     .build();
             paymentOrderRepository.save(paymentOrder);
@@ -239,7 +240,7 @@ public class CustomerService {
                     .orderId(constructionOrderId)
                     .customerId(customer.getCustomerId())
                     .paymentTitle("Khach hang thanh toan giai doan 1")
-                    .total(order.getTotal() * quotation.getPercentageStage1())
+                    .total((long) (order.getTotal() * quotation.getPercentageStage1()))
                     .status(PaymentStatus.PENDING)
                     .build();
             paymentOrderRepository.save(paymentOrder);
@@ -337,7 +338,7 @@ public class CustomerService {
                 .orderId(constructionOrderId)
                 .customerId(customer.getCustomerId())
                 .paymentTitle("Khach hang thanh toan giai doan 3")
-                .total(order.getTotal() * quotation.getPercentageStage3())
+                .total((long) (order.getTotal() * quotation.getPercentageStage3()))
                 .status(PaymentStatus.PENDING)
                 .build();
         paymentOrderRepository.save(paymentOrder);

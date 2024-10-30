@@ -17,6 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -77,6 +80,7 @@ public class PaymentController {
             if ("00".equals(vnpResponseCode)) {
                 assert paymentOrder != null;
                 paymentOrder.setStatus(PaymentStatus.SUCCESS);
+                paymentOrder.setPaidDate(LocalDateTime.now());
                 paymentOrderRepository.save(paymentOrder);
                 if(constructOrderRepository.findById(orderId).isPresent()) {
                     paymentService.successPaid(orderId);
