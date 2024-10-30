@@ -108,6 +108,7 @@ public class CustomerService {
                     .customerName(customer.getFirstName() + " " + customer.getLastName())
                     .totalPrice(order.getTotal())
                     .status(order.getStatus())
+                    .paymentId(paymentOrderRepository.findPaymentOrdersByOrderId(order.getMaintenanceOrderId()).getPaymentId())
                     .maintenanceOrderId(order.getMaintenanceOrderId())
                     .build();
             responses.add(response);

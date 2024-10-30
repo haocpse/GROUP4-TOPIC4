@@ -13,6 +13,7 @@ public class MaintenanceOrderResponse {
     String maintenanceOrderId;
     String accountId;
     String customerName;
+    String paymentId;
     Double totalPrice;
     MaintenanceOrderStatus status;
 }

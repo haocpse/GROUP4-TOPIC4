@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface PaymentOrderRepository extends JpaRepository<PaymentOrder,String> {
     List<PaymentOrder> findByCustomerIdAndStatus(String customerId, PaymentStatus status);
     List<PaymentOrder> findByOrderId(String orderId);
+    PaymentOrder findPaymentOrdersByOrderId(String orderId);
 }
