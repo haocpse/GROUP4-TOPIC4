@@ -16,6 +16,7 @@ public class ProjectDashboardResponse {
     double successPercentage;
     double failedPercentage;
     double inProgressPercentage;
+    List<ProjectInfoBaseTimeResponse> projectInfoBaseTimeResponses;
     List<PackageDashboardResponse> PackageDashboardResponses;
 
 }

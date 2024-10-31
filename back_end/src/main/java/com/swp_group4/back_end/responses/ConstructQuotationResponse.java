@@ -24,6 +24,9 @@ public class ConstructQuotationResponse {
     double priceStage1;
     double priceStage2;
     double priceStage3;
+    double percentageStage1;
+    double percentageStage2;
+    double percentageStage3;
     double totalPrice;
     Date startDate;
     Date endDate;

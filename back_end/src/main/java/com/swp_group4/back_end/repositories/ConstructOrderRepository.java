@@ -1,7 +1,9 @@
 package com.swp_group4.back_end.repositories;
 
 import com.swp_group4.back_end.entities.ConstructionOrder;
+import com.swp_group4.back_end.entities.PaymentOrder;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
+import com.swp_group4.back_end.enums.PaymentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,4 +27,21 @@ public interface ConstructOrderRepository extends JpaRepository<ConstructionOrde
     List<ConstructionOrder> findByStatusNotIn(List<ConstructionOrderStatus> statuses);
     List<ConstructionOrder> findByQuotationIdIsNotNullAndStatusNot(ConstructionOrderStatus status);
 
+    @Query("SELECT o FROM ConstructionOrder o ORDER BY o.constructionEndDate DESC")
+    List<ConstructionOrder> findByStatusOrderedByPaidDateDesc();
+
+    @Query("SELECT o FROM ConstructionOrder o ORDER BY o.constructionEndDate ASC")
+    List<ConstructionOrder> findByStatusOrderedByPaidDateAsc();
+
+    @Query("SELECT o FROM ConstructionOrder o WHERE YEAR(o.startDate) = :year")
+    List<ConstructionOrder> findByYear(int year);
+
+    @Query("SELECT o FROM ConstructionOrder o WHERE YEAR(o.startDate) = :year AND o.status = :status")
+    List<ConstructionOrder> findByYearAndStatus(int year, ConstructionOrderStatus status);
+
+    @Query("SELECT o FROM ConstructionOrder o WHERE YEAR(o.startDate) = :year AND o.status not in :statuses")
+    List<ConstructionOrder> findByYearAndStatusNotIn(int year, List<ConstructionOrderStatus> statuses);
+
+    @Query("SELECT co FROM ConstructionOrder co WHERE YEAR(co.startDate) = :year AND co.quotationId IS NOT NULL AND co.status <> :status")
+    List<ConstructionOrder> findByYearAndQuotationIdIsNotNullAndStatusNot(int year, ConstructionOrderStatus status);
 }

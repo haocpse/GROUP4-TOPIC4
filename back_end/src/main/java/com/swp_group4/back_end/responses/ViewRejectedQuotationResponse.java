@@ -19,6 +19,9 @@ public class ViewRejectedQuotationResponse {
     String address;
     String phone;
     String customerRequest;
+    double percentageStage1;
+    double percentageStage2;
+    double percentageStage3;
     double length;
     double height;
     double width;

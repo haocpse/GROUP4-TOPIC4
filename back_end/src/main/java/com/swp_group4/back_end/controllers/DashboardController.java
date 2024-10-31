@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,10 +21,17 @@ public class DashboardController {
     @Autowired
     DashboardService dashboardService;
 
-    @GetMapping("/dashboard/projects")
-    public ApiResponse<ProjectDashboardResponse> dashboardProjects() {
+    @GetMapping("/dashboard/projects/year")
+    public ApiResponse<ProjectDashboardResponse> dashboardProjectsByYear() {
         return ApiResponse.<ProjectDashboardResponse>builder()
-                .data(dashboardService.getDashboardProjects())
+                .data(dashboardService.getDashboardProjectsByYear())
+                .build();
+    }
+
+    @GetMapping("/dashboard/projects/month")
+    public ApiResponse<ProjectDashboardResponse> dashboardProjectsByMonth(@RequestParam int year) {
+        return ApiResponse.<ProjectDashboardResponse>builder()
+                .data(dashboardService.getDashboardProjectsByMonth(year))
                 .build();
     }
 

@@ -102,6 +102,12 @@ public class QuotationAndDesignApprovalService {
                 .totalPrice(order.getTotal())
                 .customerRequest(order.getCustomerRequest())
                 .quotationStatus(quotation.getQuotationStatus())
+                .priceStage1((order.getTotal() * quotation.getPercentageStage1())/100)
+                .priceStage2((order.getTotal() * quotation.getPercentageStage2())/100)
+                .priceStage3((order.getTotal() * quotation.getPercentageStage3())/100)
+                .percentageStage1(quotation.getPercentageStage1())
+                .percentageStage2(quotation.getPercentageStage2())
+                .percentageStage3(quotation.getPercentageStage3())
                 .startDate(quotation.getExpectedStartDate())
                 .endDate(quotation.getExpectedEndDate())
                 .build();

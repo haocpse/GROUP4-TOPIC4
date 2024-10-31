@@ -36,14 +36,27 @@ public class DashboardService {
     @Autowired
     private PaymentOrderRepository paymentOrderRepository;
 
-    public ProjectDashboardResponse getDashboardProjects() {
+    public ProjectDashboardResponse getDashboardProjectsByYear() {
+        List<ProjectInfoBaseTimeResponse> projectInfoBaseTimeResponses = new ArrayList<>();
+        List<PackageDashboardResponse> packageDashboardResponses = new ArrayList<>();
+        ConstructionOrder firstOrder = constructOrderRepository.findByStatusOrderedByPaidDateDesc().getFirst();
+        ConstructionOrder lastOrder = constructOrderRepository.findByStatusOrderedByPaidDateAsc().getFirst();
+        int firstYear = firstOrder.getStartDate().getYear();
+        int lastYear = lastOrder.getStartDate().getYear();
+        for (int i = firstYear; i <= lastYear; i++) {
+            int numberOfRequest = constructOrderRepository.findByYear(i).size();
+            ProjectInfoBaseTimeResponse infoBaseTimeResponse = ProjectInfoBaseTimeResponse.builder()
+                    .time(i)
+                    .numberOfRequest(numberOfRequest)
+                    .build();
+            projectInfoBaseTimeResponses.add(infoBaseTimeResponse);
+        }
         long allOrder = constructOrderRepository.findAll().size();
         long successOrder = constructOrderRepository.findByStatus(ConstructionOrderStatus.FINISHED).size();
         long failOrder = constructOrderRepository.findByStatus(ConstructionOrderStatus.CANCELLED).size();
         long inProgressOrder = constructOrderRepository.findByStatusNotIn(List.of(ConstructionOrderStatus.FINISHED, ConstructionOrderStatus.CANCELLED)).size();
         long allOrdersHaveQuotation = constructOrderRepository.findByQuotationIdIsNotNullAndStatusNot(ConstructionOrderStatus.CONSULTING).size();
         List<Packages> packages = packageRepository.findAll();
-        List<PackageDashboardResponse> packageDashboardResponses = new ArrayList<>();
         for (Packages p : packages) {
             long numberOfPackage = quotationRepository.findByPackageId(p.getPackageId()).size();
             PackageDashboardResponse packageDashboardResponse = PackageDashboardResponse.builder()
@@ -57,6 +70,48 @@ public class DashboardService {
                 .successPercentage(((double) successOrder / allOrder))
                 .failedPercentage(((double) failOrder / allOrder))
                 .inProgressPercentage(((double) inProgressOrder / allOrder))
+                .projectInfoBaseTimeResponses(projectInfoBaseTimeResponses)
+                .PackageDashboardResponses(packageDashboardResponses)
+                .build();
+    }
+
+    public ProjectDashboardResponse getDashboardProjectsByMonth(int year) {
+        List<PackageDashboardResponse> packageDashboardResponses = new ArrayList<>();
+        List<ProjectInfoBaseTimeResponse> projectInfoBaseTimeResponses = new ArrayList<>();
+        List<ConstructionOrder> orders = constructOrderRepository.findByYear(year);
+        for (int i = 1; i <= 12; i++) {
+            int numberOfRequest = 0;
+            for (ConstructionOrder order : orders) {
+                if (order.getStartDate().getMonthValue() == i) {
+                    numberOfRequest++;
+                }
+            }
+            ProjectInfoBaseTimeResponse infoBaseTimeResponse = ProjectInfoBaseTimeResponse.builder()
+                    .time(i)
+                    .numberOfRequest(numberOfRequest)
+                    .build();
+            projectInfoBaseTimeResponses.add(infoBaseTimeResponse);
+        }
+        long allOrder = orders.size();
+        long successOrder = constructOrderRepository.findByYearAndStatus(year, ConstructionOrderStatus.FINISHED).size();
+        long failOrder = constructOrderRepository.findByYearAndStatus(year, ConstructionOrderStatus.CANCELLED).size();
+        long inProgressOrder = constructOrderRepository.findByYearAndStatusNotIn(year, List.of(ConstructionOrderStatus.FINISHED, ConstructionOrderStatus.CANCELLED)).size();
+        long allOrdersHaveQuotation = constructOrderRepository.findByYearAndQuotationIdIsNotNullAndStatusNot(year, ConstructionOrderStatus.CONSULTING).size();
+        List<Packages> packages = packageRepository.findAll();
+        for (Packages p : packages) {
+            long numberOfPackage = quotationRepository.findByYearAndPackageId(year, p.getPackageId()).size();
+            PackageDashboardResponse packageDashboardResponse = PackageDashboardResponse.builder()
+                    .packageType(p.getPackageType())
+                    .usePercentage((double) numberOfPackage / allOrdersHaveQuotation)
+                    .build();
+            packageDashboardResponses.add(packageDashboardResponse);
+        }
+        return ProjectDashboardResponse.builder()
+                .totalProjects(allOrder)
+                .successPercentage(((double) successOrder / allOrder))
+                .failedPercentage(((double) failOrder / allOrder))
+                .inProgressPercentage(((double) inProgressOrder / allOrder))
+                .projectInfoBaseTimeResponses(projectInfoBaseTimeResponses)
                 .PackageDashboardResponses(packageDashboardResponses)
                 .build();
     }
@@ -97,7 +152,6 @@ public class DashboardService {
         long total = 0;
         for (int i = 1; i <= 12; i++) {
             long revenue = 0;
-
             for (PaymentOrder payment : payments) {
                 int month = payment.getPaidDate().getMonthValue();
                 if (month == i) {
@@ -129,7 +183,7 @@ public class DashboardService {
             long totalRevenue = 0;
             for (PaymentOrder payment : paymentOrders) {
                 if (payment.getPaidDate().getYear() == i) {
-                    totalRevenue +=  payment.getTotal();
+                    totalRevenue += payment.getTotal();
                 }
             }
             YearlyRevenueInfoDashboardResponse response = YearlyRevenueInfoDashboardResponse.builder()
@@ -143,6 +197,13 @@ public class DashboardService {
                 .total(total)
                 .yearlyRevenueInfoDashboardResponseList(responses)
                 .build();
+    }
+
+    private int getMonthFromDate(Date date) {
+        LocalDate localDate = date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+        return localDate.getMonthValue();
     }
 
 //    public DashboardResponse getDashboard() {
