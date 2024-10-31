@@ -90,7 +90,6 @@ public class PaymentController {
                     MaintenanceOrder order = maintenanceOrderRepository.findById(orderId).orElse(null);
                     assert order != null;
                     order.setStatus(MaintenanceOrderStatus.FINISHED);
-                    response.sendRedirect("http://localhost:3000/myInfo/orders/maintenance/");
                     maintenanceOrderRepository.save(order);
                     response.sendRedirect("http://localhost:3000/myInfo/orders/maintenance/");
                 }
