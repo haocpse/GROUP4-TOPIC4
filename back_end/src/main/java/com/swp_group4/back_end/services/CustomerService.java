@@ -219,7 +219,7 @@ public class CustomerService {
                     .orderId(constructionOrderId)
                     .customerId(customer.getCustomerId())
                     .paymentTitle("Khach hang thanh toan giai doan 2")
-                    .total(total)
+                    .total((long) (order.getTotal() * quotation.getPercentageStage2())/100)
                     .status(PaymentStatus.PENDING)
                     .build();
             paymentOrderRepository.save(paymentOrder);
@@ -246,7 +246,7 @@ public class CustomerService {
                     .orderId(constructionOrderId)
                     .customerId(customer.getCustomerId())
                     .paymentTitle("Khach hang thanh toan giai doan 1")
-                    .total((long) (order.getTotal() * quotation.getPercentageStage1()))
+                    .total((long) (order.getTotal() * quotation.getPercentageStage1())/100)
                     .status(PaymentStatus.PENDING)
                     .build();
             paymentOrderRepository.save(paymentOrder);
@@ -344,7 +344,7 @@ public class CustomerService {
                 .orderId(constructionOrderId)
                 .customerId(customer.getCustomerId())
                 .paymentTitle("Khach hang thanh toan giai doan 3")
-                .total((long) (order.getTotal() * quotation.getPercentageStage3()))
+                .total((long) (order.getTotal() * quotation.getPercentageStage3())/100)
                 .status(PaymentStatus.PENDING)
                 .build();
         paymentOrderRepository.save(paymentOrder);

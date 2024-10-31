@@ -57,7 +57,7 @@ public class DesignService {
                 .postedDate(LocalDateTime.now())
                 .build();
 
-        String baseUrl = "http://localhost:8080/images/" + constructionOrderId + "/";
+        String baseUrl = "http://localhost:8080/images/design" + constructionOrderId + "/";
 
         if (!image2D.isEmpty()) {
             design.setUrl2dDesign(baseUrl + saveImage(image2D, constructionOrderId));

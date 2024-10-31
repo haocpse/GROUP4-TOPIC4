@@ -39,10 +39,12 @@ public class DashboardService {
     public ProjectDashboardResponse getDashboardProjectsByYear() {
         List<ProjectInfoBaseTimeResponse> projectInfoBaseTimeResponses = new ArrayList<>();
         List<PackageDashboardResponse> packageDashboardResponses = new ArrayList<>();
-        ConstructionOrder firstOrder = constructOrderRepository.findByStatusOrderedByPaidDateDesc().getFirst();
-        ConstructionOrder lastOrder = constructOrderRepository.findByStatusOrderedByPaidDateAsc().getFirst();
-        int firstYear = firstOrder.getStartDate().getYear();
-        int lastYear = lastOrder.getStartDate().getYear();
+        ConstructionOrder firstOrder = constructOrderRepository.findByStatusOrderedByStartDateDesc().getFirst();
+        ConstructionOrder lastOrder = constructOrderRepository.findByStatusOrderedByStartDateAsc().getFirst();
+        int lastYear = firstOrder.getStartDate().getYear();
+
+        int firstYear = lastOrder.getStartDate().getYear();
+
         for (int i = firstYear; i <= lastYear; i++) {
             int numberOfRequest = constructOrderRepository.findByYear(i).size();
             ProjectInfoBaseTimeResponse infoBaseTimeResponse = ProjectInfoBaseTimeResponse.builder()
@@ -174,9 +176,9 @@ public class DashboardService {
     public YearlyRevenueDashboardResponse getDashboardYearlyRevenue() {
         List<YearlyRevenueInfoDashboardResponse> responses = new ArrayList<>();
         PaymentOrder oldestPayment = paymentOrderRepository.findByStatusOrderedByPaidDateDesc(PaymentStatus.SUCCESS).getFirst();
-        int oldestYear = oldestPayment.getPaidDate().getYear();
+        int lastYear = oldestPayment.getPaidDate().getYear();
         PaymentOrder lastPayment = paymentOrderRepository.findByStatusOrderedByPaidDateAsc(PaymentStatus.SUCCESS).getFirst();
-        int lastYear = lastPayment.getPaidDate().getYear();
+        int oldestYear = lastPayment.getPaidDate().getYear();
         List<PaymentOrder> paymentOrders = paymentOrderRepository.findByStatus(PaymentStatus.SUCCESS);
         long total = 0;
         for (int i = oldestYear; i <= lastYear; i++) {

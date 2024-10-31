@@ -35,7 +35,7 @@ public class BlogService {
                 .build();
         blog = blogRepository.save(blog);
         String blogId = blog.getBlogId().toString();
-        String baseUrl = "http://localhost:8080/images/" + blogId + "/";
+        String baseUrl = "http://localhost:8080/images/blog" + blogId + "/";
         if (headerImg != null && !headerImg.isEmpty()) {
             String headerImageFileName = saveImage(headerImg, blogId);
             blog.setHeaderImageUrl(baseUrl + headerImageFileName);
