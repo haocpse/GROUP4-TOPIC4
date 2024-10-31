@@ -182,8 +182,6 @@ const MaintenanceRequest = () => {
                                 <td className="text-center align-content-center col-1">  <i className="fas fa-user" style={{ marginRight: '5px' }} />{request.customerName}</td>
                                 <td className="text-center align-content-center">{request.phone}</td>
                                 <td className="text-center align-content-center col-2">{request.address}</td>
-                                <td className="text-center align-content-center">{formatDate(request.startDate)}</td>
-                                <td className="text-center align-content-center">{formatDate(request.endDate)}</td>
                                 <td className="text-center align-content-center">{request.totalPrice.toLocaleString()}</td>
 
                                 <td>
@@ -207,11 +205,12 @@ const MaintenanceRequest = () => {
                                     {getStatusIcon(request.status).icon} {request.status}
                                 </td>
                                 <td className="text-center align-content-center">
-                                    {request.status === "MAINTENANing" ? (
+                                    {request.status === "MAINTAINED" ? (
                                         <button
                                             className="btn btn-danger"
                                             onClick={() => handleCreatePayment(request.totalPrice, request.orderId)}
                                         >
+                                            CREATE PAYMENT
                                         </button>) : (null)
                                     }
 
