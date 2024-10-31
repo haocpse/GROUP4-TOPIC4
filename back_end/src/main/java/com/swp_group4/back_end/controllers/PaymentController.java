@@ -90,7 +90,8 @@ public class PaymentController {
                     MaintenanceOrder order = maintenanceOrderRepository.findById(orderId).orElse(null);
                     assert order != null;
                     order.setStatus(MaintenanceOrderStatus.FINISHED);
-                    response.sendRedirect("http://localhost:3000/myInfo/orders/maintenance/" + orderId);
+                    maintenanceOrderRepository.save(order);
+                    response.sendRedirect("http://localhost:3000/myInfo/orders/maintenance/");
                 }
             } else {
                 assert paymentOrder != null;
@@ -100,7 +101,7 @@ public class PaymentController {
                 if(constructOrderRepository.findById(orderId).isPresent())
                     response.sendRedirect("http://localhost:3000/myInfo/orders/" + orderId + "/payments");
                 else
-                    response.sendRedirect("http://localhost:3000/myInfo/orders/maintenance/" + orderId);
+                    response.sendRedirect("http://localhost:3000/myInfo/orders/maintenance/");
             }
         } catch (Exception e) {
             log.error("Error in VNPay callback: {}", e.getMessage());
