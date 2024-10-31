@@ -1,68 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Card, Form, Button, ListGroup, Image } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import Navbar from '../Navbar/Navbar';
-import './BlogDetail.module.css';
-import KoiPond from '../Assests/ho-ca-koi-dep.jpg';
-import KoiPond2 from '../Assests/hocaikoi2.jpg';
-import KoiPond3 from '../Assests/backyard-koi-pond-neave-group-outdoor-solutions_8685.jpg';
 import Footer from '../Footer/Footer';
+import './BlogDetail.module.css';
 
-const userImages = [KoiPond, KoiPond2, KoiPond3];
-
-const blogs = [
-    {
-        id: 1,
-        title: 'Beautiful Koi Pond Design',
-        image: KoiPond,
-        description: `Koi ponds have become a popular addition to residential backyards, offering tranquility and beauty in outdoor spaces. This design seamlessly integrates natural stones, water lilies, and underwater lighting, creating a serene atmosphere. Koi ponds not only enhance aesthetic appeal but also promote relaxation through the calming effect of flowing water. This particular design is ideal for small and large gardens alike, as the layout is customizable based on the available space. The pond’s depth is perfect for koi, allowing them to thrive in a balanced ecosystem. The addition of seating around the pond invites guests to spend time in nature, providing a unique entertainment space for gatherings.`,
-        comments: [
-            { text: 'Amazing design!', userImage: userImages[0] },
-            { text: 'I want this in my garden!', userImage: userImages[1] },
-            { text: 'So relaxing to look at!', userImage: userImages[2] },
-            { text: 'Perfect for meditation!', userImage: userImages[0] },
-            { text: 'A masterpiece!', userImage: userImages[1] },
-            // Additional comments...
-        ],
-    }, {
-        id: 2,
-        title: 'DIY Koi Pond Installation',
-        image: KoiPond2,
-        description: `Building a koi pond in your backyard is a rewarding DIY project. This guide provides a step-by-step process on everything from digging and lining the pond to selecting koi-friendly plants.`,
-        comments: [
-            { text: 'Great guide for beginners!', userImage: userImages[0] },
-            { text: 'Easy to follow!', userImage: userImages[1] },
-        ],
-        views: 200, // Added views property
-    },
-    {
-        id: 3,
-        title: 'Maintaining Your Koi Pond',
-        image: KoiPond3,
-        description: `A healthy koi pond requires regular maintenance to keep water quality optimal and ensure koi well-being. This includes weekly water testing and checking for algae buildup.`,
-        comments: [
-            { text: 'Essential advice!', userImage: userImages[0] },
-            { text: 'My koi have never been healthier!', userImage: userImages[1] },
-        ],
-        views: 120, // Added views property
-    },
+const userImages = [
+    '/path/to/default-image1.jpg',
+    '/path/to/default-image2.jpg',
+    '/path/to/default-image3.jpg'
 ];
-// Additional sample blogs
-
 
 const BlogDetail = () => {
     const { id } = useParams();
-    const blog = blogs.find((blog) => blog.id === parseInt(id));
-    const [comments, setComments] = useState(blog.comments);
+    const [blog, setBlog] = useState(null);
+    const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
+
+    // Fetch blog details from backend API
+    useEffect(() => {
+        axios.get(`/api/blogs/${id}`) // Replace with actual backend API endpoint
+            .then(response => {
+                setBlog(response.data);
+                setComments(response.data.comments || []);
+            })
+            .catch(error => console.error("Error fetching blog details:", error));
+    }, [id]);
 
     const handleAddComment = () => {
         if (newComment.trim()) {
             const randomImage = userImages[Math.floor(Math.random() * userImages.length)];
-            setComments([...comments, { text: newComment.trim(), userImage: randomImage }]);
+            const updatedComments = [...comments, { text: newComment.trim(), userImage: randomImage }];
+            setComments(updatedComments);
             setNewComment('');
         }
     };
+
+    if (!blog) return <p>Loading...</p>;
 
     return (
         <>
@@ -72,7 +47,7 @@ const BlogDetail = () => {
                     <Card.Body>
                         <Card.Title className="display-5 mb-3">{blog.title}</Card.Title>
                         <Card.Text className="text-muted mb-4" style={{ lineHeight: '1.6' }}>
-                            {blog.description}
+                            {blog.content}
                         </Card.Text>
                     </Card.Body>
                     <Image
@@ -118,7 +93,7 @@ const BlogDetail = () => {
                     </Card.Footer>
                 </Card>
             </Container>
-            <Footer/>
+            <Footer />
         </>
     );
 };
