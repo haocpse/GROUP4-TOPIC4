@@ -1,15 +1,12 @@
 package com.swp_group4.back_end.entities;
 
-//import com.swp_group4.back_end.enums.PaymentOrderStatus;
 import com.swp_group4.back_end.enums.PaymentMethods;
 import com.swp_group4.back_end.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Data

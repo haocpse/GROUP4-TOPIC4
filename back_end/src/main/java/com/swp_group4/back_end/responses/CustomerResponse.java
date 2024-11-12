@@ -1,6 +1,5 @@
 package com.swp_group4.back_end.responses;
 
-import com.swp_group4.back_end.enums.Gender;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

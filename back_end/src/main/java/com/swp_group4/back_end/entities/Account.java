@@ -20,5 +20,6 @@ public class Account {
     String password;
     @Enumerated(EnumType.STRING)
     Role role;
+    boolean isActive;
 
 }
