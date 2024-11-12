@@ -65,10 +65,10 @@ const PaymentInfo = () => {
                         <table className="table">
                             <thead>
                                 <tr>
-                                    <th>Tên dịch vụ</th>
-                                    <th>Giá</th>
-                                    <th>Ngày thanh toán</th>
-                                    <th>Trạng thái</th>
+                                    <th>Service</th>
+                                    <th>Price</th>
+                                    <th>Payment Date</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -80,13 +80,13 @@ const PaymentInfo = () => {
                                             <td>{payment.paidDate}</td>
                                             <td>
                                                 {payment.paymentStatus === "SUCCESS" ? (
-                                                    <span className="badge bg-success">ĐÃ THANH TOÁN</span>
+                                                    <span className="badge bg-success">Paid</span>
                                                 ) : (
                                                     <button
                                                         className="btn btn-outline-secondary"
                                                         onClick={() => handlePaymentClick(payment.price, payment.paymentId)}
                                                     >
-                                                        THANH TOÁN LIỀN
+                                                        Pay Now
                                                     </button>
                                                 )}
                                             </td>
