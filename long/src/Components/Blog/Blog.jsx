@@ -17,8 +17,8 @@ const Blog = () => {
             .catch(error => console.error("Error fetching blogs:", error));
     }, []);
 
-    const handleViewBlog = (id) => {
-        navigate(`/blog/${id}`);
+    const handleViewBlog = (blogId) => {
+        navigate(`/blog/${blogId}`);
     };
 
     return (
@@ -28,7 +28,7 @@ const Blog = () => {
                 <h2 className="mb-4 text-center">Koi Pond Construction Blogs</h2>
                 <Row>
                     {blogs.map((blog) => (
-                        <Col md={6} lg={4} key={blog.id} className="mb-4">
+                        <Col md={6} lg={4} key={blog.blogId} className="mb-4">
                             <Card className="blog-card h-100 shadow-sm rounded" style={{ transition: 'transform 0.2s' }}>
                                 <Card.Img variant="top" src={blog.thumbnail} alt={blog.title} className="blog-image" />
                                 <Card.Body>
