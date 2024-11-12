@@ -16,6 +16,7 @@ const ConstructionProgress = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [listTask, setListTask] = useState([]);
     const navigate = useNavigate();
 
     // lay ra du lieu nhan vien 
@@ -54,8 +55,13 @@ const ConstructionProgress = () => {
                     }
                 });
                 setOrders([response.data.data]); // neu la mang se co []
-                setAssignedStaffNames(response.data.data.staffNames)
-                console.log(response.data.data.staffNames)
+                const assignedStaffs = response.data.data.staffs || [];
+                const assignedIds = assignedStaffs.map(staff => staff.staffId); // lay ra staff IDs
+                const assignedNames = assignedStaffs.map(staff => staff.staffName); // lay ra Staff names
+                setListTask(response.data.data.constructTaskStatusResponses);
+                setAssignedStaffNames(assignedNames)
+                setSelectedStaff(assignedIds);
+                console.log(response.data.data.staffs)
             } catch (error) {
 
                 console.error('Error get task list !!', error);
@@ -140,7 +146,6 @@ const ConstructionProgress = () => {
         setSelectedStaff([]); // Clear selected staff when closing
         setIsModalOpen(false);
     };
-
     // Handle staff selection
     const handleStaffSelection = (staffId) => {
         if (selectedStaff.includes(staffId)) {
@@ -158,13 +163,37 @@ const ConstructionProgress = () => {
     };
 
 
-    const formatDate = (dateString) => {
-        if (!dateString) return "";
-        const date = new Date(dateString);
-        const day = String(date.getDate()).padStart(2, "0");
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const year = date.getFullYear();
-        return `${day}/${month}/${year}`;
+    const updateDeadline = async (taskId, newStartDate, newEndDate) => {
+        const token = localStorage.getItem('token');
+        const decoded = jwtDecode(token);
+        const accountId = decoded.sub;
+
+        try {
+            await axios.put(`http://localhost:8080/staffs/${accountId}/construction/${constructionOrderId}/date`, {
+                taskId,
+                startDate: newStartDate,
+                endDate: newEndDate
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                }
+            });
+            setOrders(prevOrders =>
+                prevOrders.map(order => ({
+                    ...order,
+                    constructTaskStatusResponses: order.constructTaskStatusResponses.map(task =>
+                        task.taskId === taskId
+                            ? { ...task, startDate: newStartDate, endDate: newEndDate }
+                            : task
+                    )
+                }))
+            );
+
+            toast.success('Dates updated successfully');
+        } catch (error) {
+            console.error("Error updating dates:", error);
+            toast.error('Failed to update dates. Please try again.');
+        }
     };
 
 
@@ -211,22 +240,20 @@ const ConstructionProgress = () => {
                                                 <option value="DONE">Completed</option>
                                             </select>
                                         </td>
-                                        <td className="text-center">
+                                        <td>
                                             <input
-                                                type="date"
+                                                type="date" lang="vi"
                                                 className="form-control"
-                                                id="startDate"
-                                                value={startDate}
-                                                onChange={(e) => setStartDate(e.target.value)}
+                                                value={task.startDate ? task.startDate.split("T")[0] : ""}
+                                                onChange={(e) => updateDeadline(task.taskId, e.target.value, task.endDate)}
                                             />
                                         </td>
-                                        <td className="text-center">
+                                        <td>
                                             <input
                                                 type="date"
                                                 className="form-control"
-                                                id="endDate"
-                                                value={endDate}
-                                                onChange={(e) => setEndDate(e.target.value)}
+                                                value={task.endDate ? task.endDate.split("T")[0] : ""}
+                                                onChange={(e) => updateDeadline(task.taskId, task.startDate, e.target.value)}
                                             />
                                         </td>
                                         <td style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

@@ -42,6 +42,10 @@ const ApproveQuotation = () => {
         return `${hours}:${minutes}:${seconds} ${day}/${month}/${year}`;
     };
 
+    const formatDouble = (number) => {
+        return number?.toFixed(2);
+      };
+
     return (
         <>
             <ToastContainer position="top-right" autoClose={5000} />
@@ -74,7 +78,7 @@ const ApproveQuotation = () => {
                                     <td className="text-center align-content-center">{formatDate(quote.postedDate)}</td>
                                     <td className="text-center align-content-center">{quote.customerName}</td>
                                     <td className="text-center align-content-center">{quote.packageType}</td>
-                                    <td className="text-center align-content-center">{quote.volume}</td>
+                                    <td className="text-center align-content-center">{formatDouble(quote.volume)}</td>
                                     <td className="text-center align-content-center">{quote.totalPrice.toLocaleString()}</td>
                                     <td className="text-center align-content-center">{quote.status}</td>
                                     <td>

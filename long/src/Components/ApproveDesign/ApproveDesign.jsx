@@ -18,6 +18,7 @@ const ApproveDesign = () => {
                 }
             });
             setDesigns(response.data.data);
+            toast.success("Fetch designs SUCCESSFULLY ^^")
         } catch (error) {
             console.error("Fail to fetch designs! ^^", error);
             toast.error("Fail fetching Designs! ^^")

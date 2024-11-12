@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 const ViewQuotation = () => {
     const navigate = useNavigate();
     const { id } = useParams();
-    const [quotation, setQuotation] = useState([]);
+    const [quotation, setQuotation] = useState(null);
 
 
     useEffect(() => {
@@ -73,6 +73,9 @@ const ViewQuotation = () => {
         return `${day}/${month}/${year}`;
     };
 
+    const formatDouble = (number) => {
+        return number?.toFixed(2);
+      };
 
     return (
         <div className="container mt-4">
@@ -95,7 +98,7 @@ const ViewQuotation = () => {
                             <tr>
                                 <td className="text-center align-content-center">{quotation.customerName}</td>
                                 <td className="text-center align-content-center">{quotation.packageType}</td>
-                                <td className="text-center align-content-center">{quotation.volume}</td>
+                                <td className="text-center align-content-center">{formatDouble(quotation.volume)}</td>
                                 <td className="text-center align-content-center">{quotation.priceStage1.toLocaleString()}</td>
                                 <td className="text-center align-content-center">{quotation.priceStage2.toLocaleString()}</td>
                                 <td className="text-center align-content-center">{quotation.priceStage3.toLocaleString()}</td>
@@ -104,6 +107,9 @@ const ViewQuotation = () => {
 
                         </tbody>
                     </table>
+                    <h6 className="mt-4 fw-light">Percentage first pharse: {quotation.percentageStage1} %</h6>
+                    <h6 className="mt-2 fw-light">Percentage second pharse: {quotation.percentageStage2} %</h6>
+                    <h6 className="mt-2 fw-light">Percentage finally pharse: {quotation.percentageStage3} %</h6>
                     <h6 className="mt-4 fw-light">Excepted Construction Start Date: {formatDate(quotation.startDate)} </h6>
                     <h6 className="mt-4 fw-light">Excepted Construction End Date: {formatDate(quotation.endDate)} </h6>
                     <h3 className="mt-4">Customer request:</h3> {quotation.customerRequest}

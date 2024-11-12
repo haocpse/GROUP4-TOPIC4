@@ -32,6 +32,7 @@ const ConstructionOrder = () => {
 
 
 
+
     const handleViewDetails = (constructionOrderId) => {
         navigate(`${constructionOrderId}`);
     }
@@ -70,17 +71,18 @@ const ConstructionOrder = () => {
 
                                     {/* thay đổi status */}
                                     <td>
-                                        {order.status === "CONSTRUCTED" ? (
+                                        {order.status === "CONSTRUCTING" ? (
                                             <>
-                                                <i className="fas fa-check-circle" style={{ color: 'green', marginRight: '10px' }}></i>
-                                                {order.status}
-                                            </>
-                                        ) : order.status === "CONSTRUCTING" ? (
-                                            <>
+
                                                 <i className="fa-solid fa-hourglass-start" style={{ color: 'orange', marginRight: '10px' }}></i>
                                                 {order.status}
                                             </>
-                                        ) : (order.status)}
+                                        ) : (
+                                            <>
+                                                <i className="fas fa-check-circle" style={{ color: 'green', marginRight: '10px' }}></i>
+                                                CONSTRUCTED
+                                            </>
+                                        )}
 
                                     </td>
 
