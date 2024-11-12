@@ -10,23 +10,23 @@ const BlogCRUD = () => {
 
     // Fetch blogs from the backend API
     useEffect(() => {
-        axios.get('/api/blogs') // Adjust this URL based on your backend setup
+        axios.get('http://localhost:8080/blog') // Adjust this URL based on your backend setup
             .then((response) => setBlogs(response.data))
             .catch((error) => console.error("Error fetching blogs:", error));
     }, []);
 
     // Handle delete blog
-    const handleDelete = (id) => {
+    const handleDelete = (blogId) => {
         if (window.confirm("Are you sure you want to delete this blog?")) {
-            axios.delete(`/api/blogs/${id}`)
-                .then(() => setBlogs(blogs.filter(blog => blog.id !== id)))
+            axios.delete(`http://localhost:8080/deleteBlog/${blogId}`)
+                .then(() => setBlogs(blogs.filter(blog => blog.blogId !== blogId)))
                 .catch((error) => console.error("Error deleting blog:", error));
         }
     };
 
     // Handle edit blog
-    const handleEdit = (id) => {
-        navigate(`/edit-blog/${id}`);
+    const handleEdit = (blogId) => {
+        navigate(`http://localhost:8080/updateBlog/${blogId}`);
     };
 
     // Handle input change for the new blog form
@@ -38,7 +38,7 @@ const BlogCRUD = () => {
     // Handle new blog submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('/api/blogs', newBlog)
+        axios.post('http://localhost:8080/createBlog', newBlog)
             .then((response) => setBlogs([...blogs, response.data]))
             .catch((error) => console.error("Error creating new blog:", error));
     };
@@ -53,7 +53,7 @@ const BlogCRUD = () => {
 
             <Row>
                 {blogs.map((blog) => (
-                    <Col md={4} key={blog.id} className="mb-4">
+                    <Col md={4} key={blog.blogId} className="mb-4">
                         <Card>
                             <Card.Img variant="top" src={blog.thumbnail} />
                             <Card.Body>

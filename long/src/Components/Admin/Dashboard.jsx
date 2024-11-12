@@ -1,325 +1,511 @@
-// import React, { useState, useEffect } from 'react';
-// import { Container, Row, Col, Card, Dropdown, Table } from 'react-bootstrap';
-// import { Bar, Pie, Line } from 'react-chartjs-2';
-// import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, Title, Tooltip, Legend, PieController } from 'chart.js';
-// import axios from 'axios';  // Sử dụng axios để gọi API
-// import './Dashboard.css';
-
-// // Register necessary components with Chart.js
-// ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, Title, Tooltip, Legend, PieController);
-
-// // Component Chart.js config
-// const BarChart = ({ chartData }) => <Bar data={chartData} options={{ responsive: true }} />;
-// const PieChart = ({ chartData }) => <Pie data={chartData} options={{ responsive: true }} />;
-// const LineChart = ({ chartData }) => <Line data={chartData} options={{ responsive: true }} />;
-
-// const Dashboard = () => {
-//     const [visitors, setVisitors] = useState([]);
-//     const [accounts, setAccounts] = useState([]);
-//     const [constructions, setConstructions] = useState([]);
-//     const [adminName, setAdminName] = useState('Admin Name');
-
-//     // Gọi API để lấy dữ liệu từ backend
-//     useEffect(() => {
-//         // Lấy dữ liệu visitors từ backend
-//         axios.get('/api/visitors')
-//             .then(response => {
-//                 setVisitors(response.data);
-//             })
-//             .catch(error => {
-//                 console.error('Error fetching visitors:', error);
-//             });
-
-//         // Lấy dữ liệu accounts từ backend
-//         axios.get('/api/accounts')
-//             .then(response => {
-//                 setAccounts(response.data);
-//             })
-//             .catch(error => {
-//                 console.error('Error fetching accounts:', error);
-//             });
-
-//         // Lấy dữ liệu constructions từ backend
-//         axios.get('/api/constructions')
-//             .then(response => {
-//                 setConstructions(response.data);
-//             })
-//             .catch(error => {
-//                 console.error('Error fetching constructions:', error);
-//             });
-
-//         // Lấy thông tin admin từ backend
-//         axios.get('/api/admin-info')
-//             .then(response => {
-//                 setAdminName(response.data.name);
-//             })
-//             .catch(error => {
-//                 console.error('Error fetching admin info:', error);
-//             });
-//     }, []);
-
-//     // Data for the charts
-//     const visitorData = {
-//         labels: visitors.map(v => v.date),
-//         datasets: [
-//             {
-//                 label: 'Số người truy cập',
-//                 data: visitors.map(v => v.count),
-//                 backgroundColor: 'rgba(75, 192, 192, 0.6)',
-//             },
-//         ],
-//     };
-
-//     const accountData = {
-//         labels: accounts.map(acc => acc.createdDate),
-//         datasets: [
-//             {
-//                 label: 'Tài khoản mới',
-//                 data: accounts.map(() => 1), // Giả định mỗi account là 1 điểm cho mục đích demo
-//                 backgroundColor: 'rgba(153, 102, 255, 0.6)',
-//             },
-//         ],
-//     };
-
-//     const constructionData = {
-//         labels: constructions.map(c => c.id),
-//         datasets: [
-//             {
-//                 label: 'Công trình đang thi công',
-//                 data: constructions.map(c => c.status === "In Progress" ? 1 : 0), // Số liệu nhị phân cho demo
-//                 backgroundColor: 'rgba(255, 159, 64, 0.6)',
-//             },
-//         ],
-//     };
-
-//     const pieData = {
-//         labels: ['Active', 'Inactive'],
-//         datasets: [
-//             {
-//                 label: 'Trạng thái tài khoản',
-//                 data: [
-//                     accounts.filter(acc => acc.status === 'Active').length,
-//                     accounts.filter(acc => acc.status === 'Inactive').length
-//                 ],
-//                 backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)']
-//             }
-//         ]
-//     };
-
-//     return (
-//         <Container fluid className="mt-4">
-//             {/* Title and Admin Name */}
-//             <Row className="mb-3">
-//                 <Col>
-//                     <h2>Admin Dashboard</h2>
-//                 </Col>
-//                 <Col className="text-right">
-//                     <Dropdown align="end">
-//                         <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-//                             {adminName}
-//                         </Dropdown.Toggle>
-//                         <Dropdown.Menu>
-//                             <Dropdown.Item href="#/profile">Profile</Dropdown.Item>
-//                             <Dropdown.Item href="#/logout">Logout</Dropdown.Item>
-//                         </Dropdown.Menu>
-//                     </Dropdown>
-//                 </Col>
-//             </Row>
-
-//             <Row>
-//                 {/* Sidebar Menu */}
-//                 <Col lg={2} className="bg-light p-3">
-//                     <h5>Menu</h5>
-//                     <ul className="list-unstyled">
-//                         <li><a href="#/products" className="h6">Product</a></li>
-//                         <li><a href="#/blogs" className="h6">Blog</a></li>
-//                         <li><a href="#/accounts" className="h6">Account</a></li>
-//                         <li><a href="#/constructions" className="h6">Construction</a></li>
-//                     </ul>
-//                 </Col>
-
-//                 {/* Charts */}
-//                 <Col lg={10}>
-//                     <Row>
-//                         <Col lg={4}>
-//                             <Card className="mb-4">
-//                                 <Card.Body>
-//                                     <h5 className="card-title">Số Người Truy Cập</h5>
-//                                     <BarChart chartData={visitorData} />
-//                                 </Card.Body>
-//                             </Card>
-//                         </Col>
-
-//                         <Col lg={4}>
-//                             <Card className="mb-4">
-//                                 <Card.Body>
-//                                     <h5 className="card-title">Tài Khoản Hệ Thống</h5>
-//                                     <PieChart chartData={pieData} />
-//                                 </Card.Body>
-//                             </Card>
-//                         </Col>
-
-//                         <Col lg={4}>
-//                             <Card className="mb-4">
-//                                 <Card.Body>
-//                                     <h5 className="card-title">Công Trình Đang Thi Công</h5>
-//                                     <LineChart chartData={constructionData} />
-//                                 </Card.Body>
-//                             </Card>
-//                         </Col>
-//                     </Row>
-
-//                     {/* Content Section */}
-//                     <Card className="mt-4">
-//                         <Card.Body>
-//                             <h5>Tài Khoản</h5>
-//                             <Table striped bordered hover className="rounded-table">
-//                                 <thead>
-//                                     <tr>
-//                                         <th>Loại Tài Khoản</th>
-//                                         <th>Trạng Thái</th>
-//                                         <th>Số Điện Thoại</th>
-//                                         <th>Ngày Tạo</th>
-//                                     </tr>
-//                                 </thead>
-//                                 <tbody>
-//                                     {accounts.map((account, index) => (
-//                                         <tr key={index}>
-//                                             <td>{account.type}</td>
-//                                             <td>
-//                                                 <span className={`badge ${account.status === 'Active' ? 'bg-success' : 'bg-danger'}`}>
-//                                                     {account.status}
-//                                                 </span>
-//                                             </td>
-//                                             <td>{account.phone}</td>
-//                                             <td>{account.createdDate}</td>
-//                                         </tr>
-//                                     ))}
-//                                 </tbody>
-//                             </Table>
-
-//                             <h5 className="mt-4">Tiến Độ Công Trình</h5>
-//                             <Table striped bordered hover className="rounded-table">
-//                                 <thead>
-//                                     <tr>
-//                                         <th>ID Công Trình</th>
-//                                         <th>Ngày Bắt Đầu</th>
-//                                         <th>Ngày Kết Thúc</th>
-//                                         <th>Trạng Thái</th>
-//                                     </tr>
-//                                 </thead>
-//                                 <tbody>
-//                                     {constructions.map((construction, index) => (
-//                                         <tr key={index}>
-//                                             <td>{construction.id}</td>
-//                                             <td>{construction.startDate}</td>
-//                                             <td>{construction.endDate}</td>
-//                                             <td>
-//                                                 <span className={`badge ${construction.status === "In Progress" ? 'bg-success' : 'bg-danger'}`}>
-//                                                     {construction.status}
-//                                                 </span>
-//                                             </td>
-//                                         </tr>
-//                                     ))}
-//                                 </tbody>
-//                             </Table>
-//                         </Card.Body>
-//                     </Card>
-//                 </Col>
-//             </Row>
-//         </Container>
-//     );
-// };
-
-// export default Dashboard;
-
-
+// src/Dashboard.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container, Row, Col, Card, Dropdown, Table } from 'react-bootstrap';
-import { Bar, Pie, Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, Title, Tooltip, Legend, PieController } from 'chart.js';
-import './Dashboard.module.css';
-import adminAvatar from '../Assests/admin_avt.jpg';
+import { Pie, Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, PointElement, LineElement } from 'chart.js';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, Title, Tooltip, Legend, PieController);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, PointElement, LineElement);
 
-const Dashboard = () => {
-    const [visitors, setVisitors] = useState([]);
-    const [accounts, setAccounts] = useState([]);
-    const [constructions, setConstructions] = useState([]);
-    const [adminName, setAdminName] = useState('Admin Name');
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const visitorsResponse = await axios.get('/api/visitors');
-                const accountsResponse = await axios.get('/api/accounts');
-                const constructionsResponse = await axios.get('/api/constructions');
-                const adminInfoResponse = await axios.get('/api/admin');
-
-                setVisitors(visitorsResponse.data);
-                setAccounts(accountsResponse.data);
-                setConstructions(constructionsResponse.data);
-                setAdminName(adminInfoResponse.data.name);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        };
-        fetchData();
-    }, []);
-
-    const visitorData = {
-        labels: visitors.map(v => v.date),
+// Component UserStatistics
+const UserStatistics = ({ actualMakeProjectPercentage, cancelPercentage, returnPercentage }) => {
+    // Dữ liệu và cấu hình cho biểu đồ
+    const chartData = {
+        labels: ['Actual Make Project', 'Cancel', 'Return'],
         datasets: [
             {
-                label: 'Số người truy cập',
-                data: visitors.map(v => v.count),
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                label: 'Percentage',
+                data: [actualMakeProjectPercentage, cancelPercentage, returnPercentage],
+                backgroundColor: ['rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)', 'rgba(75, 192, 192, 0.6)'],
             },
         ],
     };
 
-    const pieData = {
-        labels: ['Active', 'Inactive'],
-        datasets: [
-            {
-                label: 'Trạng thái tài khoản',
-                data: [
-                    accounts.filter(acc => acc.status === 'Active').length,
-                    accounts.filter(acc => acc.status === 'Inactive').length
-                ],
-                backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)']
-            }
-        ]
-    };
-
-    const constructionData = {
-        labels: constructions.map(c => c.startDate),
-        datasets: [
-            {
-                label: 'In Progress',
-                data: constructions.map(c => c.status === 'In Progress' ? 1 : 0),
-                backgroundColor: 'rgba(255, 159, 64, 0.6)',
-                borderColor: 'rgba(255, 159, 64, 1)',
-                borderWidth: 2,
+    const chartOptions = {
+        responsive: true,
+        plugins: {
+            legend: { display: false },
+            title: { display: true, text: 'User Statistics' },
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100,
+                title: { display: true, text: 'Percentage (%)' },
             },
-            {
-                label: 'Completed',
-                data: constructions.map(c => c.status === 'Completed' ? 1 : 0),
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 2,
-            }
-        ],
+        },
     };
 
     return (
-        <Container fluid className="mt-4">
-            {/* Render your charts and tables */}
-        </Container>
+        <div className="p-3 mb-3 border rounded shadow-sm bg-light">
+            <Bar data={chartData} options={chartOptions} />
+        </div>
+    );
+};
+
+
+
+
+// Component FinanceStatistics
+const FinanceStatistics = () => {
+    const [isMonthly, setIsMonthly] = useState(true);
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [monthlyRevenuesByYear, setMonthlyRevenuesByYear] = useState({});
+    const [yearlyRevenues, setYearlyRevenues] = useState([]);
+    const [totalRevenue, setTotalRevenue] = useState(0);
+    const [totalRevenueByYear, setTotalRevenueByYear] = useState(0);
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth();// Lấy tháng hiện tại (0-11)
+
+
+    const formattedTotalRevenue = new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    }).format(totalRevenue);
+
+    useEffect(() => {
+        const fetchMonthlyRevenue = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/dashboard/monthlyRevenue?year=${selectedYear}`);
+                const monthlyData = response.data.data.monthlyRevenueInfoDashboardResponseList.reduce((acc, item) => {
+                    acc[item.month - 1] = item.revenue; // Adjust month index (0-11)
+                    return acc;
+                }, Array(12).fill(0));
+                setTotalRevenueByYear(response.data.data.total)
+                setMonthlyRevenuesByYear(prev => ({ ...prev, [selectedYear]: monthlyData }));
+            } catch (error) {
+                console.error("Error fetching monthly revenue:", error);
+            }
+        };
+        fetchMonthlyRevenue();
+    }, [selectedYear]);
+
+    // Fetch yearly revenue data when the component mounts
+    useEffect(() => {
+        const fetchYearlyRevenue = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/dashboard/yearlyRevenue');
+                const yearlyData = response.data.data.yearlyRevenueInfoDashboardResponseList.map(item => item.totalRevenue);
+                setYearlyRevenues(yearlyData);
+                setTotalRevenue(response.data.data.total);
+            } catch (error) {
+                console.error("Error fetching yearly revenue:", error);
+            }
+        };
+        fetchYearlyRevenue();
+    }, []);
+
+    // Cấu hình dữ liệu cho biểu đồ doanh thu hàng tháng
+    const monthlyData = {
+        labels: Array.from({ length: 12 }, (_, i) => `Month ${i + 1}`),
+        datasets: [
+            {
+                label: 'Monthly Revenue',
+                data: selectedYear === currentYear
+                    ? monthlyRevenuesByYear[selectedYear]?.slice(0, currentMonth + 1).concat(Array(11 - currentMonth).fill(0))
+                    : monthlyRevenuesByYear[selectedYear] || Array(12).fill(0),
+                backgroundColor: 'rgba(106, 90, 205)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+            },
+        ],
+    };
+
+    const yearlyData = {
+        labels: yearlyRevenues.map((_, i) => `Year ${currentYear - yearlyRevenues.length + i + 1}`),
+        datasets: [
+            {
+                label: 'Yearly Revenue',
+                data: yearlyRevenues,
+                backgroundColor: 'rgba(106, 90, 205)',
+                borderColor: 'rgba(153, 102, 255, 1)',
+                borderWidth: 1,
+            },
+        ],
+    };
+
+    const calculateTotalRevenueForSelectedYear = () => {
+        const yearIndex = currentYear - selectedYear;
+        return yearIndex >= 0 && yearIndex < yearlyRevenues.length ? yearlyRevenues[yearIndex] : 0;
+    };
+    const totalRevenueForSelectedYear = calculateTotalRevenueForSelectedYear();
+
+    const toggleDisplay = () => {
+        setIsMonthly(prev => !prev);
+    };
+
+    return (
+        <div className="p-3 mb-3 border rounded shadow-sm bg-light row">
+            {/* Input để chọn năm */}
+            {isMonthly && (
+                <div className="col-md-12 mb-3 text-center">
+                    <label htmlFor="yearSelect" style={{ marginRight: '10px' }}>Select Year:</label>
+                    <input
+                        type="number"
+                        id="yearSelect"
+                        value={selectedYear}
+                        onChange={(e) => setSelectedYear(e.target.value)}
+                        min="2020" // Giới hạn năm bắt đầu
+                        max={currentYear} // Giới hạn năm là năm hiện tại
+                        className="form-control"
+                        style={{ width: '200px', display: 'inline-block' }}
+                    />
+                </div>
+            )}
+
+            {/* Biểu đồ doanh thu */}
+            {isMonthly ? (
+                <div className='col-11'>
+                    <div className="col-md-6 mb-3 text-center">
+                        <div className="p-4 border rounded" style={{ backgroundColor: '#e7f3fe', color: '#0c5460', fontSize: '1.5rem', fontWeight: 'bold' }}>
+                            <strong>Filtered Total Revenue for {selectedYear}:</strong> {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalRevenueByYear)}
+                        </div>
+                    </div>
+
+                    <h6>Monthly Revenue</h6>
+                    <Bar data={monthlyData} options={{ responsive: true, plugins: { legend: { position: 'top' } } }} />
+                </div>
+            ) : (
+                <div className='col-11'>
+                    <div className="col-md-6 mb-3 text-center">
+                        <div className="p-4 border rounded" style={{ backgroundColor: '#e7f3fe', color: '#0c5460', fontSize: '1.5rem', fontWeight: 'bold' }}>
+                            <strong>Total Revenue:</strong> {formattedTotalRevenue} <br />
+                        </div>
+                    </div>
+
+                    <h6>Yearly Revenue</h6>
+                    <Bar data={yearlyData} options={{ responsive: true, plugins: { legend: { position: 'top' } } }} />
+                </div>
+            )}
+            <div className="col-12 mt-5">
+                <button
+                    onClick={toggleDisplay}
+                    className={`btn ${isMonthly ? 'btn-success' : 'btn-outline-success'} mb-3`}
+                    style={{ transition: 'all 0.3s ease' }}
+                >
+                    <i className={`fas ${isMonthly ? 'fa-calendar-alt' : 'fa-calendar'} mr-2`}></i>
+                    {isMonthly ? 'Show Yearly Revenue' : 'Show Monthly Revenue'}
+                </button>
+            </div>
+        </div>
+    );
+};
+
+// Component ProjectStatistics
+const ProjectStatistics = () => {
+    const [isShowingCurrentProgress, setIsShowingCurrentProgress] = useState(false);
+    const [projectData, setProjectData] = useState({
+        totalProjects: 0,
+        successPercentage: 0,
+        failedPercentage: 0,
+        inProgressPercentage: 0,
+        packageData: [],
+    });
+    const [projects, setProjects] = useState([]);
+    const [inProgressProjects, setInProgressProjects] = useState([]);
+    const [statusList, setStatusList] = useState([]) // New state
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth();// Lấy tháng hiện tại (0-11)
+    const [yearlyRequests, setYearlyRequests] = useState([]);
+    const [monthlyRequests, setMonthlyRequests] = useState([]);
+    const [isYearlyView, setIsYearlyView] = useState(true);
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
+    const [chartData, setChartData] = useState({
+        labels: [],
+        datasets: [],
+    });
+
+
+    const fetchProjectYearData = async () => {
+        try {
+
+            const response = await axios.get('http://localhost:8080/dashboard/projects/year');
+            setProjectData({
+                totalProjects: response.data.data.totalProjects,
+                successPercentage: response.data.data.successPercentage * 100,
+                failedPercentage: response.data.data.failedPercentage * 100,
+                inProgressPercentage: response.data.data.inProgressPercentage * 100,
+                packageData: response.data.data.packageDashboardResponses,
+            });
+            setYearlyRequests(response.data.data.projectInfoBaseTimeResponses);
+        } catch (error) {
+            console.error("Error fetching project data:", error);
+        }
+    };
+
+    const fetchProjectMonthData = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8080/dashboard/projects/month?year=${selectedYear}`);
+            setProjectData({
+                totalProjects: response.data.data.totalProjects,
+                successPercentage: response.data.data.successPercentage * 100,
+                failedPercentage: response.data.data.failedPercentage * 100,
+                inProgressPercentage: response.data.data.inProgressPercentage * 100,
+                packageData: response.data.data.packageDashboardResponses,
+            });
+            setMonthlyRequests(response.data.data.projectInfoBaseTimeResponses);
+            const monthlyData = Array(12).fill(0); // Khởi tạo mảng cho 12 tháng
+
+            // Lấy dữ liệu số yêu cầu từ projectInfoBaseTimeResponses
+            response.data.data.projectInfoBaseTimeResponses.forEach(item => {
+                const monthIndex = item.time - 1; // Thay đổi từ 1-12 thành 0-11 cho chỉ số mảng
+                monthlyData[monthIndex] = item.numberOfRequest; // Lưu số yêu cầu cho từng tháng
+            });
+
+            // Cập nhật cột x với tên tháng
+            const labels = [
+                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+            ];
+            console.log(monthlyData)
+            const chartData = {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Monthly Requests',
+                        data: monthlyData,
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    },
+                ],
+            };
+
+            setChartData(chartData);
+
+        } catch (error) {
+            console.error("Error fetching project data:", error);
+        }
+    };
+
+    useEffect(() => {
+        // Initial fetch for project dashboard data
+        if (isYearlyView) {
+            fetchProjectYearData();
+        } else {
+            fetchProjectMonthData();
+        }
+    }, [isYearlyView, selectedYear]);
+
+    // New function to fetch in-progress projects
+    const fetchInProgressProjects = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/dashboard/inProgressProjects');
+            setInProgressProjects(response.data.data.projectInfoDashboardResponseList);
+            setStatusList(response.data.data.statusList)
+        } catch (error) {
+            console.error("Error fetching in-progress projects:", error);
+        }
+    };
+
+    // Toggle display and fetch in-progress data if needed
+    const toggleDisplay = () => {
+        if (!isShowingCurrentProgress) {
+            fetchInProgressProjects();
+        }
+        setIsShowingCurrentProgress(prev => !prev);
+    };
+
+    const pieData = {
+        labels: ['Success', 'Fail', 'In Progress'],
+        datasets: [{
+            data: [
+                projectData.successPercentage,
+                projectData.failedPercentage,
+                projectData.inProgressPercentage,
+            ],
+            backgroundColor: [
+                'rgba(135, 201, 71)',
+                'rgba(255, 99, 132, 0.6)',
+                'rgba(255, 206, 86, 0.6)',
+            ],
+            borderWidth: 1,
+        }]
+    };
+
+    const barPackageData = {
+        labels: projectData.packageData.map(pkg => pkg.packageType),
+        datasets: [{
+            label: 'Use Percentage',
+            data: projectData.packageData.map(pkg => pkg.usePercentage * 100),
+            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+        }]
+    };
+
+    const yearlyData = {
+        labels: yearlyRequests.map((_, i) => `Year ${currentYear - yearlyRequests.length + i + 1}`),
+        datasets: [
+            {
+                label: 'Yearly Revenue',
+                data: yearlyRequests.map(request => request.numberOfRequest),
+                backgroundColor: 'rgba(106, 90, 205)',
+                borderColor: 'rgba(153, 102, 255, 1)',
+                borderWidth: 1,
+            },
+        ],
+    };
+
+    const toggleDisplayData = () => {
+        setIsYearlyView(prev => !prev);
+    };
+
+    return (
+        <div className="p-3 mb-3 border rounded shadow-sm bg-light row">
+            <div className='d-flex'>
+                <div className="col-md-2 mb-3 text-center">
+                    <div className="p-2 border rounded" style={{ backgroundColor: '#e7f3fe', color: '#0c5460', fontSize: '1.5rem', fontWeight: 'bold' }}>
+                        <strong>Total Requests:</strong> <span>{projectData.totalProjects}</span>
+                    </div>
+                </div>
+                <div className='d-flex'>
+                    <button
+                        onClick={toggleDisplayData}
+                        className={`btn ${isYearlyView ? 'btn-success' : 'btn-outline-success'} mb-3`}
+                        style={{ transition: 'all 0.3s ease' }}
+                    >
+                        <i className={`fas ${isYearlyView ? 'fa-calendar-alt' : 'fa-calendar'} mr-2`}></i>
+                        {isYearlyView ? 'Yearly' : 'Monthly'}
+                    </button>
+                </div>
+                {!isYearlyView ? (
+                    <div className='d-flex align-items-center ml-3'>
+                        <input
+                            type="number"
+                            className="form-control"
+                            value={selectedYear}
+                            onChange={(e) => setSelectedYear(e.target.value)}
+                            min="2000"
+                            max={currentYear}
+                            placeholder="Enter year"
+                            style={{ width: '120px' }}
+                        />
+                    </div>) : (<div></div>)
+                }
+            </div>
+            {isShowingCurrentProgress ? (
+                <div className="col-md-12">
+                    <h5 className="mb-5" style={{ color: '#0c5460' }}>Current Project Progress</h5>
+                    {inProgressProjects.map((project, index) => (
+                        <div key={index} className="mb-5">
+                            <h6>{project.nameOfOrder}</h6>
+                            <div className="progress mb-2" style={{ height: '30px', display: 'flex', gap: '3px' }}>
+                                {statusList.map((status, idx) => {
+                                    // Determine the color for each status based on its relation to the current status
+                                    let statusClass = "bg-secondary"; // Default: Upcoming (grey)
+                                    if (idx < statusList.indexOf(project.status)) {
+                                        statusClass = "bg-success"; // Completed (green)
+                                    } else if (status === project.status) {
+                                        statusClass = "bg-info"; // Current (blue)
+                                    }
+
+                                    return (
+                                        <div
+                                            key={idx}
+                                            className={`progress-bar ${statusClass}`}
+                                            style={{
+                                                width: `${100 / statusList.length}%`,
+                                                color: 'white',
+                                                textAlign: 'center',
+                                                fontWeight: 'bold',
+                                            }}
+                                        >
+                                            {status}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <div className="row">
+                    {isYearlyView ? (
+                        <div className='col-7 d-flex align-items-end'>
+                            <Bar data={yearlyData} options={{ responsive: true, plugins: { legend: { position: 'top' } } }} />
+                        </div>) : (
+                        <div className='col-7 d-flex align-items-end'>
+                            <Bar data={chartData} options={{ responsive: true, plugins: { legend: { position: 'top' } } }} />
+                        </div>
+                    )}
+                    <div className='col-1'></div>
+                    <div className='col-4 row d-flex justify-content-end'>
+                        <div className="col-md-10 mb-5">
+                            <Pie data={pieData} options={{ responsive: true }} />
+                        </div>
+                        <div className="col-md-10 d-flex align-items-end">
+                            <Bar data={barPackageData} options={{
+                                responsive: true,
+                                scales: {
+                                    y: {
+                                        max: 100,
+                                    }
+                                }
+                            }} />
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <div className="col-12 mt-5">
+                <button
+                    onClick={toggleDisplay}
+                    className={`btn ${isShowingCurrentProgress ? 'btn-outline-primary' : 'btn-primary'} mb-3`}
+                    style={{ transition: 'all 0.3s ease' }}
+                >
+                    {isShowingCurrentProgress ? 'Show Overview' : 'Show Current Progress'}
+                </button>
+            </div>
+        </div>
+    );
+};
+
+// Main Dashboard Component
+const Dashboard = () => {
+    // Trạng thái để theo dõi phần nào đang được hiển thị
+    const [activeTab, setActiveTab] = useState('projects');
+
+    // Dữ liệu giả lập
+    const userStats = {
+        actualMakeProjectPercentage: 75,
+        cancelPercentage: 10,
+        returnPercentage: 15,
+    };
+
+    const renderActiveTab = () => {
+        switch (activeTab) {
+            case 'projects':
+                return <ProjectStatistics />;
+            case 'finance':
+                return <FinanceStatistics />;
+            case 'users':
+                return <UserStatistics {...userStats} />;
+            default:
+                return null;
+        }
+    };
+
+    return (
+        <div className="mt-4">
+            <h1>Dashboard</h1>
+            {/* Navbar */}
+
+            <div className="container-fluid">
+                <button className={`btn ${activeTab === 'projects' ? 'btn-outline-primary' : 'btn-light'}`} onClick={() => setActiveTab('projects')}>
+                    Project Statistics
+                </button>
+                <button className={`btn ${activeTab === 'finance' ? 'btn-outline-primary' : 'btn-light'}`} onClick={() => setActiveTab('finance')}>
+                    Finance Statistics
+                </button>
+                <button className={`btn ${activeTab === 'users' ? 'btn-outline-primary' : 'btn-light'}`} onClick={() => setActiveTab('users')}>
+                    User Statistics
+                </button>
+            </div>
+
+            <div className="d-flex flex-column">
+                <div className="mb-4 col-12">
+                    {renderActiveTab()}
+                </div>
+            </div>
+        </div>
     );
 };
 
 export default Dashboard;
-

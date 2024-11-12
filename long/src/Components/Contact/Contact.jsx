@@ -1,29 +1,46 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Contact.css';
 import Navbar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
 import logo from '../Assests/logo-navbar.png'
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
 
 const Contact = () => {
-  
+
     const [service, setService] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [address, setAddress] = useState('');
     const [phone, setPhone] = useState('');
     const [customerRequest, setCustomerRequest] = useState('');
+    const [customerInformation, setCustomerInformation] = useState({});
 
     // const [file, setFile] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [error, setError] = useState('');
 
-    
 
-    // const handleFileChange = (event) => {
-    //     const file = event.target.files[0];
-    //     setFile(file);
-    // };
+
+    useEffect(() => {
+        const fetchCustomerInformation = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/customerInfo', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    }
+                });
+                setCustomerInformation(response.data.data)
+                toast.success("Fetch information successfully ^^")
+            } catch (error) {
+                toast.error("Fetch infomation ERROR !!")
+                console.error("Fail to fetch INFOR! ^^")
+            }
+        }
+        fetchCustomerInformation()
+    }, [])
+
+
 
 
 
@@ -31,29 +48,13 @@ const Contact = () => {
         event.preventDefault(); // ngan chan reload
         setError('');
         setSubmitted(false);
-
-        // console.log('file:', file); // kt file anh
-
-        // tao FormData de gui du lieu va file cho backend
-
-        // const dataToSend = new FormData();
-        // dataToSend.append('service', formData.service);
-        // dataToSend.append('firstName', formData.firstName);
-        // dataToSend.append('lastName', formData.lastName);
-        // dataToSend.append('address', formData.address); // service, firstname, lastname, address, contactNumber, customRequest
-        // dataToSend.append('phone', formData.phone);
-        // dataToSend.append('customerRequest', formData.customerRequest);
-        // if (file) {
-        //     dataToSend.append('file', file);
-        // }
-
         try {
             const response = await axios.post('http://localhost:8080/contact', {
                 service: service,
-                firstName: firstName,
-                lastName: lastName,
+                firstName: firstName || customerInformation.firstName,
+                lastName: lastName || customerInformation.lastName,
+                phone: phone || customerInformation.phone,
                 address: address,
-                phone: phone,
                 customerRequest: customerRequest
             },
                 {
@@ -80,13 +81,15 @@ const Contact = () => {
             <Navbar />
 
             <div className="container mb-5">
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
+           
                 <h1 className="text-center my-4" style={{ color: 'red' }}>Contact us</h1>
                 <div className="row">
-                    <div className="col-md-6" style={{marginLeft : '25%'}}>
+                    <div className="col-md-6" style={{ marginLeft: '25%' }}>
                         {/* check xem la form dc submit hong */}
                         {submitted ? (
                             // SUCCESS !!!
-                            <div className="notification alert-success">
+                            <div className="notification alert-success" style={{marginLeft: '110px'}}>
                                 <div className="success-icon">
                                     <i className="fa-solid fa-check"></i>
                                 </div>
@@ -123,6 +126,7 @@ const Contact = () => {
                                     <input type="text" className="form-control" name="firstName"
                                         value={firstName}
                                         onChange={(event) => setFirstName(event.target.value)}
+                                        placeholder={customerInformation.firstName}
                                         required />
                                 </div>
 
@@ -131,14 +135,7 @@ const Contact = () => {
                                     <input type="text" className="form-control" name="lastName"
                                         value={lastName}
                                         onChange={(event) => setLastName(event.target.value)}
-                                        required />
-                                </div>
-
-                                <div className="form-group mb-6">
-                                    <label>Address</label>
-                                    <input type="text" className="form-control" name="address"
-                                        value={address}
-                                        onChange={(event) => setAddress(event.target.value)}
+                                        placeholder={customerInformation.lastName}
                                         required />
                                 </div>
 
@@ -150,9 +147,20 @@ const Contact = () => {
                                         name="phone"
                                         value={phone}
                                         onChange={(event) => setPhone(event.target.value)}
+                                        placeholder={customerInformation.phone}
                                         required
                                     />
                                 </div>
+
+                                <div className="form-group mb-6">
+                                    <label>Address</label>
+                                    <input type="text" className="form-control" name="address"
+                                        value={address}
+                                        onChange={(event) => setAddress(event.target.value)}
+                                        required />
+                                </div>
+
+                               
 
                                 <div className="form-group mb-6">
                                     <label>Detail</label>
@@ -173,21 +181,7 @@ const Contact = () => {
                         )}
                     </div>
 
-                    {/* {!submitted && ( // Chỉ hiển thị form upload nếu chưa gửi
-                        <div className="col-md-6 bg-light p-4 shadow-lg">
-                            <div className="form-group mb-6 text-center ">
-                                <label className="label-upload">Upload Image of Your Idea</label>
-                                <input
-                                    type="file"
-                                    name='file'
-                                    className="form-control input-upload"
-                                    onChange={handleFileChange}
-                                    accept="image/*"
-                                />
-                                <img className="logo-contact" src={logo} alt="" />
-                            </div>
-                        </div>
-                    )} */}
+
                 </div >
             </div>
 

@@ -13,20 +13,20 @@ const userImages = [
 ];
 
 const BlogDetail = () => {
-    const { id } = useParams();
+    const { blogId } = useParams();
     const [blog, setBlog] = useState(null);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
 
     // Fetch blog details from backend API
     useEffect(() => {
-        axios.get(`/api/blogs/${id}`) // Replace with actual backend API endpoint
+        axios.get(`http://localhost:8080/blog/${blogId}`) // Replace with actual backend API endpoint
             .then(response => {
                 setBlog(response.data);
                 setComments(response.data.comments || []);
             })
             .catch(error => console.error("Error fetching blog details:", error));
-    }, [id]);
+    }, [blogId]);
 
     const handleAddComment = () => {
         if (newComment.trim()) {

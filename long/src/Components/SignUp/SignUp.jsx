@@ -9,6 +9,9 @@ import { toast, ToastContainer } from "react-toastify";
 const SignUp = () => {
     const [account, setAccount] = useState('');
     const [password, setPassword] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [phone, setPhone] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showHang, setShowHang] = useState(false); // state cho nut show hang
     const [error, setError] = useState('');
@@ -27,8 +30,11 @@ const SignUp = () => {
         try {
             // send req den backend
             await axios.post('http://localhost:8080/signup', {
-                username: account, // dinh dang du lieu thanh object de gui cho backend ne` ^^
+                username: account,
                 password: password,
+                firstName: firstName,
+                lastName: lastName,
+                phone: phone
             }
             );
             toast.success('Sign Up Successfully !!!');
@@ -59,6 +65,42 @@ const SignUp = () => {
                                     value={account}
                                     placeholder="Enter Account"
                                     onChange={(err) => setAccount(err.target.value)}
+                                    required
+                                />
+                                <i className="fa-solid fa-user person"></i>
+                            </div>
+                             {/* enter first name */}
+                             <div className="form-group mb-3 position-relative">
+                                <input
+                                    type="text"
+                                    className="form-control input"
+                                    value={firstName}
+                                    placeholder="Enter First Name"
+                                    onChange={(err) => setFirstName(err.target.value)}
+                                    required
+                                />
+                                <i className="fa-solid fa-user person"></i>
+                            </div>
+                             {/* enter last name */}
+                             <div className="form-group mb-3 position-relative">
+                                <input
+                                    type="text"
+                                    className="form-control input"
+                                    value={lastName}
+                                    placeholder="Enter Last Name"
+                                    onChange={(err) => setLastName(err.target.value)}
+                                    required
+                                />
+                                <i className="fa-solid fa-user person"></i>
+                            </div>
+                             {/* phone */}
+                             <div className="form-group mb-3 position-relative">
+                                <input
+                                    type="text"
+                                    className="form-control input"
+                                    value={phone}
+                                    placeholder="Enter Phone"
+                                    onChange={(err) => setPhone(err.target.value)}
                                     required
                                 />
                                 <i className="fa-solid fa-user person"></i>

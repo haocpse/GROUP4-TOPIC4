@@ -1,95 +1,112 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Form, Button, Row, Col } from 'react-bootstrap';
+import axios from 'axios';
 
 const EditBlog = () => {
-    const { id } = useParams(); // Lấy ID blog từ URL
+    const { id } = useParams(); // Get blog ID from URL
     const navigate = useNavigate();
     const [blog, setBlog] = useState(null);
+    const [formData, setFormData] = useState({
+        title: '',
+        image: '',
+        description: '',
+        status: '',
+    });
 
-    // Mock dữ liệu với description
-    const mockBlogs = [
-        {
-            id: 1,
-            title: "Blog 1",
-            image: "https://via.placeholder.com/150",
-            views: 120,
-            comments: 15,
-            status: "Published",
-            description: "This is the description for Blog 1.",
-        },
-        {
-            id: 2,
-            title: "Blog 2",
-            image: "https://via.placeholder.com/150",
-            views: 80,
-            comments: 5,
-            status: "Draft",
-            description: "This is the description for Blog 2.",
-        },
-        {
-            id: 3,
-            title: "Blog 3",
-            image: "https://via.placeholder.com/150",
-            views: 95,
-            comments: 12,
-            status: "Published",
-            description: "This is the description for Blog 3.",
-        },
-    ];
-
-    // Fetch blog data based on id
+    // Fetch blog data from API based on id
     useEffect(() => {
-        const foundBlog = mockBlogs.find(blog => blog.id === parseInt(id));
-        if (foundBlog) {
-            setBlog(foundBlog);
-        } else {
-            alert("Blog not found!");
-            navigate('/'); // Điều hướng về trang chủ nếu không tìm thấy blog
-        }
+        const fetchBlog = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/updateBlog/${id}`);
+                const { title, image, description, status } = response.data;
+                setBlog(response.data);
+                setFormData({ title, image, description, status });
+            } catch (error) {
+                alert("Blog not found!");
+                navigate('/'); // Redirect to homepage if blog not found
+            }
+        };
+
+        fetchBlog();
     }, [id, navigate]);
 
-    // Xử lý khi form được submit
-    const handleSubmit = (e) => {
+    // Handle form input change
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevData) => ({ ...prevData, [name]: value }));
+    };
+
+    // Handle form submission
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        alert("Blog updated successfully!");
-        navigate('/'); // Điều hướng về trang chính sau khi cập nhật
+        try {
+            await axios.put(`http://localhost:8080/updateBlog/${id}`, formData);
+            alert("Blog updated successfully!");
+            navigate('/'); // Redirect to main page after updating
+        } catch (error) {
+            alert("Failed to update blog. Please try again.");
+        }
     };
 
     if (!blog) {
-        return <div>Loading...</div>; // Hiển thị loading khi chưa có dữ liệu
+        return <div>Loading...</div>; // Display loading until data is fetched
     }
 
     return (
         <Container className="mt-4">
-            <h2>Edit Blog: {blog.title}</h2>
+            <h2>Edit Blog: {formData.title}</h2>
             <Form onSubmit={handleSubmit}>
                 <Row>
                     <Col md={6}>
                         <Form.Group controlId="formTitle">
                             <Form.Label>Title</Form.Label>
-                            <Form.Control type="text" defaultValue={blog.title} required />
+                            <Form.Control
+                                type="text"
+                                name="title"
+                                value={formData.title}
+                                onChange={handleChange}
+                                required
+                            />
                         </Form.Group>
                     </Col>
 
                     <Col md={6}>
                         <Form.Group controlId="formImage" className="mt-3 mt-md-0">
                             <Form.Label>Image URL</Form.Label>
-                            <Form.Control type="text" defaultValue={blog.image} required />
+                            <Form.Control
+                                type="text"
+                                name="image"
+                                value={formData.image}
+                                onChange={handleChange}
+                                required
+                            />
                         </Form.Group>
                     </Col>
                 </Row>
 
                 <Form.Group controlId="formDescription" className="mt-3">
                     <Form.Label>Description</Form.Label>
-                    <Form.Control as="textarea" rows={5} defaultValue={blog.description} required />
+                    <Form.Control
+                        as="textarea"
+                        rows={5}
+                        name="description"
+                        value={formData.description}
+                        onChange={handleChange}
+                        required
+                    />
                 </Form.Group>
 
                 <Row className="mt-3">
                     <Col md={6}>
                         <Form.Group controlId="formStatus">
                             <Form.Label>Status</Form.Label>
-                            <Form.Select defaultValue={blog.status}>
+                            <Form.Select
+                                name="status"
+                                value={formData.status}
+                                onChange={handleChange}
+                                required
+                            >
                                 <option value="Published">Published</option>
                                 <option value="Draft">Draft</option>
                             </Form.Select>
