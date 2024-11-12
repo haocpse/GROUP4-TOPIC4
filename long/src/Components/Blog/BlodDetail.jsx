@@ -20,7 +20,7 @@ const BlogDetail = () => {
 
     // Fetch blog details from backend API
     useEffect(() => {
-        axios.get(`/api/blogs/${id}`) // Replace with actual backend API endpoint
+        axios.get(`http://localhost:8080/blog/${id}`) // Replace with actual backend API endpoint
             .then(response => {
                 setBlog(response.data);
                 setComments(response.data.comments || []);

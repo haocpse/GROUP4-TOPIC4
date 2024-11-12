@@ -10,7 +10,7 @@ const BlogCRUD = () => {
 
     // Fetch blogs from the backend API
     useEffect(() => {
-        axios.get('/api/blogs') // Adjust this URL based on your backend setup
+        axios.get('http://localhost:8080/blog') // Adjust this URL based on your backend setup
             .then((response) => setBlogs(response.data))
             .catch((error) => console.error("Error fetching blogs:", error));
     }, []);
@@ -18,7 +18,7 @@ const BlogCRUD = () => {
     // Handle delete blog
     const handleDelete = (id) => {
         if (window.confirm("Are you sure you want to delete this blog?")) {
-            axios.delete(`/api/blogs/${id}`)
+            axios.delete(`http://localhost:8080/deleteBlog/${id}`)
                 .then(() => setBlogs(blogs.filter(blog => blog.id !== id)))
                 .catch((error) => console.error("Error deleting blog:", error));
         }
@@ -26,7 +26,7 @@ const BlogCRUD = () => {
 
     // Handle edit blog
     const handleEdit = (id) => {
-        navigate(`/edit-blog/${id}`);
+        navigate(`http://localhost:8080/updateBlog/${id}`);
     };
 
     // Handle input change for the new blog form
@@ -38,7 +38,7 @@ const BlogCRUD = () => {
     // Handle new blog submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('/api/blogs', newBlog)
+        axios.post('http://localhost:8080/createBlog', newBlog)
             .then((response) => setBlogs([...blogs, response.data]))
             .catch((error) => console.error("Error creating new blog:", error));
     };

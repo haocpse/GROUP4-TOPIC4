@@ -12,7 +12,7 @@ const Blog = () => {
 
     // Fetch blogs from the backend API
     useEffect(() => {
-        axios.get('/api/blogs') // Replace with your actual backend API endpoint
+        axios.get('http://localhost:8080/blog') // Replace with your actual backend API endpoint
             .then(response => setBlogs(response.data))
             .catch(error => console.error("Error fetching blogs:", error));
     }, []);
