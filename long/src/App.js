@@ -21,8 +21,6 @@ import CustomerQuotationList from "./Components/CustomerView/CustomerQuotationLi
 import ViewQuotationAfterCreate from "./Components/QuotationOrder/ViewQuotationAfterCreate";
 import MainLayoutConsultant from "./Components/MainLayoutConsultant";
 import Main from "./Components/Main/Main";
-import ApproveMaintenanceQuotation from "./Components/ApproveQuotation/ApproveMaintenanceQuotation";
-import ViewMaintenanceQuotation from "./Components/ApproveQuotation/ViewMaintenanceQuotation";
 import MainLayoutDesigner from "./Components/MainLayoutDesigner";
 import ProtectedRoutesManager from "./utils/ProtectedRoutesManager";
 import ProtectedRoutesConsultant from "./utils/ProtectedRoutesConsultant";
