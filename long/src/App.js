@@ -31,7 +31,7 @@ import UpdateQuotation from "./Components/QuotationOrder/UpdateQuotation";
 import ListDesign from "./Components/DesignerTasks/ListDesign";
 import UpdateDesign from "./Components/DesignUpload/UpdateDesign";
 import CustomerViewDesign from "./Components/CustomerView/CustomerViewDesign";
-import PaymentInfo from "./Components/ListQuotation/PaymentInfo";
+import PaymentInfo from "./Components/Payment/PaymentInfo";
 import MainLayoutConstructor from "./Components/MainLayoutConstructor";
 import Dashboard from "./Components/Admin/Dashboard"
 import EditBlog from "./Components/Admin/EditBlog";
@@ -60,7 +60,11 @@ function App() {
     <Router>
 
       <Routes>
-        <Route element={<ProtectedRoutesAdmin />}>
+        <Route 
+        element={<ProtectedRoutesAdmin 
+        />
+        }
+        >
           <Route path="/package" element={<PackageManage />}>
             <Route path="package-price" element={<PackagePrice />} />
             <Route path="package-construction" element={<PackageConstruction />} />{" "}
