@@ -75,7 +75,7 @@ public class AccountService {
                 .role(Role.CUSTOMER)
                 .build();
         accountRepository.save(acc);
-        customerService.createCustomer(acc.getAccountId(), acc.getUsername());
+        customerService.createCustomer(acc.getAccountId(), request);
         return acc;
     }
 

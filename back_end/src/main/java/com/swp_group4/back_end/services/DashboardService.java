@@ -201,12 +201,11 @@ public class DashboardService {
                 .build();
     }
 
-    private int getMonthFromDate(Date date) {
-        LocalDate localDate = date.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
-        return localDate.getMonthValue();
-    }
+//    public CustomerDashboardResponse getDashboardCustomers() {
+//        List<Customer> customers = customerRepository.findAll();
+//        long totalCustomer = customers.size();
+//
+//    }
 
 //    public DashboardResponse getDashboard() {
 //

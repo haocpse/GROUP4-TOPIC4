@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class CustomerDashboardResponse {
 
+    long totalCustomers;
     double actualMakeProjectPercentage;
     double cancelPercentage;
     double returnPercentage;

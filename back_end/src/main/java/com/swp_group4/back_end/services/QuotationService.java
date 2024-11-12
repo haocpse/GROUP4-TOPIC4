@@ -2,6 +2,7 @@ package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.*;
 import com.swp_group4.back_end.enums.*;
+import com.swp_group4.back_end.mapper.ConstructionOrderMapper;
 import com.swp_group4.back_end.mapper.QuotationMapper;
 import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.requests.ExportQuotationRequest;
@@ -44,6 +45,8 @@ public class QuotationService {
     StaffRepository staffRepository;
     @Autowired
     CustomerRepository customerRepository;
+    @Autowired
+    private ConstructionOrderMapper constructionOrderMapper;
 
     public List<OverviewQuotationResponse> listQuotation(String accountId) {
         List<OverviewQuotationResponse> responses = new ArrayList<>();
@@ -81,7 +84,7 @@ public class QuotationService {
         totalPrice = this.totalPrice(volume, packagePrice.getPrice());
         ConstructionOrder order = this.findOrderById(constructionOrderId);
         this.saveConstructionTasks(constructionOrderId, request.getPackageId());
-        Quotation quotation =  quotationRepository.save(this.saveQuotation(request, volume));
+        Quotation quotation = quotationRepository.save(this.saveQuotation(request, volume));
         constructOrderRepository.save(this.saveConstructionOrder(order, quotation, request, totalPrice));
         return quotation;
     }
@@ -136,39 +139,23 @@ public class QuotationService {
 
     Quotation saveQuotation(ExportQuotationRequest request, double volume) {
         Quotation quotation = Quotation.builder()
-                .percentageStage1(request.getPercentageStage1())
-                .percentageStage2(request.getPercentageStage2())
-                .percentageStage3(request.getPercentageStage3())
-                .width(request.getWidth())
-                .height(request.getHeight())
-                .length(request.getLength())
                 .volume(volume)
-                .expectedStartDate(request.getStartDate())
-                .expectedEndDate(request.getEndDate())
                 .postedDate(LocalDateTime.now())
                 .batch(QuotationBatch.STAGE_1)
                 .paymentStatus(PaymentStatus.PENDING)
                 .quotationStatus(QuotationStatus.QUOTED)
                 .build();
-        quotationMapper.toQuotation(request, quotation);
-        return quotation;
+        return quotationMapper.toQuotation(request, quotation);
     }
 
     Quotation updateQuotation(ExportQuotationRequest request, double volume, String quotationId) {
         Quotation quotation = quotationRepository.findById(quotationId).orElseThrow(() -> new RuntimeException("Quotation not found for id: " + quotationId));
-        quotation.setPercentageStage1(request.getPercentageStage1());
-        quotation.setPercentageStage2(request.getPercentageStage2());
-        quotation.setPercentageStage3(request.getPercentageStage3());
-        quotation.setWidth(request.getWidth());
-        quotation.setHeight(request.getHeight());
-        quotation.setLength(request.getLength());
         quotation.setPostedDate(LocalDateTime.now());
         quotation.setVolume(volume);
         quotation.setBatch(QuotationBatch.STAGE_1);
         quotation.setPaymentStatus(PaymentStatus.PENDING);
         quotation.setQuotationStatus(QuotationStatus.QUOTED);
-        quotationMapper.toQuotation(request, quotation);
-        return quotation;
+        return quotationMapper.toQuotation(request, quotation);
     }
 
     String getStaffName(String staffId) {
@@ -198,19 +185,13 @@ public class QuotationService {
         ConstructQuotationResponse response = ConstructQuotationResponse.builder()
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .consultantName(this.getStaffName(order.getConsultantId()))
-                .customerRequest(order.getCustomerRequest())
                 .packageType(packages.getPackageType())
-                .totalPrice(order.getTotal())
                 .priceStage1((order.getTotal() * quotation.getPercentageStage1())/100)
                 .priceStage2((order.getTotal() * quotation.getPercentageStage2())/100)
                 .priceStage3((order.getTotal() * quotation.getPercentageStage3())/100)
-                .percentageStage1(quotation.getPercentageStage1())
-                .percentageStage2(quotation.getPercentageStage2())
-                .percentageStage3(quotation.getPercentageStage3())
                 .content(this.constructionTasks(packages.getPackageId()))
-                .startDate(quotation.getExpectedStartDate())
-                .endDate(quotation.getExpectedEndDate())
                 .build();
+        constructionOrderMapper.toConstructQuotationResponse(order, response);
         return quotationMapper.toQuotationResponse(quotation, response);
     }
 
@@ -234,23 +215,16 @@ public class QuotationService {
                 .orElseThrow(() -> new RuntimeException("Quotation not found"));
         Customer customer = this.findCustomerById(order.getCustomerId());
         Packages packages = this.findPackage(quotation.getPackageId());
-        return ViewRejectedQuotationResponse.builder()
+        ViewRejectedQuotationResponse response = ViewRejectedQuotationResponse.builder()
                 .constructionOrderId(order.getConstructionOrderId())
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .address(customer.getAddress())
                 .phone(customer.getPhone())
-                .width(quotation.getWidth())
-                .height(quotation.getHeight())
-                .length(quotation.getLength())
-                .percentageStage1(quotation.getPercentageStage1())
-                .percentageStage2(quotation.getPercentageStage2())
-                .percentageStage3(quotation.getPercentageStage3())
                 .packageId(packages.getPackageId())
                 .consultantName(this.getStaffName(order.getConsultantId()))
                 .customerRequest(order.getCustomerRequest())
-                .startDate(quotation.getExpectedStartDate())
-                .endDate(quotation.getExpectedEndDate())
                 .build();
+        return quotationMapper.toViewRejectedQuotationResponse(quotation, response);
     }
 
     public GeneratePDFResponse generatePDF(String constructionOrderId) {
@@ -263,30 +237,22 @@ public class QuotationService {
         double volume = quotation.getVolume();
         PackagePrice packagePrice = this.findPackagePrice(packages.getPackageId(), volume, volume);
         double priceVolume = this.totalPrice(volume, packagePrice.getPrice());
-        return GeneratePDFResponse.builder()
+        GeneratePDFResponse response = GeneratePDFResponse.builder()
                 .consultant(staff.getStaffName())
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .address(customer.getAddress())
                 .phone(customer.getPhone())
                 .customerRequest(order.getCustomerRequest())
-                .volume(quotation.getVolume())
                 .packageType(packages.getPackageType())
-                .postedDate(quotation.getPostedDate())
-                .constructionStartDate(quotation.getExpectedStartDate())
-                .constructionEndDate(quotation.getExpectedEndDate())
                 .listPackageConstruction(listPackageConstruction)
                 .total(order.getTotal())
-                .constructionStartDate(quotation.getExpectedStartDate())
                 .priceVolume(priceVolume)
                 .minVolume(packagePrice.getMinVolume())
                 .maxVolume(packagePrice.getMaxVolume())
                 .priceStage1((order.getTotal() * quotation.getPercentageStage1())/100)
                 .priceStage2((order.getTotal() * quotation.getPercentageStage2())/100)
                 .priceStage3((order.getTotal() * quotation.getPercentageStage3())/100)
-                .percentageStage1(quotation.getPercentageStage1())
-                .percentageStage2(quotation.getPercentageStage2())
-                .percentageStage3(quotation.getPercentageStage3())
-                .constructionEndDate(quotation.getExpectedEndDate())
                 .build();
+        return quotationMapper.toGeneratePdfResponse(quotation, response);
     }
 }

@@ -2,9 +2,12 @@ package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.entities.*;
 import com.swp_group4.back_end.enums.*;
+import com.swp_group4.back_end.mapper.ConstructionOrderMapper;
 import com.swp_group4.back_end.mapper.CustomerMapper;
+import com.swp_group4.back_end.mapper.DesignMapper;
 import com.swp_group4.back_end.mapper.QuotationMapper;
 import com.swp_group4.back_end.repositories.*;
+import com.swp_group4.back_end.requests.CreateAccountRequest;
 import com.swp_group4.back_end.requests.CustomerConfirmRequest;
 import com.swp_group4.back_end.requests.FinishConstructRequest;
 import com.swp_group4.back_end.requests.ServiceRequest;
@@ -51,12 +54,18 @@ public class CustomerService {
     ConstructionTaskStaffRepository constructionTaskStaffRepository;
     @Autowired
     MaintenanceOrderRepository maintenanceOrderRepository;
+    @Autowired
+    ConstructionOrderMapper constructionOrderMapper;
+    @Autowired
+    DesignMapper designMapper;
 
 
-    public void createCustomer(String accountId, String firstname) {
+    public void createCustomer(String accountId, CreateAccountRequest request) {
         customerRepository.save(Customer.builder()
                 .accountId(accountId)
-                .firstName(firstname)
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .phone(request.getPhone())
                 .build());
     }
 
@@ -85,11 +94,13 @@ public class CustomerService {
         return null;
     }
 
-//    public CustomerResponse getOwnedInfo(){
-//        Customer customer = this.identifyCustomer();
-//        CustomerResponse response = new CustomerResponse();
-//        return customerMapper.customerToResponse(customer, response);
-//    }
+    public CustomerResponse getOwnedInfo(){
+        var context = SecurityContextHolder.getContext();
+        String id = context.getAuthentication().getName();
+        Customer customer = customerRepository.findByAccountId(id).orElseThrow();
+        CustomerResponse response = new CustomerResponse();
+        return customerMapper.customerToResponse(customer, response);
+    }
 
 //    public CustomerResponse updateOwnedInfo(UpdateInfoRequest request) {
 //        Customer customer = this.identifyCustomer();
@@ -104,11 +115,16 @@ public class CustomerService {
         List<MaintenanceOrder> orderList = maintenanceOrderRepository.findByCustomerId(customer.getCustomerId());
         List<MaintenanceOrderResponse> responses = new ArrayList<>();
         for (MaintenanceOrder order : orderList) {
-            MaintenanceOrderResponse response = MaintenanceOrderResponse.builder()
+            String paymentId = "";
+            PaymentOrder payment = paymentOrderRepository.findPaymentOrdersByOrderId(order.getMaintenanceOrderId());
+            if (payment != null) {
+                paymentId = payment.getPaymentId();
+            }
+                MaintenanceOrderResponse response = MaintenanceOrderResponse.builder()
                     .customerName(customer.getFirstName() + " " + customer.getLastName())
                     .totalPrice(order.getTotal())
                     .status(order.getStatus())
-                    .paymentId(paymentOrderRepository.findPaymentOrdersByOrderId(order.getMaintenanceOrderId()).getPaymentId())
+                    .paymentId(paymentId)
                     .maintenanceOrderId(order.getMaintenanceOrderId())
                     .build();
             responses.add(response);
@@ -121,7 +137,6 @@ public class CustomerService {
         List<ConstructionOrder> orderList = constructOrderRepository.findByCustomerId(customer.getCustomerId());
         List<ConstructOrderDetailForCustomerResponse> responses = new ArrayList<>();
         for (ConstructionOrder order : orderList) {
-
             String designId = "";
             String quotationId = "";
             if (designRepository.findByDesignIdAndDesignStatusIn(order.getDesignId(), List.of(DesignStatus.CONFIRMED, DesignStatus.CONFIRMED_BY_USER)).isPresent()) {
@@ -133,17 +148,12 @@ public class CustomerService {
                         .orElseThrow();
                 quotationId = quotation.getQuotationId();
             }
-
             ConstructOrderDetailForCustomerResponse response = ConstructOrderDetailForCustomerResponse.builder()
-                    .constructionOrderId(order.getConstructionOrderId())
                     .customerName(customer.getFirstName() + " " + customer.getLastName())
                     .quotationId(quotationId)
                     .designId(designId)
-                    .startDate(order.getStartDate())
-                    .endDate(order.getConstructionEndDate())
-                    .status(order.getStatus())
                     .build();
-            responses.add(response);
+            responses.add(constructionOrderMapper.toDetailForCustomerResponse(order, response));
         }
         return responses;
     }
@@ -158,21 +168,15 @@ public class CustomerService {
                 .constructOrderId(constructionOrderId)
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .consultantName(staffRepository.findById(order.getConsultantId()).orElseThrow().getStaffName())
-                .customerRequest(order.getCustomerRequest())
                 .packageType(packages.getPackageType())
-                .totalPrice(order.getTotal())
                 .priceStage1((order.getTotal() * quotation.getPercentageStage1())/100)
                 .priceStage2((order.getTotal() * quotation.getPercentageStage2())/100)
                 .priceStage3((order.getTotal() * quotation.getPercentageStage3())/100)
-                .percentageStage1(quotation.getPercentageStage1())
-                .percentageStage2(quotation.getPercentageStage2())
-                .percentageStage3(quotation.getPercentageStage3())
                 .content(this.findContentOfTask(constructionOrderId))
-                .constructionOrderStatus(order.getStatus())
-                .startDate(quotation.getExpectedStartDate())
-                .endDate(quotation.getExpectedEndDate())
                 .build();
-        return quotationMapper.toQuotationResponse(quotation, response);
+        constructionOrderMapper.toConstructQuotationResponse(order, response);
+        quotationMapper.toQuotationResponse(quotation, response);
+        return response;
     }
 
     private List<String> findContentOfTask(String constructionOrderId){
@@ -189,19 +193,14 @@ public class CustomerService {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
         Design design = designRepository.findById(order.getDesignId()).orElseThrow();
         Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
-        return ConstructDesignResponse.builder()
-                .constructionOrderId(order.getConstructionOrderId())
-                .designId(design.getDesignId())
+        ConstructDesignResponse response =  ConstructDesignResponse.builder()
+                .constructionOrderId(constructionOrderId)
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .designName(staffRepository.findById(order.getDesignerLeaderId()).orElseThrow().getStaffName())
                 .customerRequest(order.getCustomerRequest())
-                .url2dDesign(design.getUrl2dDesign())
-                .url3dDesign(design.getUrl3dDesign())
-                .urlFrontDesign(design.getUrlFrontDesign())
-                .urlBackDesign(design.getUrlBackDesign())
-                .designStatus(design.getDesignStatus())
                 .constructionOrderStatus(order.getStatus())
                 .build();
+        return designMapper.toDesignResponse(design, response);
     }
 
     public StatusOfQuotationOrDesign<DesignStatus> confirmDesign(CustomerConfirmRequest<DesignStatus> request, String constructionOrderId, String accountId) {
@@ -214,11 +213,10 @@ public class CustomerService {
             constructOrderRepository.save(order);
             Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
             Quotation quotation = quotationRepository.findById(order.getQuotationId()).orElseThrow();
-            long total = (long) (order.getTotal() * quotation.getPercentageStage2());
             PaymentOrder paymentOrder = PaymentOrder.builder()
                     .orderId(constructionOrderId)
                     .customerId(customer.getCustomerId())
-                    .paymentTitle("Khach hang thanh toan giai doan 2")
+                    .paymentTitle("Payment of the second stage")
                     .total((long) (order.getTotal() * quotation.getPercentageStage2())/100)
                     .status(PaymentStatus.PENDING)
                     .build();
@@ -245,7 +243,7 @@ public class CustomerService {
             PaymentOrder paymentOrder = PaymentOrder.builder()
                     .orderId(constructionOrderId)
                     .customerId(customer.getCustomerId())
-                    .paymentTitle("Khach hang thanh toan giai doan 1")
+                    .paymentTitle("Payment of the first stage")
                     .total((long) (order.getTotal() * quotation.getPercentageStage1())/100)
                     .status(PaymentStatus.PENDING)
                     .build();

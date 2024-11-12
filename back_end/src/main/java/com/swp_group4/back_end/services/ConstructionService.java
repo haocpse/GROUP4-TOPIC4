@@ -11,10 +11,8 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,17 +39,6 @@ public class ConstructionService {
     ConstructionTaskStaffRepository constructionTaskStaffRepository;
     @Autowired
     ConstructionTasksMapper constructionTasksMapper;
-
-    public List<ConstructOrderDetailForStaffResponse> listOwnedConstructTask() {
-        List<ConstructOrderDetailForStaffResponse> responses = new ArrayList<>();
-        Staff staff = this.identifyStaff();
-        List<ConstructionOrder> orders = constructOrderRepository.findByConstructorLeaderId(staff.getStaffId());
-        for (ConstructionOrder order : orders) {
-            ConstructOrderDetailForStaffResponse response = this.detailOfOrder(order.getConstructionOrderId());
-            responses.add(response);
-        }
-        return responses;
-    }
 
     public ConstructionTasksAndStatusResponse detailOfConstruct(String constructionOrderId) {
         List<ConstructionTasks> constructionTasksList = this.findConstructionTasks(constructionOrderId);
@@ -107,7 +94,6 @@ public class ConstructionService {
         List<ConstructStatus> statuses = List.of(ConstructStatus.NOT_YET, ConstructStatus.IN_PROGRESS);
         List<ConstructionTasks> listInCompleteTasks = constructionTasksRepository
                 .findByConstructionOrderIdAndStatusIn(constructionOrderId, statuses);
-        log.info(listInCompleteTasks.toString());
         ConstructionOrder order = this.findOrderById(constructionOrderId);
         if (listInCompleteTasks.isEmpty()) {
             order.setStatus(ConstructionOrderStatus.CONSTRUCTED);
@@ -128,49 +114,20 @@ public class ConstructionService {
                 .build();
     }
 
-    ConstructOrderDetailForStaffResponse detailOfOrder(String constructionOrderId) {
-        ConstructionOrder order = this.findOrderById(constructionOrderId);
-        Customer customer = this.findCustomerById(order.getCustomerId());
-        return ConstructOrderDetailForStaffResponse.builder()
-                .constructionOrderId(order.getConstructionOrderId())
-                .customerName(customer.getFirstName() + " " + customer.getLastName())
-                .phone(customer.getPhone())
-                .address(customer.getAddress())
-                .status(order.getStatus())
-                .build();
-    }
-
     List<ConstructionTasks> findConstructionTasks(String constructionOrderId) {
         return constructionTasksRepository.findByConstructionOrderId(constructionOrderId)
                 .orElseThrow(() -> new RuntimeException("Order not found for id: " + constructionOrderId));
-    }
-
-    PackageConstruction findPackageConstruction(String packageConstructionId) {
-        return packageConstructionRepository.findById(packageConstructionId)
-                .orElseThrow(() -> new RuntimeException("Package construction not found for id: " + packageConstructionId));
     }
 
     List<ConstructTaskStatusResponse> constructTaskStatusResponseList(List<ConstructionTasks> constructionTasksList) {
         List<ConstructTaskStatusResponse> responses = new ArrayList<>();
         for (ConstructionTasks constructionTasks : constructionTasksList) {
             ConstructTaskStatusResponse response = ConstructTaskStatusResponse.builder()
-                    .packageConstructionId(constructionTasks.getPackageConstructionId())
-                    .taskId(constructionTasks.getTaskId())
-                    .startDate(constructionTasks.getStartDate())
-                    .endDate(constructionTasks.getEndDate())
                     .content(packageConstructionRepository.findById(constructionTasks.getPackageConstructionId()).orElseThrow().getContent())
-                    .status(constructionTasks.getStatus())
                     .build();
-            responses.add(response);
+            responses.add(constructionTasksMapper.toConstructTaskStatusResponse(constructionTasks, response));
         }
         return responses;
-    }
-
-    Staff identifyStaff() {
-        var context = SecurityContextHolder.getContext();
-        String accountId = context.getAuthentication().getName();
-        return staffRepository.findByAccountId(accountId)
-                .orElseThrow(() -> new RuntimeException("Error"));
     }
 
     ConstructionOrder findOrderById(String orderId){
@@ -200,16 +157,14 @@ public class ConstructionService {
         task.setEndDate(request.getEndDate());
         constructionTasksRepository.save(task);
         List<ConstructionTasks> tasks = constructionTasksRepository.findByConstructionOrderId(constructionOrderId).orElseThrow();
-
-        Date StartDate = tasks.stream()
+        Date startDate = tasks.stream()
                 .map(ConstructionTasks::getStartDate)
                 .filter(Objects::nonNull)
                 .min(Date::compareTo)
                 .orElse(null);
         ConstructionOrder order = this.findOrderById(constructionOrderId);
-        order.setConstructionStartDate(StartDate);
+        order.setConstructionStartDate(startDate);
         constructOrderRepository.save(order);
-
         return constructionTasksMapper.mapDeadlineConstructionResponse(task);
     }
 }

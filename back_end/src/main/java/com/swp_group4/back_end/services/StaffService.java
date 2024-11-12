@@ -55,7 +55,7 @@ public class StaffService {
         Account account = accountRepository.findById(accountId).orElseThrow();
         List<ConstructOrderDetailForStaffResponse> responses = new ArrayList<>();
         Staff staff = staffRepository.findByAccountId(accountId).orElseThrow(() -> new RuntimeException("Staff not found for account: " + accountId));
-        List<ConstructionOrder> orders = new ArrayList<>();
+        List<ConstructionOrder> orders;
         if (account.getRole().equals(Role.CONSULTANT)) {
             orders = constructOrderRepository.findByConsultantIdAndQuotationIdIsNull(staff.getStaffId());
         } else if (account.getRole().equals(Role.DESIGNER)) {

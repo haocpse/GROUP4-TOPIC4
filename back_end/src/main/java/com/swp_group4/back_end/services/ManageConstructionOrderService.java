@@ -36,13 +36,17 @@ public class ManageConstructionOrderService {
     @Autowired
     QuotationRepository quotationRepository;
     @Autowired
-    private ConstructionTasksRepository constructionTasksRepository;
+    ConstructionTasksRepository constructionTasksRepository;
     @Autowired
     PackageConstructionRepository packageConstructionRepository;
     @Autowired
     ConstructionTaskStaffRepository constructionTaskStaffRepository;
     @Autowired
-    private PaymentOrderRepository paymentOrderRepository;
+    PaymentOrderRepository paymentOrderRepository;
+    @Autowired
+    ConstructionTasksMapper constructionTasksMapper;
+    @Autowired
+    PaymentMapper paymentMapper;
 
     public List<ConstructOrderDetailForManagerResponse> listAllOrder() {
         List<ConstructOrderDetailForManagerResponse> responses = new ArrayList<>();
@@ -71,10 +75,6 @@ public class ManageConstructionOrderService {
     ConstructOrderDetailForManagerResponse buildConstructOrderDetailForManagerResponse(ConstructionOrder order, Customer customer) {
         ConstructOrderDetailForManagerResponse response = ConstructOrderDetailForManagerResponse.builder()
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
-                .consultantId(order.getConsultantId())
-                .designerLeaderId(order.getDesignerLeaderId())
-                .constructorLeaderId(order.getConstructorLeaderId())
-                .endDate(order.getConstructionEndDate())
                 .build();
         constructionOrderMapper.toDetailForManager(order, response);
         customerMapper.toDetailForManager(customer, response);
@@ -101,10 +101,7 @@ public class ManageConstructionOrderService {
             Staff staff = staffRepository.findById(constructionOrder.getConstructorLeaderId()).orElseThrow();
             Customer customer = findCustomerById(constructionOrder.getCustomerId());
             ProgressReviewResponse response = ProgressReviewResponse.builder()
-                    .constructionOrderId(constructionOrder.getConstructionOrderId())
                     .leaderName(staff.getStaffName())
-                    .startDate(constructionOrder.getConstructionStartDate())
-                    .endDate(constructionOrder.getConstructionEndDate())
                     .customerName(customer.getFirstName() + " " + customer.getLastName())
                     .build();
             if (listInCompleteTasks.isEmpty()) {
@@ -112,7 +109,7 @@ public class ManageConstructionOrderService {
             } else {
                 response.setStatus(ConstructionOrderStatus.CONSTRUCTING);
             }
-            responses.add(response);
+            responses.add(constructionOrderMapper.toProgressReviewResponse(constructionOrder, response));
         }
         return responses;
     }
@@ -124,14 +121,9 @@ public class ManageConstructionOrderService {
         for (ConstructionTasks constructionTask : constructionTasks) {
             String content = packageConstructionRepository.findById(constructionTask.getPackageConstructionId()).orElseThrow().getContent();
             ListConstructProgressResponse response = ListConstructProgressResponse.builder()
-                    .packageConstructionId(constructionTask.getPackageConstructionId())
-                    .taskId(constructionTask.getTaskId())
-                    .startDate(constructionTask.getStartDate())
-                    .endDate(constructionTask.getEndDate())
                     .content(content)
-                    .status(constructionTask.getStatus())
                     .build();
-            listConstructProgressResponses.add(response);
+            listConstructProgressResponses.add(constructionTasksMapper.toListConstructProgressResponse(constructionTask, response));
         }
         List<String> staffNames = constructionTaskStaffRepository.findStaffNamesByTaskId(constructionTasks.getFirst().getTaskId());
         return ViewProgressResponse.builder()
@@ -165,24 +157,22 @@ public class ManageConstructionOrderService {
         List<PaymentOrder> paymentOrders = paymentOrderRepository.findByOrderId(constructionOrderId);
         Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
         Quotation quotation = quotationRepository.findById(order.getQuotationId()).orElseThrow();
-        int count = 1;
-        for (PaymentOrder paymentOrder : paymentOrders) {
-            PaymentInfoResponse infoResponse = PaymentInfoResponse.builder()
-                    .paymentId(paymentOrder.getPaymentId())
-                    .paymentTitle(paymentOrder.getPaymentTitle())
-                    .paidDate(paymentOrder.getPaidDate())
-                    .dueDate(paymentOrder.getDueDate())
-                    .paymentStatus(paymentOrder.getStatus())
-                    .build();
-            if (count == 1) {
-                infoResponse.setPrice((long) (order.getTotal() * quotation.getPercentageStage1()));
-            } else if (count == 2) {
-                infoResponse.setPrice((long) (order.getTotal() * quotation.getPercentageStage2()));
-            } else {
-                infoResponse.setPrice((long) (order.getTotal() * quotation.getPercentageStage3()));
+        int count = 0;
+        if (!paymentOrders.isEmpty()) {
+            count = 1;
+            for (PaymentOrder paymentOrder : paymentOrders) {
+                PaymentInfoResponse infoResponse = new PaymentInfoResponse();
+                if (count == 1) {
+                    infoResponse.setPrice((long) (order.getTotal() * quotation.getPercentageStage1()));
+                }
+                else if (count == 2) {
+                    infoResponse.setPrice((long) (order.getTotal() * quotation.getPercentageStage2()));
+                } else {
+                    infoResponse.setPrice((long) (order.getTotal() * quotation.getPercentageStage3()));
+                }
+                paymentInfoResponses.add(paymentMapper.toPaymentInfoResponse(paymentOrder, infoResponse));
+                count++;
             }
-            paymentInfoResponses.add(infoResponse);
-            count++;
         }
         return ViewPaymentResponse.builder()
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
