@@ -70,8 +70,6 @@ const CustomerViewMaintenance = () => {
                 <thead className="thead-dark">
                   <tr>
                     <th>Customer</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
                     <th>Total Price</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -81,17 +79,13 @@ const CustomerViewMaintenance = () => {
                   {orders.map((order, index) => (
                     <tr key={order.maintenanceOrderId}>
                       <td>{order.customerName}</td>
-                      <td>{formatDate(order.startDate)}</td>
-                      <td>{formatDate(order.endDate)}</td>
                       <td>{order.totalPrice}</td>
                       <td>{order.status}</td>
                       <td>
-                        <button className="btn btn-primary" onClick={() => handleViewPayment(order.maintenanceOrderId)}>
-                          View Payment
-                        </button>
-                        <button className="btn btn-success ms-2" onClick={() => handlePayNow(order.maintenanceOrderId)}>
+                        {order.status === "PAYMENT_CREATED" ? (<button className="btn btn-success ms-2" onClick={() => handlePayNow(order.maintenanceOrderId)}>
                           Pay Now
-                        </button>
+                        </button>) : (null)
+                        }
                       </td>
                     </tr>
                   ))}

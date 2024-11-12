@@ -80,7 +80,6 @@ const ConstructionMaintenance = () => {
                         <tr>
                             <th>Maintenance Order ID</th>
                             <th>Customer Name</th>
-
                             <th>Total (VND)</th>
                             <th>Actions</th>
                         </tr>
