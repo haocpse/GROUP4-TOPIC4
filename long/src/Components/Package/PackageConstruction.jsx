@@ -1,15 +1,29 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Container, Row, Col, Form, Button, InputGroup, Card } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  InputGroup,
+  Card,
+} from "react-bootstrap";
 
 const PackageConstruction = () => {
   const [constructions, setConstructions] = useState([]);
   const [packagePrices, setPackagePrices] = useState([]);
   const [selectedPackage, setSelectedPackage] = useState("");
 
+  const formatPrice = (price) => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
+
   const fetchPackagePrices = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/packageConstruction");
+      const response = await axios.get(
+        "http://localhost:8080/packageConstruction"
+      );
       setPackagePrices(response.data.data || []);
     } catch (error) {
       console.error("Error fetching package prices:", error);
@@ -24,12 +38,21 @@ const PackageConstruction = () => {
     const selectedPackageId = event.target.value;
     setSelectedPackage(selectedPackageId);
 
-    const selectedPackageData = packagePrices.find(pkg => pkg.packageId === selectedPackageId);
-    if (selectedPackageData && selectedPackageData.constructionInfoResponseList) {
-      setConstructions(selectedPackageData.constructionInfoResponseList.map(construction => ({
-        content: construction.content,
-        price: "", // Add a price field with default value
-      })));
+    const selectedPackageData = packagePrices.find(
+      (pkg) => pkg.packageId === selectedPackageId
+    );
+    if (
+      selectedPackageData &&
+      selectedPackageData.constructionInfoResponseList
+    ) {
+      setConstructions(
+        selectedPackageData.constructionInfoResponseList.map(
+          (construction) => ({
+            content: construction.content,
+            price: "", // Add a price field with default value
+          })
+        )
+      );
     } else {
       setConstructions([]);
     }
@@ -55,7 +78,7 @@ const PackageConstruction = () => {
     try {
       const requestBody = {
         packageId: selectedPackage,
-        packageConstructions: constructions.map(construction => ({
+        packageConstructions: constructions.map((construction) => ({
           content: construction.content,
           price: construction.price,
         })),
@@ -104,29 +127,44 @@ const PackageConstruction = () => {
                       <Form.Control
                         type="text"
                         value={construction.content}
-                        onChange={(e) => handleConstructionChange(index, "content", e.target.value)}
+                        onChange={(e) =>
+                          handleConstructionChange(
+                            index,
+                            "content",
+                            e.target.value
+                          )
+                        }
                         placeholder="Enter content"
                         className="rounded"
                       />
                     </Form.Group>
                   </Col>
                   <Col md={4}>
-                    <Form.Group controlId={`price-${index}`} className="mt-3 mt-md-0">
+                    <Form.Group
+                      controlId={`price-${index}`}
+                      className="mt-3 mt-md-0"
+                    >
                       <Form.Label className="fw-bold">Price:</Form.Label>
                       <InputGroup>
                         <Form.Control
                           type="number"
                           value={construction.price}
-                          onChange={(e) => handleConstructionChange(index, "price", e.target.value)}
+                          onChange={(e) =>
+                            handleConstructionChange(
+                              index,
+                              "price",
+                              e.target.value
+                            )
+                          }
                           placeholder="Enter price"
                           min="5000"
-                          max="5000000"
+                          max="500000"
                           className="rounded"
                         />
                         <InputGroup.Text>VND</InputGroup.Text>
                       </InputGroup>
                       <Form.Text className="text-muted">
-                        Must be between 5,000 and 5,000,000 VND.
+                        Must be between 5.000 and 500.000 VND.
                       </Form.Text>
                     </Form.Group>
                   </Col>
@@ -136,11 +174,19 @@ const PackageConstruction = () => {
           ))}
 
           <div className="d-flex justify-content-between mt-4">
-            <Button variant="secondary" onClick={handleAddConstruction} className="rounded">
+            <Button
+              variant="secondary"
+              onClick={handleAddConstruction}
+              className="rounded"
+            >
               Add More Content
             </Button>
 
-            <Button variant="success" onClick={handleSubmit} className="rounded">
+            <Button
+              variant="success"
+              onClick={handleSubmit}
+              className="rounded"
+            >
               Submit
             </Button>
           </div>
