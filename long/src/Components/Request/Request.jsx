@@ -241,7 +241,7 @@ const Request = () => {
                                 <td className="text-center align-content-center">{request.packageType}</td>
                                 <td className="text-center align-content-center">{request.totalPrice.toLocaleString()}</td>
                                 <td>
-                                    {request.quotationStatus === "CONFIRM_BY_USER" ? (null) : (
+                                    {request.quotationStatus === "CONFIRMED_BY_USER" ? (null) : (
                                         <select
                                             className="form-select mt-2"
                                             onChange={(e) => {
