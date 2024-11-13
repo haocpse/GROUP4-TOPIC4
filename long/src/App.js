@@ -158,7 +158,7 @@ function App() {
 
         {/* CUSTOMER */}
         <Route path="/myInfo" element={<CustomerProfile />} />
-        <Route path="/myInfo/:accountId/update" element={<CustomerUpdate />} />
+        <Route path="/myInfo/:accountId" element={<CustomerUpdate />} />
         <Route path="/myInfo/orders" element={<CustomerView />} />
         <Route path="/myInfo/orders/:constructionOrderId/quotation" element={<CustomerQuotationList />} />
         <Route path="/myInfo/orders/:constructionOrderId/design" element={<CustomerViewDesign />} />
