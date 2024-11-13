@@ -217,6 +217,8 @@ public class CustomerService {
                     .orderId(constructionOrderId)
                     .customerId(customer.getCustomerId())
                     .paymentTitle("Payment of the second stage")
+                    .paidDate(LocalDateTime.now())
+                    .dueDate(LocalDateTime.now().plusDays(7))
                     .total((long) (order.getTotal() * quotation.getPercentageStage2())/100)
                     .status(PaymentStatus.PENDING)
                     .build();
@@ -244,6 +246,8 @@ public class CustomerService {
                     .orderId(constructionOrderId)
                     .customerId(customer.getCustomerId())
                     .paymentTitle("Payment of the first stage")
+                    .paidDate(LocalDateTime.now())
+                    .dueDate(LocalDateTime.now().plusDays(7))
                     .total((long) (order.getTotal() * quotation.getPercentageStage1())/100)
                     .status(PaymentStatus.PENDING)
                     .build();
@@ -287,6 +291,10 @@ public class CustomerService {
         List<PaymentOrder> paymentOrders = paymentOrderRepository.findByOrderId(constructionOrderId);
         List<PaymentInfoResponse> paymentInfoResponses = new ArrayList<>();
         for (PaymentOrder paymentOrder : paymentOrders) {
+            if (LocalDateTime.now().isAfter(paymentOrder.getDueDate())) {
+                paymentOrder.setStatus(PaymentStatus.FAILED);
+                paymentOrderRepository.save(paymentOrder);
+            }
             PaymentInfoResponse response = PaymentInfoResponse.builder()
                     .paymentId(paymentOrder.getPaymentId())
                     .paidDate(paymentOrder.getPaidDate())
@@ -341,7 +349,9 @@ public class CustomerService {
         PaymentOrder paymentOrder = PaymentOrder.builder()
                 .orderId(constructionOrderId)
                 .customerId(customer.getCustomerId())
-                .paymentTitle("Khach hang thanh toan giai doan 3")
+                .paymentTitle("Payment of the final stage")
+                .paidDate(LocalDateTime.now())
+                .dueDate(LocalDateTime.now().plusDays(7))
                 .total((long) (order.getTotal() * quotation.getPercentageStage3())/100)
                 .status(PaymentStatus.PENDING)
                 .build();

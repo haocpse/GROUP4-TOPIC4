@@ -19,7 +19,9 @@ public class Customer {
     String firstName;
     String lastName;
     String phone;
+    long point;
     String address;
     String accountId;
+    String avatarURL;
 
 }
