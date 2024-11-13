@@ -30,7 +30,7 @@ public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINTS = {
             "/", "/login", "/signup", "/staff","/contact","/images/**","/payments/**"
             , "/generatePDF", "/packagePrice/**", "/package/**", "packageConstruction/**"
-            , "staffs", "dashboard/**"
+            , "staffs", "dashboard/**", "admin/**"
     };
 
     @Value("${jwt.SIGNER_KEY}")
