@@ -1,12 +1,12 @@
 package com.swp_group4.back_end.entities;
 
-//import com.swp_group4.back_end.enums.PaymentOrderStatus;
 import com.swp_group4.back_end.enums.PaymentMethods;
 import com.swp_group4.back_end.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import java.util.Date;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -21,9 +21,10 @@ public class PaymentOrder {
     String paymentTitle;
     String orderId;
     String customerId;
-    Date date;
+    LocalDateTime paidDate;
+    LocalDateTime dueDate;
     PaymentMethods paymentMethods;
-    Double total;
+    Long total;
     @Enumerated(EnumType.STRING)
     PaymentStatus status;
 }

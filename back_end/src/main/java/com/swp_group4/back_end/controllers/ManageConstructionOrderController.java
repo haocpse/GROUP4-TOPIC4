@@ -1,5 +1,7 @@
 package com.swp_group4.back_end.controllers;
 
+import com.swp_group4.back_end.enums.DesignStatus;
+import com.swp_group4.back_end.enums.QuotationStatus;
 import com.swp_group4.back_end.requests.ManageReviewRequest;
 import com.swp_group4.back_end.requests.StaffAssignedRequest;
 import com.swp_group4.back_end.responses.*;
@@ -22,6 +24,13 @@ public class ManageConstructionOrderController {
     QuotationAndDesignApprovalService quotationAndDesignApprovalService;
 
 
+    @GetMapping("/requests/{status}")
+    public ApiResponse<List<ConstructOrderDetailForManagerResponse>> listAllOrdersByStatus(@PathVariable String status) {
+        return ApiResponse.<List<ConstructOrderDetailForManagerResponse>>builder()
+                .data(manageConstructionOrderService.listAllOrderByStatus(status))
+                .build();
+    }
+
     @GetMapping("/requests")
     public ApiResponse<List<ConstructOrderDetailForManagerResponse>> listAllOrders() {
         return ApiResponse.<List<ConstructOrderDetailForManagerResponse>>builder()
@@ -37,8 +46,8 @@ public class ManageConstructionOrderController {
     }
 
     @GetMapping("/quotations")
-    public ApiResponse<List<QuotationAndDesignReviewResponse>> listAllQuotation(){
-        return ApiResponse.<List<QuotationAndDesignReviewResponse>>builder()
+    public ApiResponse<List<QuotationAndDesignReviewResponse<QuotationStatus>>> listAllQuotation(){
+        return ApiResponse.<List<QuotationAndDesignReviewResponse<QuotationStatus>>>builder()
                 .data(quotationAndDesignApprovalService.listAllQuotation())
                 .build();
     }
@@ -58,8 +67,8 @@ public class ManageConstructionOrderController {
     }
 
     @GetMapping("/designs")
-    public ApiResponse<List<QuotationAndDesignReviewResponse>> listAllDesign(){
-        return ApiResponse.<List<QuotationAndDesignReviewResponse>>builder()
+    public ApiResponse<List<QuotationAndDesignReviewResponse<DesignStatus>>> listAllDesign(){
+        return ApiResponse.<List<QuotationAndDesignReviewResponse<DesignStatus>>>builder()
                 .data(quotationAndDesignApprovalService.listAllDesign())
                 .build();
     }
@@ -75,6 +84,34 @@ public class ManageConstructionOrderController {
     public ApiResponse<ConstructOrderDetailForManagerResponse> approveDesign(@RequestBody ManageReviewRequest request, @PathVariable String designId){
         return ApiResponse.<ConstructOrderDetailForManagerResponse>builder()
                 .data(quotationAndDesignApprovalService.manageDesign(request, designId))
+                .build();
+    }
+
+    @GetMapping("/progress")
+    public ApiResponse<List<ProgressReviewResponse>> listAllConstructionProgress(){
+        return ApiResponse.<List<ProgressReviewResponse>>builder()
+                .data(manageConstructionOrderService.listAllConstructionProgress())
+                .build();
+    }
+
+    @GetMapping("/progress/{constructionOrderId}")
+    public ApiResponse<ViewProgressResponse> getProgress(@PathVariable String constructionOrderId){
+        return ApiResponse.<ViewProgressResponse>builder()
+                .data(manageConstructionOrderService.detailProgress(constructionOrderId))
+                .build();
+    }
+
+    @GetMapping("/payments")
+    public ApiResponse<List<PaymentReviewResponse>> listAllPayments(){
+        return ApiResponse.<List<PaymentReviewResponse>>builder()
+                .data(manageConstructionOrderService.listAllPayments())
+                .build();
+    }
+
+    @GetMapping("/payments/{constructionOrderId}")
+    public ApiResponse<ViewPaymentResponse> detailPayment(@PathVariable String constructionOrderId){
+        return ApiResponse.<ViewPaymentResponse>builder()
+                .data(manageConstructionOrderService.getPayments(constructionOrderId))
                 .build();
     }
 

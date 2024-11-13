@@ -1,5 +1,7 @@
 package com.swp_group4.back_end.responses;
 
+import com.swp_group4.back_end.enums.ConstructionOrderStatus;
+import com.swp_group4.back_end.enums.DesignStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -19,5 +21,7 @@ public class ConstructDesignResponse {
     String url3dDesign;
     String urlFrontDesign;
     String urlBackDesign;
+    DesignStatus designStatus;
+    ConstructionOrderStatus constructionOrderStatus;
 
 }

@@ -4,6 +4,8 @@ import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -17,7 +19,7 @@ public class ConstructOrderDetailForCustomerResponse {
     String customerName;
     String quotationId;
     String designId;
-    Date startDate;
+    LocalDateTime startDate;
     Date endDate;
     ConstructionOrderStatus status;
 

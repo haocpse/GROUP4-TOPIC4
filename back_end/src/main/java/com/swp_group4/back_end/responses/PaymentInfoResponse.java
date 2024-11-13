@@ -4,6 +4,8 @@ import com.swp_group4.back_end.enums.PaymentStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 @Data
 @AllArgsConstructor
@@ -14,7 +16,8 @@ public class PaymentInfoResponse {
 
     String paymentId;
     String paymentTitle;
-    Date paidDate;
-    Double price;
+    LocalDateTime paidDate;
+    LocalDateTime dueDate;
+    long price;
     PaymentStatus paymentStatus;
 }

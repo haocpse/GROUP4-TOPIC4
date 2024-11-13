@@ -7,8 +7,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+
+import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.List;
+
 
 @Entity
 @Data
@@ -29,12 +31,12 @@ public class Quotation {
     double width;
     double height;
     double volume;
-    double priceStage1;
-    double priceStage2;
-    double priceStage3;
+    double percentageStage1;
+    double percentageStage2;
+    double percentageStage3;
     String promotionId;
     String packageId;
-    Date postedDate;
+    LocalDateTime postedDate;
     Date expectedStartDate;
     Date expectedEndDate;
     @Enumerated(EnumType.STRING)

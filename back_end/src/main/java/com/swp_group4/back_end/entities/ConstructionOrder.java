@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -22,8 +22,9 @@ public class ConstructionOrder {
     String customerId;
     String customerRequest;
     double total;
-    Date startDate;
-    Date endDate;
+    LocalDateTime startDate;
+    Date constructionStartDate;
+    Date constructionEndDate;
     String quotationId;
     String designId;
     String consultantId;

@@ -10,8 +10,7 @@ import com.swp_group4.back_end.requests.PackageConstructionCreateRequest;
 import com.swp_group4.back_end.requests.PackageConstructionRequest;
 import com.swp_group4.back_end.requests.PackageCreateRequest;
 import com.swp_group4.back_end.requests.PackagePriceRequest;
-import com.swp_group4.back_end.responses.PackageDetailResponse;
-import com.swp_group4.back_end.responses.PackageResponse;
+import com.swp_group4.back_end.responses.*;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +18,7 @@ import org.hibernate.validator.internal.constraintvalidators.bv.time.past.PastVa
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,7 +35,6 @@ public class PackageService {
     PackageConstructionRepository packageConstructionRepository;
     @Autowired
     PackagePriceRepository packagePriceRepository;
-
 
     public PackageResponse getAllPackage() {
         List<Packages> packagesList = packageRepository.findAll();
@@ -186,5 +185,54 @@ public class PackageService {
         packageConstructionRepository.deleteAll(constructionsToDelete);
         return packageRepository.findById(packageId)
                 .orElseThrow(() -> new RuntimeException("Package not found with id: " + packageId));
+    }
+
+    public List<PackagePriceResponse> getAllPackagePrices() {
+        List<Packages> packages = packageRepository.findAll();
+        List<PackagePriceResponse> responses = new ArrayList<>();
+        for (Packages pkg : packages) {
+            List<PackagePrice> packagePrices = packagePriceRepository.findPackagePriceByPackageId(pkg.getPackageId());
+            List<PackagePriceInfoResponse> infoResponses = new ArrayList<>();
+            for (PackagePrice packagePrice : packagePrices) {
+                PackagePriceInfoResponse infoResponse = PackagePriceInfoResponse.builder()
+                        .packagePriceId(packagePrice.getPackagePriceId())
+                        .maxVolume(packagePrice.getMaxVolume())
+                        .minVolume(packagePrice.getMinVolume())
+                        .price(packagePrice.getPrice())
+                        .build();
+                infoResponses.add(infoResponse);
+            }
+            PackagePriceResponse response = PackagePriceResponse.builder()
+                    .packageId(pkg.getPackageId())
+                    .packageType(pkg.getPackageType())
+                    .packagePriceInfoResponseList(infoResponses)
+                    .build();
+            responses.add(response);
+        }
+        return responses;
+    }
+
+    public List<PackageConstructionResponse> getAllPackageConstruction() {
+        List<Packages> packages = packageRepository.findAll();
+        List<PackageConstructionResponse> responses = new ArrayList<>();
+        for (Packages pkg : packages) {
+            List<PackageConstruction> packageConstructions = packageConstructionRepository.findByPackageId(pkg.getPackageId());
+            List<PackageConstructionInfoResponse> infoResponses = new ArrayList<>();
+            for (PackageConstruction packageConstruction : packageConstructions) {
+                PackageConstructionInfoResponse infoResponse = PackageConstructionInfoResponse.builder()
+                        .packageConstructionId(packageConstruction.getPackageConstructionId())
+                        .content(packageConstruction.getContent())
+                        .price(packageConstruction.getPrice())
+                        .build();
+                infoResponses.add(infoResponse);
+            }
+            PackageConstructionResponse response = PackageConstructionResponse.builder()
+                    .packageId(pkg.getPackageId())
+                    .packageType(pkg.getPackageType())
+                    .constructionInfoResponseList(infoResponses)
+                    .build();
+            responses.add(response);
+        }
+        return responses;
     }
 }

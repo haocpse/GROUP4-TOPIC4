@@ -7,18 +7,20 @@ import com.swp_group4.back_end.mapper.CustomerMapper;
 import com.swp_group4.back_end.mapper.MaintenanceOrderMapper;
 import com.swp_group4.back_end.repositories.CustomerRepository;
 import com.swp_group4.back_end.repositories.MaintenanceOrderRepository;
+import com.swp_group4.back_end.requests.MaintenancePriceRequest;
 import com.swp_group4.back_end.requests.MaintenanceStaffAssignedRequest;
 import com.swp_group4.back_end.responses.MaintenanceOrderDetailForManagerResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Slf4j
 public class MaintenanceOrderService {
     @Autowired
     MaintenanceOrderRepository maintenanceOrderRepository;
@@ -28,6 +30,15 @@ public class MaintenanceOrderService {
     CustomerMapper customerMapper;
     @Autowired
     CustomerRepository customerRepository;
+
+    public MaintenanceOrder addTotal(String orderId, MaintenancePriceRequest request){
+        MaintenanceOrder order = maintenanceOrderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        order.setTotal(request.getTotalPrice());
+        order.setStatus(MaintenanceOrderStatus.MAINTAINED);
+        log.info(order.toString());
+        return maintenanceOrderRepository.save(order);
+    }
 
     public List<MaintenanceOrderDetailForManagerResponse> listAllOrder(){
         List<MaintenanceOrderDetailForManagerResponse> responses = new ArrayList<>();
@@ -43,7 +54,9 @@ public class MaintenanceOrderService {
     public MaintenanceOrderDetailForManagerResponse assignLeader(MaintenanceStaffAssignedRequest request){
         MaintenanceOrder order = this.findMaintenanceOrder(request.getMaintenanceOrderId());
         Customer customer = this.findCustomerById(order.getCustomerId());
+        log.info(request.getConstructorLeaderId());
         maintenanceOrderRepository.save(maintenanceOrderMapper.toMaintenanceOrder(request, order));
+        log.info(order.toString());
         return this.buildMaintenanceOrderDetailForManagerResponse(order, customer);
     }
 

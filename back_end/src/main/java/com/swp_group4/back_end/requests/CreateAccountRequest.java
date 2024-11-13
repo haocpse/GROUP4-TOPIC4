@@ -14,5 +14,8 @@ public class CreateAccountRequest {
 
     String username;
     String password;
+    String firstName;
+    String lastName;
+    String phone;
 
 }
