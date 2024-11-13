@@ -14,6 +14,7 @@ const PackageConstruction = () => {
   const [constructions, setConstructions] = useState([]);
   const [packagePrices, setPackagePrices] = useState([]);
   const [selectedPackage, setSelectedPackage] = useState("");
+  const [errors, setErrors] = useState({});
 
   const formatPrice = (price) => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -49,7 +50,7 @@ const PackageConstruction = () => {
         selectedPackageData.constructionInfoResponseList.map(
           (construction) => ({
             content: construction.content,
-            price: "", // Add a price field with default value
+            price: "",
           })
         )
       );
@@ -69,12 +70,33 @@ const PackageConstruction = () => {
       ...constructions,
       {
         content: "",
-        price: "", // Initialize with empty price
+        price: "",
       },
     ]);
   };
 
+  const handleBlurPrice = (index) => {
+    const price = constructions[index].price;
+    if (price < 50000 || price > 500000) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [index]: "Price must be between 50.000 and 500.000 VND.",
+      }));
+    } else {
+      setErrors((prevErrors) => {
+        const newErrors = { ...prevErrors };
+        delete newErrors[index];
+        return newErrors;
+      });
+    }
+  };
+
   const handleSubmit = async () => {
+    if (Object.keys(errors).length > 0) {
+      alert("Please fix the errors before submitting.");
+      return;
+    }
+
     try {
       const requestBody = {
         packageId: selectedPackage,
@@ -156,15 +178,21 @@ const PackageConstruction = () => {
                               e.target.value
                             )
                           }
+                          onBlur={() => handleBlurPrice(index)}
                           placeholder="Enter price"
-                          min="5000"
+                          min="50000"
                           max="500000"
                           className="rounded"
                         />
                         <InputGroup.Text>VND</InputGroup.Text>
                       </InputGroup>
+                      {errors[index] && (
+                        <Form.Text className="text-danger">
+                          {errors[index]}
+                        </Form.Text>
+                      )}
                       <Form.Text className="text-muted">
-                        Must be between 5.000 and 500.000 VND.
+                        Must be between 50.000 and 500.000 VND.
                       </Form.Text>
                     </Form.Group>
                   </Col>
