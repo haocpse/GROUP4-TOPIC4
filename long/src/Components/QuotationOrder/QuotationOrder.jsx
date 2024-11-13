@@ -19,6 +19,9 @@ const QuotationOrder = () => {
   const [endDate, setEndDate] = useState('');
   const [startDate, setStartDate] = useState('');
   const [promotionId, setPromotionId] = useState('');
+  const [percentageStage1, setPercentageStage1] = useState(20);
+  const [percentageStage2, setPercentageStage2] = useState(30);
+  const [percentageStage3, setPercentageStage3] = useState(50);
   const [customerRequest, setCustomerRequest] = useState('');
   const navigate = useNavigate();
 
@@ -78,6 +81,9 @@ const QuotationOrder = () => {
       length,
       height,
       width,
+      percentageStage1,
+      percentageStage2,
+      percentageStage3,
       customerRequest,
       startDate,
       endDate,
@@ -163,8 +169,8 @@ const QuotationOrder = () => {
               />
             </div>
           </div>
-          <div className="row mb-3">
-            <div className="col-md-12">
+          <div className="row mb-5">
+            <div className="col-md-6">
               <label htmlFor="height"><strong>Height:</strong></label>
               <input
                 type="text"
@@ -173,6 +179,48 @@ const QuotationOrder = () => {
                 value={height}
                 onChange={(e) => setHeight(e.target.value)}
                 placeholder="Enter height"
+              />
+            </div>
+          </div>
+          <div className="row mb-3">
+            <div className="col-md-12 d-flex align-items-end">
+              <label htmlFor="percentageStage1" className="mr-2"><strong>Customer agrees to paid for first pharse (%): </strong></label>
+              <input
+                style={{ width: 80 }}
+                type="number"
+                className="form-control"
+                id="percentageStage1"
+                value={percentageStage1}
+                onChange={(e) => setPercentageStage1(e.target.value)}
+                placeholder="Percentage"
+              />
+            </div>
+          </div>
+          <div className="row mb-3">
+            <div className="col-md-12 d-flex align-items-end">
+              <label htmlFor="percentageStage2" className="mr-2"><strong>Customer agrees to paid for second pharse (%): </strong></label>
+              <input
+                style={{ width: 80 }}
+                type="number"
+                className="form-control"
+                id="percentageStage2"
+                value={percentageStage2}
+                onChange={(e) => setPercentageStage2(e.target.value)}
+                placeholder="Percentage"
+              />
+            </div>
+          </div>
+          <div className="row mb-5">
+            <div className="col-md-12 d-flex align-items-end">
+              <label htmlFor="percentageStage3" className="mr-2"><strong>Customer agrees to paid for finally pharse (%): </strong></label>
+              <input
+                style={{ width: 80 }}
+                type="number"
+                className="form-control"
+                id="percentageStage3"
+                value={percentageStage3}
+                onChange={(e) => setPercentageStage3(e.target.value)}
+                placeholder="Percentage"
               />
             </div>
           </div>
