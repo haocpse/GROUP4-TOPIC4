@@ -241,7 +241,7 @@ const Request = () => {
                                 <td className="text-center align-content-center">{request.packageType}</td>
                                 <td className="text-center align-content-center">{request.totalPrice.toLocaleString()}</td>
                                 <td>
-                                    {request.quotationStatus === "CONFIRM_BY_USER" ? (null) : (
+                                    {request.quotationStatus === "CONFIRMED_BY_USER" ? (consultantList.find(staff => staff.staffId === request.consultantId)?.staffName || "No consultant assigned") : (
                                         <select
                                             className="form-select mt-2"
                                             onChange={(e) => {
@@ -261,38 +261,42 @@ const Request = () => {
 
                                 </td>
                                 <td>
-                                    <select
-                                        className="form-select mt-2"
-                                        onChange={(e) => {
-                                            handleAssignStaff(request.orderId, e.target.name, e.target.value)
-                                        }}
-                                        value={request.designerLeaderId ? request.designerLeaderId : ""}
-                                        name="designerLeaderId"
-                                    >
-                                        <option value="" disabled>Select Designer</option>
-                                        {designerList.map(staff => (
-                                            <option key={staff.staffId} value={staff.staffId}>
-                                                {staff.staffName}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    {request.designStatus === "CONFIRMED_BY_USER" ? (designerList.find(staff => staff.staffId === request.designerLeaderId)?.staffName || "No Designer assigned") : (
+                                        <select
+                                            className="form-select mt-2"
+                                            onChange={(e) => {
+                                                handleAssignStaff(request.orderId, e.target.name, e.target.value)
+                                            }}
+                                            value={request.designerLeaderId ? request.designerLeaderId : ""}
+                                            name="designerLeaderId"
+                                        >
+                                            <option value="" disabled>Select Designer</option>
+                                            {designerList.map(staff => (
+                                                <option key={staff.staffId} value={staff.staffId}>
+                                                    {staff.staffName}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    )}
                                 </td>
                                 <td>
-                                    <select
-                                        className="form-select mt-2"
-                                        onChange={(e) => {
-                                            handleAssignStaff(request.orderId, e.target.name, e.target.value)
-                                        }}
-                                        value={request.constructorLeaderId ? request.constructorLeaderId : ""}
-                                        name="constructorLeaderId"
-                                    >
-                                        <option value="" disabled>Select Consultant</option>
-                                        {constructorList.map(staff => (
-                                            <option key={staff.staffId} value={staff.staffId}>
-                                                {staff.staffName}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    {request.status === "PAID_STAGE_3" ? (constructorList.find(staff => staff.staffId === request.constructorLeaderId)?.staffName || "No constructor assigned") : (
+                                        <select
+                                            className="form-select mt-2"
+                                            onChange={(e) => {
+                                                handleAssignStaff(request.orderId, e.target.name, e.target.value)
+                                            }}
+                                            value={request.constructorLeaderId ? request.constructorLeaderId : ""}
+                                            name="constructorLeaderId"
+                                        >
+                                            <option value="" disabled>Select Consultant</option>
+                                            {constructorList.map(staff => (
+                                                <option key={staff.staffId} value={staff.staffId}>
+                                                    {staff.staffName}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    )}
                                 </td>
                                 <td className={`text-center align-content-center col-2 ${getStatusIcon(request.status).className}`}>
                                     {getStatusIcon(request.status).icon} {request.status}
