@@ -18,7 +18,7 @@ const Request = () => {
         try {
             const response = await axios.get('http://localhost:8080/staffs/consultants', {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`, 
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 }
             });
             setConsultantList(response.data.data);
@@ -60,24 +60,23 @@ const Request = () => {
             toast.error('Failed to load constructors. ^^');
         }
     };
-
-
     // lay du lieu request tu backend
-    useEffect(() => {
-        const fetchRequests = async () => {
-            try {
-                const response = await axios.get('http://localhost:8080/requests', {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
-                    }
-                });
-                setRequests(response.data.data);
-                console.log(requests)
-            } catch (error) {
-                console.error('Error fetching requests:', error);
-                toast.error('Failed to load requests. ^^');
-            }
+    const fetchRequests = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/requests', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+                }
+            });
+            setRequests(response.data.data);
+            console.log(requests)
+        } catch (error) {
+            console.error('Error fetching requests:', error);
+            toast.error('Failed to load requests. ^^');
         }
+    }
+
+    useEffect(() => {
         fetchRequests()
         fetchConsultants()
         fetchDesigners()
@@ -119,7 +118,7 @@ const Request = () => {
                 status: newStatus
             }, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`, 
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 }
             });
             setRequests(prevRequests =>
@@ -136,20 +135,21 @@ const Request = () => {
         }
     };
 
-    // //handle status change
-    // const handleStatusChange = async (statusTab) => {
-    //     try {
-    //         const respone = await axios.get(`http://localhost:8080/manager/requests?status=${statusTab}`, {
-    //            headers: {
-    //                'Authorization': `Bearer ${localStorage.getItem('token')}`, 
-    //            }
-    //         setRequests(respone.data)
-    //     } catch (error) {
-    //         console.error('Error fetching Status:', error);
-    //         toast.error('Failed to load Status. ^^');
-    //     }
+    //handle status change
+    const handleStatusChange = async (statusTab) => {
+        try {
+            const respone = await axios.get(`http://localhost:8080/manager/requests/${statusTab}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                }
+            });
+            setRequests(respone.data.data)
+        } catch (error) {
+            console.error('Error fetching Status:', error);
+            toast.error('Failed to load Status. ^^');
+        }
 
-    // }
+    }
     // Định nghĩa icon dựa theo status
     const getStatusIcon = (status) => {
         switch (status) {
@@ -170,10 +170,10 @@ const Request = () => {
         <div className="container-fuild mt-4">
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
             <h2 className="text-center">Manage Requests</h2>
-            {/* <div>
+            <div>
                 <nav className="nav justify-content-center mb-2">
                     <div className="nav-item">
-                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("all")}>All</button>
+                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange()}>All</button>
                     </div>
                     <div className="nav-item">
                         <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("requested")}>Requested</button>
@@ -188,10 +188,25 @@ const Request = () => {
                         <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("constructing")}>Constructing</button>
                     </div>
                     <div className="nav-item">
-                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("completed")}>Complete</button>
+                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("paid_1")}>Paid 1</button>
+                    </div>
+                    <div className="nav-item">
+                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("paid_2")}>Paid 2</button>
+                    </div>
+                    <div className="nav-item">
+                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("paid_3")}>Paid 3</button>
+                    </div>
+                    <div className="nav-item">
+                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("confirm_quotaion")}>Confirm Quotation</button>
+                    </div>
+                    <div className="nav-item">
+                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("confirm_design")}>Confirm Design</button>
+                    </div>
+                    <div className="nav-item">
+                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("constructed")}>Constructed</button>
                     </div>
                 </nav>
-            </div> */}
+            </div>
             <table className="table table-bordered ">
                 <thead>
                     <tr>

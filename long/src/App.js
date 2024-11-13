@@ -21,6 +21,8 @@ import CustomerQuotationList from "./Components/CustomerView/CustomerQuotationLi
 import ViewQuotationAfterCreate from "./Components/QuotationOrder/ViewQuotationAfterCreate";
 import MainLayoutConsultant from "./Components/MainLayoutConsultant";
 import Main from "./Components/Main/Main";
+import ApproveMaintenanceQuotation from "./Components/ApproveQuotation/ApproveMaintenanceQuotation";
+import ViewMaintenanceQuotation from "./Components/ApproveQuotation/ViewMaintenanceQuotation";
 import MainLayoutDesigner from "./Components/MainLayoutDesigner";
 import ProtectedRoutesManager from "./utils/ProtectedRoutesManager";
 import ProtectedRoutesConsultant from "./utils/ProtectedRoutesConsultant";
@@ -33,7 +35,8 @@ import UpdateDesign from "./Components/DesignUpload/UpdateDesign";
 import CustomerViewDesign from "./Components/CustomerView/CustomerViewDesign";
 import PaymentInfo from "./Components/Payment/PaymentInfo";
 import MainLayoutConstructor from "./Components/MainLayoutConstructor";
-import Dashboard from "./Components/Admin/Dashboard"
+import Dashboard from "./Components/Admin/Dashboard";
+import BlogCRUD from "./Components/Admin/BlogCRUD";
 import EditBlog from "./Components/Admin/EditBlog";
 import PackageManage from "./Components/Package/PackageManage";
 import PackagePrice from "./Components/Package/PackagePrice";
@@ -45,45 +48,52 @@ import ManagerViewProgess from "./Components/ManagerViewProgress/ManagerViewProg
 import ManagerViewPayment from "./Components/ManagerViewPayment/ManagerViewPayment";
 import ManagerViewDetailPayment from "./Components/ManagerViewPayment/ManagerViewDetailPayment";
 import ManagerViewDetailProgress from "./Components/ManagerViewProgress/ManagerViewDetailProgress";
-import ProtectedRoutesAdmin from "./utils/ProtectedRoutesAdmin";
+import CustomerViewProgress from "./Components/CustomerView/CustomerViewProgress";
+import MainLayoutAdmin from "./Components/MainLayoutAdmin";
+import Project from "./Components/Project/Project"
+
+import AboutUs from "./Components/AboutUs/AboutUs";
 import Blog from "./Components/Blog/Blog";
 import BlogDetail from "./Components/Blog/BlodDetail";
-import AboutUs from "./Components/AboutUs/AboutUs";
-import ProjectPage from "./Components/Project/Project";
-import CustomerProfile from "./Components/CustomerProfile/CustomerProfile";
-import CustomerUpdate from "./Components/CustomerProfile/CustomerUpdate";
-
-import BlogCRUD from "./Components/Admin/BlogCRUD";
 import CustomerViewMaintenance from "./Components/CustomerView/CustomerViewMaintenance";
 function App() {
   return (
     <Router>
-
       <Routes>
-        <Route element={<ProtectedRoutesAdmin />}>
-          <Route path="/package" element={<PackageManage />}>
-            <Route path="package-price" element={<PackagePrice />} />
-            <Route path="package-construction" element={<PackageConstruction />} />{" "}
-          </Route>
-
-          <Route path="/BlogCRUD" element={<BlogCRUD />}></Route>
-          <Route path="/edit-blog/:id" element={<EditBlog />}></Route>
-          <Route path="/profile" element={<AdminProfile />}></Route>
-        </Route>
+        <Route path="/BlogCRUD" element={<BlogCRUD />}></Route>
+        <Route path="/edit-blog/:id" element={<EditBlog />}></Route>
+        <Route path="/profile" element={<AdminProfile />}></Route>
 
         {/* MANAGER*/}
         <Route element={<ProtectedRoutesManager />}>
           <Route path="/manage" element={<MainLayout />}>
             <Route path="request" element={<Request />} />
-            <Route path="maintenance-request" element={<MaintenanceRequest />} />
+            <Route
+              path="maintenance-request"
+              element={<MaintenanceRequest />}
+            />
             <Route path="quotations" element={<ApproveQuotation />} />
             <Route path="quotations/:id" element={<ViewQuotation />} />
+            <Route
+              path="maintenance-quotations"
+              element={<ApproveMaintenanceQuotation />}
+            />
+            <Route
+              path="maintenance-quotations/:id"
+              element={<ViewMaintenanceQuotation />}
+            />
             <Route path="designs" element={<ApproveDesign />} />
             <Route path="designs/:id" element={<ViewDesign />} />
             <Route path="viewProgress" element={<ManagerViewProgess />} />
-            <Route path="viewProgress/:constructionOrderId" element={<ManagerViewDetailProgress />} />
+            <Route
+              path="viewProgress/:constructionOrderId"
+              element={<ManagerViewDetailProgress />}
+            />
             <Route path="viewPayment" element={<ManagerViewPayment />} />
-            <Route path="viewPayment/:id" element={<ManagerViewDetailPayment />} />
+            <Route
+              path="viewPayment/:id"
+              element={<ManagerViewDetailPayment />}
+            />
             <Route path="dashboard" element={<Dashboard />} />
           </Route>
         </Route>
@@ -93,9 +103,18 @@ function App() {
           <Route path="/consult" element={<MainLayoutConsultant />}>
             <Route path="ownedTasks" element={<ConsultantTasks />} />
             <Route path="quotations" element={<ConsultantQuotations />} />
-            <Route path="ownedTasks/:constructionOrderId" element={<QuotationOrder />} />
-            <Route path="ownedTasks/:constructionOrderId/quotation" element={<ViewQuotationAfterCreate />} />
-            <Route path="quotations/:quotationId" element={<UpdateQuotation />} />
+            <Route
+              path="ownedTasks/:constructionOrderId"
+              element={<QuotationOrder />}
+            />
+            <Route
+              path="ownedTasks/:constructionOrderId/quotation"
+              element={<ViewQuotationAfterCreate />}
+            />
+            <Route
+              path="quotations/:quotationId"
+              element={<UpdateQuotation />}
+            />
           </Route>
         </Route>
 
@@ -103,7 +122,10 @@ function App() {
         <Route element={<ProtectedRoutesDesigner />}>
           <Route path="/design" element={<MainLayoutDesigner />}>
             <Route path="ownedTasks" element={<DesignerTasks />} />
-            <Route path="ownedTasks/:constructionOrderId" element={<DesignUpload />} />
+            <Route
+              path="ownedTasks/:constructionOrderId"
+              element={<DesignUpload />}
+            />
             <Route path="designs" element={<ListDesign />} />
             <Route path="designs/:designId" element={<UpdateDesign />} />
           </Route>
@@ -113,41 +135,61 @@ function App() {
         <Route element={<ProtectedRoutesConstructor />}>
           <Route path="/construct" element={<MainLayoutConstructor />}>
             <Route path="ownedTasks" element={<ConstructionOrder />} />
-            <Route path="ownedTasks/:constructionOrderId" element={<ConstructionProgress />} />
+            <Route
+              path="ownedTasks/:constructionOrderId"
+              element={<ConstructionProgress />}
+            />
           </Route>
         </Route>
 
-        {/* MAINTENANCE CONSTRUCTOR */}
+        {/* MAINTENANCE CONSTRUCTOR*/}
         <Route element={<ProtectedRoutesConstructor />}>
           <Route path="/maintenance" element={<MainLayoutConstructor />}>
             <Route path="ownedTasks" element={<ConstructionMaintenance />} />
           </Route>
         </Route>
 
-
-        {/* CUSTOMER*/}
-        <Route path="/myInfo" element={<CustomerProfile />} />
-        <Route path="/myInfo/:id/update" element={<CustomerUpdate />} />
+        <Route path="/admin" element={<MainLayoutAdmin />}>
+          <Route path="package-price" element={<PackagePrice />} />
+          <Route
+            path="package-construction"
+            element={<PackageConstruction />}
+          />
+         
+        </Route>
 
         <Route path="/myInfo/orders" element={<CustomerView />} />
-        <Route path="/myInfo/orders/:constructionOrderId/quotation" element={<CustomerQuotationList />} />
-        <Route path="/myInfo/orders/:constructionOrderId/design" element={<CustomerViewDesign />} />
-        <Route path="/myInfo/orders/:constructionOrderId/payments" element={<PaymentInfo />} />
-        <Route path="/myInfo/orders/maintenance" element={<CustomerViewMaintenance />} />
+        <Route
+          path="/myInfo/orders/:constructionOrderId/quotation"
+          element={<CustomerQuotationList />}
+        />
+        <Route
+          path="/myInfo/orders/:constructionOrderId/design"
+          element={<CustomerViewDesign />}
+        />
+        <Route
+          path="/myInfo/orders/:constructionOrderId/payments"
+          element={<PaymentInfo />}
+        />
+        <Route
+          path="/myInfo/orders/:constructionOrderId/progress"
+          element={<CustomerViewProgress />}
+        />
 
-
-
-        {/* NAVBAR */}
+        <Route
+          path="/myInfo/orders/maintenance"
+          element={<CustomerViewMaintenance />}
+        />
+        
+        
+        <Route path="/project" element={<Project />} />
         <Route path="/about-us" element={<AboutUs />} />
-
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/service" element={<Service />} />
-        <Route path="/project" element={<ProjectPage />} />
-        <Route path="/about-us" element={<AboutUs />} />
         <Route path="/" element={<Main />} />
       </Routes>
     </Router>
