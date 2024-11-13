@@ -12,8 +12,12 @@ const CustomerProfile = () => {
     const [customerInfo, setCustomerInfo] = useState(null);
     const navigate = useNavigate();
 
+    const token = localStorage.getItem('token')
+    const decode = jwtDecode(token)
+    const accountId = decode.sub
+    
     useEffect(() => {
-
+       
         const fetchCustomerInfo = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/customerInfo', {
@@ -33,7 +37,7 @@ const CustomerProfile = () => {
         fetchCustomerInfo()
     }, []);
 
-    const handleClickUpdate = (accountId) => {
+    const handleClickUpdate = () => {
         navigate(`/myInfo/${accountId}/update`);
     }
     const handleClickOrders = () => {
@@ -99,7 +103,7 @@ const CustomerProfile = () => {
                                             </div>
                                         </div>
 
-                                    
+
                                     </div>
                                     <div className="row gutters">
                                         <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
