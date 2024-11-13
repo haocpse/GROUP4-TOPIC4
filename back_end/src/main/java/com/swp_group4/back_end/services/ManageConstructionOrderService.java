@@ -77,11 +77,11 @@ public class ManageConstructionOrderService {
         ConstructOrderDetailForManagerResponse response = ConstructOrderDetailForManagerResponse.builder()
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .build();
-        if (!order.getQuotationId().isEmpty()) {
+        if (order.getQuotationId() != null) {
             Quotation quotation = quotationRepository.findById(order.getQuotationId()).orElseThrow();
             response.setQuotationStatus(quotation.getQuotationStatus());
         }
-        if (!order.getDesignId().isEmpty()) {
+        if (order.getDesignId() != null) {
             Design design = designRepository.findById(order.getDesignId()).orElseThrow();
             response.setDesignStatus(design.getDesignStatus());
         }
