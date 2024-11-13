@@ -1,18 +1,27 @@
 package com.swp_group4.back_end.services;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.swp_group4.back_end.entities.Account;
+import com.swp_group4.back_end.entities.Customer;
 import com.swp_group4.back_end.entities.Staff;
 import com.swp_group4.back_end.enums.Role;
 import com.swp_group4.back_end.exception.AppException;
 import com.swp_group4.back_end.exception.ErrorCode;
 import com.swp_group4.back_end.repositories.AccountRepository;
+import com.swp_group4.back_end.repositories.CustomerRepository;
 import com.swp_group4.back_end.repositories.StaffRepository;
 import com.swp_group4.back_end.requests.CreateAccountForStaffRequest;
 import com.swp_group4.back_end.requests.CreateAccountRequest;
 import com.swp_group4.back_end.requests.LoginRequest;
+import com.swp_group4.back_end.requests.LoginWithGoogleRequest;
 import com.swp_group4.back_end.responses.AccountResponse;
 import com.swp_group4.back_end.responses.LoginResponse;
 import jakarta.validation.Valid;
@@ -23,11 +32,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -49,6 +65,8 @@ public class AccountService {
     String SIGNER_KEY;
     @Autowired
     private StaffRepository staffRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
 
     public LoginResponse login (LoginRequest request) {
         String userName = request.getUsername();
@@ -73,6 +91,7 @@ public class AccountService {
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.CUSTOMER)
+                .isActive(true)
                 .build();
         accountRepository.save(acc);
         customerService.createCustomer(acc.getAccountId(), request);
@@ -129,6 +148,30 @@ public class AccountService {
                 .role(account.getRole())
                 .build();
     }
+
+    public LoginResponse loginGoogle(LoginWithGoogleRequest request) {
+        Account account = accountRepository.findByGoogleId(request.getSub());
+        if (account == null) {
+            Account newAccount = Account.builder()
+                    .googleId(request.getSub())
+                    .username(request.getEmail())
+                    .role(Role.CUSTOMER)
+                    .isActive(true)
+                    .build();
+            accountRepository.save(newAccount);
+            account = newAccount;
+            Customer customer = Customer.builder()
+                    .firstName(request.getName())
+                    .accountId(newAccount.getAccountId())
+                    .build();
+            customerRepository.save(customer);
+        }
+        return LoginResponse.builder()
+                .token(generateToken(account))
+                .role(account.getRole())
+                .build();
+    }
+
 
 //    public String logout(){
 //
