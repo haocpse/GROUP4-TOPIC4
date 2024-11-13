@@ -30,6 +30,18 @@ const ManageAdmin = () => {
                         <i class="fa-solid fa-user-secret"></i>
                     </NavLink>
                 </li>
+                {/* Admin */}
+                <li className="nav-item">
+                    <NavLink to="staff" className="nav-link d-flex align-items-center sidebar-link mt-5 mb-3">
+                        <i class="fa-solid fa-clipboard-user"></i>
+                    </NavLink>
+                </li>
+                {/* Admin */}
+                <li className="nav-item">
+                    <NavLink to="blogCRUD" className="nav-link d-flex align-items-center sidebar-link mt-5 mb-3">
+                        <i class="fa-solid fa-explosion"></i>
+                    </NavLink>
+                </li>
                 <hr className="mb-3 mt-5" />
                 {/* Logout */}
                 <li className="nav-item">
