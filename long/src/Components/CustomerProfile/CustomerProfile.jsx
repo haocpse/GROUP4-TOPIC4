@@ -38,7 +38,7 @@ const CustomerProfile = () => {
     }, []);
 
     const handleClickUpdate = () => {
-        navigate(`/myInfo/${accountId}/update`);
+        navigate(`/myInfo/${accountId}`);
     }
     const handleClickOrders = () => {
         navigate('/myInfo/orders');
