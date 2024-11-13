@@ -14,6 +14,9 @@ const ConsultantQuotations = () => {
 
     const token = localStorage.getItem('token');
     const decoded = jwtDecode(token)
+
+
+    
     const accountId = decoded.sub
 
     const fetchTasks = async () => {
