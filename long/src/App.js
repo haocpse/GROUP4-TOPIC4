@@ -51,19 +51,15 @@ import ManagerViewDetailProgress from "./Components/ManagerViewProgress/ManagerV
 import CustomerViewProgress from "./Components/CustomerView/CustomerViewProgress";
 import MainLayoutAdmin from "./Components/MainLayoutAdmin";
 import Project from "./Components/Project/Project"
-
 import AboutUs from "./Components/AboutUs/AboutUs";
 import Blog from "./Components/Blog/Blog";
 import BlogDetail from "./Components/Blog/BlodDetail";
 import CustomerViewMaintenance from "./Components/CustomerView/CustomerViewMaintenance";
+import Staff from "./Components/Package/Staff";
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/BlogCRUD" element={<BlogCRUD />}></Route>
-        <Route path="/edit-blog/:id" element={<EditBlog />}></Route>
-        <Route path="/profile" element={<AdminProfile />}></Route>
-
         {/* MANAGER*/}
         <Route element={<ProtectedRoutesManager />}>
           <Route path="/manage" element={<MainLayout />}>
@@ -149,38 +145,26 @@ function App() {
           </Route>
         </Route>
 
+        {/* ADMIN */}
         <Route path="/admin" element={<MainLayoutAdmin />}>
-          <Route path="packagePrice" element={<PackagePrice />} />
-          <Route
-            path="packageConstruction"
-            element={<PackageConstruction />}
-          />
+          <Route path="BlogCRUD" element={<BlogCRUD />}></Route>
+          <Route path="edit-blog/:id" element={<EditBlog />}></Route>
+          <Route path="staff" element={<Staff />}></Route>
+          <Route path="packagePrice" element={<PackagePrice />}></Route>
+          <Route path="packageConstruction" element={<PackageConstruction />} />
         </Route>
 
+        {/* CUSTOMER */}
         <Route path="/myInfo/orders" element={<CustomerView />} />
-        <Route
-          path="/myInfo/orders/:constructionOrderId/quotation"
-          element={<CustomerQuotationList />}
-        />
-        <Route
-          path="/myInfo/orders/:constructionOrderId/design"
-          element={<CustomerViewDesign />}
-        />
-        <Route
-          path="/myInfo/orders/:constructionOrderId/payments"
-          element={<PaymentInfo />}
-        />
-        <Route
-          path="/myInfo/orders/:constructionOrderId/progress"
-          element={<CustomerViewProgress />}
-        />
+        <Route path="/myInfo/orders/:constructionOrderId/quotation" element={<CustomerQuotationList />} />
+        <Route path="/myInfo/orders/:constructionOrderId/design" element={<CustomerViewDesign />} />
+        <Route path="/myInfo/orders/:constructionOrderId/payments" element={<PaymentInfo />} />
+        <Route path="/myInfo/orders/:constructionOrderId/progress" element={<CustomerViewProgress />} />
 
-        <Route
-          path="/myInfo/orders/maintenance"
-          element={<CustomerViewMaintenance />}
-        />
+        <Route path="/myInfo/orders/maintenance" element={<CustomerViewMaintenance />} />
 
 
+        {/* MAIN */}
         <Route path="/project" element={<Project />} />
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/blog" element={<Blog />} />

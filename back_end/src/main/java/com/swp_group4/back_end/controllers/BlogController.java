@@ -49,14 +49,14 @@ public class BlogController {
                 .build();
     }
 
-    @GetMapping("/blog")
+    @GetMapping("/blogs")
     public ApiResponse<BlogResponse> getAllBlogs() {
         return ApiResponse.<BlogResponse>builder()
                 .data(blogService.getAllBlog())
                 .build();
     }
 
-    @GetMapping("/blog/{blogId}")
+    @GetMapping("/blogs/{blogId}")
     public ApiResponse<BlogDetailResponse> getBlog(@PathVariable String blogId) {
         return ApiResponse.<BlogDetailResponse>builder()
                 .data(blogService.getBlogDetail(blogId))
