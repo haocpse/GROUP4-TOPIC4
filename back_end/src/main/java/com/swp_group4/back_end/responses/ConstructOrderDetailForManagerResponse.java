@@ -1,6 +1,8 @@
 package com.swp_group4.back_end.responses;
 
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
+import com.swp_group4.back_end.enums.DesignStatus;
+import com.swp_group4.back_end.enums.QuotationStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -25,5 +27,7 @@ public class ConstructOrderDetailForManagerResponse {
     String designerLeaderId;
     String constructorLeaderId;
     ConstructionOrderStatus status;
+    QuotationStatus quotationStatus;
+    DesignStatus designStatus;
 
 }

@@ -47,6 +47,7 @@ public class ManageConstructionOrderService {
     ConstructionTasksMapper constructionTasksMapper;
     @Autowired
     PaymentMapper paymentMapper;
+    private DesignRepository designRepository;
 
     public List<ConstructOrderDetailForManagerResponse> listAllOrder() {
         List<ConstructOrderDetailForManagerResponse> responses = new ArrayList<>();
@@ -73,8 +74,12 @@ public class ManageConstructionOrderService {
     }
 
     ConstructOrderDetailForManagerResponse buildConstructOrderDetailForManagerResponse(ConstructionOrder order, Customer customer) {
+        Quotation quotation = quotationRepository.findById(order.getQuotationId()).orElseThrow();
+        Design design = designRepository.findById(order.getDesignId()).orElseThrow();
         ConstructOrderDetailForManagerResponse response = ConstructOrderDetailForManagerResponse.builder()
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
+                .quotationStatus(quotation.getQuotationStatus())
+                .designStatus(design.getDesignStatus())
                 .build();
         constructionOrderMapper.toDetailForManager(order, response);
         customerMapper.toDetailForManager(customer, response);
