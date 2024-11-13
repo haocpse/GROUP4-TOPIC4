@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @Builder
 public class BlogDetailResponse {
     String title;
-    String author;
     String content;
     String headerImageUrl;
     String imageUrl;
