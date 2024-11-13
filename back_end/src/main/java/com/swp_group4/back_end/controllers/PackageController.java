@@ -59,7 +59,7 @@ public class PackageController {
                 .build();
     }
 
-    @GetMapping("/packagePrice")
+    @GetMapping("/packagePrices")
     public ApiResponse<List<PackagePriceResponse>> getAllPackagePrices() {
         return ApiResponse.<List<PackagePriceResponse>>builder()
                 .data(packageService.getAllPackagePrices())

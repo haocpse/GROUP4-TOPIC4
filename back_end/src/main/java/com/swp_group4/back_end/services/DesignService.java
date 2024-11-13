@@ -60,7 +60,7 @@ public class DesignService {
                 .postedDate(LocalDateTime.now())
                 .build();
 
-        String baseUrl = "http://localhost:8080/images/design" + constructionOrderId + "/";
+        String baseUrl = "http://localhost:8080/images/designs" + constructionOrderId + "/";
 
         if (!image2D.isEmpty()) {
             design.setUrl2dDesign(baseUrl + saveImage(image2D, constructionOrderId));
@@ -72,7 +72,6 @@ public class DesignService {
             design.setUrlFrontDesign(baseUrl + saveImage(frontView, constructionOrderId));
         }
 
-        // Save the design and update the order status
         designRepository.save(design);
         ConstructionOrder order = this.findOrderById(constructionOrderId);
         order.setDesignId(design.getDesignId());
@@ -83,7 +82,7 @@ public class DesignService {
 
     private String saveImage(MultipartFile file, String orderId) {
         try {
-            String UPLOAD_DIR = "images/" + orderId + "/";
+            String UPLOAD_DIR = "images/designs" + orderId + "/";
             String fileName = Objects.requireNonNull(file.getOriginalFilename()).replace(" ", "_");
             Path filePath = Paths.get(UPLOAD_DIR, fileName);
             Files.createDirectories(filePath.getParent());
@@ -124,7 +123,7 @@ public class DesignService {
     public Design updateDesign(String designId, MultipartFile image2D, MultipartFile image3D, MultipartFile frontView) {
         ConstructionOrder order = constructOrderRepository.findByDesignId(designId).orElseThrow();
         Design design = designRepository.findById(designId).orElseThrow();
-        String baseUrl = "http://localhost:8080/images/" + order.getConstructionOrderId() + "/";
+        String baseUrl = "http://localhost:8080/images/designs" + order.getConstructionOrderId() + "/";
 
         if (image2D != null ) {
             design.setUrl2dDesign(baseUrl + saveImage(image2D, order.getConstructionOrderId()));
