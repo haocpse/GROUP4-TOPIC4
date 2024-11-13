@@ -58,7 +58,7 @@ const CustomerProfile = () => {
                                         <div className="user-profile text-center">
                                             <h2 className="text-primary">Avatar</h2>
                                             <div className="user-avatar">
-                                                <img src={customerInfo.avatarUrl} alt={customerInfo.firstName} className="img-fluid rounded-circle" />
+                                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Customer" class="rounded-circle" width="150"/>
                                             </div>
                                         </div>
                                         <div className="about mt-3">
