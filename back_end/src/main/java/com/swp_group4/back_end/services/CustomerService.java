@@ -349,17 +349,22 @@ public class CustomerService {
         order.setStatus(request.getStatus());
         constructOrderRepository.save(order);
         Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
-        Quotation quotation = quotationRepository.findById(order.getQuotationId()).orElseThrow();
+        List<PaymentOrder> paymentOrders = paymentOrderRepository.findByOrderId(constructionOrderId);
+        long total = (long) order.getTotal();
+        for (PaymentOrder paymentOrder : paymentOrders) {
+            total -= paymentOrder.getTotal();
+        }
         PaymentOrder paymentOrder = PaymentOrder.builder()
                 .orderId(constructionOrderId)
                 .customerId(customer.getCustomerId())
                 .paymentTitle("Payment of the final stage")
                 .paidDate(LocalDateTime.now())
                 .dueDate(LocalDateTime.now().plusDays(7))
-                .total((long) (order.getTotal() * quotation.getPercentageStage3())/100)
+                .total(total)
                 .status(PaymentStatus.PENDING)
                 .build();
         paymentOrderRepository.save(paymentOrder);
+        customer.setPoint((long) (order.getTotal() / 1000000));
         return order.getStatus();
     }
 
