@@ -81,15 +81,15 @@ const Contact = () => {
             <Navbar />
 
             <div className="container mb-5">
-            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
-           
+                <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
+
                 <h1 className="text-center my-4" style={{ color: 'red' }}>Contact us</h1>
                 <div className="row">
                     <div className="col-md-6" style={{ marginLeft: '25%' }}>
                         {/* check xem la form dc submit hong */}
                         {submitted ? (
                             // SUCCESS !!!
-                            <div className="notification alert-success" style={{marginLeft: '110px'}}>
+                            <div className="notification alert-success" style={{ marginLeft: '110px' }}>
                                 <div className="success-icon">
                                     <i className="fa-solid fa-check"></i>
                                 </div>
@@ -124,16 +124,15 @@ const Contact = () => {
                                 <div className="form-group mb-6">
                                     <label>First Name</label>
                                     <input type="text" className="form-control" name="firstName"
-                                        value={firstName}
+                                        value={customerInformation.firstName}
                                         onChange={(event) => setFirstName(event.target.value)}
-                                        placeholder={customerInformation.firstName}
                                         required />
                                 </div>
 
                                 <div className="form-group mb-6">
                                     <label>Last Name</label>
                                     <input type="text" className="form-control" name="lastName"
-                                        value={lastName}
+                                        value={customerInformation.lastName}
                                         onChange={(event) => setLastName(event.target.value)}
                                         placeholder={customerInformation.lastName}
                                         required />
@@ -145,9 +144,8 @@ const Contact = () => {
                                         type="text"
                                         className="form-control"
                                         name="phone"
-                                        value={phone}
+                                        value={customerInformation.phone}
                                         onChange={(event) => setPhone(event.target.value)}
-                                        placeholder={customerInformation.phone}
                                         required
                                     />
                                 </div>
@@ -160,7 +158,7 @@ const Contact = () => {
                                         required />
                                 </div>
 
-                               
+
 
                                 <div className="form-group mb-6">
                                     <label>Detail</label>
