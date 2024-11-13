@@ -56,6 +56,8 @@ import Blog from "./Components/Blog/Blog";
 import BlogDetail from "./Components/Blog/BlodDetail";
 import CustomerViewMaintenance from "./Components/CustomerView/CustomerViewMaintenance";
 import Staff from "./Components/Package/Staff";
+import CustomerProfile from "./Components/CustomerProfile/CustomerProfile";
+import CustomerUpdate from "./Components/CustomerProfile/CustomerUpdate";
 function App() {
   return (
     <Router>
@@ -155,6 +157,8 @@ function App() {
         </Route>
 
         {/* CUSTOMER */}
+        <Route path="/myInfo" element={<CustomerProfile />} />
+        <Route path="/myInfo/:accountId/update" element={<CustomerUpdate />} />
         <Route path="/myInfo/orders" element={<CustomerView />} />
         <Route path="/myInfo/orders/:constructionOrderId/quotation" element={<CustomerQuotationList />} />
         <Route path="/myInfo/orders/:constructionOrderId/design" element={<CustomerViewDesign />} />
