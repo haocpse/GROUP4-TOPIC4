@@ -86,6 +86,13 @@ const PackageConstruction = () => {
       );
       fetchPackagePrices();
       console.log("Successfully submitted:", response.data);
+
+      // Reset form state after submission
+      setSelectedPackage("");
+      setConstructions([]);
+
+      // Scroll to the top of the page after submit
+      window.scrollTo(0, 0);
     } catch (error) {
       console.error("Error saving construction content:", error);
     }
