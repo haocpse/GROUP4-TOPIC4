@@ -90,7 +90,7 @@ const AboutUs = () => {
                                 </div>
                                 <h3 className="text-center font-weight-bold">You give me the space, I give you the space!!!</h3>
                                 <p className="mt-4">
-                                    I believe that landscape is not just a place, it is a way of life. My mission is to bring my clients poetic, peaceful and elegant living spaces, through a sophisticated and philosophical Japanese design style.
+                                    I believe that Koi pond is not just a place, it is a way of life. My mission is to bring my clients poetic, peaceful and elegant living spaces, through a Koi ponnd follows the Japanese style design style.
                                 </p>
                                 <p>
                                     Each of my landscape projects is a unique work, reflecting the success and lifestyle of my clients.
