@@ -8,7 +8,7 @@ const ViewQuotationAfterCreate = () => {
   const { constructionOrderId } = useParams();
   const [infoquotation, setInfoQuotation] = useState({}); // Initialize as an object
   const navigate = useNavigate()
-  
+
 
   useEffect(() => {
 
@@ -39,7 +39,11 @@ const ViewQuotationAfterCreate = () => {
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
-};
+  };
+
+  const formatDouble = (number) => {
+    return number?.toFixed(2);
+  };
 
   return (
     <div className={`${styles.quotationOrderContainer} container mt-5`}>
@@ -63,17 +67,17 @@ const ViewQuotationAfterCreate = () => {
           <div className="row mb-4">
             <div className="col-md-6">
               <p className="font-weight-bold" style={{ fontSize: '1.5rem' }}>
-                <strong>Volume:</strong> {infoquotation.volume} m³
+                <strong>Volume:</strong> {formatDouble(infoquotation.volume)} m³
               </p>
             </div>
             <div className="col-md-12">
-              <p><strong>Price Stage 1:</strong> {infoquotation.priceStage1?.toLocaleString()} VND</p>
+              <p><strong>Price Stage 1 ({infoquotation.percentageStage1}%):</strong> {infoquotation.priceStage1?.toLocaleString()} VND</p>
             </div>
             <div className="col-md-12">
-              <p><strong>Price Stage 2:</strong> {infoquotation.priceStage2?.toLocaleString()} VND</p>
+              <p><strong>Price Stage 2 ({infoquotation.percentageStage2}%):</strong> {infoquotation.priceStage2?.toLocaleString()} VND</p>
             </div>
             <div className="col-md-12">
-              <p><strong>Price Stage 3:</strong> {infoquotation.priceStage3?.toLocaleString()} VND</p>
+              <p><strong>Price Stage 3 ({infoquotation.percentageStage3}%):</strong> {infoquotation.priceStage3?.toLocaleString()} VND</p>
             </div>
             <div className="col-md-12">
               <p className="font-weight-bold"><strong>Total Price:</strong> {infoquotation.totalPrice?.toLocaleString()} VND</p>

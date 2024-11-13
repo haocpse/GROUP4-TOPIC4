@@ -10,8 +10,8 @@ const Staff = () => {
     });
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
-    const [staffList, setStaffList] = useState([]); // State for storing staff list
-    const [isCreating, setIsCreating] = useState(false); // State to toggle creation form visibility
+    const [staffList, setStaffList] = useState([]);
+    const [isCreating, setIsCreating] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -35,7 +35,7 @@ const Staff = () => {
                 password: '',
                 role: '',
             });
-            fetchStaffList(); // Refresh the staff list after adding a new staff member
+            fetchStaffList();
         } catch (error) {
             setMessage('Failed to register staff. Please try again.');
             console.error(error);
@@ -44,118 +44,126 @@ const Staff = () => {
         }
     };
 
-    // Fetch staff list function
     const fetchStaffList = async () => {
         try {
             const response = await axios.get('http://localhost:8080/staffs');
-            // Assuming response.data.data is an array of StaffResponse objects
             setStaffList(response.data.data);
         } catch (error) {
             console.error('Failed to fetch staff list:', error);
         }
     };
 
-    // useEffect to fetch staff list on component mount
     useEffect(() => {
         fetchStaffList();
     }, []);
 
     return (
         <div className="container mt-5">
-            <h2>Staff List</h2>
-            {message && <div className="alert alert-info">{message}</div>}
-            <button
-                className="btn btn-secondary mb-3"
-                onClick={() => setIsCreating(!isCreating)}
-            >
-                {isCreating ? 'Cancel' : 'Create Staff'}
-            </button>
+            <h2 className="text-center mb-4">Staff Management</h2>
+            {message && <div className="alert alert-info text-center">{message}</div>}
+            <div className="text-center mb-3">
+                <button
+                    className="btn btn-secondary"
+                    onClick={() => setIsCreating(!isCreating)}
+                >
+                    {isCreating ? 'Cancel' : 'Create New Staff'}
+                </button>
+            </div>
 
             {isCreating && (
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                        <label htmlFor="staffName" className="form-label">Staff Name:</label>
-                        <input
-                            type="text"
-                            id="staffName"
-                            name="staffName"
-                            className="form-control"
-                            value={formData.staffName}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="username" className="form-label">Username:</label>
-                        <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            className="form-control"
-                            value={formData.username}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="password" className="form-label">Password:</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            className="form-control"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="role" className="form-label">Role:</label>
-                        <select
-                            id="role"
-                            name="role"
-                            className="form-select"
-                            value={formData.role}
-                            onChange={handleChange}
-                            required
-                        >
-                            <option value="" disabled>Select Role</option>
-                            <option value="CONSULTANT">Consultant</option>
-                            <option value="DESIGNER">Designer</option>
-                            <option value="CONSTRUCTOR">Constructor</option>
-                            <option value="MANAGER">Manager</option>
-                            {/* Add more roles as needed */}
-                        </select>
-                    </div>
-                    <button type="submit" className="btn btn-primary" disabled={loading}>
-                        {loading ? 'Creating...' : 'Create Staff'}
-                    </button>
-                </form>
+                <div className="card shadow-sm p-4 mb-5">
+                    <form onSubmit={handleSubmit}>
+                        <h5 className="mb-4 text-center">Add New Staff Member</h5>
+                        <div className="row mb-3">
+                            <div className="col-md-6">
+                                <label htmlFor="staffName" className="form-label">Staff Name</label>
+                                <input
+                                    type="text"
+                                    id="staffName"
+                                    name="staffName"
+                                    className="form-control rounded-pill"
+                                    value={formData.staffName}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <label htmlFor="username" className="form-label">Username</label>
+                                <input
+                                    type="text"
+                                    id="username"
+                                    name="username"
+                                    className="form-control rounded-pill"
+                                    value={formData.username}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div className="row mb-3">
+                            <div className="col-md-6">
+                                <label htmlFor="password" className="form-label">Password</label>
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    className="form-control rounded-pill"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <label htmlFor="role" className="form-label">Role</label>
+                                <select
+                                    id="role"
+                                    name="role"
+                                    className="form-select rounded-pill"
+                                    value={formData.role}
+                                    onChange={handleChange}
+                                    required
+                                >
+                                    <option value="" disabled>Select Role</option>
+                                    <option value="CONSULTANT">Consultant</option>
+                                    <option value="DESIGNER">Designer</option>
+                                    <option value="CONSTRUCTOR">Constructor</option>
+                                    <option value="MANAGER">Manager</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className="text-center">
+                            <button type="submit" className="btn btn-primary rounded-pill" disabled={loading}>
+                                {loading ? 'Creating...' : 'Create Staff'}
+                            </button>
+                        </div>
+                    </form>
+                </div>
             )}
 
-            {/* Display Staff List */}
-            <h3 className="mt-5">Staff Members</h3>
+            <h3 className="text-center mt-5">Staff Members</h3>
             {staffList.length === 0 ? (
-                <p>No staff members found.</p>
+                <p className="text-center">No staff members found.</p>
             ) : (
-                <table className="table mt-3">
-                    <thead>
-                        <tr>
-                            <th>Staff ID</th>
-                            <th>Staff Name</th>
-                            <th>Role</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {staffList.map((staff) => (
-                            <tr key={staff.staffId}>
-                                <td>{staff.staffId}</td>
-                                <td>{staff.staffName}</td>
-                                <td>{staff.role}</td>
+                <div className="table-responsive">
+                    <table className="table table-hover mt-3 shadow-sm">
+                        <thead className="table-secondary">
+                            <tr>
+                                <th>Staff ID</th>
+                                <th>Staff Name</th>
+                                <th>Role</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {staffList.map((staff) => (
+                                <tr key={staff.staffId} className="align-middle">
+                                    <td>{staff.staffId}</td>
+                                    <td>{staff.staffName}</td>
+                                    <td>{staff.role}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             )}
         </div>
     );

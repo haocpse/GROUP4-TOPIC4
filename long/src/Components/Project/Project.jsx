@@ -15,7 +15,7 @@ const projects = [
         price: "$5000",
         packageName: "Basic Package",
         icon: "fa-star",
-        badge: "POPULAR",
+
     },
     {
         title: "Modern Waterfall Feature",
@@ -24,7 +24,7 @@ const projects = [
         price: "$7500",
         packageName: "Economic Package",
         icon: "fa-scale-balanced",
-        badge: "STABLE",
+
     },
     {
         title: "Japanese-Inspired Koi Sanctuary",
@@ -33,7 +33,7 @@ const projects = [
         price: "$12000",
         packageName: "VIP Package",
         icon: "fa-crown",
-        badge: "EXPENSIVE",
+
     }
 ];
 
