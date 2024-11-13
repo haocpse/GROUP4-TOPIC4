@@ -7,10 +7,7 @@ import com.swp_group4.back_end.mapper.CustomerMapper;
 import com.swp_group4.back_end.mapper.DesignMapper;
 import com.swp_group4.back_end.mapper.QuotationMapper;
 import com.swp_group4.back_end.repositories.*;
-import com.swp_group4.back_end.requests.CreateAccountRequest;
-import com.swp_group4.back_end.requests.CustomerConfirmRequest;
-import com.swp_group4.back_end.requests.FinishConstructRequest;
-import com.swp_group4.back_end.requests.ServiceRequest;
+import com.swp_group4.back_end.requests.*;
 import com.swp_group4.back_end.responses.*;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -102,13 +99,20 @@ public class CustomerService {
         return customerMapper.customerToResponse(customer, response);
     }
 
-//    public CustomerResponse updateOwnedInfo(UpdateInfoRequest request) {
-//        Customer customer = this.identifyCustomer();
-//        customerMapper.updateInfoToCustomer(request, customer);
-//        customerRepository.save(customer);
-//        CustomerResponse response = new CustomerResponse();
-//        return customerMapper.customerToResponse(customer, response);
-//    }
+    public AllCustomerInfoResponse getOwnedInfo(String accountId){
+        Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
+        AllCustomerInfoResponse response = new AllCustomerInfoResponse();
+        return customerMapper.toAllCustomerInfoResponse(customer, response);
+    }
+
+
+    public CustomerResponse updateOwnedInfo(UpdateInfoRequest request, String accountId) {
+        Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
+        customerMapper.updateInfoToCustomer(request, customer);
+        customerRepository.save(customer);
+        CustomerResponse response = new CustomerResponse();
+        return customerMapper.customerToResponse(customer, response);
+    }
 
     public List<MaintenanceOrderResponse> listMaintenanceOrders(String accountId){
         Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
@@ -217,6 +221,8 @@ public class CustomerService {
                     .orderId(constructionOrderId)
                     .customerId(customer.getCustomerId())
                     .paymentTitle("Payment of the second stage")
+                    .paidDate(LocalDateTime.now())
+                    .dueDate(LocalDateTime.now().plusDays(7))
                     .total((long) (order.getTotal() * quotation.getPercentageStage2())/100)
                     .status(PaymentStatus.PENDING)
                     .build();
@@ -244,6 +250,8 @@ public class CustomerService {
                     .orderId(constructionOrderId)
                     .customerId(customer.getCustomerId())
                     .paymentTitle("Payment of the first stage")
+                    .paidDate(LocalDateTime.now())
+                    .dueDate(LocalDateTime.now().plusDays(7))
                     .total((long) (order.getTotal() * quotation.getPercentageStage1())/100)
                     .status(PaymentStatus.PENDING)
                     .build();
@@ -287,6 +295,10 @@ public class CustomerService {
         List<PaymentOrder> paymentOrders = paymentOrderRepository.findByOrderId(constructionOrderId);
         List<PaymentInfoResponse> paymentInfoResponses = new ArrayList<>();
         for (PaymentOrder paymentOrder : paymentOrders) {
+            if (LocalDateTime.now().isAfter(paymentOrder.getDueDate())) {
+                paymentOrder.setStatus(PaymentStatus.FAILED);
+                paymentOrderRepository.save(paymentOrder);
+            }
             PaymentInfoResponse response = PaymentInfoResponse.builder()
                     .paymentId(paymentOrder.getPaymentId())
                     .paidDate(paymentOrder.getPaidDate())
@@ -341,7 +353,9 @@ public class CustomerService {
         PaymentOrder paymentOrder = PaymentOrder.builder()
                 .orderId(constructionOrderId)
                 .customerId(customer.getCustomerId())
-                .paymentTitle("Khach hang thanh toan giai doan 3")
+                .paymentTitle("Payment of the final stage")
+                .paidDate(LocalDateTime.now())
+                .dueDate(LocalDateTime.now().plusDays(7))
                 .total((long) (order.getTotal() * quotation.getPercentageStage3())/100)
                 .status(PaymentStatus.PENDING)
                 .build();
@@ -349,11 +363,5 @@ public class CustomerService {
         return order.getStatus();
     }
 
-//    Customer identifyCustomer() {
-//        var context = SecurityContextHolder.getContext();
-//        String accountId = context.getAuthentication().getName();
-//        return customerRepository.findByAccountId(accountId)
-//                .orElseThrow(() -> new RuntimeException("Customer not found"));
-//    }
 
 }

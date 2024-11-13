@@ -12,10 +12,9 @@ import java.util.Date;
 @Builder
 public class UpdateInfoRequest {
 
-    String firstname;
-    String lastname;
+    String firstName;
+    String lastName;
     String phone;
     String address;
-    Date birthday;
 
 }

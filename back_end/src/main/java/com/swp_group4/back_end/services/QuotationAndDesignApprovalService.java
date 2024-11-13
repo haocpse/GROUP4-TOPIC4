@@ -40,6 +40,8 @@ public class QuotationAndDesignApprovalService {
     PackageConstructionRepository packageConstructionRepository;
     @Autowired
     ConstructionTasksRepository constructionTasksRepository;
+    @Autowired
+    private DesignMapper designMapper;
 
     public List<QuotationAndDesignReviewResponse<QuotationStatus>> listAllQuotation() {
         List<Quotation> quotations = quotationRepository.findAll();
@@ -105,11 +107,6 @@ public class QuotationAndDesignApprovalService {
                 .priceStage1((order.getTotal() * quotation.getPercentageStage1())/100)
                 .priceStage2((order.getTotal() * quotation.getPercentageStage2())/100)
                 .priceStage3((order.getTotal() * quotation.getPercentageStage3())/100)
-                .percentageStage1(quotation.getPercentageStage1())
-                .percentageStage2(quotation.getPercentageStage2())
-                .percentageStage3(quotation.getPercentageStage3())
-                .startDate(quotation.getExpectedStartDate())
-                .endDate(quotation.getExpectedEndDate())
                 .build();
         quotationMapper.toQuotationResponse(quotation, response);
         return response;
@@ -120,17 +117,13 @@ public class QuotationAndDesignApprovalService {
         Design design = designRepository.findById(designId).orElseThrow();
         ConstructionOrder order = constructOrderRepository.findByDesignId(designId).orElseThrow();
         Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
-        return ConstructDesignResponse.builder()
+        ConstructDesignResponse response = ConstructDesignResponse.builder()
                 .constructionOrderId(order.getConstructionOrderId())
-                .designId(designId)
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .designName(this.getStaffName(order.getDesignerLeaderId()))
                 .customerRequest(order.getCustomerRequest())
-                .url2dDesign(design.getUrl2dDesign())
-                .url3dDesign(design.getUrl3dDesign())
-                .urlFrontDesign(design.getUrlFrontDesign())
-                .designStatus(design.getDesignStatus())
                 .build();
+        return designMapper.toDesignResponse(design, response);
     }
 
     public ConstructOrderDetailForManagerResponse manageQuotation(ManageReviewRequest request, String quotationId) {

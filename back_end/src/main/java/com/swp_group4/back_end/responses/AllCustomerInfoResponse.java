@@ -1,27 +1,19 @@
-package com.swp_group4.back_end.entities;
+package com.swp_group4.back_end.responses;
 
-import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class Customer {
+public class AllCustomerInfoResponse {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    String customerId;
     String firstName;
     String lastName;
     String phone;
     long point;
     String address;
-    String accountId;
     String avatarURL;
-
 }
