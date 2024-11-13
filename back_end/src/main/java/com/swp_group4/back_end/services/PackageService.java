@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -230,6 +231,43 @@ public class PackageService {
                     .packageId(pkg.getPackageId())
                     .packageType(pkg.getPackageType())
                     .constructionInfoResponseList(infoResponses)
+                    .build();
+            responses.add(response);
+        }
+        return responses;
+    }
+
+    public List<PackageTypesResponse> getAllPackagesType() {
+        List<PackageTypesResponse> responses = new ArrayList<>();
+        List<Packages> packages = packageRepository.findAll();
+        for (Packages pkg : packages) {
+            List<PackageTypesPriceResponse> priceResponseList = new ArrayList<>();
+            List<PackagePrice> packagePrices = packagePriceRepository.findPackagePriceByPackageId(pkg.getPackageId());
+            for (PackagePrice packagePrice : packagePrices) {
+                PackageTypesPriceResponse packageTypesPriceResponse = PackageTypesPriceResponse.builder()
+                        .minVolume(packagePrice.getMinVolume())
+                        .maxVolume(packagePrice.getMaxVolume())
+                        .price(packagePrice.getPrice())
+                        .build();
+                priceResponseList.add(packageTypesPriceResponse);
+            }
+            priceResponseList = priceResponseList.stream()
+                    .sorted(Comparator.comparingDouble(PackageTypesPriceResponse::getMinVolume))
+                    .collect(Collectors.toList());
+            List<PackageTypesConstructionContentResponse> constructionResponseList = new ArrayList<>();
+            List<PackageConstruction> packageConstructions = packageConstructionRepository.findByPackageId(pkg.getPackageId());
+            for (PackageConstruction packageConstruction : packageConstructions) {
+                PackageTypesConstructionContentResponse packageTypesConstructionContentResponse = PackageTypesConstructionContentResponse.builder()
+                        .content(packageConstruction.getContent())
+                        .price(packageConstruction.getPrice())
+                        .build();
+                constructionResponseList.add(packageTypesConstructionContentResponse);
+            }
+            PackageTypesResponse response = PackageTypesResponse.builder()
+                    .packageId(pkg.getPackageId())
+                    .packageType(pkg.getPackageType())
+                    .priceResponseList(priceResponseList)
+                    .constructionContentResponses(constructionResponseList)
                     .build();
             responses.add(response);
         }
