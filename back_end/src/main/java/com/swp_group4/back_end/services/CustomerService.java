@@ -7,10 +7,7 @@ import com.swp_group4.back_end.mapper.CustomerMapper;
 import com.swp_group4.back_end.mapper.DesignMapper;
 import com.swp_group4.back_end.mapper.QuotationMapper;
 import com.swp_group4.back_end.repositories.*;
-import com.swp_group4.back_end.requests.CreateAccountRequest;
-import com.swp_group4.back_end.requests.CustomerConfirmRequest;
-import com.swp_group4.back_end.requests.FinishConstructRequest;
-import com.swp_group4.back_end.requests.ServiceRequest;
+import com.swp_group4.back_end.requests.*;
 import com.swp_group4.back_end.responses.*;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -102,13 +99,20 @@ public class CustomerService {
         return customerMapper.customerToResponse(customer, response);
     }
 
-//    public CustomerResponse updateOwnedInfo(UpdateInfoRequest request) {
-//        Customer customer = this.identifyCustomer();
-//        customerMapper.updateInfoToCustomer(request, customer);
-//        customerRepository.save(customer);
-//        CustomerResponse response = new CustomerResponse();
-//        return customerMapper.customerToResponse(customer, response);
-//    }
+    public AllCustomerInfoResponse getOwnedInfo(String accountId){
+        Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
+        AllCustomerInfoResponse response = new AllCustomerInfoResponse();
+        return customerMapper.toAllCustomerInfoResponse(customer, response);
+    }
+
+
+    public CustomerResponse updateOwnedInfo(UpdateInfoRequest request, String accountId) {
+        Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
+        customerMapper.updateInfoToCustomer(request, customer);
+        customerRepository.save(customer);
+        CustomerResponse response = new CustomerResponse();
+        return customerMapper.customerToResponse(customer, response);
+    }
 
     public List<MaintenanceOrderResponse> listMaintenanceOrders(String accountId){
         Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
@@ -359,11 +363,5 @@ public class CustomerService {
         return order.getStatus();
     }
 
-//    Customer identifyCustomer() {
-//        var context = SecurityContextHolder.getContext();
-//        String accountId = context.getAuthentication().getName();
-//        return customerRepository.findByAccountId(accountId)
-//                .orElseThrow(() -> new RuntimeException("Customer not found"));
-//    }
 
 }

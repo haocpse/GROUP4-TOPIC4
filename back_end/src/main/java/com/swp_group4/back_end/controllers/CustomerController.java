@@ -6,6 +6,7 @@ import com.swp_group4.back_end.enums.QuotationStatus;
 import com.swp_group4.back_end.requests.CustomerConfirmRequest;
 import com.swp_group4.back_end.requests.FinishConstructRequest;
 import com.swp_group4.back_end.requests.ServiceRequest;
+import com.swp_group4.back_end.requests.UpdateInfoRequest;
 import com.swp_group4.back_end.responses.*;
 import com.swp_group4.back_end.services.CustomerService;
 import lombok.AccessLevel;
@@ -110,13 +111,19 @@ public class CustomerController {
                 .build();
     }
 
-    // Hàm để Customer thay đổi thông tin cá nhân
-//    @PutMapping("/ownedInfo/update")
-//    public ApiResponse<CustomerResponse> updateOwnedInfo(@RequestBody UpdateInfoRequest request) {
-//        return ApiResponse.<CustomerResponse>builder()
-//                .data(customerService.updateOwnedInfo(request))
-//                .build();
-//    }
+    @GetMapping("/myInfo/{accountId}")
+    public ApiResponse<AllCustomerInfoResponse> getOwnedInfo(@PathVariable String accountId) {
+        return ApiResponse.<AllCustomerInfoResponse>builder()
+                .data(customerService.getOwnedInfo(accountId))
+                .build();
+    }
+
+    @PutMapping("/myInfo/{accountId}")
+    public ApiResponse<CustomerResponse> updateOwnedInfo(@RequestBody UpdateInfoRequest request, @PathVariable String accountId) {
+        return ApiResponse.<CustomerResponse>builder()
+                .data(customerService.updateOwnedInfo(request, accountId))
+                .build();
+    }
 
 
 }
