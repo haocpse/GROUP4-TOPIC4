@@ -15,6 +15,7 @@ const PackageConstruction = () => {
   const [constructions, setConstructions] = useState([]);
   const [packagePrices, setPackagePrices] = useState([]);
   const [selectedPackage, setSelectedPackage] = useState("");
+  const [priceError, setPriceError] = useState({}); // Lưu lỗi cho từng giá trị price
 
   const fetchPackagePrices = async () => {
     try {
@@ -57,8 +58,29 @@ const PackageConstruction = () => {
 
   const handleConstructionChange = (index, field, value) => {
     const newConstructions = [...constructions];
-    newConstructions[index][field] = value;
+    const newPriceError = { ...priceError };
+
+    if (field === "price") {
+      let numericValue = value.replace(/\D/g, ""); // Loại bỏ các ký tự không phải số
+
+      // Kiểm tra nếu nhỏ hơn 50.000 hoặc lớn hơn 500.000 và cập nhật cảnh báo
+      if (numericValue && parseInt(numericValue) < 50000) {
+        newPriceError[index] = "minimum 50.000";
+      } else if (numericValue && parseInt(numericValue) > 500000) {
+        newPriceError[index] = "max 500.000";
+      } else {
+        delete newPriceError[index]; // Xóa lỗi nếu giá trị hợp lệ
+      }
+
+      newConstructions[index][field] = numericValue
+        ? parseInt(numericValue).toLocaleString("de-DE")
+        : ""; // Định dạng với dấu chấm
+    } else {
+      newConstructions[index][field] = value;
+    }
+
     setConstructions(newConstructions);
+    setPriceError(newPriceError); // Cập nhật lỗi hiển thị
   };
 
   const handleAddConstruction = () => {
@@ -77,7 +99,8 @@ const PackageConstruction = () => {
         packageId: selectedPackage,
         packageConstructions: constructions.map((construction) => ({
           content: construction.content,
-          price: construction.price,
+          // Bỏ dấu chấm trước khi gửi lên server
+          price: parseInt(construction.price.replace(/\./g, "")),
         })),
       };
 
@@ -88,6 +111,7 @@ const PackageConstruction = () => {
       fetchPackagePrices();
       setSelectedPackage("");
       setConstructions([]);
+      setPriceError({});
       window.scrollTo(0, 0);
     } catch (error) {
       console.error("Error saving construction content:", error);
@@ -155,24 +179,25 @@ const PackageConstruction = () => {
                       </Form.Label>
                       <InputGroup>
                         <Form.Control
-                          type="number"
+                          type="text"
                           value={construction.price}
-                          onChange={(e) => {
-                            let value = e.target.value;
-                            if (value < 50000) value = 50000;
-                            if (value > 500000) value = 500000;
-                            handleConstructionChange(index, "price", value);
-                          }}
+                          onChange={(e) =>
+                            handleConstructionChange(
+                              index,
+                              "price",
+                              e.target.value
+                            )
+                          }
                           placeholder="Enter price"
-                          min="50000"
-                          max="500000"
                           className="rounded"
                         />
                         <InputGroup.Text>VND</InputGroup.Text>
                       </InputGroup>
-                      <Form.Text className="text-muted">
-                        Must be between 50,000 and 500,000 VND.
-                      </Form.Text>
+                      {priceError[index] && (
+                        <Form.Text className="text-danger">
+                          {priceError[index]}
+                        </Form.Text>
+                      )}
                     </Form.Group>
                   </Col>
                 </Row>
