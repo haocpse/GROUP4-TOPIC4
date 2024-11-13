@@ -163,7 +163,7 @@ const PackageConstruction = () => {
                         <InputGroup.Text>VND</InputGroup.Text>
                       </InputGroup>
                       <Form.Text className="text-muted">
-                        Must be between 50,000 and 500,000 VND.
+                        Must be between 50.000 and 500.000 VND.
                       </Form.Text>
                     </Form.Group>
                   </Col>
