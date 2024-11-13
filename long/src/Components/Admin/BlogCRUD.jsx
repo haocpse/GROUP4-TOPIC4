@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Form } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Form, Image } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
@@ -7,9 +7,9 @@ const BlogCRUD = () => {
     const [blogs, setBlogs] = useState([]);
     const [formData, setFormData] = useState({
         title: '',
-        headerImageUrl: '',
         content: '',
     });
+    const [headerImages, setHeaderImages] = useState([]); // Array for storing selected images
     const [isCreating, setIsCreating] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const { id } = useParams();
@@ -31,16 +31,45 @@ const BlogCRUD = () => {
         setFormData({ ...formData, [name]: value });
     };
 
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files);
+        setHeaderImages([]);
+
+        // Read files and set them in state for preview
+        files.forEach((file) => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setHeaderImages((prevImages) => [...prevImages, { file, preview: reader.result }]);
+            };
+            reader.readAsDataURL(file);
+        });
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        const formDataObj = new FormData();
+        formDataObj.append('title', formData.title);
+        formDataObj.append('content', formData.content);
+
+        // Append each image file to formData for uploading
+        headerImages.forEach((image, index) => {
+            formDataObj.append(`images`, image.file);
+        });
+
         const apiUrl = isEditing ? `http://localhost:8080/updateBlog/${id}` : 'http://localhost:8080/createBlog';
         const requestMethod = isEditing ? axios.put : axios.post;
 
-        requestMethod(apiUrl, formData)
+        requestMethod(apiUrl, formDataObj, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
             .then(() => {
                 alert(`Blog ${isEditing ? 'updated' : 'created'} successfully!`);
                 fetchBlogs();
-                setFormData({ title: '', headerImageUrl: '', content: '' });
+                setFormData({ title: '', content: '' });
+                setHeaderImages([]);
                 setIsCreating(false);
                 setIsEditing(false);
             })
@@ -62,9 +91,9 @@ const BlogCRUD = () => {
             .then((response) => {
                 setFormData({
                     title: response.data.data.title,
-                    headerImageUrl: response.data.data.headerImageUrl,
                     content: response.data.data.content,
                 });
+                setHeaderImages(response.data.data.headerImages.map((url) => ({ preview: url })));
                 setIsCreating(true);
                 setIsEditing(true);
             })
@@ -100,14 +129,28 @@ const BlogCRUD = () => {
                                 />
                             </Form.Group>
                         </Col>
-
                         <Col md={6}>
-                            <Form.Group controlId="formHeaderImageUrl" className="mt-3 mt-md-0">
-                                <Form.Label>Header Image URL</Form.Label>
+                            <Form.Group controlId="formHeaderImages" className="mt-3 mt-md-0">
+                                <Form.Label>Upload Header Images</Form.Label>
                                 <Form.Control
-                                    type="text"
-                                    name="headerImageUrl"
-                                    value={formData.headerImageUrl}
+                                    type="file"
+                                    multiple
+                                    onChange={handleImageChange}
+                                    required
+                                />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+
+                    <Row className="mt-3">
+                        <Col>
+                            <Form.Group controlId="formContent">
+                                <Form.Label>Content</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={5}
+                                    name="content"
+                                    value={formData.content}
                                     onChange={handleChange}
                                     required
                                 />
@@ -115,24 +158,30 @@ const BlogCRUD = () => {
                         </Col>
                     </Row>
 
-                    <Form.Group controlId="formContent" className="mt-3">
-                        <Form.Label>Content</Form.Label>
-                        <Form.Control
-                            as="textarea"
-                            rows={5}
-                            name="content"
-                            value={formData.content}
-                            onChange={handleChange}
-                            required
-                        />
-                    </Form.Group>
+                    <Row className="mt-3">
+                        <Col>
+                            <h5>Image Preview</h5>
+                            <div className="d-flex flex-wrap">
+                                {headerImages.map((image, index) => (
+                                    <Image
+                                        key={index}
+                                        src={image.preview}
+                                        alt={`preview-${index}`}
+                                        thumbnail
+                                        className="me-2 mb-2"
+                                        style={{ width: '150px', height: '150px' }}
+                                    />
+                                ))}
+                            </div>
+                        </Col>
+                    </Row>
 
                     <Row className="mt-3">
-                        <Col className="d-flex justify-content-end align-items-center">
+                        <Col className="d-flex justify-content-end">
                             <Button variant="primary" type="submit">
                                 {isEditing ? 'Update Blog' : 'Create Blog'}
                             </Button>
-                            <Button variant="secondary" className="ms-2" onClick={() => { setIsCreating(false); setIsEditing(false); }}>
+                            <Button variant="secondary" className="ms-2" onClick={() => { setIsCreating(false); setIsEditing(false); setHeaderImages([]); }}>
                                 Cancel
                             </Button>
                         </Col>
@@ -143,7 +192,7 @@ const BlogCRUD = () => {
                     {blogs.map((blog) => (
                         <Col md={4} key={blog.blogId} className="mb-4">
                             <Card>
-                                <Card.Img variant="top" src={blog.headerImageUrl || 'default-image.jpg'} />
+                                <Card.Img variant="top" src={blog.headerImages[0] || 'default-image.jpg'} />
                                 <Card.Body>
                                     <Card.Title>{blog.title}</Card.Title>
                                     <p>{blog.content.slice(0, 100)}...</p>
