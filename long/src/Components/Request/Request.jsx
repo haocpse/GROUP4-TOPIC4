@@ -241,21 +241,24 @@ const Request = () => {
                                 <td className="text-center align-content-center">{request.packageType}</td>
                                 <td className="text-center align-content-center">{request.totalPrice.toLocaleString()}</td>
                                 <td>
-                                    <select
-                                        className="form-select mt-2"
-                                        onChange={(e) => {
-                                            handleAssignStaff(request.orderId, e.target.name, e.target.value)
-                                        }}
-                                        value={request.consultantId ? request.consultantId : ""}
-                                        name="consultantId"
-                                    >
-                                        <option value="" disabled>Select Consultant</option>
-                                        {consultantList.map(staff => (
-                                            <option key={staff.staffId} value={staff.staffId}>
-                                                {staff.staffName}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    {request.quotationStatus === "CONFIRM_BY_USER" ? (null) : (
+                                        <select
+                                            className="form-select mt-2"
+                                            onChange={(e) => {
+                                                handleAssignStaff(request.orderId, e.target.name, e.target.value)
+                                            }}
+                                            value={request.consultantId ? request.consultantId : ""}
+                                            name="consultantId"
+                                        >
+                                            <option value="" disabled>Select Consultant</option>
+                                            {consultantList.map(staff => (
+                                                <option key={staff.staffId} value={staff.staffId}>
+                                                    {staff.staffName}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    )}
+
                                 </td>
                                 <td>
                                     <select

@@ -28,6 +28,7 @@ import ProtectedRoutesManager from "./utils/ProtectedRoutesManager";
 import ProtectedRoutesConsultant from "./utils/ProtectedRoutesConsultant";
 import ProtectedRoutesDesigner from "./utils/ProtectedRoutesDesigner";
 import ProtectedRoutesConstructor from "./utils/ProtectedRoutesConstructor";
+import ProtectedRoutesCustomer from "./utils/ProtectedRoutesCustomer";
 import ConsultantQuotations from "./Components/ConsultantTasks/ConsultantQuotations";
 import UpdateQuotation from "./Components/QuotationOrder/UpdateQuotation";
 import ListDesign from "./Components/DesignerTasks/ListDesign";
@@ -55,6 +56,8 @@ import Blog from "./Components/Blog/Blog";
 import BlogDetail from "./Components/Blog/BlodDetail";
 import CustomerViewMaintenance from "./Components/CustomerView/CustomerViewMaintenance";
 import Staff from "./Components/Package/Staff";
+import CustomerProfile from "./Components/CustomerProfile/CustomerProfile";
+import CustomerUpdate from "./Components/CustomerProfile/CustomerUpdate";
 function App() {
   return (
     <Router>
@@ -153,29 +156,31 @@ function App() {
         </Route>
 
         {/* CUSTOMER */}
-        <Route path="/myInfo/orders" element={<CustomerView />} />
-        <Route
-          path="/myInfo/orders/:constructionOrderId/quotation"
-          element={<CustomerQuotationList />}
-        />
-        <Route
-          path="/myInfo/orders/:constructionOrderId/design"
-          element={<CustomerViewDesign />}
-        />
-        <Route
-          path="/myInfo/orders/:constructionOrderId/payments"
-          element={<PaymentInfo />}
-        />
-        <Route
-          path="/myInfo/orders/:constructionOrderId/progress"
-          element={<CustomerViewProgress />}
-        />
-
-        <Route
-          path="/myInfo/orders/maintenance"
-          element={<CustomerViewMaintenance />}
-        />
-
+        <Route element={<ProtectedRoutesCustomer />}>
+          <Route path="/myInfo" element={<CustomerProfile />} />
+          <Route path="/myInfo/:accountId" element={<CustomerUpdate />} />
+          <Route path="/myInfo/orders" element={<CustomerView />} />
+          <Route
+            path="/myInfo/orders/:constructionOrderId/quotation"
+            element={<CustomerQuotationList />}
+          />
+          <Route
+            path="/myInfo/orders/:constructionOrderId/design"
+            element={<CustomerViewDesign />}
+          />
+          <Route
+            path="/myInfo/orders/:constructionOrderId/payments"
+            element={<PaymentInfo />}
+          />
+          <Route
+            path="/myInfo/orders/:constructionOrderId/progress"
+            element={<CustomerViewProgress />}
+          />
+          <Route
+            path="/myInfo/orders/maintenance"
+            element={<CustomerViewMaintenance />}
+          />
+        </Route>
         {/* MAIN */}
         <Route path="/project" element={<Project />} />
         <Route path="/about-us" element={<AboutUs />} />

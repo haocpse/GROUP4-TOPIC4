@@ -3,6 +3,7 @@ package com.swp_group4.back_end.responses;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -18,6 +19,9 @@ public class ViewRejectedQuotationResponse {
     String address;
     String phone;
     String customerRequest;
+    double percentageStage1;
+    double percentageStage2;
+    double percentageStage3;
     double length;
     double height;
     double width;

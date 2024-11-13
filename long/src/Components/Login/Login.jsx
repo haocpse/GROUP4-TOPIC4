@@ -54,13 +54,20 @@ const Login = () => {
 
     const handleGoogleLoginSuccess = async (response) => {
         const token = response.credential;
-        localStorage.setItem('googleToken', token);
+        const decodedToken = jwtDecode(token);
+        
 
         try {
             // Gửi token đến backend để xác thực
-            const res = await axios.post('http://localhost:8080/google-login', { token });
-
-            const roles = getRoleFromToken(token);
+            const res = await axios.post('http://localhost:8080/login-google', 
+                {  
+                    aud : decodedToken.aud,
+                    sub : decodedToken.sub,
+                    email : decodedToken.email,
+                    name : decodedToken.name
+                });           
+            const roles = getRoleFromToken(res.data.data.role);
+            localStorage.setItem('token', res.data.data.token)
             navigateBasedOnRole(roles);
         } catch (err) {
             setError('Google login failed. Please try again.');

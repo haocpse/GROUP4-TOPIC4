@@ -1,11 +1,9 @@
 package com.swp_group4.back_end.entities;
 
-import com.swp_group4.back_end.enums.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
 
 @Entity
 @Data
@@ -21,7 +19,9 @@ public class Customer {
     String firstName;
     String lastName;
     String phone;
+    long point;
     String address;
     String accountId;
+    String avatarURL;
 
 }

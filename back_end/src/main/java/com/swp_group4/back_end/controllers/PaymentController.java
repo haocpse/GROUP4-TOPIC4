@@ -1,7 +1,11 @@
 package com.swp_group4.back_end.controllers;
 
+import com.swp_group4.back_end.entities.MaintenanceOrder;
 import com.swp_group4.back_end.entities.PaymentOrder;
+import com.swp_group4.back_end.enums.MaintenanceOrderStatus;
 import com.swp_group4.back_end.enums.PaymentStatus;
+import com.swp_group4.back_end.repositories.ConstructOrderRepository;
+import com.swp_group4.back_end.repositories.MaintenanceOrderRepository;
 import com.swp_group4.back_end.repositories.PaymentOrderRepository;
 import com.swp_group4.back_end.responses.ApiResponse;
 import com.swp_group4.back_end.services.PaymentService;
@@ -11,10 +15,11 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,14 +34,18 @@ public class PaymentController {
     PaymentService paymentService;
     @Autowired
     PaymentOrderRepository paymentOrderRepository;
+    @Autowired
+    private ConstructOrderRepository constructOrderRepository;
+    @Autowired
+    private MaintenanceOrderRepository maintenanceOrderRepository;
 
     //hàm liệt kê các payment
-    @GetMapping("/{accountId}")
-    public ApiResponse<List<PaymentOrder>> getAllPayments(@PathVariable String accountId) {
-        return ApiResponse.<List<PaymentOrder>>builder()
-                .data(paymentService.listALl(accountId))
-                .build();
-    }
+//    @GetMapping("/{accountId}")
+//    public ApiResponse<List<PaymentOrder>> getAllPayments(@PathVariable String accountId) {
+//        return ApiResponse.<List<PaymentOrder>>builder()
+//                .data(paymentService.listALl(accountId))
+//                .build();
+//    }
 
     //hàm khi customer nhấn sẽ redirect sang trang VNPAY để thanh toán
     @PostMapping("/{paymentId}/vnpay")
@@ -71,13 +80,52 @@ public class PaymentController {
             if ("00".equals(vnpResponseCode)) {
                 assert paymentOrder != null;
                 paymentOrder.setStatus(PaymentStatus.SUCCESS);
+                paymentOrder.setPaidDate(LocalDateTime.now());
                 paymentOrderRepository.save(paymentOrder);
-                response.sendRedirect("http://localhost:3000/myInfo/orders/" + orderId + "/payments");
+                if(constructOrderRepository.findById(orderId).isPresent()) {
+                    paymentService.successPaid(orderId);
+                    response.sendRedirect("http://localhost:3000/myInfo/orders/" + orderId + "/payments");
+                }
+                else {
+                    MaintenanceOrder order = maintenanceOrderRepository.findById(orderId).orElse(null);
+                    assert order != null;
+                    order.setStatus(MaintenanceOrderStatus.FINISHED);
+                    maintenanceOrderRepository.save(order);
+                    response.sendRedirect("http://localhost:3000/myInfo/orders/maintenance/");
+                }
             } else {
-                response.sendRedirect("http://localhost:3000/myInfo/orders/" + orderId + "/payments");
+                assert paymentOrder != null;
+                paymentOrder.setStatus(PaymentStatus.FAILED);
+                paymentOrderRepository.save(paymentOrder);
+                paymentService.reCreatePayment(paymentId);
+                if(constructOrderRepository.findById(orderId).isPresent())
+                    response.sendRedirect("http://localhost:3000/myInfo/orders/" + orderId + "/payments");
+                else
+                    response.sendRedirect("http://localhost:3000/myInfo/orders/maintenance/");
             }
         } catch (Exception e) {
             log.error("Error in VNPay callback: {}", e.getMessage());
+        }
+    }
+
+    //hàm khi customer nhấn sẽ redirect sang trang VNPAY để thanh toán
+    @PostMapping("/maintenance/{paymentId}")
+    public ApiResponse<String> createPaymentForMaintenance(@RequestParam("amount") Optional<Long> amount, HttpServletRequest request, @PathVariable String paymentId) {
+        if (amount.isEmpty() || amount.get() <= 0) {
+            return ApiResponse.<String>builder()
+                    .code(99999)
+                    .data("Error")
+                    .build();
+        }
+        try {
+            return ApiResponse.<String>builder()
+                    .data(paymentService.createVnPayPayment(request, paymentId))
+                    .build();
+        } catch (Exception e) {
+            return ApiResponse.<String>builder()
+                    .code(99999)
+                    .data(e.getMessage())
+                    .build();
         }
     }
 

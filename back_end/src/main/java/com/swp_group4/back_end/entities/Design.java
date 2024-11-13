@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -21,9 +21,8 @@ public class Design {
     String url2dDesign;
     String url3dDesign;
     String urlFrontDesign;
-    String urlBackDesign;
     @Enumerated(EnumType.STRING)
     DesignStatus designStatus;
-    Date postedDate;
+    LocalDateTime postedDate;
 
 }

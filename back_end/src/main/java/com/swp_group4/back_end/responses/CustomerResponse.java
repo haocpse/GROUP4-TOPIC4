@@ -1,6 +1,5 @@
 package com.swp_group4.back_end.responses;
 
-import com.swp_group4.back_end.enums.Gender;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -13,11 +12,10 @@ import java.util.Date;
 @Builder
 public class CustomerResponse {
 
-    String firstname;
-    String lastname;
+    String firstName;
+    String lastName;
     String phone;
     String address;
-    Gender gender;
     Date birthday;
 
 }

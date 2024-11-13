@@ -2,6 +2,7 @@ package com.swp_group4.back_end.controllers;
 
 import com.swp_group4.back_end.requests.AssignTaskStaffRequest;
 import com.swp_group4.back_end.requests.CompleteConstructTaskRequest;
+import com.swp_group4.back_end.requests.DeadlineConstructionRequest;
 import com.swp_group4.back_end.responses.*;
 import com.swp_group4.back_end.services.ConstructionService;
 import lombok.AccessLevel;
@@ -36,6 +37,13 @@ public class ConstructionController {
     public ApiResponse<AssignConstructionTaskResponse> assignTask(@PathVariable String constructionOrderId, @RequestBody AssignTaskStaffRequest request, @PathVariable String accountId) {
         return ApiResponse.<AssignConstructionTaskResponse>builder()
                 .data(constructionService.assignTask(constructionOrderId, request))
+                .build();
+    }
+
+    @PutMapping("/staffs/{accountId}/construction/{constructionOrderId}/date")
+    public ApiResponse<DeadlineConstructionResponse> deadline(@PathVariable String constructionOrderId, @RequestBody DeadlineConstructionRequest request, @PathVariable String accountId) {
+        return ApiResponse.<DeadlineConstructionResponse>builder()
+                .data(constructionService.deadline(constructionOrderId, request))
                 .build();
     }
 

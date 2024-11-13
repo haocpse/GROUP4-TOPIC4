@@ -11,6 +11,7 @@ import org.mapstruct.*;
 
 public interface MaintenanceOrderMapper {
     MaintenanceOrderResponse maintenanceOrderResponse(MaintenanceOrder maintenanceOrder, @MappingTarget MaintenanceOrderResponse response);
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     MaintenanceOrder toMaintenanceOrder(MaintenanceStaffAssignedRequest request, @MappingTarget MaintenanceOrder order);
 

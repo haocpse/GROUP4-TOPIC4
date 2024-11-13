@@ -20,5 +20,5 @@ public class MaintenanceOrderDetailForManagerResponse {
     Date startDate;
     Date endDate;
     String constructorLeaderId;
-    MaintenanceOrderStatus orderStatus;
+    MaintenanceOrderStatus status;
 }

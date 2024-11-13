@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
 import { jwtDecode } from "jwt-decode";
@@ -9,13 +9,13 @@ import { jwtDecode } from "jwt-decode";
 
 const CustomerUpdate = () => {
     const { id } = useParams();
-    const [customerInfo, setCustomerInfo] = useState({
-        firstName: '',
-        lastName: '',
-        phone: '',
-        gender: '',
-        address: ''
-    });
+    const [customerInfo, setCustomerInfo] = useState({});
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [address, setAddress] = useState('');
+    const [phone, setPhone] = useState('');
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         const fetchCustomerInfo = async () => {
@@ -23,7 +23,7 @@ const CustomerUpdate = () => {
             const decode = jwtDecode(token)
             const accountId = decode.sub
             try {
-                const response = await axios.get(`http://localhost:8080/myInfo/${accountId}/info`, {
+                const response = await axios.get(`http://localhost:8080/myInfo/${accountId}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     }
@@ -39,23 +39,16 @@ const CustomerUpdate = () => {
         fetchCustomerInfo()
     }, [id])
 
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setCustomerInfo((prevInfo) => ({
-            ...prevInfo,
-            [name]: value
-        }));
-    };
-
-
     const handleUpdate = async () => {
         const token = localStorage.getItem('token')
         const decode = jwtDecode(token)
         const accountId = decode.sub
         try {
             await axios.put(`http://localhost:8080/myInfo/${accountId}`, {
-                customerInfo
+                firstName: firstName || customerInfo.firstName,
+                lastName: lastName || customerInfo.lastName,
+                phone: phone || customerInfo.phone,
+                address: address,
             }, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -63,8 +56,6 @@ const CustomerUpdate = () => {
             });
 
             toast.success("Update succesfully ^^");
-            window.location.reload();
-
         } catch (error) {
             console.error("FAIL UPDATE", error);
             toast.error("Fail to update ! ^^");
@@ -77,6 +68,8 @@ const CustomerUpdate = () => {
             <Navbar />
 
             <h1 className="text-center mb-4">Customer Profile</h1>
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
+
             <div className="container mb-5">
                 <div className="row gutters">
                     <div className="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
@@ -86,7 +79,7 @@ const CustomerUpdate = () => {
                                     <div className="user-profile text-center">
                                         <h2 className="text-primary">AVATAR</h2>
                                         <div className="user-avatar">
-                                            <img src={customerInfo.avatarUrl} alt={customerInfo.firstName} className="img-fluid rounded-circle" />
+                                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Customer" class="rounded-circle" width="150" />
                                         </div>
                                     </div>
                                     <div className="about mt-3">
@@ -104,7 +97,7 @@ const CustomerUpdate = () => {
                     <div className="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
                         <div className="card h-100">
                             <div className="card-body">
-                                <h6 className="mb-2 text-primary mb-4" style={{ fontSize: '40px' }}>Personal Details:</h6>
+                                <h6 className="mb-2 text-primary mb-4" style={{ fontSize: '35px' }}>Personal Details:</h6>
                                 <div className="row gutters">
                                     <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div className="form-group">
@@ -112,8 +105,8 @@ const CustomerUpdate = () => {
                                             <input
                                                 type="text"
                                                 name="firstName"
-                                                value={customerInfo.firstName}
-                                                onChange={handleChange}
+                                                value={firstName || customerInfo.firstName || ""}
+                                                onChange={(event) => setFirstName(event.target.value)}
                                                 className="form-control"
                                                 placeholder="Enter first name"
                                             />
@@ -125,8 +118,8 @@ const CustomerUpdate = () => {
                                             <input
                                                 type="text"
                                                 name="lastName"
-                                                value={customerInfo.lastName}
-                                                onChange={handleChange}
+                                                value={lastName || customerInfo.lastName || ""}
+                                                onChange={(event) => setLastName(event.target.value)}
                                                 className="form-control"
                                                 placeholder="Enter last name"
                                             />
@@ -138,47 +131,37 @@ const CustomerUpdate = () => {
                                             <input
                                                 type="text"
                                                 name="phone"
-                                                value={customerInfo.phone}
-                                                onChange={handleChange}
+                                                value={phone || customerInfo.phone || ""}
+                                                onChange={(event) => setPhone(event.target.value)}
                                                 className="form-control"
                                                 placeholder="Enter phone number"
                                             />
                                         </div>
                                     </div>
-                                    <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                        <div className="form-group">
-                                            <label>Gender:</label>
-                                            <select
-                                                name="gender"
-                                                value={customerInfo.gender}
-                                                onChange={handleChange}
-                                                className="form-control"
-                                            >
-                                                <option value="">Select gender</option>
-                                                <option value="MALE">MALE</option>
-                                                <option value="FEMALE">FEMALE</option>
-                                                <option value="OTHERS">OTHERS</option>
-                                            </select>
-                                        </div>
-                                    </div>
+
                                 </div>
                             </div>
-                            <h6 className="mt-3 mb-2 text-primary" style={{ fontSize: '40px' }}>Address:</h6>
-                            <div className="form-group">
+                            <h6 className="mt-3 mb-2 ml-2 text-primary" style={{ fontSize: '35px' }}>Address:</h6>
+                            <div className="form-group ml-2">
                                 <label>Address:</label>
                                 <input
                                     type="text"
                                     name="address"
-                                    value={customerInfo.address}
-                                    onChange={handleChange}
+                                    value={address || customerInfo.address || ""}
+                                    onChange={(event) => setAddress(event.target.value)}
                                     className="form-control"
                                     placeholder="Enter address"
                                 />
                             </div>
-                            <div className="text-right mt-4">
-                                <button type="button" className="btn btn-primary mr-3" onClick={handleUpdate}>
-                                    Update
-                                </button>
+                            <div className="d-flex justify-content-end mt-4 mb-2">
+                                <div className="text-right mt-3 mb-2">
+                                    <button type="button" className="btn btn-primary mr-3" onClick={handleUpdate}>
+                                        Update
+                                    </button>
+                                </div>
+                                <div className="text-right mt-3 mb-2">
+                                    <button className="btn btn-secondary mr-3" onClick={() => navigate(-1)}>Go Back</button>
+                                </div>
                             </div>
                         </div>
                     </div>

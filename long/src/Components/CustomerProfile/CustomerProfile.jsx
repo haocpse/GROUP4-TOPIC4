@@ -12,13 +12,19 @@ const CustomerProfile = () => {
     const [customerInfo, setCustomerInfo] = useState(null);
     const navigate = useNavigate();
 
+
+    const token = localStorage.getItem('token')
+    const decode = jwtDecode(token)
+    const accountId = decode.sub
     useEffect(() => {
-        const token = localStorage.getItem('token')
-        const decode = jwtDecode(token)
-        const accountId = decode.sub
+
         const fetchCustomerInfo = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/myInfo/${accountId}/info`)
+                const response = await axios.get(`http://localhost:8080/myInfo/${accountId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    }
+                });
                 setCustomerInfo(response.data.data)
                 toast.success("Fetch successly ^^")
             }
@@ -31,12 +37,13 @@ const CustomerProfile = () => {
         fetchCustomerInfo()
     }, []);
 
-    const handleClickUpdate = (accountId) => {
-        navigate(`/myInfo/${accountId}/update`);
+    const handleClickUpdate = () => {
+        navigate(`/myInfo/${accountId}`);
     }
     const handleClickOrders = () => {
         navigate('/myInfo/orders');
     }
+
     return (
         <>
             <Navbar />
@@ -49,9 +56,9 @@ const CustomerProfile = () => {
                                 <div className="card-body">
                                     <div className="account-settings">
                                         <div className="user-profile text-center">
-                                            <h2 className="text-primary">AVARTAR</h2>
+                                            <h2 className="text-primary">Avatar</h2>
                                             <div className="user-avatar">
-                                                <img src={customerInfo.avatarUrl} alt={customerInfo.firstName} className="img-fluid rounded-circle" />
+                                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Customer" class="rounded-circle" width="150"/>
                                             </div>
                                         </div>
                                         <div className="about mt-3">
@@ -74,7 +81,7 @@ const CustomerProfile = () => {
                                 <div className="card-body">
                                     <div className="row gutters border-bottom">
                                         <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                            <h6 className="mb-2 text-primary mb-4" style={{ fontSize: '40px' }}>Personal Details:</h6>
+                                            <h6 className="mb-2 text-primary mb-4" style={{ fontSize: '35px' }}>Personal Details:</h6>
                                         </div>
                                         <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                             <div className="form-group d-flex">
@@ -96,16 +103,11 @@ const CustomerProfile = () => {
                                             </div>
                                         </div>
 
-                                        <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                            <div className="form-group d-flex">
-                                                <h4 className="gender">Gender:</h4>
-                                                <h4 className="form-control-static ml-2 fw-lighter" id="gender">{customerInfo.gender}</h4>
-                                            </div>
-                                        </div>
+
                                     </div>
                                     <div className="row gutters">
                                         <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                            <h6 className="mt-3 mb-2 text-primary mb-4" style={{ fontSize: '40px' }}>Address:</h6>
+                                            <h6 className="mt-3 mb-2 text-primary mb-4" style={{ fontSize: '35px' }}>Address:</h6>
                                         </div>
                                         <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                             <div className="form-group d-flex">

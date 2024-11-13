@@ -3,6 +3,8 @@ package com.swp_group4.back_end.responses;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -10,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class AssignConstructionTaskResponse {
 
-    String taskId;
-    String staffName;
+    String constructionOrderId;
+    List<String> staffName;
 
 }
