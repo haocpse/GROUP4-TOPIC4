@@ -6,7 +6,7 @@ import styles from './QuotationOrder.module.css';
 import { jwtDecode } from "jwt-decode";
 
 const UpdateQuotation = () => {
-  const {quotationId} = useParams()
+  const { quotationId } = useParams()
   const [quotation, setQuotation] = useState(null);
   const [loading, setLoading] = useState(true);
   const [packageOptions, setPackageOptions] = useState([]);
@@ -20,6 +20,9 @@ const UpdateQuotation = () => {
   const [startDate, setStartDate] = useState('');
   const [promotionId, setPromotionId] = useState('');
   const [customerRequest, setCustomerRequest] = useState('');
+  const [percentageStage1, setPercentageStage1] = useState('');
+  const [percentageStage2, setPercentageStage2] = useState('');
+  const [percentageStage3, setPercentageStage3] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,7 +38,7 @@ const UpdateQuotation = () => {
             'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
           }
         });
-       
+
         setQuotation(response.data.data);
         setCustomerRequest(response.data.data.customerRequest);
         setWidth(response.data.data.width);
@@ -44,6 +47,9 @@ const UpdateQuotation = () => {
         setSelectedPackage(response.data.data.packageId);
         setStartDate(response.data.data.startDate.split('T')[0]);
         setEndDate(response.data.data.endDate.split('T')[0]);
+        setPercentageStage1(response.data.data.percentageStage1)
+        setPercentageStage2(response.data.data.percentageStage2)
+        setPercentageStage3(response.data.data.percentageStage3)
         setLoading(false);
       } catch (error) {
         console.error("Error fetching quotation order:", error);
@@ -94,6 +100,9 @@ const UpdateQuotation = () => {
       height,
       width,
       customerRequest,
+      percentageStage1,
+      percentageStage2,
+      percentageStage3,
       startDate,
       endDate,
       promotionId,
@@ -102,7 +111,7 @@ const UpdateQuotation = () => {
     const token = localStorage.getItem('token')
     const decode = jwtDecode(token)
     const accountId = decode.sub
-    
+
     try {
       await axios.put(`http://localhost:8080/staffs/${accountId}/rejectedQuotations/${quotationId}`, requestData, {
         headers: {
@@ -189,6 +198,48 @@ const UpdateQuotation = () => {
                 id="height"
                 value={height}
                 onChange={(e) => setHeight(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="row mb-3">
+            <div className="col-md-12 d-flex align-items-end">
+              <label htmlFor="percentageStage1" className="mr-2"><strong>Customer agrees to paid for first pharse (%): </strong></label>
+              <input
+                style={{ width: 80 }}
+                type="number"
+                className="form-control"
+                id="percentageStage1"
+                value={percentageStage1}
+                onChange={(e) => setPercentageStage1(e.target.value)}
+                placeholder="Percentage"
+              />
+            </div>
+          </div>
+          <div className="row mb-3">
+            <div className="col-md-12 d-flex align-items-end">
+              <label htmlFor="percentageStage2" className="mr-2"><strong>Customer agrees to paid for second pharse (%): </strong></label>
+              <input
+                style={{ width: 80 }}
+                type="number"
+                className="form-control"
+                id="percentageStage2"
+                value={percentageStage2}
+                onChange={(e) => setPercentageStage2(e.target.value)}
+                placeholder="Percentage"
+              />
+            </div>
+          </div>
+          <div className="row mb-5">
+            <div className="col-md-12 d-flex align-items-end">
+              <label htmlFor="percentageStage3" className="mr-2"><strong>Customer agrees to paid for finally pharse (%): </strong></label>
+              <input
+                style={{ width: 80 }}
+                type="number"
+                className="form-control"
+                id="percentageStage3"
+                value={percentageStage3}
+                onChange={(e) => setPercentageStage3(e.target.value)}
+                placeholder="Percentage"
               />
             </div>
           </div>

@@ -1,42 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Card, Form, Button, ListGroup, Image } from 'react-bootstrap';
+import { Container, Card, Image } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
 import './BlogDetail.module.css';
 
-const userImages = [
-    '/path/to/default-image1.jpg',
-    '/path/to/default-image2.jpg',
-    '/path/to/default-image3.jpg'
-];
-
 const BlogDetail = () => {
-    const { blogId } = useParams();
+    const { blogId } = useParams();  // Lấy blogId từ URL
     const [blog, setBlog] = useState(null);
-    const [comments, setComments] = useState([]);
-    const [newComment, setNewComment] = useState('');
 
-    // Fetch blog details from backend API
+    // Fetch blog details từ backend API
     useEffect(() => {
-        axios.get(`http://localhost:8080/blog/${blogId}`) // Replace with actual backend API endpoint
+        console.log(blogId)
+        axios.get(`http://localhost:8080/blogs/${blogId}`)
             .then(response => {
-                setBlog(response.data);
-                setComments(response.data.comments || []);
+                // Đảm bảo rằng bạn lấy đúng data từ response
+                const blogData = response.data?.data;  // Lấy dữ liệu từ response.data.data
+                if (blogData) {
+                    setBlog(blogData);
+                }
             })
-            .catch(error => console.error("Error fetching blog details:", error));
-    }, [blogId]);
+            .catch(error => {
+                console.error("Error fetching blog details:", error);
+            });
+    }, [blogId]); // Chạy lại khi blogId thay đổi
 
-    const handleAddComment = () => {
-        if (newComment.trim()) {
-            const randomImage = userImages[Math.floor(Math.random() * userImages.length)];
-            const updatedComments = [...comments, { text: newComment.trim(), userImage: randomImage }];
-            setComments(updatedComments);
-            setNewComment('');
-        }
-    };
-
+    // Nếu dữ liệu chưa được tải về, hiển thị Loading...
     if (!blog) return <p>Loading...</p>;
 
     return (
@@ -51,45 +41,12 @@ const BlogDetail = () => {
                         </Card.Text>
                     </Card.Body>
                     <Image
-                        src={blog.image}
+                        src={blog.headerImageUrl || blog.imageUrl}  // Sử dụng headerImageUrl hoặc imageUrl để hiển thị ảnh
                         alt={blog.title}
                         className="rounded img-fluid my-4 d-block mx-auto"
                     />
                     <Card.Footer className="pt-4 border-0">
-                        <h5 className="mb-3">Comments</h5>
-                        <ListGroup variant="flush" className="mb-3">
-                            {comments.map((comment, index) => (
-                                <ListGroup.Item key={index} className="px-0 border-bottom d-flex align-items-center">
-                                    <Image
-                                        src={comment.userImage}
-                                        roundedCircle
-                                        width={40}
-                                        height={40}
-                                        className="me-2"
-                                    />
-                                    <p className="mb-1">{comment.text}</p>
-                                </ListGroup.Item>
-                            ))}
-                        </ListGroup>
-                        <Form className="mt-3">
-                            <Form.Group controlId="newComment" className="mb-2">
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Add a comment..."
-                                    value={newComment}
-                                    onChange={(e) => setNewComment(e.target.value)}
-                                    className="rounded"
-                                />
-                            </Form.Group>
-                            <Button
-                                variant="primary"
-                                onClick={handleAddComment}
-                                className="px-4"
-                                style={{ borderRadius: '20px' }}
-                            >
-                                Post Comment
-                            </Button>
-                        </Form>
+                        <small className="text-muted">Created on {new Date(blog.date).toLocaleDateString()}</small> {/* date được sửa lại để phù hợp với dữ liệu trả về */}
                     </Card.Footer>
                 </Card>
             </Container>

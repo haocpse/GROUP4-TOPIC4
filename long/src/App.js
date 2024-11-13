@@ -28,7 +28,7 @@ import ProtectedRoutesManager from "./utils/ProtectedRoutesManager";
 import ProtectedRoutesConsultant from "./utils/ProtectedRoutesConsultant";
 import ProtectedRoutesDesigner from "./utils/ProtectedRoutesDesigner";
 import ProtectedRoutesConstructor from "./utils/ProtectedRoutesConstructor";
-import ProtectedRoutesCustomer from "./utils/ProtectedRoutesCustomer"
+import ProtectedRoutesCustomer from "./utils/ProtectedRoutesCustomer";
 import ConsultantQuotations from "./Components/ConsultantTasks/ConsultantQuotations";
 import UpdateQuotation from "./Components/QuotationOrder/UpdateQuotation";
 import ListDesign from "./Components/DesignerTasks/ListDesign";
@@ -38,7 +38,6 @@ import PaymentInfo from "./Components/Payment/PaymentInfo";
 import MainLayoutConstructor from "./Components/MainLayoutConstructor";
 import Dashboard from "./Components/Admin/Dashboard";
 import BlogCRUD from "./Components/Admin/BlogCRUD";
-import EditBlog from "./Components/Admin/EditBlog";
 import PackageManage from "./Components/Package/PackageManage";
 import PackagePrice from "./Components/Package/PackagePrice";
 import PackageConstruction from "./Components/Package/PackageConstruction";
@@ -51,7 +50,7 @@ import ManagerViewDetailPayment from "./Components/ManagerViewPayment/ManagerVie
 import ManagerViewDetailProgress from "./Components/ManagerViewProgress/ManagerViewDetailProgress";
 import CustomerViewProgress from "./Components/CustomerView/CustomerViewProgress";
 import MainLayoutAdmin from "./Components/MainLayoutAdmin";
-import Project from "./Components/Project/Project"
+import Project from "./Components/Project/Project";
 import AboutUs from "./Components/AboutUs/AboutUs";
 import Blog from "./Components/Blog/Blog";
 import BlogDetail from "./Components/Blog/BlodDetail";
@@ -151,7 +150,6 @@ function App() {
         {/* ADMIN */}
         <Route path="/admin" element={<MainLayoutAdmin />}>
           <Route path="BlogCRUD" element={<BlogCRUD />}></Route>
-          <Route path="edit-blog/:id" element={<EditBlog />}></Route>
           <Route path="staff" element={<Staff />}></Route>
           <Route path="packagePrice" element={<PackagePrice />}></Route>
           <Route path="packageConstruction" element={<PackageConstruction />} />
@@ -162,17 +160,32 @@ function App() {
           <Route path="/myInfo" element={<CustomerProfile />} />
           <Route path="/myInfo/:accountId" element={<CustomerUpdate />} />
           <Route path="/myInfo/orders" element={<CustomerView />} />
-          <Route path="/myInfo/orders/:constructionOrderId/quotation" element={<CustomerQuotationList />} />
-          <Route path="/myInfo/orders/:constructionOrderId/design" element={<CustomerViewDesign />} />
-          <Route path="/myInfo/orders/:constructionOrderId/payments" element={<PaymentInfo />} />
-          <Route path="/myInfo/orders/:constructionOrderId/progress" element={<CustomerViewProgress />} />
-          <Route path="/myInfo/orders/maintenance" element={<CustomerViewMaintenance />} />
+          <Route
+            path="/myInfo/orders/:constructionOrderId/quotation"
+            element={<CustomerQuotationList />}
+          />
+          <Route
+            path="/myInfo/orders/:constructionOrderId/design"
+            element={<CustomerViewDesign />}
+          />
+          <Route
+            path="/myInfo/orders/:constructionOrderId/payments"
+            element={<PaymentInfo />}
+          />
+          <Route
+            path="/myInfo/orders/:constructionOrderId/progress"
+            element={<CustomerViewProgress />}
+          />
+          <Route
+            path="/myInfo/orders/maintenance"
+            element={<CustomerViewMaintenance />}
+          />
         </Route>
         {/* MAIN */}
         <Route path="/project" element={<Project />} />
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/blog" element={<Blog />} />
-        <Route path="/blog/:id" element={<BlogDetail />} />
+        <Route path="/blogs/:blogId" element={<BlogDetail />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/contact" element={<Contact />} />
