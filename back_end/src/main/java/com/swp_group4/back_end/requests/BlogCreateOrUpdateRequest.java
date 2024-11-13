@@ -12,4 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class BlogCreateOrUpdateRequest {
     String title;
     String content;
+    String headerImageUrl;
+    String imageUrl;
 }
