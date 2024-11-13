@@ -74,13 +74,17 @@ public class ManageConstructionOrderService {
     }
 
     ConstructOrderDetailForManagerResponse buildConstructOrderDetailForManagerResponse(ConstructionOrder order, Customer customer) {
-        Quotation quotation = quotationRepository.findById(order.getQuotationId()).orElseThrow();
-        Design design = designRepository.findById(order.getDesignId()).orElseThrow();
         ConstructOrderDetailForManagerResponse response = ConstructOrderDetailForManagerResponse.builder()
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
-                .quotationStatus(quotation.getQuotationStatus())
-                .designStatus(design.getDesignStatus())
                 .build();
+        if (!order.getQuotationId().isEmpty()) {
+            Quotation quotation = quotationRepository.findById(order.getQuotationId()).orElseThrow();
+            response.setQuotationStatus(quotation.getQuotationStatus());
+        }
+        if (!order.getDesignId().isEmpty()) {
+            Design design = designRepository.findById(order.getDesignId()).orElseThrow();
+            response.setDesignStatus(design.getDesignStatus());
+        }
         constructionOrderMapper.toDetailForManager(order, response);
         customerMapper.toDetailForManager(customer, response);
         return response;
