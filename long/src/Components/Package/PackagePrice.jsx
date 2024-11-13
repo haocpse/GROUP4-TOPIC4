@@ -62,7 +62,7 @@ const PackagePrice = () => {
                 onChange={(e) => handlePackageChange(e.target.value)}
               >
                <option value="">Select Package</option>
-                {packagePrice.map((pkg) => (
+                {packagePrice && packagePrice.map((pkg) => (
                   <option key={pkg.packageId} value={pkg.packageId}>
                     {pkg.packageType}
                   </option>
@@ -83,7 +83,7 @@ const PackagePrice = () => {
           </div>
 
           <div className="row g-4">
-            {packagePriceInfo.map((pkg, index) => (
+            {packagePriceInfo && packagePriceInfo.map((pkg, index) => (
               <div className="col-md-6" key={index}>
                 <div className="p-3 border rounded bg-light">
                   <div className="mb-3">

@@ -150,12 +150,11 @@ function App() {
         </Route>
 
         <Route path="/admin" element={<MainLayoutAdmin />}>
-          <Route path="package-price" element={<PackagePrice />} />
+          <Route path="packagePrice" element={<PackagePrice />} />
           <Route
-            path="package-construction"
+            path="packageConstruction"
             element={<PackageConstruction />}
           />
-         
         </Route>
 
         <Route path="/myInfo/orders" element={<CustomerView />} />
@@ -180,8 +179,8 @@ function App() {
           path="/myInfo/orders/maintenance"
           element={<CustomerViewMaintenance />}
         />
-        
-        
+
+
         <Route path="/project" element={<Project />} />
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/blog" element={<Blog />} />
