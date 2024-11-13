@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class MaintenanceStaffAssignedRequest {
     String maintenanceOrderId;
-    String constructorLeader;
+    String constructorLeaderId;
     MaintenanceOrderStatus status;
 }
 

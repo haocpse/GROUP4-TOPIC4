@@ -3,6 +3,7 @@ package com.swp_group4.back_end.services;
 import com.swp_group4.back_end.entities.*;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
 import com.swp_group4.back_end.enums.DesignStatus;
+import com.swp_group4.back_end.mapper.DesignMapper;
 import com.swp_group4.back_end.repositories.*;
 import com.swp_group4.back_end.responses.ConstructOrderDetailForStaffResponse;
 import com.swp_group4.back_end.responses.OverviewDesignResponse;
@@ -15,6 +16,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
@@ -36,6 +40,8 @@ public class DesignService {
     CustomerRepository customerRepository;
     @Autowired
     DesignRepository designRepository;
+    @Autowired
+    DesignMapper designMapper;
 
 
     ConstructionOrder findOrderById(String orderId){
@@ -51,9 +57,10 @@ public class DesignService {
     public Design saveDesign(String constructionOrderId, MultipartFile image2D, MultipartFile image3D, MultipartFile frontView) {
         Design design = Design.builder()
                 .designStatus(DesignStatus.DESIGNED)
+                .postedDate(LocalDateTime.now())
                 .build();
 
-        String baseUrl = "http://localhost:8080/images/" + constructionOrderId + "/";
+        String baseUrl = "http://localhost:8080/images/design" + constructionOrderId + "/";
 
         if (!image2D.isEmpty()) {
             design.setUrl2dDesign(baseUrl + saveImage(image2D, constructionOrderId));
@@ -76,16 +83,13 @@ public class DesignService {
 
     private String saveImage(MultipartFile file, String orderId) {
         try {
-            // Ensure directory exists
             String UPLOAD_DIR = "images/" + orderId + "/";
             String fileName = Objects.requireNonNull(file.getOriginalFilename()).replace(" ", "_");
             Path filePath = Paths.get(UPLOAD_DIR, fileName);
             Files.createDirectories(filePath.getParent());
 
-            // Write the file to disk
             Files.write(filePath, file.getBytes());
 
-            // Return only the file name so the full path can be built elsewhere
             return fileName;
         } catch (IOException e) {
             log.error("Error saving image", e);
@@ -113,6 +117,7 @@ public class DesignService {
                 .designId(designId)
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .postedDate(design.getPostedDate())
+                .designStatus(design.getDesignStatus())
                 .build();
     }
 
@@ -131,6 +136,7 @@ public class DesignService {
             design.setUrlFrontDesign(baseUrl + saveImage(frontView, order.getConstructionOrderId()));
         }
 
+        design.setPostedDate(LocalDateTime.now());
         design.setDesignStatus(DesignStatus.DESIGNED);
         return designRepository.save(design);
     }
@@ -139,18 +145,15 @@ public class DesignService {
         Design design = designRepository.findById(designId).orElseThrow();
         ConstructionOrder order = constructOrderRepository.findByDesignId(designId).orElseThrow();
         Customer customer = customerRepository.findById(order.getCustomerId()).orElseThrow();
-        return ViewRejectedDesignResponse.builder()
+        ViewRejectedDesignResponse response = ViewRejectedDesignResponse.builder()
                 .constructionOrderId(order.getConstructionOrderId())
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .phone(customer.getPhone())
                 .address(customer.getAddress())
                 .customerRequest(order.getCustomerRequest())
                 .designerName(this.getStaffName(order.getDesignerLeaderId()))
-                .customerRequest(order.getCustomerRequest())
-                .url2dDesign(design.getUrl2dDesign())
-                .url3dDesign(design.getUrl3dDesign())
-                .urlFrontDesign(design.getUrlFrontDesign())
                 .build();
+        return designMapper.toViewRejectedDesignResponse(design, response);
     }
 
     String getStaffName(String staffId) {

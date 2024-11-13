@@ -1,6 +1,7 @@
 // src/components/PackagePrice.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
 
 const PackagePrice = () => {
   const [isInputVisible, setIsInputVisible] = useState(false);
@@ -11,15 +12,22 @@ const PackagePrice = () => {
 
   useEffect(() => {
     const fetchPackagePrice = async () => {
-      const response = await axios.get(`http://localhost:8080/packagePrices`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
-        }
-      });
-      setPackagePrice(response.data.data)
-      setPackagePriceInfo(response.data.data.packagePriceInfoResponseList)
+      try {
+        const response = await axios.get(`http://localhost:8080/packagePrices`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`, // Include token if needed
+          }
+        });
+        setPackagePrice(response.data.data)
+        setPackagePriceInfo(response.data.data.packagePriceInfoResponseList)
+        toast.success("Fetch PackagePrice successfully ^^")
+      } catch (error) {
+        console.error("FAIL")
+        toast.error("ERROR")
+      }
+
     }
-  fetchPackagePrice()  
+    fetchPackagePrice()
   })
 
   const handleAddPackage = () => {
@@ -36,7 +44,10 @@ const PackagePrice = () => {
   }
 
   return (
+
     <div className="container mt-5">
+      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+
       <div className="card shadow">
         <div className="card-header text-center bg-danger text-white">
           <h2 className="pt-1">Package Price</h2>
@@ -61,8 +72,8 @@ const PackagePrice = () => {
                 value={selectedPackageType}
                 onChange={(e) => handlePackageChange(e.target.value)}
               >
-               <option value="">Select Package</option>
-                {packagePrice.map((pkg) => (
+                <option value="">Select Package</option>
+                {packagePrice && packagePrice.map((pkg) => (
                   <option key={pkg.packageId} value={pkg.packageId}>
                     {pkg.packageType}
                   </option>
@@ -83,7 +94,7 @@ const PackagePrice = () => {
           </div>
 
           <div className="row g-4">
-            {packagePriceInfo.map((pkg, index) => (
+            {packagePriceInfo && packagePriceInfo.map((pkg, index) => (
               <div className="col-md-6" key={index}>
                 <div className="p-3 border rounded bg-light">
                   <div className="mb-3">

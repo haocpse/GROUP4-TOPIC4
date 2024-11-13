@@ -16,9 +16,11 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String accountId;
+    String googleId;
     String username;
     String password;
     @Enumerated(EnumType.STRING)
     Role role;
+    boolean isActive;
 
 }

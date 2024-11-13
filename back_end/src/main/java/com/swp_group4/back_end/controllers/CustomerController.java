@@ -24,11 +24,19 @@ public class CustomerController {
     @Autowired
     CustomerService customerService;
 
+
     // Gọi hàm gửi request từ Customer
     @PostMapping("/contact")
     public ApiResponse<ServiceResponse<?>> contactUs(@RequestBody ServiceRequest request) {
         return ApiResponse.<ServiceResponse<?>>builder()
                 .data(customerService.contactUs(request))
+                .build();
+    }
+
+    @GetMapping("/customer/{accountId}/maintenanceOrders")
+    public ApiResponse<List<MaintenanceOrderResponse>> getMaintenanceOrders(@PathVariable String accountId) {
+        return ApiResponse.<List<MaintenanceOrderResponse>>builder()
+                .data(customerService.listMaintenanceOrders(accountId))
                 .build();
     }
 
@@ -40,14 +48,14 @@ public class CustomerController {
     }   
 
     @GetMapping("/customer/{accountId}/constructionOrders/{constructionOrderId}/quotation")
-    public ApiResponse<ConstructQuotationResponse> CustomerViewQuotation(@PathVariable String accountId, @PathVariable String constructionOrderId) {
+    public ApiResponse<ConstructQuotationResponse> customerViewQuotation(@PathVariable String accountId, @PathVariable String constructionOrderId) {
         return ApiResponse.<ConstructQuotationResponse>builder()
                 .data(customerService.viewQuotation(accountId, constructionOrderId))
                 .build();
     }
 
     @GetMapping("/customer/{accountId}/constructionOrders/{constructionOrderId}/design")
-    public ApiResponse<ConstructDesignResponse> CustomerViewDesign(@PathVariable String constructionOrderId, @PathVariable String accountId) {
+    public ApiResponse<ConstructDesignResponse> customerViewDesign(@PathVariable String constructionOrderId, @PathVariable String accountId) {
         return ApiResponse.<ConstructDesignResponse>builder()
                 .data(customerService.viewDesign(constructionOrderId, accountId))
                 .build();
@@ -68,22 +76,22 @@ public class CustomerController {
     }
 
     @GetMapping("/customer/{accountId}/constructionOrders/{constructionOrderId}/payments")
-    public ApiResponse<CustomerViewPaymentResponse> viewPayment(@PathVariable String constructionOrderId, @PathVariable String accountId) {
-        return ApiResponse.<CustomerViewPaymentResponse>builder()
+    public ApiResponse<ViewPaymentResponse> viewPayment(@PathVariable String constructionOrderId, @PathVariable String accountId) {
+        return ApiResponse.<ViewPaymentResponse>builder()
                 .data(customerService.viewPaymentConstruction(constructionOrderId, accountId))
                 .build();
     }
 
     @GetMapping("/maintenanceOrders/{maintenanceOrderId}/payments")
-    public ApiResponse<CustomerViewPaymentResponse> viewMaintenancePayment(@PathVariable String maintenanceOrderId) {
-        return ApiResponse.<CustomerViewPaymentResponse>builder()
+    public ApiResponse<ViewPaymentResponse> viewMaintenancePayment(@PathVariable String maintenanceOrderId) {
+        return ApiResponse.<ViewPaymentResponse>builder()
                 .data(customerService.viewPayment(maintenanceOrderId))
                 .build();
     }
     
     @GetMapping("/customer/{accountId}/constructionOrders/{constructionOrderId}/progress")
-    public ApiResponse<CustomerViewProgressResponse> viewProgress(@PathVariable String constructionOrderId, @PathVariable String accountId) {
-        return ApiResponse.<CustomerViewProgressResponse>builder()
+    public ApiResponse<ViewProgressResponse> viewProgress(@PathVariable String constructionOrderId, @PathVariable String accountId) {
+        return ApiResponse.<ViewProgressResponse>builder()
                 .data(customerService.viewProgress(constructionOrderId))
                 .build();
     }
@@ -95,13 +103,12 @@ public class CustomerController {
                 .build();
     }
 
-    // Hàm để Customer xem thông tin cá nhân
-//    @GetMapping("/ownedInfo")
-//    public ApiResponse<CustomerResponse> getOwnedInfo() {
-//        return ApiResponse.<CustomerResponse>builder()
-//                .data(customerService.getOwnedInfo())
-//                .build();
-//    }
+    @GetMapping("/customerInfo")
+    public ApiResponse<CustomerResponse> getOwnedInfo() {
+        return ApiResponse.<CustomerResponse>builder()
+                .data(customerService.getOwnedInfo())
+                .build();
+    }
 
     // Hàm để Customer thay đổi thông tin cá nhân
 //    @PutMapping("/ownedInfo/update")

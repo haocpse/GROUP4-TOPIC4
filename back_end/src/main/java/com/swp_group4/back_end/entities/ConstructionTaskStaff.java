@@ -1,6 +1,5 @@
 package com.swp_group4.back_end.entities;
 
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
@@ -15,8 +14,7 @@ import lombok.experimental.FieldDefaults;
 public class ConstructionTaskStaff {
 
     @Id
-    String taskId;
-    String staffId;
+    ConstructionTaskStaffId id;
     String staffName;
 
 }

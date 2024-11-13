@@ -1,6 +1,5 @@
 package com.swp_group4.back_end.requests;
 
-import com.swp_group4.back_end.enums.Gender;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -17,7 +16,6 @@ public class UpdateInfoRequest {
     String lastname;
     String phone;
     String address;
-    Gender gender;
     Date birthday;
 
 }
