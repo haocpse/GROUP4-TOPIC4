@@ -1,3 +1,4 @@
+// src/components/PackageConstruction.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
@@ -45,7 +46,7 @@ const PackageConstruction = () => {
         selectedPackageData.constructionInfoResponseList.map(
           (construction) => ({
             content: construction.content,
-            price: "", // Add a price field with default value
+            price: "",
           })
         )
       );
@@ -65,7 +66,7 @@ const PackageConstruction = () => {
       ...constructions,
       {
         content: "",
-        price: "", // Initialize with empty price
+        price: "",
       },
     ]);
   };
@@ -80,38 +81,34 @@ const PackageConstruction = () => {
         })),
       };
 
-      const response = await axios.put(
+      await axios.put(
         `http://localhost:8080/packageConstruction/${selectedPackage}`,
         requestBody
       );
       fetchPackagePrices();
-      console.log("Successfully submitted:", response.data);
-
-      // Reset form state after submission
       setSelectedPackage("");
       setConstructions([]);
-
-      // Scroll to the top of the page after submit
       window.scrollTo(0, 0);
     } catch (error) {
       console.error("Error saving construction content:", error);
     }
   };
 
-  const formatPrice = (price) => {
-    return price ? parseInt(price).toLocaleString() : "";
-  };
-
   return (
     <Container fluid className="p-4">
       <Row>
         <Col md={8} className="mx-auto">
-          <h5 className="text-muted mb-4 text-center">Package Construction</h5>
+          <div className="text-center mb-4">
+            <h5 className="text-white bg-danger p-3 rounded">
+              Package Construction
+            </h5>
+          </div>
+
           <div className="d-flex justify-content-center mb-4">
             <Form.Label className="text-muted me-2">Select Package:</Form.Label>
             <Form.Select
               aria-label="Select package"
-              className="w-50"
+              className="w-50 rounded"
               value={selectedPackage}
               onChange={handlePackageChange}
             >
@@ -125,12 +122,14 @@ const PackageConstruction = () => {
           </div>
 
           {constructions.map((construction, index) => (
-            <Card key={index} className="mb-4 shadow-sm border-0">
+            <Card key={index} className="mb-4 shadow border-0">
               <Card.Body>
                 <Row className="align-items-center">
                   <Col md={8}>
                     <Form.Group controlId={`content-${index}`}>
-                      <Form.Label className="fw-bold">Content:</Form.Label>
+                      <Form.Label className="fw-bold text-muted">
+                        Content:
+                      </Form.Label>
                       <Form.Control
                         type="text"
                         value={construction.content}
@@ -151,7 +150,9 @@ const PackageConstruction = () => {
                       controlId={`price-${index}`}
                       className="mt-3 mt-md-0"
                     >
-                      <Form.Label className="fw-bold">Price:</Form.Label>
+                      <Form.Label className="fw-bold text-muted">
+                        Price:
+                      </Form.Label>
                       <InputGroup>
                         <Form.Control
                           type="number"
@@ -170,7 +171,7 @@ const PackageConstruction = () => {
                         <InputGroup.Text>VND</InputGroup.Text>
                       </InputGroup>
                       <Form.Text className="text-muted">
-                        Must be between 50.000 and 500.000 VND.
+                        Must be between 50,000 and 500,000 VND.
                       </Form.Text>
                     </Form.Group>
                   </Col>
@@ -181,13 +182,12 @@ const PackageConstruction = () => {
 
           <div className="d-flex justify-content-between mt-4">
             <Button
-              variant="secondary"
+              variant="primary"
               onClick={handleAddConstruction}
               className="rounded"
             >
               Add More Content
             </Button>
-
             <Button
               variant="success"
               onClick={handleSubmit}
