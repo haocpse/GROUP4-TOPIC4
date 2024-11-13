@@ -241,7 +241,7 @@ const Request = () => {
                                 <td className="text-center align-content-center">{request.packageType}</td>
                                 <td className="text-center align-content-center">{request.totalPrice.toLocaleString()}</td>
                                 <td>
-                                    {request.quotationStatus === "CONFIRMED_BY_USER" ?  handleAssignStaff(request.orderId, "consultantId", request.consultantId) : (
+                                    {request.quotationStatus === "CONFIRMED_BY_USER" ? (consultantList.find(staff => staff.staffId === request.consultantId)?.staffName || "No consultant assigned") : (
                                         <select
                                             className="form-select mt-2"
                                             onChange={(e) => {
