@@ -1,5 +1,5 @@
 import React from "react";
-import './ManageManager.module.css';
+import './ManageAdmin.module.css';
 import { Link, NavLink } from "react-router-dom";
 
 const ManageAdmin = () => {
