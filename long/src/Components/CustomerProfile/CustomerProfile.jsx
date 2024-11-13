@@ -12,15 +12,15 @@ const CustomerProfile = () => {
     const [customerInfo, setCustomerInfo] = useState(null);
     const navigate = useNavigate();
 
+
     const token = localStorage.getItem('token')
     const decode = jwtDecode(token)
     const accountId = decode.sub
-    
     useEffect(() => {
-       
+
         const fetchCustomerInfo = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/customerInfo', {
+                const response = await axios.get(`http://localhost:8080/myInfo/${accountId}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     }

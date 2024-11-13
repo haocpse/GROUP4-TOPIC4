@@ -13,7 +13,6 @@ const CustomerUpdate = () => {
         firstName: '',
         lastName: '',
         phone: '',
-        gender: '',
         address: ''
     });
 
@@ -23,7 +22,7 @@ const CustomerUpdate = () => {
             const decode = jwtDecode(token)
             const accountId = decode.sub
             try {
-                const response = await axios.get(`http://localhost:8080/myInfo/${accountId}/info`, {
+                const response = await axios.get(`http://localhost:8080/myInfo/${accountId}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     }
@@ -145,22 +144,7 @@ const CustomerUpdate = () => {
                                             />
                                         </div>
                                     </div>
-                                    <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                        <div className="form-group">
-                                            <label>Gender:</label>
-                                            <select
-                                                name="gender"
-                                                value={customerInfo.gender}
-                                                onChange={handleChange}
-                                                className="form-control"
-                                            >
-                                                <option value="">Select gender</option>
-                                                <option value="MALE">MALE</option>
-                                                <option value="FEMALE">FEMALE</option>
-                                                <option value="OTHERS">OTHERS</option>
-                                            </select>
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                             </div>
                             <h6 className="mt-3 mb-2 text-primary" style={{ fontSize: '40px' }}>Address:</h6>
