@@ -50,7 +50,8 @@ import ManagerViewDetailPayment from "./Components/ManagerViewPayment/ManagerVie
 import ManagerViewDetailProgress from "./Components/ManagerViewProgress/ManagerViewDetailProgress";
 import CustomerViewProgress from "./Components/CustomerView/CustomerViewProgress";
 import MainLayoutAdmin from "./Components/MainLayoutAdmin";
-import Staff from "./Components/Package/Staff";
+import Project from "./Components/Project/Project"
+
 import AboutUs from "./Components/AboutUs/AboutUs";
 import Blog from "./Components/Blog/Blog";
 import BlogDetail from "./Components/Blog/BlodDetail";
@@ -154,7 +155,7 @@ function App() {
             path="package-construction"
             element={<PackageConstruction />}
           />
-          <Route path="staff" element={<Staff />} />
+         
         </Route>
 
         <Route path="/myInfo/orders" element={<CustomerView />} />
@@ -179,6 +180,9 @@ function App() {
           path="/myInfo/orders/maintenance"
           element={<CustomerViewMaintenance />}
         />
+        
+        
+        <Route path="/project" element={<Project />} />
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
