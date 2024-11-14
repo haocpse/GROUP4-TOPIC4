@@ -66,32 +66,17 @@ function App() {
         <Route element={<ProtectedRoutesManager />}>
           <Route path="/manage" element={<MainLayout />}>
             <Route path="request" element={<Request />} />
-            <Route
-              path="maintenance-request"
-              element={<MaintenanceRequest />}
-            />
+            <Route path="maintenance-request" element={<MaintenanceRequest />} />
             <Route path="quotations" element={<ApproveQuotation />} />
             <Route path="quotations/:id" element={<ViewQuotation />} />
-            <Route
-              path="maintenance-quotations"
-              element={<ApproveMaintenanceQuotation />}
-            />
-            <Route
-              path="maintenance-quotations/:id"
-              element={<ViewMaintenanceQuotation />}
-            />
+            <Route path="maintenance-quotations" element={<ApproveMaintenanceQuotation />} />
+            <Route path="maintenance-quotations/:id" element={<ViewMaintenanceQuotation />} />
             <Route path="designs" element={<ApproveDesign />} />
             <Route path="designs/:id" element={<ViewDesign />} />
             <Route path="viewProgress" element={<ManagerViewProgess />} />
-            <Route
-              path="viewProgress/:constructionOrderId"
-              element={<ManagerViewDetailProgress />}
-            />
+            <Route path="viewProgress/:constructionOrderId" element={<ManagerViewDetailProgress />} />
             <Route path="viewPayment" element={<ManagerViewPayment />} />
-            <Route
-              path="viewPayment/:id"
-              element={<ManagerViewDetailPayment />}
-            />
+            <Route path="viewPayment/:id" element={<ManagerViewDetailPayment />} />
             <Route path="dashboard" element={<Dashboard />} />
           </Route>
         </Route>
@@ -101,18 +86,9 @@ function App() {
           <Route path="/consult" element={<MainLayoutConsultant />}>
             <Route path="ownedTasks" element={<ConsultantTasks />} />
             <Route path="quotations" element={<ConsultantQuotations />} />
-            <Route
-              path="ownedTasks/:constructionOrderId"
-              element={<QuotationOrder />}
-            />
-            <Route
-              path="ownedTasks/:constructionOrderId/quotation"
-              element={<ViewQuotationAfterCreate />}
-            />
-            <Route
-              path="quotations/:quotationId"
-              element={<UpdateQuotation />}
-            />
+            <Route path="ownedTasks/:constructionOrderId" element={<QuotationOrder />} />
+            <Route path="ownedTasks/:constructionOrderId/quotation" element={<ViewQuotationAfterCreate />} />
+            <Route path="quotations/:quotationId" element={<UpdateQuotation />} />
           </Route>
         </Route>
 
@@ -120,10 +96,7 @@ function App() {
         <Route element={<ProtectedRoutesDesigner />}>
           <Route path="/design" element={<MainLayoutDesigner />}>
             <Route path="ownedTasks" element={<DesignerTasks />} />
-            <Route
-              path="ownedTasks/:constructionOrderId"
-              element={<DesignUpload />}
-            />
+            <Route path="ownedTasks/:constructionOrderId" element={<DesignUpload />} />
             <Route path="designs" element={<ListDesign />} />
             <Route path="designs/:designId" element={<UpdateDesign />} />
           </Route>
@@ -133,10 +106,7 @@ function App() {
         <Route element={<ProtectedRoutesConstructor />}>
           <Route path="/construct" element={<MainLayoutConstructor />}>
             <Route path="ownedTasks" element={<ConstructionOrder />} />
-            <Route
-              path="ownedTasks/:constructionOrderId"
-              element={<ConstructionProgress />}
-            />
+            <Route path="ownedTasks/:constructionOrderId" element={<ConstructionProgress />} />
           </Route>
         </Route>
 
@@ -160,26 +130,11 @@ function App() {
           <Route path="/myInfo" element={<CustomerProfile />} />
           <Route path="/myInfo/:accountId" element={<CustomerUpdate />} />
           <Route path="/myInfo/orders" element={<CustomerView />} />
-          <Route
-            path="/myInfo/orders/:constructionOrderId/quotation"
-            element={<CustomerQuotationList />}
-          />
-          <Route
-            path="/myInfo/orders/:constructionOrderId/design"
-            element={<CustomerViewDesign />}
-          />
-          <Route
-            path="/myInfo/orders/:constructionOrderId/payments"
-            element={<PaymentInfo />}
-          />
-          <Route
-            path="/myInfo/orders/:constructionOrderId/progress"
-            element={<CustomerViewProgress />}
-          />
-          <Route
-            path="/myInfo/orders/maintenance"
-            element={<CustomerViewMaintenance />}
-          />
+          <Route path="/myInfo/orders/:constructionOrderId/quotation" element={<CustomerQuotationList />} />
+          <Route path="/myInfo/orders/:constructionOrderId/design" element={<CustomerViewDesign />} />
+          <Route path="/myInfo/orders/:constructionOrderId/payments" element={<PaymentInfo />} />
+          <Route path="/myInfo/orders/:constructionOrderId/progress" element={<CustomerViewProgress />} />
+          <Route path="/myInfo/maintenanceOrders" element={<CustomerViewMaintenance />} />
         </Route>
         {/* MAIN */}
         <Route path="/project" element={<Project />} />

@@ -43,6 +43,9 @@ const CustomerProfile = () => {
     const handleClickOrders = () => {
         navigate('/myInfo/orders');
     }
+    const handleClickMaintenanceOrders = () => {
+        navigate('/myInfo/maintenanceOrders');
+    }
 
     return (
         <>
@@ -58,7 +61,7 @@ const CustomerProfile = () => {
                                         <div className="user-profile text-center">
                                             <h2 className="text-primary">Avatar</h2>
                                             <div className="user-avatar">
-                                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Customer" class="rounded-circle" width="150"/>
+                                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Customer" class="rounded-circle" width="150" />
                                             </div>
                                         </div>
                                         <div className="about mt-3">
@@ -122,8 +125,11 @@ const CustomerProfile = () => {
                                                 <button type="button" className="btn btn-primary mr-3" onClick={handleClickUpdate}>
                                                     Update Information
                                                 </button>
-                                                <button type="button" className="btn btn-danger" onClick={handleClickOrders}>
+                                                <button type="button" className="btn btn-danger mr-3" onClick={handleClickOrders}>
                                                     View Orders
+                                                </button>
+                                                <button type="button" className="btn btn-warning" onClick={handleClickMaintenanceOrders}>
+                                                    View Maintenance Orders
                                                 </button>
                                             </div>
                                         </div>

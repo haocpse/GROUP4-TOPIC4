@@ -21,23 +21,22 @@ const MaintenanceRequest = () => {
             toast.error('Failed to load constructors. ^^');
         }
     };
-
-
+    const fetchRequests = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/maintenance/requests', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                }
+            });
+            setMaintenanceRequests(response.data.data);
+        } catch (error) {
+            console.error('Error fetching requests:', error);
+            toast.error('Failed to load requests. ^^');
+        }
+    }
     // lay du lieu request tu backend
     useEffect(() => {
-        const fetchRequests = async () => {
-            try {
-                const response = await axios.get('http://localhost:8080/maintenance/requests', {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    }
-                });
-                setMaintenanceRequests(response.data.data);
-            } catch (error) {
-                console.error('Error fetching requests:', error);
-                toast.error('Failed to load requests. ^^');
-            }
-        }
+
         fetchRequests()
         fetchConstructors()
     }, []);
@@ -122,7 +121,7 @@ const MaintenanceRequest = () => {
                 },
 
             });
-
+            fetchRequests()
             toast.success("POST SUCCESS !! ^^");
         } catch (error) {
             console.error('Error fetching constructors:', error);
