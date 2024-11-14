@@ -47,7 +47,8 @@ public class ManageConstructionOrderService {
     ConstructionTasksMapper constructionTasksMapper;
     @Autowired
     PaymentMapper paymentMapper;
-    private DesignRepository designRepository;
+    @Autowired
+    DesignRepository designRepository;
 
     public List<ConstructOrderDetailForManagerResponse> listAllOrder() {
         List<ConstructOrderDetailForManagerResponse> responses = new ArrayList<>();
@@ -82,6 +83,7 @@ public class ManageConstructionOrderService {
             response.setQuotationStatus(quotation.getQuotationStatus());
         }
         if (order.getDesignId() != null) {
+
             Design design = designRepository.findById(order.getDesignId()).orElseThrow();
             response.setDesignStatus(design.getDesignStatus());
         }
@@ -102,7 +104,8 @@ public class ManageConstructionOrderService {
     }
 
     public List<ProgressReviewResponse> listAllConstructionProgress() {
-        List<ConstructionOrder> constructionOrders = constructOrderRepository.findAll();
+        List<ConstructionOrder> constructionOrders = constructOrderRepository.findByStatusIn(List.of(ConstructionOrderStatus.CONSTRUCTING,
+                ConstructionOrderStatus.CONSTRUCTED, ConstructionOrderStatus.CONFIRMED_CONSTRUCTED));
         List<ProgressReviewResponse> responses = new ArrayList<>();
         for (ConstructionOrder constructionOrder : constructionOrders) {
             List<ConstructStatus> statuses = List.of(ConstructStatus.NOT_YET, ConstructStatus.IN_PROGRESS);
@@ -172,12 +175,17 @@ public class ManageConstructionOrderService {
             for (PaymentOrder paymentOrder : paymentOrders) {
                 PaymentInfoResponse infoResponse = new PaymentInfoResponse();
                 if (count == 1) {
-                    infoResponse.setPrice((long) (order.getTotal() * quotation.getPercentageStage1()));
+                    infoResponse.setPrice((long) ((order.getTotal() * quotation.getPercentageStage1()))/100);
                 }
                 else if (count == 2) {
-                    infoResponse.setPrice((long) (order.getTotal() * quotation.getPercentageStage2()));
+                    infoResponse.setPrice((long) ((order.getTotal() * quotation.getPercentageStage2()))/100);
                 } else {
-                    infoResponse.setPrice((long) (order.getTotal() * quotation.getPercentageStage3()));
+                    List<PaymentOrder> payments = paymentOrderRepository.findByOrderId(constructionOrderId);
+                    long total = (long) order.getTotal();
+                    for (PaymentOrder p : payments) {
+                        total -= p.getTotal();
+                    }
+                    infoResponse.setPrice(total);
                 }
                 paymentInfoResponses.add(paymentMapper.toPaymentInfoResponse(paymentOrder, infoResponse));
                 count++;
@@ -186,6 +194,7 @@ public class ManageConstructionOrderService {
         return ViewPaymentResponse.builder()
                 .customerName(customer.getFirstName() + " " + customer.getLastName())
                 .phone(customer.getPhone())
+                .totalPrice((long) order.getTotal())
                 .address(customer.getAddress())
                 .paymentInfoResponseList(paymentInfoResponses)
                 .build();
@@ -272,7 +281,7 @@ public class ManageConstructionOrderService {
                 responses.add(response);
             }
         } else if (status.equals("paid_3")) {
-            List<ConstructionOrder> constructionOrders = constructOrderRepository.findByStatus(ConstructionOrderStatus.PAID_STAGE_3);
+            List<ConstructionOrder> constructionOrders = constructOrderRepository.findByStatus(ConstructionOrderStatus.CONFIRMED_CONSTRUCTED);
             for (ConstructionOrder constructionOrder : constructionOrders) {
                 Customer customer = this.findCustomerById(constructionOrder.getCustomerId());
                 ConstructOrderDetailForManagerResponse response = this.buildConstructOrderDetailForManagerResponse(constructionOrder, customer);

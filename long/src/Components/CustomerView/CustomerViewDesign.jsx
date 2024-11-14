@@ -120,13 +120,13 @@ const CustomerViewDesign = () => {
                     {designDetail.constructionOrderStatus !== "CONFIRMED_QUOTATION" ? (
                         <div>
                             <button
-                                className="btn btn-success me-2"
+                                className="btn btn-success me-2 mt-2"
                                 onClick={() => confirmApproval("CONFIRMED")}
                             >
                                 Approve
                             </button>
                             <button
-                                className="btn btn-danger me-2"
+                                className="btn btn-danger me-2 mt-2"
                                 onClick={() => confirmApproval("REJECTED")}
                             >
                                 Reject

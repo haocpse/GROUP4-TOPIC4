@@ -14,6 +14,7 @@ public class ViewPaymentResponse {
     String customerName;
     String phone;
     String address;
+    long totalPrice;
     List<PaymentInfoResponse> paymentInfoResponseList;
 
 }

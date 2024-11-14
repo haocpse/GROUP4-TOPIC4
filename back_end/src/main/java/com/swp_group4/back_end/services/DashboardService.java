@@ -129,7 +129,7 @@ public class DashboardService {
                 ConstructionOrderStatus.PAID_STAGE_2,
                 ConstructionOrderStatus.CONSTRUCTING,
                 ConstructionOrderStatus.CONSTRUCTED,
-                ConstructionOrderStatus.PAID_STAGE_3
+                ConstructionOrderStatus.CONFIRMED_CONSTRUCTED
         );
         List<ConstructionOrder> inProgressOrder = constructOrderRepository.findByStatusNotIn(List.of(ConstructionOrderStatus.FINISHED, ConstructionOrderStatus.CANCELLED));
         List<InProgressProjectInfoDashboardResponse> responses = new ArrayList<>();

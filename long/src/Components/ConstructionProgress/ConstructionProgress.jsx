@@ -38,38 +38,34 @@ const ConstructionProgress = () => {
         }
 
     };
-
-
-    useEffect(() => {
-
+    const fetchTask = async () => { // ham de long lay du lieu tu backend ne ^^;
         const token = localStorage.getItem('token');
         const decoded = jwtDecode(token)
         const accountId = decoded.sub
+        try {
+            const response = await axios.get(`http://localhost:8080/staffs/${accountId}/tasks/${constructionOrderId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Include token if needed
+                }
+            });
+            setOrders([response.data.data]); // neu la mang se co []
+            const assignedStaffs = response.data.data.staffs || [];
+            const assignedIds = assignedStaffs.map(staff => staff.staffId); // lay ra staff IDs
+            const assignedNames = assignedStaffs.map(staff => staff.staffName); // lay ra Staff names
+            setListTask(response.data.data.constructTaskStatusResponses);
+            setAssignedStaffNames(assignedNames)
+            setSelectedStaff(assignedIds);
+            console.log(response.data.data.staffs)
+        } catch (error) {
 
-        const fetchTask = async () => { // ham de long lay du lieu tu backend ne ^^;
+            console.error('Error get task list !!', error);
 
-            try {
-                const response = await axios.get(`http://localhost:8080/staffs/${accountId}/tasks/${constructionOrderId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Include token if needed
-                    }
-                });
-                setOrders([response.data.data]); // neu la mang se co []
-                const assignedStaffs = response.data.data.staffs || [];
-                const assignedIds = assignedStaffs.map(staff => staff.staffId); // lay ra staff IDs
-                const assignedNames = assignedStaffs.map(staff => staff.staffName); // lay ra Staff names
-                setListTask(response.data.data.constructTaskStatusResponses);
-                setAssignedStaffNames(assignedNames)
-                setSelectedStaff(assignedIds);
-                console.log(response.data.data.staffs)
-            } catch (error) {
-
-                console.error('Error get task list !!', error);
-
-                // hien thi loi cho ng dung
-                toast.error('Failed to load task list. Please try again later ^^');
-            };
+            // hien thi loi cho ng dung
+            toast.error('Failed to load task list. Please try again later ^^');
         };
+    };
+
+    useEffect(() => {
         fetchTask()
         fetchStaff()
     }, []);
@@ -135,6 +131,7 @@ const ConstructionProgress = () => {
                 .join(", ");
 
             setAssignedStaffNames(assignedStaffNames); // Biến này sẽ lưu trữ tên staff để hiển thị
+            fetchTask();
         } catch (error) {
             console.error('Assign error', error);
             toast.error("Staff assigned FAIL!");
@@ -299,7 +296,7 @@ const ConstructionProgress = () => {
                 <div className="mt-4 mb-4">
                     <h4 className="mb-4">Assigned Staff:</h4>
                     {
-                        assignedStaffNames && assignedStaffNames.length > 0 ? (
+                        Array.isArray(assignedStaffNames) && assignedStaffNames.length > 0 ? (
                             <ul className="list-group">
                                 {assignedStaffNames.map((name, index) => (
                                     <li key={index + 1} className="list-group-item list-group-item-secondary">

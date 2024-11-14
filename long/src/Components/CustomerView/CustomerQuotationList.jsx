@@ -70,6 +70,7 @@ const CustomerQuotationList = () => {
         if (confirmed) {
             handleApproval(status);
         }
+        fetchCustomerQuotations();
     };
 
     const fetchQuotation = async () => {

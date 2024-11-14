@@ -169,11 +169,13 @@ public class PackageService {
 
             if (existingConstructionOpt.isPresent()) {
                 PackageConstruction existingConstruction = existingConstructionOpt.get();
+                existingConstruction.setPrice(constructionRequest.getPrice());
                 packageConstructionRepository.save(existingConstruction);
             } else {
                 PackageConstruction newConstruction = PackageConstruction.builder()
                         .packageId(packageId)
                         .content(constructionRequest.getContent())
+                        .price(constructionRequest.getPrice())
                         .build();
                 packageConstructionRepository.save(newConstruction);
             }

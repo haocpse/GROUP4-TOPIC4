@@ -346,7 +346,7 @@ public class CustomerService {
 
     public ConstructionOrderStatus finishConstructOrder(String constructionOrderId, FinishConstructRequest request, String accountId) {
         ConstructionOrder order = constructOrderRepository.findById(constructionOrderId).orElseThrow();
-        order.setStatus(request.getStatus());
+        order.setStatus(ConstructionOrderStatus.CONFIRMED_CONSTRUCTED);
         constructOrderRepository.save(order);
         Customer customer = customerRepository.findByAccountId(accountId).orElseThrow();
         List<PaymentOrder> paymentOrders = paymentOrderRepository.findByOrderId(constructionOrderId);
@@ -364,7 +364,6 @@ public class CustomerService {
                 .status(PaymentStatus.PENDING)
                 .build();
         paymentOrderRepository.save(paymentOrder);
-        customer.setPoint((long) (order.getTotal() / 1000000));
         return order.getStatus();
     }
 

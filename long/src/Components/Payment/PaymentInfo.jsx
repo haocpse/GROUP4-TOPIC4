@@ -3,6 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { redirect, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import Navbar from '../Navbar/Navbar';
+import Footer from '../Footer/Footer'
 
 const PaymentInfo = () => {
     const navigate = useNavigate();
@@ -44,7 +46,21 @@ const PaymentInfo = () => {
 
     };
 
+    const formatDate = (dateString) => {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const year = date.getFullYear();
+        return `${hours}:${minutes}:${seconds} ${day}/${month}/${year}`;
+    };
+
     return (
+        <>
+        <Navbar/>
         <div className="container mt-5">
             <h2 className="text-center">CUSTOMER INFORMATION</h2>
             <div className="border p-3 my-3">
@@ -68,6 +84,7 @@ const PaymentInfo = () => {
                                     <th>Service</th>
                                     <th>Price</th>
                                     <th>Payment Date</th>
+                                    <th>Due Date</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -77,7 +94,8 @@ const PaymentInfo = () => {
                                         <tr>
                                             <td>{payment.paymentTitle}</td>
                                             <td>{payment.price.toLocaleString()}</td>
-                                            <td>{payment.paidDate}</td>
+                                            <td>{formatDate(payment.paidDate)}</td>
+                                            <td>{formatDate(payment.dueDate)}</td>
                                             <td>
                                                 {payment.paymentStatus === "SUCCESS" ? (
                                                     <span className="badge bg-success">Paid</span>
@@ -98,7 +116,15 @@ const PaymentInfo = () => {
                     </div>
                 </div>
             </div>
+            <button
+                className="btn btn-outline-secondary mb-4"
+                onClick={() => navigate("/myInfo/orders")}
+            >
+                Back
+            </button>
         </div>
+        <Footer/>
+        </>
     );
 };
 

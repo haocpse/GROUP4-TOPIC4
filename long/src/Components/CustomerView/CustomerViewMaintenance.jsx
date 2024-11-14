@@ -40,8 +40,17 @@ const CustomerViewMaintenance = () => {
     navigate(`/myInfo/orders/${maintenanceOrderId}/paymentInfo`);
   };
 
-  const handlePayNow = (maintenanceOrderId) => {
-    navigate(`/myInfo/orders/${maintenanceOrderId}/pay`);
+  const handlePayNow = (order) => {
+    const total = order.totalPrice;
+    const fetchLinkPayment = async () => {
+      const response = await axios.post(`http://localhost:8080/payments/maintenance/${order.paymentId}?amount=${total}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      window.location.href = response.data.data;
+    }
+    fetchLinkPayment()
   };
 
   const formatDate = (dateString) => {
@@ -82,7 +91,7 @@ const CustomerViewMaintenance = () => {
                       <td>{order.totalPrice}</td>
                       <td>{order.status}</td>
                       <td>
-                        {order.status === "PAYMENT_CREATED" ? (<button className="btn btn-success ms-2" onClick={() => handlePayNow(order.maintenanceOrderId)}>
+                        {order.status === "PAYMENT_CREATED" ? (<button className="btn btn-success ms-2" onClick={() => handlePayNow(order)}>
                           Pay Now
                         </button>) : (null)
                         }

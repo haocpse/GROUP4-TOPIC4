@@ -12,7 +12,7 @@ const ApproveDesign = () => {
     // lay danh sach cac design can up' det^'
     const fetchDesigns = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/manage/designs', {
+            const response = await axios.get('http://localhost:8080/designs', {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 }

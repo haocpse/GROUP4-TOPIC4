@@ -2,6 +2,7 @@ package com.swp_group4.back_end.services;
 
 import com.swp_group4.back_end.configuration.VNPAYConfig;
 import com.swp_group4.back_end.entities.ConstructionOrder;
+import com.swp_group4.back_end.entities.Customer;
 import com.swp_group4.back_end.entities.MaintenanceOrder;
 import com.swp_group4.back_end.entities.PaymentOrder;
 import com.swp_group4.back_end.enums.ConstructionOrderStatus;
@@ -9,6 +10,7 @@ import com.swp_group4.back_end.enums.MaintenanceOrderStatus;
 import com.swp_group4.back_end.enums.PaymentMethods;
 import com.swp_group4.back_end.enums.PaymentStatus;
 import com.swp_group4.back_end.repositories.ConstructOrderRepository;
+import com.swp_group4.back_end.repositories.CustomerRepository;
 import com.swp_group4.back_end.repositories.MaintenanceOrderRepository;
 import com.swp_group4.back_end.repositories.PaymentOrderRepository;
 import com.swp_group4.back_end.requests.PaymentCreateRequest;
@@ -18,8 +20,10 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -35,15 +39,18 @@ public class PaymentService {
     private ConstructOrderRepository constructOrderRepository;
     @Autowired
     private MaintenanceOrderRepository maintenanceOrderRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
 
     public void reCreatePayment(String paymentId){
         PaymentOrder paymentOrder = paymentOrderRepository.findById(paymentId).orElseThrow();
-        String title = "Thanh toán lại " + paymentOrder.getPaymentTitle();
+        String title = paymentOrder.getPaymentTitle();
         paymentOrderRepository.delete(paymentOrder);
         PaymentOrder paymentOrder1 = PaymentOrder.builder()
                 .orderId(paymentOrder.getOrderId())
                 .customerId(paymentOrder.getCustomerId())
                 .paymentTitle(title)
+                .dueDate(LocalDateTime.now().plusDays(7))
                 .paymentMethods(PaymentMethods.VNPAY)
                 .total(paymentOrder.getTotal())
                 .status(PaymentStatus.PENDING)
@@ -96,7 +103,20 @@ public class PaymentService {
         } else if (order.getStatus().name().equals("CONFIRMED_DESIGN")) {
             order.setStatus(ConstructionOrderStatus.PAID_STAGE_2);
         } else {
-            order.setStatus(ConstructionOrderStatus.PAID_STAGE_3);
+            var context = SecurityContextHolder.getContext();
+            String id = context.getAuthentication().getName();
+            Customer customer = customerRepository.findByAccountId(id).orElseThrow();
+            long point = 0;
+            List<ConstructionOrder> orders = constructOrderRepository.findByCustomerId(customer.getCustomerId());
+            for (ConstructionOrder o : orders) {
+                if (o.getConstructionOrderId() == orderId) {
+                    point = (long) o.getTotal()/1000000;
+                    break;
+                }
+            }
+            customer.setPoint(point);
+            customerRepository.save(customer);
+            order.setStatus(ConstructionOrderStatus.FINISHED);
         }
         constructOrderRepository.save(order);
     }

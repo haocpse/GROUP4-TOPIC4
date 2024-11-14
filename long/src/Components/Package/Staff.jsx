@@ -27,7 +27,11 @@ const Staff = () => {
         setMessage('');
 
         try {
-            const response = await axios.post('http://localhost:8080/staff', formData);
+            const response = await axios.post('http://localhost:8080/staff', formData, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+                }
+            });
             setMessage(`Staff registered successfully: ${response.data.data.username}`);
             setFormData({
                 staffName: '',
@@ -46,7 +50,11 @@ const Staff = () => {
 
     const fetchStaffList = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/staffs');
+            const response = await axios.get('http://localhost:8080/staffs', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+                }
+            });
             setStaffList(response.data.data);
         } catch (error) {
             console.error('Failed to fetch staff list:', error);

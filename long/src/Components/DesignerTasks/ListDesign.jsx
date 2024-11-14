@@ -35,8 +35,8 @@ const ListDesign = () => {
     navigate(`/design/designs/${designId}`);
   };
 
-  const handleViewDesign = (constructionOrderId) => {
-    navigate(`/design/ownedTasks/${constructionOrderId}/design`);
+  const handleViewDesign = (designId) => {
+    navigate(`/design/ownedTasks/${designId}/design`);
   };
 
   const formatDate = (dateString) => {
@@ -78,12 +78,12 @@ const ListDesign = () => {
                     <button
                       className="btn btn-primary"
                       onClick={
-                        task.status === 'REJECTED'
+                        task.designStatus === 'REJECTED'
                           ? () => handleUpdateDesign(task.designId)
-                          : () => handleViewDesign(task.constructionOrderId)
+                          : () => handleViewDesign(task.designId)
                       }
                     >
-                      {task.status === 'REJECTED' ? 'Update Design' : 'View Design'}
+                      {task.designStatus === 'REJECTED' ? 'Update Design' : 'View Design'}
                     </button>
                   </td>
                 </tr>

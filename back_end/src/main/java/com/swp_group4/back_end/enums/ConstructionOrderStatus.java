@@ -11,7 +11,7 @@ public enum ConstructionOrderStatus {
     PAID_STAGE_2,
     CONSTRUCTING,
     CONSTRUCTED,
-    PAID_STAGE_3,
+    CONFIRMED_CONSTRUCTED,
     FINISHED, CANCELLED, NULL;
 
 }

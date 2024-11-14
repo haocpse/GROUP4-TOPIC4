@@ -9,7 +9,7 @@ const ManagerViewProgess = () => {
     useEffect(() => {
         const fetchOrder = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/manager/viewProgress', {
+                const response = await axios.get('http://localhost:8080/progress', {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     }
@@ -27,6 +27,15 @@ const ManagerViewProgess = () => {
         navigate(`${constructionOrderId}`);
     }
 
+    const formatDate = (dateString) => {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
+
 
     return (
         <>
@@ -38,12 +47,13 @@ const ManagerViewProgess = () => {
                 <table className="table table-bordered">
                     <thead>
                         <tr>
-                            <th scope="col" className="text-center">Construction Order ID</th>
+                            <th scope="col" className="text-center">No</th>
                             <th scope="col" className="text-center">Customer Name</th>
                             <th scope="col" className="text-center">Start Date</th>
                             <th scope="col" className="text-center">End Date</th>
                             <th scope="col" className="text-center">Staff Name</th>
                             <th scope="col" className="text-center">Status</th>
+                            <th scope="col" className="text-center">View</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -52,13 +62,13 @@ const ManagerViewProgess = () => {
                                 <td colSpan="4" className="text-center">No construction orders available.</td>
                             </tr>
                         ) : (
-                            constructionOrders.map(order => (
+                            constructionOrders.map((order, id) => (
                                 <tr key={order.constructionOrderId}>
-                                    <td className="text-center align-content-center col-1">{order.constructionOrderId}</td>
-                                    <td className="text-center align-content-center col-1">{order.customerName}</td>
-                                    <td className="text-center align-content-center col-1">{order.startDate}</td>
-                                    <td className="text-center align-content-center col-1">{order.endDate}</td>
-                                    <td className="text-center align-content-center col-1">{order.staffName}</td>
+                                    <td className="text-center align-content-center">{id + 1}</td>
+                                    <td className="text-center align-content-center">{order.customerName}</td>
+                                    <td className="text-center align-content-center ">{formatDate(order.startDate)}</td>
+                                    <td className="text-center align-content-center">{formatDate(order.endDate)}</td>
+                                    <td className="text-center align-content-center">{order.leaderName}</td>
 
                                     {/* thay đổi status nè */}
                                     <td>

@@ -1,7 +1,7 @@
 import { Outlet, Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
-const ProtectedRoutesAdmin = () => {
+const ProtectedRoutesCustomer = () => {
     const token = localStorage.getItem("token");
     const role = getRoleFromToken()
     return role === "CUSTOMER" ? <Outlet/> : <Navigate to="/login"/> 
@@ -25,4 +25,4 @@ function getRoleFromToken() {
     return null;
 }
 
-export default ProtectedRoutesAdmin;
+export default ProtectedRoutesCustomer;

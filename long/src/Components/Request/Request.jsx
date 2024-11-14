@@ -138,7 +138,7 @@ const Request = () => {
     //handle status change
     const handleStatusChange = async (statusTab) => {
         try {
-            const respone = await axios.get(`http://localhost:8080/manager/requests/${statusTab}`, {
+            const respone = await axios.get(`http://localhost:8080/requests/${statusTab}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 }
@@ -173,7 +173,7 @@ const Request = () => {
             <div>
                 <nav className="nav justify-content-center mb-2">
                     <div className="nav-item">
-                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange()}>All</button>
+                        <button className="btn btn-outline-primary mx-1" onClick={() => fetchRequests()}>All</button>
                     </div>
                     <div className="nav-item">
                         <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("requested")}>Requested</button>
@@ -280,7 +280,7 @@ const Request = () => {
                                     )}
                                 </td>
                                 <td>
-                                    {request.status === "PAID_STAGE_3" ? (constructorList.find(staff => staff.staffId === request.constructorLeaderId)?.staffName || "No constructor assigned") : (
+                                    {request.status === "FINISHED" ? (constructorList.find(staff => staff.staffId === request.constructorLeaderId)?.staffName || "No constructor assigned") : (
                                         <select
                                             className="form-select mt-2"
                                             onChange={(e) => {

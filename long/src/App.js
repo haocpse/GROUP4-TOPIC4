@@ -58,6 +58,8 @@ import CustomerViewMaintenance from "./Components/CustomerView/CustomerViewMaint
 import Staff from "./Components/Package/Staff";
 import CustomerProfile from "./Components/CustomerProfile/CustomerProfile";
 import CustomerUpdate from "./Components/CustomerProfile/CustomerUpdate";
+import ProtectedRoutesAdmin from "./utils/ProtectedRoutesAdmin"
+import DesignerViewImage from "./Components/DesignerTasks/DesignerViewImage";
 function App() {
   return (
     <Router>
@@ -126,6 +128,7 @@ function App() {
             />
             <Route path="designs" element={<ListDesign />} />
             <Route path="designs/:designId" element={<UpdateDesign />} />
+            <Route path="ownedTasks/:designId/design" element={<DesignerViewImage />} />
           </Route>
         </Route>
 
@@ -148,11 +151,13 @@ function App() {
         </Route>
 
         {/* ADMIN */}
-        <Route path="/admin" element={<MainLayoutAdmin />}>
-          <Route path="BlogCRUD" element={<BlogCRUD />}></Route>
-          <Route path="staff" element={<Staff />}></Route>
-          <Route path="packagePrice" element={<PackagePrice />}></Route>
-          <Route path="packageConstruction" element={<PackageConstruction />} />
+        <Route element={< ProtectedRoutesAdmin/>}>
+          <Route path="/admin" element={<MainLayoutAdmin />}>
+            <Route path="BlogCRUD" element={<BlogCRUD />}></Route>
+            <Route path="staff" element={<Staff />}></Route>
+            <Route path="packagePrice" element={<PackagePrice />}></Route>
+            <Route path="packageConstruction" element={<PackageConstruction />} />
+          </Route>
         </Route>
 
         {/* CUSTOMER */}

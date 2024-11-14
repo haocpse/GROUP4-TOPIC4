@@ -98,7 +98,7 @@ const UpdateDesign = () => {
   return (
     <div className="container mt-5">
       <div className="card shadow">
-        <div className="card-header text-center bg-primary text-white">
+        <div className="card-header text-center bg-danger text-white">
           <h2>Customer Information</h2>
           <p>Order ID: {designDetail.constructionOrderId}</p>
         </div>
@@ -196,7 +196,7 @@ const UpdateDesign = () => {
           </form>
         </div>
       </div>
-      <button className="btn btn-secondary" onClick={() => navigate('/manage/requests')}>Go Manage</button>
+    
     </div>
 
   );

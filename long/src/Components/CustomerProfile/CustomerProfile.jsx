@@ -43,6 +43,9 @@ const CustomerProfile = () => {
     const handleClickOrders = () => {
         navigate('/myInfo/orders');
     }
+    const handleClickMaintenanceOrders = () => {
+        navigate('/myInfo/orders/maintenance');
+    }
 
     return (
         <>
@@ -122,8 +125,11 @@ const CustomerProfile = () => {
                                                 <button type="button" className="btn btn-primary mr-3" onClick={handleClickUpdate}>
                                                     Update Information
                                                 </button>
-                                                <button type="button" className="btn btn-danger" onClick={handleClickOrders}>
+                                                <button type="button" className="btn btn-danger mr-3" onClick={handleClickOrders}>
                                                     View Orders
+                                                </button>
+                                                <button type="button" className="btn btn-warning" onClick={handleClickMaintenanceOrders}>
+                                                    View Maintenance Orders
                                                 </button>
                                             </div>
                                         </div>

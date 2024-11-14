@@ -28,7 +28,7 @@ const ViewDesign = () => {
 
   const handleApproval = async (status) => {
     try {
-      await axios.post(`http://localhost:8080/designs/${id}`, {
+      await axios.put(`http://localhost:8080/designs/${id}`, {
         status: status
       }, {
         headers: {

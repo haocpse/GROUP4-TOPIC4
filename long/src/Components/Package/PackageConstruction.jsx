@@ -20,8 +20,11 @@ const PackageConstruction = () => {
   const fetchPackagePrices = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/packageConstruction"
-      );
+        "http://localhost:8080/packageConstruction", {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+        }
+      });
       setPackagePrices(response.data.data || []);
     } catch (error) {
       console.error("Error fetching package prices:", error);
@@ -47,7 +50,7 @@ const PackageConstruction = () => {
         selectedPackageData.constructionInfoResponseList.map(
           (construction) => ({
             content: construction.content,
-            price: "",
+            price: construction.price,
           })
         )
       );
@@ -100,14 +103,18 @@ const PackageConstruction = () => {
         packageConstructions: constructions.map((construction) => ({
           content: construction.content,
           // Bỏ dấu chấm trước khi gửi lên server
-          price: parseInt(construction.price.replace(/\./g, "")),
+          price: parseInt(
+            (construction.price || "0").toString().replace(/\./g, "")
+          ),
         })),
       };
 
       await axios.put(
-        `http://localhost:8080/packageConstruction/${selectedPackage}`,
-        requestBody
-      );
+        `http://localhost:8080/packageConstruction/${selectedPackage}`,requestBody , {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`, // Attach token
+          }
+        });
       fetchPackagePrices();
       setSelectedPackage("");
       setConstructions([]);

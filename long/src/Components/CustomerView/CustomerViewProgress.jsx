@@ -11,17 +11,17 @@ const CustomerViewProgress = () => {
     const { constructionOrderId } = useParams(); // lay constructionOrderId từ url
     const [orders, setOrders] = useState({});
     const [constructionList, setConstructionList] = useState([]);
-    const [accountId, setAccountId] = useState('')
+    const [staffList, setStaffList] = useState([]);
+
     const navigate = useNavigate();
 
     useEffect(() => {
 
-        const token = localStorage.getItem('token');
-        const decoded = jwtDecode(token)
-        setAccountId(decoded.sub)
 
         const fetchTask = async () => { // ham de long lay du lieu tu backend ne ^^;
-
+            const token = localStorage.getItem('token');
+            const decoded = jwtDecode(token)
+            const accountId = decoded.sub
             try {
                 const response = await axios.get(`http://localhost:8080/customer/${accountId}/constructionOrders/${constructionOrderId}/progress`, {
                     headers: {
@@ -29,7 +29,8 @@ const CustomerViewProgress = () => {
                     }
                 });
                 setOrders(response.data.data);
-                setConstructionList([response.data.data.listConstructProgressResponses]) // neu la mang se co []
+                setConstructionList([response.data.data.listConstructProgressResponses])
+                setStaffList(response.data.data.staffNames) // neu la mang se co []
             } catch (error) {
 
                 console.error('Error get task list !!', error);
@@ -43,6 +44,9 @@ const CustomerViewProgress = () => {
 
     const handleCompleteProgress = async () => {
         try {
+            const token = localStorage.getItem('token');
+            const decoded = jwtDecode(token)
+            const accountId = decoded.sub
             await axios.put(`http://localhost:8080/customer/${accountId}/constructionOrders/${constructionOrderId}/progress`, {
                 status: "FINISHED",
             }, {
@@ -57,6 +61,15 @@ const CustomerViewProgress = () => {
             toast.error('Failed to update task status. Please try again. ^^');
         }
     }
+
+    const formatDate = (dateString) => {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
 
     return (
         <>
@@ -76,31 +89,27 @@ const CustomerViewProgress = () => {
                         <table className="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th scope="col">Task Name</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Assign Staff</th>
-                                    <th scope="col">Complete</th>
+                                    <th scope="col" className="text-center">No</th>
+                                    <th scope="col" className="text-center">Task Name</th>
+                                    <th scope="col" className="text-center">Start Date</th>
+                                    <th scope="col" className="text-center">End Date</th>
+                                    <th scope="col" className="text-center">Status</th>
+                                    <th scope="col" className="text-center">Done</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {list.map(task => (
+                                {list.map((task, index) => (
                                     <tr key={task.taskId}>
+                                        <td>{index + 1}</td>
                                         <td>{task.content}</td>
+                                        <td>{formatDate(task.startDate)}</td>
+                                        <td>{formatDate(task.endDate)}</td>
                                         <td className="text-center">
                                             {task.status === "DONE" ?
                                                 (
                                                     <>COMPLETE</>
                                                 ) : (
                                                     <>IN PROGRESS</>
-                                                )
-                                            }
-                                        </td>
-                                        <td>
-                                            {task.staffName === "" ?
-                                                (
-                                                    <></>
-                                                ) : (
-                                                    <>{task.staffName}</>
                                                 )
                                             }
                                         </td>
@@ -113,11 +122,27 @@ const CustomerViewProgress = () => {
                                 ))}
                             </tbody>
                         </table>
+                        <div className="mt-4 mb-4">
+                            <h4 className="mb-4">Assigned Staff:</h4>
+                            {
+                                Array.isArray(staffList) && staffList.length > 0 ? (
+                                    <ul className="list-group">
+                                        {staffList.map((name, index) => (
+                                            <li key={index + 1} className="list-group-item list-group-item-secondary">
+                                                {index + 1}. {name}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <h6 className="text-muted">No assigned staff</h6>
+                                )
+                            }
+                        </div>
                         <div className="text-end">
-                            { orders.status === "CONSTRUCTED" (
+                            {orders.status === "CONSTRUCTED" && (
                                 <button onClick={() => handleCompleteProgress()} className="btn btn-primary ">
-                                Complete
-                            </button>)}
+                                    Complete
+                                </button>)}
                         </div>
                     </div>
                 ))}
