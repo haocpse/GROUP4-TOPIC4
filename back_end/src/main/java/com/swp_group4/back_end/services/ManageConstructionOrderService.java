@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -64,6 +65,7 @@ public class ManageConstructionOrderService {
             }
             responses.add(response);
         }
+        responses.sort(Comparator.comparing(ConstructOrderDetailForManagerResponse::getStartDate).reversed());
         return responses;
     }
 
@@ -281,7 +283,7 @@ public class ManageConstructionOrderService {
                 responses.add(response);
             }
         } else if (status.equals("paid_3")) {
-            List<ConstructionOrder> constructionOrders = constructOrderRepository.findByStatus(ConstructionOrderStatus.CONFIRMED_CONSTRUCTED);
+            List<ConstructionOrder> constructionOrders = constructOrderRepository.findByStatus(ConstructionOrderStatus.FINISHED);
             for (ConstructionOrder constructionOrder : constructionOrders) {
                 Customer customer = this.findCustomerById(constructionOrder.getCustomerId());
                 ConstructOrderDetailForManagerResponse response = this.buildConstructOrderDetailForManagerResponse(constructionOrder, customer);
@@ -333,6 +335,7 @@ public class ManageConstructionOrderService {
                 responses.add(response);
             }
         }
+        responses.sort(Comparator.comparing(ConstructOrderDetailForManagerResponse::getStartDate).reversed());
         return responses;
     }
 

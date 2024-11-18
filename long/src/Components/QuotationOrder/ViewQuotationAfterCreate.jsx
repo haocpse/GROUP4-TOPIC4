@@ -71,7 +71,7 @@ const ViewQuotationAfterCreate = () => {
               </p>
             </div>
             <div className="col-md-12">
-              <p><strong>Price Stage 1 ({infoquotation.percentageStage1}%):</strong> {infoquotation.priceStage1?.toLocaleString()} VND</p>
+              <p><strong>Price Stage 1 ({infoquotation.percentageStage1}%):</strong> {infoquotation.priceStage1 * 2} VND</p>
             </div>
             <div className="col-md-12">
               <p><strong>Price Stage 2 ({infoquotation.percentageStage2}%):</strong> {infoquotation.priceStage2?.toLocaleString()} VND</p>

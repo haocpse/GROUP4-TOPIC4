@@ -59,7 +59,7 @@ const DesignerTasks = () => {
               tasks.map((task, index) => (
                 <tr key={task.constructionOrderId}>
                   <td>{index+1}</td>
-                  <td>{task.customerName}</td>
+                  <td>tam</td>
                   <td>{task.phone}</td>
                   <td>{task.address}</td>
                   <td>{task.status}</td>

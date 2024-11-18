@@ -182,28 +182,28 @@ const Request = () => {
                         <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("consulting")}>Consulting</button>
                     </div>
                     <div className="nav-item">
-                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("designing")}>Designing</button>
-                    </div>
-                    <div className="nav-item">
-                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("constructing")}>Constructing</button>
+                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("confirm_quotaion")}>Confirm Quotation</button>
                     </div>
                     <div className="nav-item">
                         <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("paid_1")}>Paid 1</button>
                     </div>
                     <div className="nav-item">
-                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("paid_2")}>Paid 2</button>
-                    </div>
-                    <div className="nav-item">
-                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("paid_3")}>Paid 3</button>
-                    </div>
-                    <div className="nav-item">
-                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("confirm_quotaion")}>Confirm Quotation</button>
+                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("designing")}>Designing</button>
                     </div>
                     <div className="nav-item">
                         <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("confirm_design")}>Confirm Design</button>
                     </div>
                     <div className="nav-item">
+                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("paid_2")}>Paid 2</button>
+                    </div>
+                    <div className="nav-item">
+                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("constructing")}>Constructing</button>
+                    </div>
+                    <div className="nav-item">
                         <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("constructed")}>Constructed</button>
+                    </div>
+                    <div className="nav-item">
+                        <button className="btn btn-outline-primary mx-1" onClick={() => handleStatusChange("paid_3")}>Finished</button>
                     </div>
                 </nav>
             </div>

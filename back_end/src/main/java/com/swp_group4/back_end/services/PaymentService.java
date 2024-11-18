@@ -103,19 +103,19 @@ public class PaymentService {
         } else if (order.getStatus().name().equals("CONFIRMED_DESIGN")) {
             order.setStatus(ConstructionOrderStatus.PAID_STAGE_2);
         } else {
-            var context = SecurityContextHolder.getContext();
-            String id = context.getAuthentication().getName();
-            Customer customer = customerRepository.findByAccountId(id).orElseThrow();
-            long point = 0;
-            List<ConstructionOrder> orders = constructOrderRepository.findByCustomerId(customer.getCustomerId());
-            for (ConstructionOrder o : orders) {
-                if (o.getConstructionOrderId() == orderId) {
-                    point = (long) o.getTotal()/1000000;
-                    break;
-                }
-            }
-            customer.setPoint(point);
-            customerRepository.save(customer);
+//            var context = SecurityContextHolder.getContext();
+//            String id = context.getAuthentication().getName();
+//            Customer customer = customerRepository.findByAccountId(id).orElseThrow();
+//            long point = 0;
+//            List<ConstructionOrder> orders = constructOrderRepository.findByCustomerId(customer.getCustomerId());
+//            for (ConstructionOrder o : orders) {
+//                if (o.getConstructionOrderId() == orderId) {
+//                    point = (long) o.getTotal()/1000000;
+//                    break;
+//                }
+//            }
+//            customer.setPoint(point);
+//            customerRepository.save(customer);
             order.setStatus(ConstructionOrderStatus.FINISHED);
         }
         constructOrderRepository.save(order);

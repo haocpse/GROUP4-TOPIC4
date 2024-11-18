@@ -70,7 +70,7 @@ const ListDesign = () => {
               tasks.map((task, index) => (
                 <tr key={task.constructionOrderId}>
                   <td>{index + 1}</td>
-                  <td>{task.customerName}</td>
+                  <td>tam</td>
                   <td>{formatDate(task.postedDate)}</td>
                   <td>{task.designStatus}</td>
                   <td>

@@ -47,7 +47,9 @@ public class QuotationAndDesignApprovalService {
         List<Quotation> quotations = quotationRepository.findAll();
         List<QuotationAndDesignReviewResponse<QuotationStatus>> responses = new ArrayList<>();
         for (Quotation quotation : quotations) {
+
             ConstructionOrder order = this.findOrderByQuotationId(quotation.getQuotationId());
+            log.info(quotation.getQuotationId());
             Customer customer = this.findCustomerById(order.getCustomerId());
             Packages packages = this.findPackageById(quotation.getPackageId());
             QuotationAndDesignReviewResponse<QuotationStatus> response = QuotationAndDesignReviewResponse.<QuotationStatus>builder()
